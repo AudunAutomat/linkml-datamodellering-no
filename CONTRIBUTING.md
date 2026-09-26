@@ -108,7 +108,7 @@ Etter merge må du opprette GitHub Release manuelt (krev repo-admin-tilgang).
 
 ```bash
 # Eksempel for samt-bu
-VERSION=$(jq -r '."src/linkml/samt/samt-bu"' .release-please-manifest.json)
+VERSION=$(jq -r '."src/linkml/samt/samt-bu"' .github/release-please-manifest.json)
 gh release create "samt-bu-v${VERSION}" \
   --title "samt-bu ${VERSION}" \
   --notes "Release ${VERSION} for samt-bu"

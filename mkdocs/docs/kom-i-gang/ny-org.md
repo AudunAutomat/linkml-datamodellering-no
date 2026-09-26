@@ -82,17 +82,14 @@ Sjå [Ny domenemodell](ny-domenemodell.md) for full rettleiing om korleis ein mo
 
 ## Steg 4 — Synkroniser modellkatalog
 
-!!! warning "Endra frå `update-modellkatalog` til `gen-modellkatalog-instance`"
+!!! note "Heile katalogfila vert regenerert"
 
-    `make update-modellkatalog` (patcha berre utvalde felt i eksisterande
-    katalogoppføringar, og skreiv `TODO`-stubs for uregistrerte skjema) er
-    fjerna. `make gen-modellkatalog-instance` **regenererer heile
-    katalogfila frå botnen** ut frå kvart skjema sin genererte
-    Informasjonsmodell-instans — han skriv ikkje lenger `TODO`-stubs for
-    felt som `tema`/`lisens`/`kontaktpunkt` som manglar kjelde. Sjå
-    [spesifikasjonen for grunngjevinga](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/specs/done/make-target-namn-vs-funksjon.md).
-    Verifiser at manuelt utfylte felt i eksisterande katalogoppføringar
-    framleis er korrekte etter fyrste køyring med den nye kommandoen.
+    `make gen-modellkatalog-instance` **regenererer heile katalogfila frå
+    botnen** ut frå kvart skjema sin genererte Informasjonsmodell-instans, og
+    skriv ingen `TODO`-stubs for felt som `tema`/`lisens`/`kontaktpunkt` som
+    manglar kjelde. Toppnivånøklar som andre generatorar eller manuelt
+    vedlikehald eig (t.d. `aktoerer`, `kvalitetsmaalingar`), vert bevarte.
+    Kontroller diffen etter køyring.
 
 Etter at skjema har korrekt `annotations.utgiver`, generer
 Informasjonsmodell-instansen (dersom han ikkje alt finst, t.d. via

@@ -5,18 +5,19 @@ Genererer per-org Modellkatalog-instansar frå alle metadata/*-manifest.yaml-fil
 Les alle Informasjonsmodell-instansar, grupper dei etter utgiver (frå CODEOWNERS.md),
 og generer éi katalogfil per organisasjon i src/linkml/modellkatalog/<org>/data/<org>/<org>.yaml.
 
-Dette scriptet erstatter update-modellkatalog.py ved å generere komplette katalogfiler
-i staden for berre oppdatere eksisterande felt.
+Genererer komplette katalogfiler (ikkje berre oppdatering av eksisterande felt).
+Organisasjonsregisteret vert lese med den delte parsaren i utils/modellkatalog.py
+(jf. .claude/rules/codeowners-format.md).
 """
 
 import sys
 from pathlib import Path
-import yaml
 from typing import Dict, List
 
 # Legg til repo-root i sys.path for å importere delte hjelpefunksjonar
 sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "src" / "assets" / "scripts"))
 from utils.error_handler import log_error
+from utils.modellkatalog import load_org_registry
 from utils.yaml_io import load_yaml, write_yaml
 
 
@@ -30,47 +31,6 @@ def generate_langstring(nb_value: str, nn_value: str = None) -> Dict[str, str]:
         'nb': nb_value,
         'nn': nn_value if nn_value else nb_value
     }
-
-
-def load_codeowners() -> Dict:
-    """
-    Les CODEOWNERS.md YAML-frontmatter.
-
-    Returnerer: Dict med org_uri som nøkkel, org-data som verdi.
-    """
-    repo_root = Path.cwd()
-    codeowners_path = repo_root / "CODEOWNERS.md"
-
-    if not codeowners_path.exists():
-        print(f"Error: CODEOWNERS.md ikkje funne på {codeowners_path}", file=sys.stderr)
-        return {}
-
-    with open(codeowners_path, 'r', encoding='utf-8') as f:
-        content = f.read()
-
-    # Parse YAML-frontmatter (mellom ``` yaml og ```)
-    if '```yaml' not in content:
-        print("Error: CODEOWNERS.md manglar YAML-frontmatter", file=sys.stderr)
-        return {}
-
-    yaml_start = content.find('```yaml') + 7
-    yaml_end = content.find('```', yaml_start)
-
-    if yaml_end == -1:
-        print("Error: Ugyldig YAML-frontmatter i CODEOWNERS.md", file=sys.stderr)
-        return {}
-
-    yaml_content = content[yaml_start:yaml_end].strip()
-    codeowners_data = yaml.safe_load(yaml_content)
-
-    # Bygg dict med org_uri som nøkkel
-    org_registry = {}
-    for org in codeowners_data.get('organizations', []):
-        org_uri = org.get('org_uri')
-        if org_uri:
-            org_registry[org_uri] = org
-
-    return org_registry
 
 
 def discover_modelldcat_files() -> List[Path]:
@@ -228,7 +188,7 @@ def main():
 
     try:
         # 1. Last CODEOWNERS.md
-        org_registry = load_codeowners()
+        org_registry = load_org_registry()
         if not org_registry:
             print("Error: Ingen organisasjonar funne i CODEOWNERS.md", file=sys.stderr)
             sys.exit(1)
@@ -298,9 +258,8 @@ def main():
                         katalog_data[key] = value
 
                 # Bevar felt på modellkatalog-oppføringa som denne funksjonen
-                # ikkje sjølv set (t.d. tema/temaer — manuelt vedlikehaldne,
-                # sjå update-modellkatalog.py; har_kvalitetsmaaling — sett av
-                # gen-dqv-measurements.py).
+                # ikkje sjølv set (t.d. tema/temaer — manuelt vedlikehaldne;
+                # har_kvalitetsmaaling — sett av gen-dqv-measurements.py).
                 existing_modellkatalog = (existing_data.get("modellkataloger") or [{}])[0]
                 new_modellkatalog = katalog_data["modellkataloger"][0]
                 for key, value in existing_modellkatalog.items():

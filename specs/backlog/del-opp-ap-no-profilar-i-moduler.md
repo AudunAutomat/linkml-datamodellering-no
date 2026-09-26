@@ -419,7 +419,7 @@ vere **usynleg** for alle desse, ikkje berre feilhandtert:
 | `src/assets/scripts/makefile/check-iri-resolution.py:66-67` | `glob("*/*/*-schema.yaml")` |
 | `src/assets/scripts/makefile/find-similar-names.py:69-70` | `glob("*/*/*-schema.yaml")` |
 | `src/assets/scripts/makefile/find-unused-local-definitions.py:348` | `glob(f"{domain}/*/*-schema.yaml")` |
-| `src/assets/scripts/makefile/update-modellkatalog.py:86` | `glob(f"{root}/*/*/*.yaml")` |
+| `src/assets/scripts/utils/modellkatalog.py:69` (flytta frå `update-modellkatalog.py`, sjå `specs/done/fjern-update-modellkatalog.md`) | `glob(f"{root}/*/*/*.yaml")` |
 | `mkdocs/publish.sh:272,275` | to nøsta `find -mindepth 1 -maxdepth 1 -type d`-lag (domene → modell) for nav-/sidegenerering — eit tredje nivå ville ikkje få eiga portalside utan kodeendring |
 
 Dette er nøyaktig same kostnadstype som den arkiverte evalueringa
@@ -471,7 +471,7 @@ berre sjølve søkjemønsteret må lausnast, éi linje kvar:**
   korrekte for vilkårleg djupn**. Same mønster stadfesta i
   `find-similar-names.py:74` (`parts[0]`),
   `find-unused-local-definitions.py:354`/`find-similar-names.py:146,224`
-  (`.parent.name`), `update-modellkatalog.py:94` (`parts[2]`, fast
+  (`.parent.name`), `utils/modellkatalog.py:77` (`parts[2]`, fast
   absolutt indeks) og dei tre `cut -d/ -f3`-kalla i
   `batch-gen-xsd.sh`/`batch-asyncapi-validate.sh`/`batch-render-plantuml.sh`/
   `make/10-generator-macros.mk:97` (alle hentar **berre domene**, som
@@ -899,7 +899,8 @@ framleis ikkje nav-clutter (punkt 4) eller governance-klassifiseringa
   grunnlag for «Kunne eit nytt katalognivå under modell løyst dette?»
 - `make/02-schema-discovery.mk:13,22-25`, `make/40-validation.mk:113`,
   `src/assets/scripts/makefile/gen-config.sh:18,22-23`,
-  `src/assets/scripts/makefile/{check-iri-resolution,find-similar-names,find-unused-local-definitions,update-modellkatalog}.py`,
+  `src/assets/scripts/makefile/{check-iri-resolution,find-similar-names,find-unused-local-definitions}.py`,
+  `src/assets/scripts/utils/modellkatalog.py`,
   `mkdocs/publish.sh:272,275,334-339` — dei 8 stadene med hardkoda
   2-nivå katalogdjupn, og (etter grundigare gjennomgang) grunnlaget for
   kvifor dei fleste er djupn-agnostiske i logikken sin medan tre

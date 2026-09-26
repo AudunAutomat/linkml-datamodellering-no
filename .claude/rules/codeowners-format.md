@@ -23,7 +23,8 @@ organizations:
 eigen dokumentasjon kallar det "YAML-frontmatter". Eit script som testar
 `content.startswith("---")` for å oppdage registeret vil **alltid** feile
 stille (tom dict, ingen feilmelding) — dette skjedde reelt i
-`update-modellkatalog.py::load_org_registry()`, sjå
+`update-modellkatalog.py::load_org_registry()` (funksjonen ligg no i
+`src/assets/scripts/utils/modellkatalog.py`; fila er sletta), sjå
 `bugs/codeowners-frontmatter-format-mismatch.md` (BUG-16).
 
 ## Bruk den delte parsaren

@@ -371,7 +371,7 @@ Gjer i staden slik:
    ikkje alltid slike brotne referansar.
 
 **Grunngjeving:** Under flyttinga til `AudunAutomat` skjedde dette to gonger i
-same økt. I 9.6 i `specs/backlog/ci-etter-origin-flytting-audunautomat.md`
+same økt. I 9.6 i `specs/done/ci-etter-origin-flytting-audunautomat.md`
 retta regenereringa av 47 manifest utdaterte felt i 33 av dei. I
 `specs/done/informasjonsmodellidentifikator-ny-eigar.md` førte regenereringa
 av 6 modellkatalogar til 13 nye oppføringar (inkl. referansemodellar i ein

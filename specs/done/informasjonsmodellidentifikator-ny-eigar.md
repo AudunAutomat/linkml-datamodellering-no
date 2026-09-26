@@ -5,7 +5,7 @@
 Repoet er flytta frå `brreg/linkml-datamodellering-no` til
 `AudunAutomat/linkml-datamodellering-no`, med ny portal på
 <https://audunautomat.github.io/linkml-datamodellering-no/>. Sjå
-`specs/backlog/ci-etter-origin-flytting-audunautomat.md`, der denne specen er
+`specs/done/ci-etter-origin-flytting-audunautomat.md`, der denne specen er
 steg 9.7.
 
 Modellkatalog-datafilene inneheld framleis identifikatorar som peikar på den
@@ -125,7 +125,7 @@ meir.
 - [x] 1. Avgjer alternativ (A/B/C/D) → A
 - [x] 2. Gjennomfør valt alternativ
 - [x] 3. Valider alle 6 modellkatalogar
-- [x] 4. Oppdater `specs/backlog/ci-etter-origin-flytting-audunautomat.md` (9.7)
+- [x] 4. Oppdater `specs/done/ci-etter-origin-flytting-audunautomat.md` (9.7)
 
 ## Opne spørsmål
 

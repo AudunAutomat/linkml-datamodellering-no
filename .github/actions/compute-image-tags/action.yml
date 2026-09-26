@@ -6,7 +6,7 @@ description: >-
   sin eigen hashFiles(). Eigaren vert gjort om til små bokstavar her, éin
   stad, sidan OCI-referansar ikkje tillèt store bokstavar og
   github.repository_owner kan innehalde det (t.d. AudunAutomat) — sjå
-  specs/backlog/ci-etter-origin-flytting-audunautomat.md (F1). hashFiles() finst berre som
+  specs/done/ci-etter-origin-flytting-audunautomat.md (F1). hashFiles() finst berre som
   eit "dollar-curly"-uttrykk evaluert av runneren — ikkje kallbart frå
   bash/jq ved køyretid — difor er dette den einaste staden i repoet desse
   hashFiles()-kalla skal stå. Outputen er ein superset (alle 7 image);

@@ -7,7 +7,7 @@ on:
 
 # REGISTRY vert rekna ut i bash per steg: GitHub-uttrykk har ingen lower(),
 # og github.repository_owner kan ha store bokstavar (t.d. AudunAutomat) —
-# sjå specs/backlog/ci-etter-origin-flytting-audunautomat.md (F1).
+# sjå specs/done/ci-etter-origin-flytting-audunautomat.md (F1).
 jobs:
   linkml-local:
     runs-on: ubuntu-22.04

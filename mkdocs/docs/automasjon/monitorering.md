@@ -86,13 +86,13 @@ Etter at release-PR er merga, må brukar opprette GitHub Release manuelt. Dette 
    - **Description:** Kopier frå `CHANGELOG.md` eller skriv manuelt
 5. Klikk **Publish release**
 
-**Tips:** Tag-navn og versjon finn du i release-PR-en (t.d. PR #25) eller i `.release-please-manifest.json`.
+**Tips:** Tag-navn og versjon finn du i release-PR-en (t.d. PR #25) eller i `.github/release-please-manifest.json`.
 
 **Alternativ 2: Via GitHub CLI**
 
 ```bash
 # Hent versjon frå manifest
-VERSION=$(jq -r '."src/linkml/<domain>/<modell>"' .release-please-manifest.json)
+VERSION=$(jq -r '."src/linkml/<domain>/<modell>"' .github/release-please-manifest.json)
 COMPONENT="<modell>"
 
 # Opprett release
@@ -104,7 +104,7 @@ gh release create "${COMPONENT}-v${VERSION}" \
 **Eksempel for samt-bu:**
 
 ```bash
-VERSION=$(jq -r '."src/linkml/samt/samt-bu"' .release-please-manifest.json)
+VERSION=$(jq -r '."src/linkml/samt/samt-bu"' .github/release-please-manifest.json)
 gh release create "samt-bu-v${VERSION}" \
   --title "samt-bu ${VERSION}" \
   --notes "Release ${VERSION} for samt-bu"

@@ -50,7 +50,7 @@ strengrepresentasjonen av ein typa literal ved deserialisering.
 Stadfesta: `enhetsregisteret-bvrfriv` (2026-09-26, same felt
 `innsendingstidspunkt`: `'2024-01-01T00:00:00'` → `'2024-01-01 00:00:00'`,
 isolert ved å ta vare på `a.json`/`d.json` frå `make roundtrip` — sjå
-`specs/backlog/ci-etter-origin-flytting-audunautomat.md` 9.6/9.9; skip lagt til i
+`specs/done/ci-etter-origin-flytting-audunautomat.md` 9.6/9.9; skip lagt til i
 `tests/test_make.sh` same stad som for `bvrinnfelles`).
 
 Stadfesta: `enhetsregisteret-bvrinnfelles` (einaste skjema der roundtrip-ttl

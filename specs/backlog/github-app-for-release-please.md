@@ -4,7 +4,7 @@
 
 `RELEASE_PLEASE_TOKEN` er i dag ein fine-grained PAT som høyrer til kontoen
 `AudunAutomat`. Han vart oppretta under flyttinga frå `brreg` (sjå
-`specs/backlog/ci-etter-origin-flytting-audunautomat.md`, F2/F2a). F9 i same
+`specs/done/ci-etter-origin-flytting-audunautomat.md`, F2/F2a). F9 i same
 spec vurderte alternativa og tilrådde ein **GitHub App eigd av `AudunAutomat`**
 (alternativ B). Då vert ikkje automatiseringa knytt til ein personleg konto,
 tokenet går ikkje ut, og handlingane vert logga som ein bot. Denne specen
@@ -87,7 +87,11 @@ Lagring i repoet:
   øvst på innstillingssida til appen, t.d. `Iv23li…`). Han er ikkje hemmeleg og
   skal vere variabel, ikkje secret. Då er han lesbar i loggar og for
   feilsøking.
-- Repo-**secret** `RELEASE_APP_PRIVATE_KEY`: innhaldet i `.pem`-fila.
+- Repo-**secret** `RELEASE_APP_PRIVATE_KEY`: **innhaldet i den nedlasta
+  `.pem`-fila** (fleire linjer, `-----BEGIN RSA PRIVATE KEY-----` …
+  `-----END RSA PRIVATE KEY-----`). **Ikkje** fingeravtrykket `SHA256:…` som
+  innstillingssida viser. GitHub viser aldri sjølve nøkkelen, han kjem berre
+  som filnedlasting.
 - **App-ID** (numerisk) trengst **ikkje** i workflowane, men han er
   `actor_id` for ein `Integration` i ruleset-ens `bypass_actors` (steg 3, veg
   1). Noter han i specen ved steg 2, men lagre han ikkje som variabel før
@@ -349,6 +353,85 @@ echo "::notice::Oppretta git-tag: $tag_name"
    Oppdater kommentarar som nemner PAT. Oppdater F2a/F9 i hovudspecen og
    `specs/done/auto-merge-release-pr.md`-referansar i kommentarar ved behov.
 6. **Verifiser** (etter at endringane ligg i `origin/main`):
+   **Status 2026-09-26 (første forsøk, blokkert):**
+   - `origin/main` = `45314da7` (inneheld `989ccdd8`). Ingen
+     `RELEASE_PLEASE_TOKEN` i `.github`.
+   - 6.1 `release-please.yml` (dispatch `36237190984`) ✗: «Hent token for
+     linkml-release-bot» feila med `DOMException [DataError]: Invalid keyData`
+     / `error:0680008E:asn1 encoding routines::not enough data`.
+     `client-id` vart lese rett (`Iv23liBMczZZrjsHRZYs`), men
+     **`RELEASE_APP_PRIVATE_KEY` inneheld ein ufullstendig eller øydelagd
+     PEM-nøkkel** (manglande linjer eller linjeskift). Det er ein feil i
+     secret-verdien, ikkje i koden. Secreten må setjast på nytt (brukaren), jf.
+     «Rett `RELEASE_APP_PRIVATE_KEY`» under.
+   - 6.2 `validate.yml` (dispatch `36237193717`) ✅, men token-steget vart
+     hoppa over (ingen nye valideringsloggar). Ikkje verifisert.
+
+   - Andre forsøk (dispatch `36237397247`, secret sett 10:58) ✗:
+     `error:1E08010C:DECODER routines::unsupported`. OpenSSL kjenner ikkje att
+     PEM-formatet. Sannsynleg årsak: innrykk (to mellomrom) føre kvar linje,
+     kopiert frå ei innrykt kodeblokk inn i ein heredoc. `-----BEGIN` må stå
+     først på linja.
+
+   - Tredje forsøk (dispatch `36237693248`, secret sett 11:03 via heredoc med
+     `sed`-innrykkfjerning) ✗: same `DECODER routines::unsupported`. Neste
+     sannsynlege årsak er CRLF-linjeskift (`\r`) frå innliming i WSL frå eit
+     Windows-program. Tiltak: `tr -d '\r'` i pipelinen og lokal kontroll med
+     `openssl pkey -noout` (frå stdin, utan fil) før lagring.
+
+   - **Rotårsak funnen (2026-09-26):** Verdien som vart lagra, var
+     *fingeravtrykket* til nøkkelen (`SHA256:…`, éi linje, vist under
+     *Private keys* på innstillingssida til appen), ikkje sjølve nøkkelen.
+     GitHub viser aldri den private nøkkelen på sida. *Generate a private key*
+     lastar han ned som `<app>.<dato>.private-key.pem` (i WSL:
+     `/mnt/c/Users/<brukar>/Downloads/`). CRLF-hypotesen over var altså feil.
+     Opprydding: slett ubrukte nøklar under *Private keys* (kvar «Generate» lagar
+     ein ny, gyldig nøkkel) og tilhøyrande `.pem`-filer.
+
+   **Status 2026-09-26 (etter at rett `.pem`-innhald er lagra 11:10):**
+   - ✅ **6.1** `release-please.yml` (dispatch `36238030971`) er grøn. Loggen viser
+     `client-id: Iv23liBMczZZrjsHRZYs`, `permission-contents/pull-requests/issues:
+     write`, `APP_SLUG: linkml-release-bot`, `Token revoked` i post-steget, og
+     ingen deprecation-åtvaring. `release-please-action` køyrde med app-tokenet:
+     36 av 37 releases vart funne som GitHub Releases, 1 via tag, og 37 × «No
+     commits for path». Ingen PR vart laga, som venta. **App-installasjonen,
+     privatnøkkelen og tokenløyva er dermed stadfesta.**
+   - ⏸ **6.2** `validate.yml`: token-steget køyrer berre når det finst nye
+     valideringsloggar (`has_changes`). Konfigurasjonen av steget er identisk med
+     6.1, som gjekk gjennom. Vert stadfesta ved første køyring med nye loggar
+     (schedule eller dispatch).
+   - ⏸ **6.3/6.4** ventar på første ekte release-PR (neste `feat`/`fix` som
+     endrar ein `*-schema.yaml` i ein release-please-komponent).
+
+   **Rett `RELEASE_APP_PRIVATE_KEY`** (historikk, brukt under forsøka over): Kontroller at nøkkelen er gyldig
+   *før* han vert lagra. `openssl pkey -noout` returnerer ≠ 0 og skriv ein
+   feil viss PEM-en er øydelagd:
+   ```bash
+   # frå fil (sikrast — ingen copy/paste av linjer):
+   openssl pkey -in <sti>/linkml-release-bot.*.private-key.pem -noout && \
+     gh secret set RELEASE_APP_PRIVATE_KEY -R AudunAutomat/linkml-datamodellering-no \
+       < <sti>/linkml-release-bot.*.private-key.pem
+   ```
+   Viss `.pem`-fila er sletta, generer ein ny nøkkel på innstillingssida til
+   appen (*Private keys → Generate a private key*), og slett den gamle der.
+
+   Ved innliming i staden for fil: fjern innrykk og kontroller før lagring.
+   Alle linjer, òg `EOF`, må byrje i kolonne 1:
+   ```bash
+   set +o history
+   f=$(mktemp)
+   sed 's/^[[:space:]]*//' > "$f" <<'EOF'
+   -----BEGIN RSA PRIVATE KEY-----
+   <nøkkellinjene>
+   -----END RSA PRIVATE KEY-----
+   EOF
+   openssl pkey -in "$f" -noout && gh secret set RELEASE_APP_PRIVATE_KEY -R AudunAutomat/linkml-datamodellering-no < "$f"
+   shred -u "$f"
+   set -o history
+   ```
+   (Innrykket i denne kodeblokka høyrer til Markdown-lista og skal *ikkje*
+   vere med når kommandoane vert køyrde.)
+
    1. `gh workflow run release-please.yml` → grøn. Loggen viser at
       token-steget køyrde, og ingen `RELEASE_PLEASE_TOKEN`.
    2. `gh workflow run validate.yml`. Viss det er nye loggar, er
@@ -363,7 +446,11 @@ echo "::notice::Oppretta git-tag: $tag_name"
       `<app-slug>[bot]`, og merge skjedde **utan** bypass (appen står ikkje i
       `bypass_actors`). Per-schema-taggane er annoterte, med `<app-slug>[bot]`
       som tagger (O4).
-7. **Fjern PAT** (brukaren): `gh secret delete RELEASE_PLEASE_TOKEN -R
+7. ✅ **Fjern PAT** (brukaren, utført 2026-09-26). Verifisert: `gh secret list`
+   viser berre `RELEASE_APP_PRIVATE_KEY`, og `RELEASE_PLEASE_TOKEN` gir 0 treff
+   i `.github` lokalt og i `origin/main`. Brukaren stadfestar at sjølve PAT-en er
+   trekt tilbake på kontoen. Det kan ikkje verifiserast via API med
+   `gh`-tokenet. Opphavleg framgangsmåte: `gh secret delete RELEASE_PLEASE_TOKEN -R
    AudunAutomat/linkml-datamodellering-no`, og trekk tilbake PAT-en under
    *Settings → Developer settings → Fine-grained tokens*. Stadfest med
    `grep -rn RELEASE_PLEASE_TOKEN .github` (0 treff).
@@ -432,8 +519,10 @@ ikkje lenger referert i `.github/` (`grep` gir 0 treff).
 - [ ] 3. (Berre viss veg 2 feilar) Test `Integration`-bypass på ruleset 24036454 (backup først)
 - [x] 4. `RELEASE_APP_CLIENT_ID` (variabel) + `RELEASE_APP_PRIVATE_KEY` (secret) (brukaren) — verifisert med `gh variable/secret list`
 - [x] 5. Kodeendring i 3 workflowar, actionlint (+ `.github/actionlint.yaml`)
-- [ ] 6. Verifiser dispatch og første ekte release-PR
-- [ ] 7. Slett secret og trekk tilbake PAT (brukaren)
+- [x] 6.1 Dispatch `release-please.yml` med app-token (`36238030971`)
+- [ ] 6.2 `validate.yml` lagar PR som `linkml-release-bot[bot]` (ved første køyring med nye loggar)
+- [ ] 6.3/6.4 Første ekte release-PR: auto-approve på `synchronize` trass i `[skip ci]`, godkjenning etter siste push, auto-merge utan bypass, merge-commit, releases og taggar
+- [x] 7. Slett secret og trekk tilbake PAT (brukaren) — secret borte, 0 referansar, PAT trekt tilbake (brukarstadfesta)
 
 ## Opne spørsmål
 
@@ -449,6 +538,10 @@ ikkje lenger referert i `.github/` (`grep` gir 0 treff).
 
 ## Avgjerder
 
+- Rule (brukar stadfesta 2026-09-26): lærdommen om utdatert action-metadata i
+  actionlint (steg 5) er lagd til som underseksjon «`[action]`-funn kan kome av
+  utdatert metadata» i `.claude/rules/ci-workflows.md`, under actionlint-seksjonen.
+  Scopet er det same, så det trongst inga ny fil.
 - Steg 5: `gh pr merge --auto` brukar `--merge` i staden for `--squash`.
   Commit-filteret i `release-please.yml` slepp berre gjennom `Merge pull request
   #N from …/release-please--branches--main` etter merge. Ein squash-commit

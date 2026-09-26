@@ -2,7 +2,7 @@
 
 **ID:** BUG-16
 **Status:** `løyst`
-**Komponent:** `src/assets/scripts/makefile/update-modellkatalog.py`
+**Komponent:** `src/assets/scripts/makefile/update-modellkatalog.py` (sletta 2026-09-26 — `load_org_registry()` ligg no i `src/assets/scripts/utils/modellkatalog.py`, sjå `specs/done/fjern-update-modellkatalog.md`)
 **Oppdaga:** 2026-08-13
 
 ## Symptom

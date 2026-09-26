@@ -45,7 +45,7 @@ finst som tag; ingen av dei er release-please-komponentar):
   `enhetsregisteret-frivilligorganisasjonapi`, `javazonetalk` (alle `v0.1.0`)
 
 Feilen er eldre enn flyttinga frå `brreg` (taggane fanst heller ikkje der),
-oppdaga under steg 9.6 i `specs/backlog/ci-etter-origin-flytting-audunautomat.md`.
+oppdaga under steg 9.6 i `specs/done/ci-etter-origin-flytting-audunautomat.md`.
 
 ## Workaround
 

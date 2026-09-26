@@ -45,7 +45,7 @@ berørte. Ikkje berørt: dette repoet sine eigne workflowar (brukar ikkje dei
 public reusable workflowane).
 
 Oppdaga under steg 9.5/9.9 i
-`specs/backlog/ci-etter-origin-flytting-audunautomat.md` — feilen er eldre enn
+`specs/done/ci-etter-origin-flytting-audunautomat.md` — feilen er eldre enn
 flyttinga, men vert synleg når eksterne tek i bruk det nye repoet.
 
 ## Workaround

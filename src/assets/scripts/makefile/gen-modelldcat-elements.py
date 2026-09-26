@@ -32,7 +32,6 @@ Køyr frå repo-rota:
     python3 src/assets/scripts/gen-modelldcat-elements.py [--org ALIAS] [--dry-run]
 """
 import argparse
-import importlib.util
 import os
 import sys
 
@@ -47,20 +46,18 @@ sys.path.insert(0, os.path.join(os.path.dirname(_SCRIPT_DIR), "utils"))
 import linkml_relative_import_patch
 linkml_relative_import_patch.apply()
 
-# Gjenbruk org-/skjemaoppslagslogikk frå update-modellkatalog.py (DRY-prinsippet i CLAUDE.md).
-_spec = importlib.util.spec_from_file_location(
-    "update_modellkatalog", os.path.join(_SCRIPT_DIR, "update-modellkatalog.py")
+# Delt org-/skjemaoppslagslogikk (DRY-prinsippet i CLAUDE.md), sjå
+# specs/done/fjern-update-modellkatalog.md.
+sys.path.insert(0, os.path.dirname(_SCRIPT_DIR))
+from utils.modellkatalog import (  # noqa: E402
+    CODEOWNERS_PATH,
+    entry_name,
+    find_catalog_data,
+    group_schemas_by_org,
+    load_annotated_schemas,
+    load_org_registry,
+    load_release_manifest,
 )
-update_modellkatalog = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(update_modellkatalog)
-
-CODEOWNERS_PATH = update_modellkatalog.CODEOWNERS_PATH
-load_org_registry = update_modellkatalog.load_org_registry
-load_release_manifest = update_modellkatalog.load_release_manifest
-load_annotated_schemas = update_modellkatalog.load_annotated_schemas
-group_schemas_by_org = update_modellkatalog.group_schemas_by_org
-find_catalog_data = update_modellkatalog.find_catalog_data
-entry_name = update_modellkatalog.entry_name
 
 GENERATED_LIST_KEYS = ["objekttyper", "attributter", "assosiasjoner", "kodelister", "kodeelementer"]
 
@@ -319,7 +316,7 @@ def process_org_schemas(org, schemas, dry_run):
     if not dry_run and processed:
         with open(catalog_path, "w", encoding="utf-8") as fh:
             fh.write(
-                "# Delvis generert av update-modellkatalog.py / gen-modelldcat-elements.py.\n"
+                "# Delvis generert av gen-modelldcat-elements.py.\n"
                 "# Nye stub-oppføringar (merka med TODO) krev manuell utfylling — "
                 "resten vert overskrive ved neste køyring.\n\n"
             )

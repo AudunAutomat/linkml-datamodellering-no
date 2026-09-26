@@ -94,6 +94,11 @@ som repo-secret. Framgangsmåten står i F2a under.
 
 #### F2a — Opprett `RELEASE_PLEASE_TOKEN` steg for steg
 
+> **Status 2026-09-26: erstatta.** `RELEASE_PLEASE_TOKEN` (PAT) er sletta og
+> trekt tilbake. Workflowane brukar no GitHub-appen `linkml-release-bot`, jf.
+> `specs/backlog/github-app-for-release-please.md` (F9 alternativ B). Rettleiinga
+> under er historikk.
+
 **Viktig:** Sjølve tokenet kan **ikkje** lagast med `gh` eller REST-API-et.
 GitHub har ikkje noko API for å opprette PAT-ar, så det må gjerast i
 nettlesaren. `gh` vert brukt til steget etterpå, der tokenet vert lagra som
@@ -840,7 +845,7 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
    git merge-base --is-ancestor 46792cdc origin/main && echo "46792cdc er på main"
 
    # 3. Lag annotert tag (same form som per-schema-taggane i release-please.yml)
-   git tag -a modelldcat-modell-v1.14.0 46792cdc -m "Release modelldcat-modell version 1.14.0 (etterregistrert etter flytting, jf. specs/backlog/ci-etter-origin-flytting-audunautomat.md 9.2)"
+   git tag -a modelldcat-modell-v1.14.0 46792cdc -m "Release modelldcat-modell version 1.14.0 (etterregistrert etter flytting, jf. specs/done/ci-etter-origin-flytting-audunautomat.md 9.2)"
 
    # 4. Push berre denne éine taggen
    git push origin modelldcat-modell-v1.14.0
@@ -1145,7 +1150,7 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
 - [x] 2f. Set GHCR-pakkane under `audunautomat` til *Public* — verifisert 2026-09-26 med anonym `tags/list` (HTTP 200) for alle 7 image i `images.json`
 - [x] 2f-2. `mcp-linkml-modell-utkast` og `mcp-linkml-begrep-utkast` offentlege — verifisert anonymt 2026-09-26 etter `release.yml` (v1.1.0)
 - [x] 2g. Gjenskap ruleset `main protection` på `main` (F8a), og verifiser `protected: true` — verifisert 2026-09-26, funksjonelt identisk med `brreg` (sjå F8b)
-- [ ] 2h. (Valfritt) Inviter `AudunVindenesEggeBR` som collaborator med *Write*, dersom kontoen skal vere reviewar
+- [-] 2h. (Valfritt) Inviter `AudunVindenesEggeBR` som collaborator med *Write*, dersom kontoen skal vere reviewar — **ikkje utført**, valfritt og utanfor det som trengst for at CI skal fungere (sjå Utført)
 - [x] 3. F1: lowercase GHCR-prefiks via `compute-image-tags` + actionlint
 - [x] 4. Auto-approve-aktør utan hardkoding + actionlint
 - [x] 5. F5: portal-URL-ar → `audunautomat.github.io` / `github.com/AudunAutomat` (utan versjonslåste importar/identifikatorar)
@@ -1299,3 +1304,50 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
   framtidige eigarar.
 - `CHANGELOG.md` og `specs/done/` er haldne utanfor F5-utskiftinga, fordi dei
   er historikk eller genererte av release-please.
+
+## Utført
+
+Avslutta 2026-09-26. Alle workflowar som feila etter flyttinga frå
+`brreg/linkml-datamodellering-no` til `AudunAutomat/linkml-datamodellering-no`, er
+grøne, og det nye repoet er sett opp som kanonisk upstream.
+
+**Kode og konfigurasjon (steg 3–6, 9.6, 9.9):**
+- F1: `compute-image-tags` lagar full GHCR-referanse med eigarnavnet i små
+  bokstavar. `pull-images`, `reusable-oppsett.yml`, `modell-analyse.yml` og
+  `release.yml` brukar han. Rule er lagd til i `.claude/rules/ci-workflows.md`.
+- Auto-approve sjekkar PR-forfattar utan hardkoda brukar og avviser fork-PR-ar.
+  Seinare vart sjekken bytt til `linkml-release-bot[bot]`.
+- `brreg` → `AudunAutomat` i portal, skript, CI, dokumentasjon, reusable workflows
+  og versjonslåste importar (47 + 15 filer). Manifest (47) og modellkatalogar (6)
+  er regenererte, og rule om omfangskontroll er lagd til i
+  `.claude/rules/linkml-schema.md`.
+- BUG-22 og BUG-23 er registrerte, og BUG-19 er utvida med
+  `enhetsregisteret-bvrfriv` (test-skip).
+
+**Repo-innstillingar og ressursar (steg 2, 9.1–9.5, gjort av brukaren og verifiserte):**
+- Actions-løyve, auto-merge, Pages (Actions), code scanning og ruleset `main
+  protection` (funksjonelt lik `brreg`, F8b) er sette opp. GHCR-pakkane er
+  offentlege.
+- 367 taggar er overførte, og `modelldcat-modell-v1.14.0` er etterregistrert.
+  release-please-backfill fann 37 av 37 komponentar via tag.
+- Release `v1.1.0` gav `:v1.1.0`/`:latest` på alle 4 release-image.
+
+**Verifisering (steg 7 og 9.4b):** Generate, Validate, Modell-analyse,
+CodeQL, Trivy, Lenkje-/mermaid-sjekk, Release Please og Release er grøne.
+Portalen er publisert på <https://audunautomat.github.io/linkml-datamodellering-no/>.
+Release-PR #1 gav 10 releases, artefakter og taggar. Auto-merge fullførte ikkje
+(merga manuelt), og det førte til F9/steg 8.
+
+**Utskilde oppfølgingar:**
+- `specs/done/informasjonsmodellidentifikator-ny-eigar.md` (9.7): utført.
+- `specs/backlog/github-app-for-release-please.md` (steg 8): PAT er erstatta av
+  GitHub-appen `linkml-release-bot`, og PAT-en er sletta. Verifisering av 6.2 og
+  6.3/6.4 ventar på hendingar (nye valideringsloggar og første ekte release-PR).
+- BUG-22 (`VERSION=latest`-checkout) og BUG-23 (tag-URL for skjema som ikkje er
+  releasa) er opne i `bugs/`.
+- O2 i identifikator-specen: den ubrukte `update-modellkatalog.py`.
+
+**Ikkje utført:** 2h (invitere `AudunVindenesEggeBR` som collaborator).
+Punktet er valfritt og ikkje naudsynt for at CI skal fungere. Konsekvens:
+`.github/CODEOWNERS` peikar på ein konto utan tilgang, og oppføringane vert
+ignorerte av GitHub til kontoen er invitert eller fila er endra.

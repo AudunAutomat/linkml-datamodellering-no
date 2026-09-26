@@ -1,6 +1,6 @@
 ---
 name: ci-workflows
-description: Actionlint-plikta, CI-YAML sin lægre DRY-terskel (2+), reusable workflow/composite action-avgrensingar, og GHCR-referansar med små bokstavar. Lastast automatisk ved arbeid med filer under .github/workflows/ eller .github/actions/.
+description: Actionlint-plikta (inkl. utdatert action-metadata), CI-YAML sin lægre DRY-terskel (2+), reusable workflow/composite action-avgrensingar, og GHCR-referansar med små bokstavar. Lastast automatisk ved arbeid med filer under .github/workflows/ eller .github/actions/.
 paths:
   - ".github/workflows/**"
   - ".github/actions/**"
@@ -36,6 +36,36 @@ YAML-syntakssjekk i staden:
 ```bash
 python3 -c "import yaml; yaml.safe_load(open('.github/actions/<namn>/action.yml')); print('OK')"
 ```
+
+### `[action]`-funn kan kome av utdatert metadata
+
+actionlint validerer `with:`-inputs mot ein innebygd kopi av `action.yml` for
+populære actions. Kopien følgjer actionlint-versjonen og kan vere eldre enn
+action-versjonen workflowen brukar. Då rapporterer actionlint input som
+faktisk finst, som «not defined», eller input som ikkje lenger er påkravde,
+som «missing … required».
+
+**Aldri** «fiks» eit slikt funn ved å byte til ein input som actionen sjølv har
+merkt som deprecated, berre for å gjere actionlint grøn.
+
+Gjer i staden slik:
+
+1. Les `action.yml` på den taggen workflowen faktisk brukar, og samanlikn
+   `inputs:` (`required`, `deprecationMessage`) med funnet:
+   ```bash
+   gh api "repos/<eigar>/<action>/contents/action.yml?ref=<tag>" --jq .content | base64 -d | sed -n '/^inputs:/,/^outputs:/p'
+   ```
+2. Viss `action.yml` motseier funnet, er metadataen utdatert. Undertrykk
+   **berre dei eksakte meldingane** i `.github/actionlint.yaml`
+   (`paths.<glob>.ignore`), med ein kommentar om actionlint-versjonen,
+   action-versjonen og når linjene kan fjernast.
+3. Viss `action.yml` stadfestar funnet, er det ein reell feil. Rett workflowen.
+
+**Grunngjeving:** actionlint 1.7.12 hadde metadata frå
+`actions/create-github-app-token` v3.0.0 og rapporterte `client-id` som
+ukjend og `app-id` som påkravd for `@v3`. I v3.1.0+ er `client-id` tilrådd og
+`app-id` deprecated. Sjå steg 5 og Avgjerder i
+`specs/backlog/github-app-for-release-please.md`.
 
 ## DRY-terskel for CI-YAML: 2+, ikkje 3+
 
@@ -132,4 +162,4 @@ Gjer i staden slik:
 feila alle `oppsett / build-image / *`-jobbar i `generate.yml`,
 `validate.yml` og `lenkje-og-mermaid-sjekk.yml` (og `ensure-images` i
 `modell-analyse.yml`) med feilmeldinga over. Sjå F1 i
-`specs/backlog/ci-etter-origin-flytting-audunautomat.md`.
+`specs/done/ci-etter-origin-flytting-audunautomat.md`.
