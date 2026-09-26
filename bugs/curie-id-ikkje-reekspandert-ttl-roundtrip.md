@@ -64,3 +64,11 @@ roundtrip-ttl-testen for det aktuelle skjemaet).
 Ingen upstream-fiks venta — same kategori `rdflib_loader`-avgrensingar som
 BUG-1/BUG-2/BUG-3. Unngå mønsteret (skriv identifikator-verdiar i eige
 navnerom som CURIE, ikkje full URI) er den pragmatiske løysinga.
+
+## Verifisering 2026-09-26
+
+Reprodusert med minimal reproduksjon på `linkml` 1.11.1 og `main @ 5ef7622e`
+(`id: https://example.org/b18/thing1` → `id: ex:thing1`). Begge formene er
+gyldige `uriorcurie`, så upstream kan rimeleg sjå dette som tilsikta.
+Eventuell innmelding bør vere eit forbetringsframlegg (t.d. ein loader-opsjon
+som ikkje kontraherer URI-ar), ikkje ein bug — sjå `specs/backlog/upstream-linkml-bugrapportar.md` § U4.

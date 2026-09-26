@@ -131,10 +131,29 @@ Upstream-fix i `linkml` sin `docgen.py`, der `link_mermaid()` sjekkar om
 `link` alt startar med `http://`/`https://` (t.d. via
 `link.startswith(("http://", "https://"))`) og i så fall returnerer han
 uendra, i staden for å pakke han inn i `f"../{link}/"`. Ingen GitHub-issue er
-identifisert pr. 2026-08-13.
+identifisert pr. 2026-09-26 — skal meldast i
+[linkml/linkml](https://github.com/linkml/linkml/issues), sjå
+`specs/backlog/upstream-linkml-bugrapportar.md` § U7.
 
 Når upstream-fix er på plass: stadfest at ein fersk `make gen-doc`-køyring
 ikkje lenger produserer `../http://`/`../https://`-prefiksa hrefar for
 eksterne `linkml:types`-typar, og at intern workaround i
 `copy_artifacts.sh` kan forenklast/fjernast tilsvarande. Oppdater denne fila
 til `Status: løyst`.
+
+## Verifisering 2026-09-26
+
+Stadfesta i fersk `make gen-schema-docs` (`dcat-ap-no`, t.d.
+`click Uriorcurie href "../http://www.w3.org/2001/XMLSchema#anyURI/"`) og med
+minimal reproduksjon i vanilla `linkml` 1.11.1 og `main @ 5ef7622e`.
+
+Utløysaren er flagga vi brukar (`batch-generate.py::_doc_extra_argv`):
+`--no-mergeimports --no-render-imports --diagram-type mermaid_class_diagram`.
+Rotårsaka har to delar:
+
+1. Malen `class_diagram.md.jinja2` filtrerer bort typar med
+   `s.range not in gen.all_type_object_names()`, men `all_type_objects()`
+   brukar `imports=self.render_imports`. Med `--no-render-imports` er
+   importerte `linkml:types` difor ikkje i lista, og vert teikna som
+   relaterte klasser.
+2. `link_mermaid()` legg `../` framfor absolutte URL-ar (skildra over).

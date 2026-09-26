@@ -1,61 +1,69 @@
-# Bug: `rdflib_loader` kastar `MappingError` for domene-URI-ar i TTL
+# Bug: `rdflib_loader` kastar `MappingError` når eit attributt har same navn som ein global slot
 
 **ID:** BUG-3
-**Status:** `open`
-**Komponent:** `linkml-runtime`
-**Oppdaga:** 2026-06-09
+**Status:** `upstream`
+**Komponent:** `linkml-runtime` (`linkml_runtime/loaders/rdflib_loader.py`, `uri_to_slot`)
+**Oppdaga:** 2026-06-09 (rotårsak stadfesta 2026-09-26)
 
 ## Symptom
 
-`ttl→yaml`-steget i TTL-roundtrip feiler med:
+`ttl→yaml`-steget i TTL-roundtrip feilar med:
 
 ```
 linkml_runtime.MappingError: No pred for https://data.norge.no/fint/fint-administrasjon/arbeidsforhold <class 'rdflib.term.URIRef'>
 linkml_runtime.MappingError: No pred for https://data.norge.no/samt/samt-bu/id <class 'rdflib.term.URIRef'>
 ```
 
-`rdflib_loader` møter ein RDF-predikat med ein URI frå domene-prefiks-navnerommet
-(`default_prefix`-URI-ar) og klarer ikkje å mappa han tilbake til ein slot i skjemaet.
-
 ## Berørte skjema / testar
 
-| Skjema | Skip i |
-|---|---|
-| `fint-administrasjon` | `test_roundtrip_ttl` (FEIL, ikkje skip) |
-| `fint-okonomi` | `test_roundtrip_ttl` (FEIL) |
-| `fint-personvern` | `test_roundtrip_ttl` (FEIL) |
-| `fint-utdanning` | `test_roundtrip_ttl` (FEIL) |
-| `samt-bu` | `test_roundtrip_ttl` (FEIL) |
+| Skjema | Attributt i containeren | Global slot med same navn | Test |
+|---|---|---|---|
+| `fint-administrasjon` | `AdministrasjonContainer.arbeidsforhold` | `arbeidsforhold` (`slot_uri: adm:arbeidsforhold`) | `test_roundtrip_ttl` (FEIL) |
+| `fint-okonomi`, `fint-personvern`, `fint-utdanning` | same mønster | | `test_roundtrip_ttl` (FEIL) |
+| `samt-bu` | `SamtBuContainer.id` | `id` (frå `common-ap-no`) | `test_roundtrip_ttl` (FEIL) |
 
-Merk: desse skjemaa er ikkje i skip-lista — dei køyrer og feiler.
+Desse skjemaa er ikkje i skip-lista — dei køyrer og feilar.
 
-## Rot-årsak (hypotese)
+## Rot-årsak (stadfesta med minimal reproduksjon)
 
-`rdflib_loader` brukar `slot_uri`-mappingane til å konvertere RDF-predikatar
-tilbake til slots. For slots som manglar eksplisitt `slot_uri`, genererer
-LinkML ein URI basert på `default_prefix` + slotnavn. Desse URI-ane endar opp
-i TTL-fila, men `rdflib_loader` klarer ikkje å slå dei opp att i slot-registeret
-under deserialisering.
+Dumparen og lastaren løyser slot-URI ulikt:
 
-Dette er truleg relatert til korleis `schemaview` løyser slot-URI-oppslag for
-slots utan eksplisitt `slot_uri`.
+- `RDFLibDumper` brukar `induced_slot(navn, klasse)`, altså **attributtet**
+  sin URI. Utan `slot_uri` vert det `default_prefix` + navn (t.d.
+  `fint-administrasjon:arbeidsforhold`).
+- `RDFLibLoader` byggjer predikattabellen frå `schemaview.all_slots()`
+  (`rdflib_loader.py` linje 99 på `main @ 5ef7622e`). Den er nøkla på
+  **navn**, og den globale sloten vinn. Attributtet sin URI finst difor ikkje
+  i tabellen.
+
+```python
+sv.get_uri(sv.all_slots()['items'], expand=True)                # https://example.org/other/items
+sv.get_uri(sv.induced_slot('items', 'Container'), expand=True)  # https://example.org/b03/items
+```
+
+Minimal reproduksjon i `specs/backlog/upstream-linkml-bugrapportar.md` § U2.
+Reprodusert på `linkml` 1.11.1 og `main @ 5ef7622e`. Ingen eksisterande
+upstream-issue funnen (2026-09-26).
+
+Den tidlegare hypotesen (manglande `slot_uri` på vanlege slots) var feil.
+`fint-arkiv` og `fint-ressurs` passerer fordi containerattributta deira ikkje
+kolliderer med globale slotnavn.
 
 ## Workaround
 
-Ingen aktiv workaround. Desse skjemaa feiler i `test_roundtrip_ttl`.
+Ingen aktiv workaround. Moglege interne tiltak (ikkje gjennomførte):
 
-Moglege tilnærmingar for å undersøkje:
-- Sjekk om `fint-ressurs` og `fint-arkiv` (som passerer) har eksplisitt `slot_uri`
-  på alle slots, i motsetnad til `fint-administrasjon` (som feiler)
-- Sjekk om å leggje til eksplisitt `slot_uri` på berørte slots løyser problemet
+- Gi containerattributtet eit navn som ikkje kolliderer med ein global slot
+  (t.d. `arbeidsforholdliste`). Endrar serialiseringsformatet.
+- Gi containerattributtet eksplisitt `slot_uri` lik den globale sloten sin.
+  Bryt regelen om at containerattributt ikkje har `slot_uri`
+  (`.claude/rules/linkml-schema.md` § Containerklasse).
 
 ## Løysing
 
-Uklart om dette er ein upstream-bug i `linkml-runtime` eller ein skjema-modelleringsfeil
-(manglar `slot_uri` på nokre slots). Krev nærare analyse.
+Upstream-fiks i `rdflib_loader`: slå opp predikat via `induced_slot` per
+subjektklasse, same som dumparen. Truleg same fiks som BUG-2 (U1). Må
+meldast i [linkml/linkml](https://github.com/linkml/linkml/issues) — sjå U2.
 
-Neste steg:
-1. Samanlikn `fint-ressurs` (passerer) og `fint-administrasjon` (feiler) — finn
-   kva slots som manglar `slot_uri` i det feilerande skjemaet
-2. Test om å leggje til manglande `slot_uri` løyser roundtrip-feilen
-3. Oppdater status til `workaround` eller `upstream` etter analyse
+Når upstream-fix er på plass: verifiser `make roundtrip` for skjemaa over og
+oppdater denne fila til `Status: løyst`.

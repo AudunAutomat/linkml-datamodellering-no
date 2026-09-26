@@ -73,3 +73,15 @@ Ingen upstream-fiks venta — same designval i LinkML som BUG-6 (navnekollisjon
 i importgrafen = hard feil for SchemaLoader-baserte generatorar, uavhengig av
 innhald). Workaround (unngå duplikate navn) er permanent løysing for dette
 repoet.
+
+## Verifisering 2026-09-26
+
+Reprodusert på `linkml` 1.11.1 med minimal reproduksjon (identisk slot
+`theme` i to søsken-importar). **Fiksa på `linkml/linkml` `main`** i
+`679eba10` (2026-06-10, *merge structurally identical classes*), ikkje
+utgjeven per 2026-09-26 (siste release 1.11.1). Ikkje meld upstream.
+
+Fiksen gjeld berre **strukturelt identiske** definisjonar. Variant 2 over
+(`begrep` med ulik range i to skjema) vil framleis krasje. Ved neste
+`linkml`-release: verifiser, og avgrens workaround-regelen til
+ikkje-identiske duplikat.

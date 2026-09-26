@@ -1,87 +1,86 @@
-# Bug: `rdflib_loader` feiler på `inlined_as_list` med `identifier: true`
+# Bug: `rdflib_loader` vel feil slot når fleire slots deler same `slot_uri`
 
 **ID:** BUG-2
 **Status:** `upstream`
-**Komponent:** `linkml-runtime`
-**Oppdaga:** 2026-06-09
+**Komponent:** `linkml-runtime` (`linkml_runtime/loaders/rdflib_loader.py`, `uri_to_slot`)
+**Oppdaga:** 2026-06-09 (rotårsak retta 2026-09-26)
+
+> **Merk om filnavnet:** Fila heitte opphavleg «inlined_as_list + identifier»
+> fordi rotårsaka først vart feilaktig tilskriven den kombinasjonen. Filnavnet
+> er behalde for å ikkje bryte eksisterande lenkjer. Sjå
+> `specs/backlog/upstream-linkml-bugrapportar.md` (U1).
 
 ## Symptom
 
-`TypeError` ved TTL→YAML for containerklasser der range-klassen har
-`identifier: true` og container-attributten er `inlined_as_list: true`:
+TTL→YAML i `rdflib_loader` krasjar med `TypeError` fordi ein slot som ikkje
+finst på klassa vert sendt til konstruktøren:
 
 ```
 TypeError: OffisiellAdresse.__init__() got an unexpected keyword argument 'har_adressekode'
+TypeError: Begrep.__init__() got an unexpected keyword argument 'har_anbefalt_term'
+TypeError: Modellkatalog.__init__() got an unexpected keyword argument 'tittel_literal'
 ```
-
-Feilen oppstår fordi `rdflib_loader` prøver å instansiere `OffisiellAdresse`
-med feil sett av argument-navn.
-
-I tillegg har `linkml-convert` ein relatert bug der `{id: curie}`-dicts med berre
-`id`-feltet (stub-objekt) vert feilaktig prosessert: `JsonObj` vert sendt som
-id-verdi i staden for ein streng. Dette berører `test_convert_rdf`.
-
-Begge feila er spegla i `linkml-runtime/linkml_runtime/utils/yamlutils.py` i
-`_normalize_inlined` / `_normalize_inlined_as_list`.
 
 ## Berørte skjema / testar
 
-| Skjema | Skip i |
-|---|---|
-| `ngr-adresse` | `test_roundtrip_ttl`, `test_convert_rdf` |
-| `ngr-eiendom` | `test_roundtrip_ttl`, `test_convert_rdf` |
-| `ngr-virksomhet` | `test_roundtrip_ttl`, `test_convert_rdf` |
+| Skjema | Slots som deler `slot_uri` | Skip i |
+|---|---|---|
+| `ngr-adresse` | `adressekode_ref` / `har_adressekode` → `ngr:harAdressekode` | `test_roundtrip_ttl` |
+| `ngr-eiendom`, `ngr-virksomhet` | same mønster | `test_roundtrip_ttl` |
+| `brreg-begrepskatalog` | `anbefalt_term` / `har_anbefalt_term` → `skos:prefLabel` | `test_roundtrip_ttl` |
+| `brreg-modellkatalog`, `digdir-modellkatalog`, `novari-modellkatalog`, `ksdigital-modellkatalog`, `skatteetaten-modellkatalog`, `kartverket-modellkatalog` | `tittel` / `tittel_literal` → `dct:title` | `test_roundtrip_ttl` |
 
-## Rot-årsak
+Dei sju katalogskjemaa var tidlegare tilskrivne BUG-1 (LangString). Den
+faktiske krasjen er denne bugen; LangString-problemet (BUG-1) finst i
+tillegg, men krasjar ikkje.
 
-NGR-containerklassane (`AdresseContainer`, `EiendomContainer` osv.) brukar
-`inlined_as_list: true` i kombinsjon med range-klasser som har `identifier: true`:
+`ngr-*` er òg skippa i `test_convert_rdf` (YAML→TTL) med grunngjeving BUG-2.
+Det steget fungerer no for alle tre NGR-skjema (verifisert 2026-09-26 med
+`linkml-convert`), så den skippen er truleg forelda og kan fjernast.
 
-```yaml
-AdresseContainer:
-  tree_root: true
-  attributes:
-    offisielle_adresser:
-      range: OffisiellAdresse   # OffisiellAdresse har identifier: true
-      multivalued: true
-      inlined: true
-      inlined_as_list: true
+## Rot-årsak (stadfesta med minimal reproduksjon)
+
+`rdflib_loader.py` (linje 99 på `main @ 5ef7622e`):
+
+```python
+uri_to_slot = {URIRef(schemaview.get_uri(s, expand=True)): s for s in schemaview.all_slots().values()}
 ```
 
-`rdflib_loader` handterer ikkje dette kombinasjonstilfellet korrekt — den prøver
-å konstruere range-objektet med feil argument-mapping når objektet er
-identifisert med `identifier: true`.
+Oppslagstabellen er nøkla berre på URI, så den **siste** sloten med ein gitt
+`slot_uri` vinn globalt. Deretter kallar lastaren
+`schemaview.induced_slot(uri_to_slot[p].name, subject_class)` utan å sjekke at
+sloten høyrer til subjektklassa. Er det feil slot, får konstruktøren eit ukjent
+keyword-argument.
+
+Minimal reproduksjon: to globale slots `title` og `title_literal`, begge
+`slot_uri: dct:title`; `Catalog` brukar `title`, `Dataset` brukar
+`title_literal` → `Catalog.__init__() got an unexpected keyword argument
+'title_literal'`. Full rapport (skjema, data, kommando, framlegg til fiks) i
+`specs/backlog/upstream-linkml-bugrapportar.md` § U1.
+
+Kombinasjonen `inlined_as_list` + `identifier: true` er **ikkje** årsaka.
+
+Reprodusert på `linkml` 1.11.1 og `linkml/linkml` `main @ 5ef7622e`
+(2026-09-25). Ingen eksisterande upstream-issue funnen (2026-09-26).
 
 ## Workaround
 
-Skip i `test_roundtrip_ttl` og `test_convert_rdf` med kommentar som peikar til
-denne fila:
+Skip i `roundtrip_ttl_job()`/`test_roundtrip_ttl()` i `tests/test_make.sh`
+for skjemaa over.
 
-```bash
-# linkml-runtime-bug: id-only inlined_as_list-objekt
-# Sjå specs/bugs/inlined-as-list-rdflib-roundtrip.md
-if [[ "$name" == "ngr-adresse" || "$name" == "ngr-eiendom" || \
-      "$name" == "ngr-virksomhet" ]]; then
-    echo "Hoppar over roundtrip-ttl for $name (BUG-2: linkml-runtime inlined_as_list-bug)"
-    return 0
-fi
-```
+Mogleg intern workaround (ikkje gjennomført): unngå at to slots i same
+importgraf deler `slot_uri`. Det krev modelleringsval (t.d. slå saman
+`tittel`/`tittel_literal`), og er ikkje alltid ønskjeleg når ein
+vokabularterm vert brukt med ulik range i ulike klasser.
 
 ## Løysing
 
-To alternativ:
+Upstream-fiks i `rdflib_loader`: slå opp predikatet blant slotane til
+subjektklassa (`class_induced_slots`) i staden for i ein global URI-tabell.
+Må meldast i [linkml/linkml](https://github.com/linkml/linkml/issues)
+(`linkml-runtime`-repoet er arkivert) — sjå U1.
 
-**Alternativ A — endre container-design (intern fix, ingen upstream-avhengnad):**
-Fjern `inlined: true` og `inlined_as_list: true` frå container-attributtane.
-Container vil då innehalde URI-referansar i staden for inline-objekt.
-Dette er ein semantisk endring i serialiseringsformatet — sjå
-`specs/backlog/fix-roundtrip-ngr-inlined-as-list.md` for detaljert analyse.
-
-**Alternativ B — vent på upstream-fix:**
-Upstream fix i `linkml-runtime` der `rdflib_loader` korrekt handterer
-`inlined_as_list`-objekt med `identifier: true`.
-
-Når anten A eller B er på plass:
-1. Fjern skip-betingelsane frå `test_make.sh`.
-2. Verifiser at `make test` passerer for alle tre NGR-skjema.
-3. Oppdater denne fila til `Status: løyst` (eller `workaround` for Alternativ A).
+Når upstream-fix er på plass:
+1. Fjern skip-betingelsane frå `tests/test_make.sh`.
+2. Verifiser at `make roundtrip` passerer for alle skjemaa over.
+3. Oppdater denne fila til `Status: løyst`.

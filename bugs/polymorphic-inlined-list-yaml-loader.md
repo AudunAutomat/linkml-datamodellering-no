@@ -1,7 +1,7 @@
 # Bug: YAML/SchemaLoader-basert lasting støttar ikkje polymorf `inlined_as_list`
 
 **ID:** BUG-8
-**Status:** `open`
+**Status:** `workaround`
 **Komponent:** `linkml-runtime` (`yamlutils.py::_normalize_inlined`)
 **Oppdaga:** 2026-06-21 (proof-of-concept, MD5 steg 1, `specs/backlog/eksponer-modellelement-maskinhosting.md`)
 
@@ -85,3 +85,22 @@ må revurderes før Steg 2 held fram — sjå «Opne spørsmål» i den specen.
 Ingen upstream-fiks venta (same designval-kategori som BUG-6/BUG-7). Permanent
 løysing for dette repoet er å designe containerstrukturar med konkret range
 per subklasse, aldri delte polymorfe lister.
+
+## Verifisering 2026-09-26
+
+**Ikkje ein upstream-bug.** LinkML krev ein type-designator for polymorfi.
+Utan designator instansierer lastaren alltid den deklarerte range-klassa, og
+det er dokumentert åtferd. Verifisert med minimal reproduksjon
+(`linkml` 1.11.1 og `main @ 5ef7622e`):
+
+| Oppsett | `linkml validate` | YAML→TTL→YAML |
+|---|---|---|
+| Ingen designator | OK | Krasj (`unexpected keyword argument`) — denne bugen |
+| Designator som **attributt** (`designates_type: true`) | OK | Krasj — `gen-python` emitterer `self.unknown_<slot>` (kjend: [#2107](https://github.com/linkml/linkml/issues/2107), [#2399](https://github.com/linkml/linkml/issues/2399), [#3663](https://github.com/linkml/linkml/issues/3663)) |
+| Global slot, `designates_type: true`, `range: string` | OK | Krasj i `rdflib_loader` (`KeyError: '<Klasse>'`), nært [#2506](https://github.com/linkml/linkml/issues/2506) |
+| Global slot, `designates_type: true`, `range: uriorcurie` (verdi t.d. `ex:Attributt`) | OK | **Fungerer** |
+
+Den gjeldande workarounden (eige containerattributt per konkret subklasse,
+jf. `.claude/rules/linkml-schema.md`) står ved lag. Ønskjer ein éi delt
+polymorf liste (t.d. for MD5), er alternativet ein **global** slot med
+`designates_type: true` og `range: uriorcurie`. Sjå `specs/backlog/upstream-linkml-bugrapportar.md`.

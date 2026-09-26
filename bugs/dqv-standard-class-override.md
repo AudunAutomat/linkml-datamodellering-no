@@ -88,3 +88,18 @@ Ingen upstream-fiks venta — dette er eit avgjort designval i LinkML (klasse-
 redeklarering = full erstatning, ikkje union), kombinert med ein reell
 inkonsistens mellom generatorane i korleis dette handteres (krasj vs. stille
 erstatning). Workaround (unngå mønsteret) er permanent løysing for dette repoet.
+
+## Verifisering 2026-09-26
+
+Reprodusert med minimal reproduksjon på `linkml` 1.11.1 og `linkml/linkml`
+`main @ 5ef7622e`: `gen-python`/`gen-rdf`/`gen-jsonld-context` kastar
+`Conflicting URIs`, medan `gen-json-schema` stilt gir `Standard` berre det
+nye slottet. Upstream-commit `679eba10` (2026-06-10, ikkje utgjeven) slår
+saman **strukturelt identiske** klasser, men dekkjer ikkje ei redeklarering
+som legg til slots.
+
+Union-semantikk vart avvist upstream i
+[linkml/linkml#417](https://github.com/linkml/linkml/issues/417). Den
+**inkonsistente** handteringa mellom generatorane (krasj vs. stille tap av
+identifikator-slot) er ikkje meldt og bør meldast — sjå `specs/backlog/upstream-linkml-bugrapportar.md` § U6.
+Workaround-regelen (ikkje redeklarer importerte klasser) står ved lag.

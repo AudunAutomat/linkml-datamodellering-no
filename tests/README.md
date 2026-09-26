@@ -45,30 +45,30 @@ make test SCHEMA=<sti>              # full suite (~3 min)
 | Skjema | JSON | TTL | Merknad |
 |---|---|---|---|
 | **Nasjonale grunndata** | | | |
-| `ngr-adresse` | ✓ | skip ([BUG-2]) | inlined_as_list+identifier |
+| `ngr-adresse` | ✓ | skip ([BUG-2]) | delt `slot_uri` (`ngr:harAdressekode`) |
 | `ngr-eiendom` | ✓ | skip ([BUG-2]) | same |
 | `ngr-person` | ✓ | ✓ | |
 | `ngr-virksomhet` | ✓ | skip ([BUG-2]) | same |
 | **FINT** | | | |
-| `fint-administrasjon` | ✓ | FEIL | MappingError: No pred for fint-uri ([BUG-3]) |
+| `fint-administrasjon` | ✓ | FEIL | MappingError: attributt skuggar global slot ([BUG-3]) |
 | `fint-arkiv` | ✓ | ✓ | |
 | `fint-okonomi` | ✓ | FEIL | same ([BUG-3]) |
 | `fint-personvern` | ✓ | FEIL | same ([BUG-3]) |
 | `fint-ressurs` | ✓ | ✓ | |
 | `fint-utdanning` | ✓ | FEIL | same ([BUG-3]) |
 | **SAMT** | | | |
-| `samt-bu` | ✓ | FEIL | MappingError: No pred for samt-uri ([BUG-3]) |
+| `samt-bu` | ✓ | FEIL | MappingError: attributt `id` skuggar global slot ([BUG-3]) |
 | **Offentlege register** | | | |
-| `enhetsregisteret-bvrinnfelles` | ✓ | ✓ | |
+| `enhetsregisteret-bvrinnfelles` | ✓ | skip ([BUG-19]) | `DateTime` med `base: str` mistar `T` |
 | `register-over-aksjeeiere` | ✓ | ✓ | |
 | **Begrepskatalog** | | | |
-| `brreg-begrepskatalog` | ✓ | skip ([BUG-1]) | LangString forsvinn i TTL |
-| `brreg-modellkatalog` | ✓ | skip ([BUG-1]) | same |
+| `brreg-begrepskatalog` | ✓ | skip ([BUG-2]) | delt `slot_uri` (`skos:prefLabel`) |
+| `brreg-modellkatalog` | ✓ | skip ([BUG-2]) | delt `slot_uri` (`dct:title`) |
 | **AP-NO (alle)** | skip | skip | manglar `tree_root` |
 | **FAIR** | skip | skip | manglar `tree_root` |
 
-[BUG-1]: ../bugs/langstring-rdflib-roundtrip.md
 [BUG-2]: ../bugs/inlined-as-list-rdflib-roundtrip.md
 [BUG-3]: ../bugs/mappingerror-rdflib-roundtrip.md
+[BUG-19]: ../bugs/datetime-separator-rdflib-roundtrip.md
 
 **Tabellen skal haldast oppdatert** når skip-lista eller testresultata i `test_make.sh` endrar seg.

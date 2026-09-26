@@ -1,16 +1,15 @@
-# Bug: `rdflib_loader` rekonstruerer `datetime`-verdiar med mellomrom i staden for `T`-separator frå TTL
+# Bug: `rdflib_loader` mistar leksikalsk form for `xsd:dateTime` på eigendefinert type med `base: str`
 
 **ID:** BUG-19
-**Status:** `open`
-**Komponent:** `linkml-runtime` (`rdflib_loader`, sannsynleg `datetime.__str__()` brukt i staden for `.isoformat()` ved deserialisering av `xsd:dateTime`)
-**Oppdaga:** 2026-08-14
+**Status:** `upstream`
+**Komponent:** `linkml-runtime` (`linkml_runtime/loaders/rdflib_loader.py`, `v = o.value`)
+**Oppdaga:** 2026-08-14 (rotårsak stadfesta 2026-09-26)
 
 ## Symptom
 
-`roundtrip-ttl (enhetsregisteret-bvrinnfelles)` feilar (skjemaet heitte
-`enhetsregisteret-bvrinn` då dette buget vart oppdaga — sjå
-`specs/done/enhetsregisteret-bvrinn-bvrinnfelles-duplikat.md` for
-omdøypinga):
+`roundtrip-ttl` feilar for `enhetsregisteret-bvrinnfelles` og
+`enhetsregisteret-bvrfriv` (førstnemnde heitte `enhetsregisteret-bvrinn` då
+feilen vart oppdaga, sjå `specs/done/enhetsregisteret-bvrinn-bvrinnfelles-duplikat.md`):
 
 ```
 ROUNDTRIP-AVVIK (yaml→ttl→yaml→json):
@@ -18,52 +17,54 @@ Forventa: {..., 'innsendingstidspunkt': '2026-07-04T10:30:00', ...}
 Fekk:     {..., 'innsendingstidspunkt': '2026-07-04 10:30:00', ...}
 ```
 
-`T`-separatoren (ISO 8601) i den opphavlege `datetime`-verdien vert bytt ut
-med eit mellomrom etter yaml→ttl→yaml-roundtrip.
-
-## Rot-årsak
-
-Isolert ved å køyre dei fire konverteringsstega manuelt (utanom
-`test_make.sh`, med mellomresultat bevart for inspeksjon):
-
-| Steg | Fil | Verdi |
-|---|---|---|
-| 1. `eksempel.yaml → a.json` | `a.json` | `"2026-07-04T10:30:00"` |
-| 2. `eksempel.yaml → b.ttl` | `b.ttl` | `"2026-07-04T10:30:00"^^xsd:dateTime` (korrekt ISO 8601 i TTL-en) |
-| 3. `b.ttl → c.yaml` | `c.yaml` | `'2026-07-04 10:30:00'` (**mellomrom** — feilen oppstår her) |
-| 4. `c.yaml → d.json` | `d.json` | `"2026-07-04 10:30:00"` (arvar feilen frå steg 3) |
-
-TTL-en sjølv er korrekt typa og formatert. Feilen oppstår i steg 3:
-`rdflib_loader` parsar `xsd:dateTime`-literalen til eit Python
-`datetime.datetime`-objekt, og YAML-dumparen serialiserer deretter dette
-objektet med Python sin standard `str(datetime_obj)`-representasjon
-(mellomrom-separert, `2026-07-04 10:30:00`) i staden for
-`.isoformat()` (T-separert, `2026-07-04T10:30:00`) — ein vanleg
-formatteringsinkonsistens ved rundt-tur gjennom eit `datetime`-objekt.
-
-Same familie som BUG-1 (`LangString` vert ikkje rekonstruert korrekt frå
-TTL): `rdflib_loader` bevarer ikkje alltid den opphavlege
-strengrepresentasjonen av ein typa literal ved deserialisering.
+TTL-en er korrekt (`"2026-07-04T10:30:00"^^xsd:dateTime`). Feilen oppstår i
+TTL→YAML.
 
 ## Berørte skjema
 
-Stadfesta: `enhetsregisteret-bvrfriv` (2026-09-26, same felt
-`innsendingstidspunkt`: `'2024-01-01T00:00:00'` → `'2024-01-01 00:00:00'`,
-isolert ved å ta vare på `a.json`/`d.json` frå `make roundtrip` — sjå
-`specs/done/ci-etter-origin-flytting-audunautomat.md` 9.6/9.9; skip lagt til i
-`tests/test_make.sh` same stad som for `bvrinnfelles`).
+Skjema der ein slot har range `DateTime` frå `brreg-felles-typer`:
 
-Stadfesta: `enhetsregisteret-bvrinnfelles` (einaste skjema der roundtrip-ttl
-når fram til denne samanlikninga med eit populert `datetime`-felt — andre
-skjema med `range: datetime`-slots, som `fint-administrasjon`/`fint-okonomi`/
-`fint-personvern`/`fint-utdanning`, krasjar tidlegare i pipelinen med
-BUG-3 sin `MappingError`, så det er ukjent om dei **òg** ville trigga denne
-feilen dersom BUG-3 vart løyst først).
+```yaml
+DateTime:
+  uri: xsd:dateTime
+  base: str
+```
+
+Stadfesta: `enhetsregisteret-bvrinnfelles`, `enhetsregisteret-bvrfriv` (skip i
+`tests/test_make.sh`).
+
+Innebygd `linkml:types`-`datetime` er **ikkje** råka — verifisert med
+minimal reproduksjon, der ein `range: datetime`-verdi roundtrippar uendra.
+Tidlegare antaking om at `fint-*` (`range: datetime`) potensielt var råka,
+er difor truleg feil.
+
+## Rot-årsak (stadfesta med minimal reproduksjon)
+
+`rdflib_loader.py` (linje 148 på `main @ 5ef7622e`) brukar `v = o.value`.
+For ein `xsd:dateTime`-literal gir rdflib eit `datetime.datetime`-objekt.
+Sidan typen har `base: str`, vert verdien seinare gjort om med `str()`, som
+gir mellomrom i staden for `T`. Den opphavlege leksikalske forma (`str(o)`)
+går tapt.
+
+Minimal reproduksjon (eigendefinert type `uri: xsd:dateTime`, `base: str`)
+i `specs/backlog/upstream-linkml-bugrapportar.md` § U3. Reprodusert på
+`linkml` 1.11.1 og `main @ 5ef7622e`. Ingen eksisterande upstream-issue
+funnen (2026-09-26).
+
+## Workaround
+
+Skip-betingelse i `roundtrip_ttl_job()`/`test_roundtrip_ttl()` i
+`tests/test_make.sh`.
+
+Mogleg intern workaround (ikkje verifisert): definer `DateTime` med
+`typeof: datetime` i staden for `base: str`, slik at den innebygde
+datetime-handteringa vert brukt. Krev kontroll av genererte artefakter
+(Python, JSON Schema, XSD) for alle skjema som importerer `brreg-felles-typer`.
 
 ## Løysing
 
-Ingen upstream-fiks venta — dette er del av same kategori
-`rdflib_loader`-avgrensingar som BUG-1/BUG-2/BUG-3, ingen av dei har fått
-ein permanent fiks (`open`/`upstream`-status). Skip-betingelse i
-`tests/test_make.sh` sin `roundtrip_ttl_job()` er den pragmatiske
-handteringa, same mønster som BUG-1/BUG-2.
+Upstream-fiks: bruk leksikalsk form (`str(o)`) når måltypen har `base: str`.
+Må meldast i [linkml/linkml](https://github.com/linkml/linkml/issues) — sjå U3.
+
+Når fiksen (upstream eller intern) er på plass: fjern skip-betingelsen og
+oppdater denne fila til `Status: løyst`.

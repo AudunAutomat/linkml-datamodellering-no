@@ -1,76 +1,58 @@
-# Bug: `rdflib_loader` rekonstruerer ikkje `LangString` frå TTL
+# Bug: `LangString`-verdiar vert skrivne som ugyldig RDF og forsvinn stilt ved TTL→YAML
 
 **ID:** BUG-1
 **Status:** `upstream`
-**Komponent:** `linkml-runtime`
-**Oppdaga:** 2026-06-09
+**Komponent:** `linkml-runtime` (`rdflib_dumper` / `rdflib_loader`)
+**Oppdaga:** 2026-06-09 (rotårsak retta 2026-09-26)
 
 ## Symptom
 
-`LangString`-verdiar (`rdf:langString`) forsvinn etter TTL→YAML i `rdflib_loader`.
-Dersom sloten hadde `required: true` kastar Python-klassen:
+Typen `LangString` (`common-ap-no`: `uri: rdf:langString`, `base: str`) vert
+skriven til TTL som ein literal med datatype `rdf:langString` **utan**
+språktagg:
 
+```turtle
+dct:title "My catalog"^^rdf:langString .
 ```
-ValueError: anbefalt_term must be supplied
-ValueError: tittel must be supplied
-```
 
-Dersom `required: true` er fjerna, kjem data tilbake som eit objekt der alle
-LangString-felt er `None` — det vil seie at den returnerte YAML-fila manglar
-alle titlar, navn og andre språkmerkte strengar.
+Dette er ugyldig RDF 1.1 (ein `rdf:langString`-literal krev språktagg). Når
+TTL-en vert lesen tilbake, **forsvinn verdien stilt** — ingen feil, ingen
+åtvaring. Er sloten `required: true`, kastar Python-klassen
+`ValueError: <slot> must be supplied`.
 
-## Berørte skjema / testar
+> **Retting 2026-09-26:** Krasjane (`unexpected keyword argument
+> 'tittel_literal'` / `'har_anbefalt_term'`) som tidlegare vart tilskrivne
+> denne bugen, skuldast delt `slot_uri` — sjå BUG-2
+> (`bugs/inlined-as-list-rdflib-roundtrip.md`). Skip-betingelsane for
+> `brreg-begrepskatalog` og dei seks modellkatalogskjemaa er flytta dit.
 
-| Skjema | Skip i |
-|---|---|
-| `brreg-begrepskatalog` | `test_roundtrip_ttl` |
-| `brreg-modellkatalog` | `test_roundtrip_ttl` |
-| `digdir-modellkatalog` | `test_roundtrip_ttl` |
-| `novari-modellkatalog` | `test_roundtrip_ttl` |
-| `ksdigital-modellkatalog` | `test_roundtrip_ttl` |
-| `skatteetaten-modellkatalog` | `test_roundtrip_ttl` |
-| `kartverket-modellkatalog` | `test_roundtrip_ttl` |
+## Berørte skjema
 
-Dei 5 siste er per-org-modellkatalogar oppretta av `make new-org-catalog`
-(MD2, sjå `specs/backlog/avvik-veileder-modelldcat-ap-no.md`) — same
-skjemastruktur som `brreg-modellkatalog` (importerer `modelldcat-ap-no-schema`,
-som igjen dreg inn `Katalog` frå `dcat-ap-no-schema` med samme `class_uri:
-dcat:Catalog` som `Modellkatalog`). Symptomet i desse 5 er litt ulikt
-formulert (`Inconsistent URI to class map: ... -> Katalog, Modellkatalog`,
-deretter `Modellkatalog.__init__() got an unexpected keyword argument
-'tittel_literal'`), men rotårsaka er samme `rdflib_loader`-svakheit ved
-TTL→YAML-deserialisering av `LangString`-felt (`tittel`, `beskrivelse`) på
-ein klasse som deler RDF-type med ein annan klasse i importgrafen.
+Alle skjema med `LangString`-slots (via `common-ap-no`, `skos-ap-no`,
+`dcat-ap-no`, `modelldcat-ap-no` m.fl.) som roundtrippar TTL. Ingen
+test-skip refererer i dag til BUG-1: skjemaa som ville vist LangString-tapet,
+krasjar først på BUG-2.
 
-Alle skjema som importerer `common-ap-no` eller `skos-ap-no` og brukar
-`LangString`-slots i data vil truleg ha same problem dersom dei roundtrippar TTL.
-AP-NO-skjemaa (`ap-no`-domenet) er ikkje råka i praksis fordi dei manglar
-`tree_root` og vert hoppet over av `test_roundtrip_ttl` av ein annan grunn.
+LangString-verdiar i YAML ber heller ikkje språktagg per verdi — LinkML har
+ingen mekanisme for dette ([linkml/linkml#3548](https://github.com/linkml/linkml/issues/3548)).
 
-## Rot-årsak
+## Rot-årsak (stadfesta med minimal reproduksjon)
 
-`rdflib_loader` i `linkml-runtime` les RDF-literalar (`rdf:langString`) frå
-ein `rdflib.Graph`, men konverterer dei ikkje korrekt til LinkML sin
-`LangString`-type ved deserialisering. Resultatet er at alle
-`rdf:langString`-tripplar vert ignorerte, og `LangString`-slotane i Python-objektet
-forblir tomme.
+- `rdflib_dumper.py` lagar `Literal(value, datatype=<type-uri>)` for alle
+  typar, også `rdf:langString`, utan språktagg.
+- `rdflib_loader.py` (linje 148 på `main @ 5ef7622e`) brukar `v = o.value`,
+  som er `None` for den ugyldige literalen. `None`-verdiar vert filtrerte bort.
 
-Dette er ein kjend bug i `linkml-runtime`. Ingen GitHub-issue er identifisert pr.
-2026-06-09.
+Minimal reproduksjon (éin klasse, éin `LangString`-slot) i
+`specs/backlog/upstream-linkml-bugrapportar.md` § U5. Reprodusert på
+`linkml` 1.11.1 og `main @ 5ef7622e`.
 
 ## Workaround
 
-To endringar vart gjort som saman demper konsekvensane:
-
-**1. Fjerna `required: true` frå alle LangString-slots** i `skos-ap-no` og
-`modelldcat-ap-no` (og deira avhengige domain-skjema).
-
-Bakgrunn: `required: true` i LinkML er ein Python-implementasjonsmekanisme som
-kastar `ValueError` ved instansiering utan feltet. Dette kolliderer med
-`rdflib_loader`-buggen som returnerer `None` for LangString. `in_subset: Obligatorisk`
-bevarer den semantiske annoteringen som MCP-validatoren brukar til å handheve kravet.
-
-Berørte slots og klasser etter endringa:
+**Fjerna `required: true` frå alle LangString-slots** i `skos-ap-no` og
+`modelldcat-ap-no` (og deira avhengige domeneskjema). `in_subset: Obligatorisk`
+bevarer den semantiske annoteringa som MCP-validatoren brukar til å
+handheve kravet.
 
 | Skjema | Klasse | Slot |
 |---|---|---|
@@ -83,31 +65,15 @@ Berørte slots og klasser etter endringa:
 | `modelldcat-ap-no` | `Informasjonsmodell` | `tittel` |
 | `modelldcat-ap-no` | `Modellelement` | `tittel` |
 
-**2. Skip i `test_roundtrip_ttl`** for `brreg-begrepskatalog`, `brreg-modellkatalog`
-og dei 5 per-org-modellkatalogane (digdir, novari, ksdigital, skatteetaten,
-kartverket) med kommentar som peikar til denne fila:
-
-```bash
-# linkml-runtime-bug: rdflib_loader rekonstruerer ikkje LangString-verdiar frå TTL
-# Sjå specs/bugs/langstring-rdflib-roundtrip.md
-if [[ "$name" == "brreg-begrepskatalog" || "$name" == "brreg-modellkatalog" || \
-      "$name" == "digdir-modellkatalog" || "$name" == "novari-modellkatalog" || \
-      "$name" == "ksdigital-modellkatalog" || "$name" == "skatteetaten-modellkatalog" || \
-      "$name" == "kartverket-modellkatalog" ]]; then
-    echo "Hoppar over roundtrip-ttl for $name (BUG-1: linkml-runtime LangString-bug)"
-    return 0
-fi
-```
-
 ## Løysing
 
-Upstream fix i `linkml-runtime` der `rdflib_loader` korrekt deserialiserer
-`rdf:langString`-literalar til `LangString`-objektet.
+Upstream: lastaren skal ikkje droppe verdiar stilt, og dumparen skal ikkje
+skrive `^^rdf:langString` utan språktagg. Må meldast i
+[linkml/linkml](https://github.com/linkml/linkml/issues) (U5), med
+referanse til #3548.
 
 Når upstream-fix er på plass:
-1. Verifiser at `make test` passerer for `brreg-begrepskatalog` og `brreg-modellkatalog`
-   utan skip.
-2. Fjern skip-betingelsen frå `test_make.sh`.
-3. Vurder å leggje `required: true` tilbake på dei kritiske LangString-slots der det
-   er semantisk korrekt (sjå tabellen over).
-4. Oppdater denne fila til `Status: løyst`.
+1. Verifiser at LangString-verdiar overlever `make roundtrip` for eit
+   skjema utan BUG-2-mønsteret.
+2. Vurder å leggje `required: true` tilbake på slotane i tabellen over.
+3. Oppdater denne fila til `Status: løyst`.

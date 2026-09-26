@@ -83,10 +83,23 @@ utanfor scope (sjå `specs/done/fiks-ap-no-import-feil-new-modell.md`).
 
 ## Løysing
 
-Ingen upstream-fiks venta. `JSONLDGenerator.end_schema()` sin
+Upstream-fiks bør etterspørjast (sjå
+`specs/backlog/upstream-linkml-bugrapportar.md` § U8). `JSONLDGenerator.end_schema()` sin
 `.context.jsonld`-konstruksjon er eit medvite designval i LinkML (føreset
 at genererte artefakt vert publisert saman med kjeldekoden), ikkje ein bug
 i tradisjonell forstand — usannsynleg at upstream endrar standardåtferda.
 Dersom repoet i framtida vel å committe/publisere `.context.jsonld` for
 AP-NO-profilane på ein URL og med eit navn som matchar det LinkML
 konstruerer, kan skip-logikken fjernast for dei aktuelle skjemaa.
+
+## Verifisering 2026-09-26
+
+Reprodusert i vanilla `linkml` 1.11.1 og `linkml/linkml` `main @ 5ef7622e`
+med minimal reproduksjon: HTTP-loggen viser `GET /schemas/leaf.yaml` (OK)
+og deretter `GET /schemas/leaf.context.jsonld` (404).
+
+Upstream [linkml/linkml#3641](https://github.com/linkml/linkml/pull/3641)
+(`b07ae874`) filtrerer no bort uløysbare `@context`-referansar for **lokale**
+importar (på 1.11.1 feila `gen-rdf` òg for lokale importar i den minimale
+reproduksjonen; på `main` passerer det). URL-importar vert framleis henta
+over nettverk, så skip-logikken i `batch-generate.py` trengst framleis.

@@ -115,8 +115,18 @@ Må difor kontrollerast på nytt (og potensielt oppdaterast) ved kvar
 
 ## Løysing
 
-Ingen upstream-fiks venta enno. Feilen bør meldast til
-[linkml/linkml-runtime](https://github.com/linkml/linkml-runtime) (`SchemaView.imports_closure`
-brukar filsystem-semantikk på URL-baserte skjemanavn i staden for
-`urllib.parse.urljoin`) — når/dersom upstream fiksar dette kan
-`linkml_relative_import_patch.py` fjernast og kallestadene ryddast opp.
+**Fiksa upstream** i [linkml/linkml#3855](https://github.com/linkml/linkml/pull/3855)
+(`9cf563ce`, 2026-09-24, *keep track of which schema requested each import*),
+ikkje utgjeven per 2026-09-26. Ikkje meld. Ved neste `linkml`-release > 1.11.1:
+verifiser og fjern `imports_closure`-greina i `linkml_relative_import_patch.py`.
+Behald `namespaces.cache_clear()` (BUG-24) til den er fiksa separat.
+
+## Verifisering 2026-09-26
+
+Reprodusert i vanilla `linkml` 1.11.1 med minimal reproduksjon (lokal
+HTTP-server; URL-importert skjema med relativ import) →
+`Unknown CURIE prefix: http`. Same reproduksjon **passerer** på
+`linkml/linkml` `main @ 5ef7622e`.
+
+Merk: `linkml/linkml-runtime` er arkivert; runtime ligg no i monorepoet
+`linkml/linkml` (`packages/linkml_runtime`).

@@ -32,9 +32,12 @@ Docstringen til `namespaces()` nemner at resultatet «will differ, depending
 on whether any functions that process imports have been run», men cachen
 vert aldri invalidert når importane er lasta.
 
-Ikkje URL-spesifikk: eitkvart skjema som brukar eit prefiks som berre er
-deklarert i eit importert skjema, vert råka. Lokale AP-NO-skjema slepp fordi
-dei deklarerer prefiksa sjølve.
+`load_import()` kallar berre `namespaces()` når importnavnet inneheld `:`
+etter importmap-oppslag — altså for URL-importar og CURIE-importar med anna
+prefiks enn `linkml:` (`linkml:types` vert omsett til ein lokal sti via
+importmap). Skjema med berre lokale relative importar og `linkml:types` vert
+difor **ikkje** råka (verifisert 2026-09-26). Råka er skjema med URL-/CURIE-
+import der eit prefiks berre er deklarert i eit importert skjema.
 
 Reproduksjon (i `localhost/linkml-local`, linkml/linkml-runtime 1.11.1):
 
@@ -65,9 +68,19 @@ direkte og har ikkje patchen.
 
 ## Løysing
 
-Bør meldast til [linkml/linkml-runtime](https://github.com/linkml/linkml-runtime):
+Allereie meldt upstream:
+[linkml/linkml#3896](https://github.com/linkml/linkml/issues/3896) og
+[linkml/linkml#3933](https://github.com/linkml/linkml/issues/3933) (begge opne
+per 2026-09-26). Ikkje meld på nytt. Framlegget der samsvarar med vårt:
 `namespaces()`-cachen bør invaliderast når `schema_map` endrar seg (eller
 `load_import()` bør ikkje bruke den cacha metoden). Når upstream er fiksa,
 kan `cache_clear()`-linja fjernast frå patchen.
 
 Sjå `specs/done/schemaview-namespaces-cache-importerte-prefiks.md`.
+
+## Verifisering 2026-09-26
+
+Reprodusert i vanilla `linkml` 1.11.1 og `linkml/linkml` `main @ 5ef7622e`
+med minimal reproduksjon (lokal HTTP-server, URL-import av eit skjema som
+deklarerer `dqv`): `expand_curie('dqv:value')` gir `dqv:value` fram til
+`SchemaView.namespaces.cache_clear()`.

@@ -1,5 +1,11 @@
 # Fix: NGR inlined_as_list TTL-roundtrip-bug
 
+> **Forelda premiss (2026-09-26):** Rotårsaka under er feil. Krasjen skuldast at
+> `adressekode_ref` og `har_adressekode` deler `slot_uri: ngr:harAdressekode`, ikkje
+> `inlined_as_list` + `identifier: true`. Sjå `bugs/inlined-as-list-rdflib-roundtrip.md`
+> (BUG-2) og `specs/backlog/upstream-linkml-bugrapportar.md` (U1). Specen bør
+> vurderast på nytt eller lukkast.
+
 ## Bakgrunn
 
 `test_roundtrip_ttl` hoppar over `ngr-adresse`, `ngr-eiendom` og

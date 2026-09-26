@@ -109,8 +109,8 @@ convert_rdf_job() {
     if [ -f "$build_yaml" ] && grep -q "^  example_rdf: false" "$build_yaml"; then
         return 1
     fi
-    # BUG-2: rdflib_loader feiler på inlined_as_list + identifier: true
-    # Sjå bugs/inlined-as-list-rdflib-roundtrip.md
+    # BUG-2: historisk skip — YAML→TTL fungerer for NGR per 2026-09-26, så
+    # denne skippen er truleg forelda. Sjå bugs/inlined-as-list-rdflib-roundtrip.md
     case "$name" in
         ngr-adresse|ngr-eiendom|ngr-virksomhet) return 1 ;;
     esac
@@ -128,12 +128,14 @@ roundtrip_json_job() {
 roundtrip_ttl_job() {
     local schema="$1" domain="$2" name="$3" example="$4"
     lacks_tree_root "$domain" && return 1
-    # BUG-2: rdflib_loader feiler på inlined_as_list + identifier: true
+    # BUG-2: rdflib_loader vel feil slot når fleire slots deler same slot_uri
+    # Sjå bugs/inlined-as-list-rdflib-roundtrip.md
     case "$name" in
         ngr-adresse|ngr-eiendom|ngr-virksomhet) return 1 ;;
     esac
-    # BUG-1: rdflib_loader rekonstruerer ikkje LangString-verdiar frå TTL
-    # Sjå bugs/langstring-rdflib-roundtrip.md
+    # BUG-2 (same rotårsak): tittel/tittel_literal (dct:title) og
+    # anbefalt_term/har_anbefalt_term (skos:prefLabel) deler slot_uri
+    # Sjå bugs/inlined-as-list-rdflib-roundtrip.md
     case "$name" in
         brreg-begrepskatalog|brreg-modellkatalog|digdir-modellkatalog| \
         novari-modellkatalog|ksdigital-modellkatalog|skatteetaten-modellkatalog| \
@@ -1314,12 +1316,12 @@ test_roundtrip_ttl() {
         if lacks_tree_root "$domain"; then
             echo "Hoppar over roundtrip-ttl for $domain (ingen tree_root)"
         elif [[ "$name" == "ngr-adresse" || "$name" == "ngr-eiendom" || "$name" == "ngr-virksomhet" ]]; then
-            echo "Hoppar over roundtrip-ttl for $name (BUG-2: linkml-runtime inlined_as_list-bug)"
+            echo "Hoppar over roundtrip-ttl for $name (BUG-2: linkml-runtime delt slot_uri-bug)"
         elif [[ "$name" == "brreg-begrepskatalog" || "$name" == "brreg-modellkatalog" || \
                 "$name" == "digdir-modellkatalog" || "$name" == "novari-modellkatalog" || \
                 "$name" == "ksdigital-modellkatalog" || "$name" == "skatteetaten-modellkatalog" || \
                 "$name" == "kartverket-modellkatalog" ]]; then
-            echo "Hoppar over roundtrip-ttl for $name (BUG-1: linkml-runtime LangString-bug)"
+            echo "Hoppar over roundtrip-ttl for $name (BUG-2: linkml-runtime delt slot_uri-bug)"
         elif [[ "$name" == "enhetsregisteret-bvrinnfelles" || "$name" == "enhetsregisteret-bvrfriv" ]]; then
             echo "Hoppar over roundtrip-ttl for $name (BUG-19: linkml-runtime datetime-separator-bug)"
         else
@@ -1364,7 +1366,7 @@ test_convert_rdf() {
         elif [ -f "$build_yaml" ] && grep -q "^  example_rdf: false" "$build_yaml"; then
             echo "Hoppar over convert-instance-rdf for $name (example_rdf: false)"
         elif [[ "$name" == "ngr-adresse" || "$name" == "ngr-eiendom" || "$name" == "ngr-virksomhet" ]]; then
-            echo "Hoppar over convert-instance-rdf for $name (BUG-2: linkml-runtime inlined_as_list-bug)"
+            echo "Hoppar over convert-instance-rdf for $name (BUG-2: historisk skip, truleg forelda)"
         else
             echo "Ingen eksempelfil: $example (hoppar over)"
         fi
