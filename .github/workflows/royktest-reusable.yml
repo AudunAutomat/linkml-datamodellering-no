@@ -4,7 +4,7 @@ name: Røyktest - reusable workflows
 # resolve-linkml-version-actionen og reusable-validate.yml med ulike
 # versjonar. BUG-22 var uoppdaga i 12+ veker fordi ingenting køyrde dei
 # public reusable workflowane frå dette repoet — sjå
-# specs/backlog/reusable-workflow-versjon.md (O3).
+# specs/done/reusable-workflow-versjon.md (O3).
 #
 # Avgrensing: reusable-lint.yml og reusable-generate.yml kan ikkje
 # røyktestast herifrå — dei stoppar medvite når kallande repo har

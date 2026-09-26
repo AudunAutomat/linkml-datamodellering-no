@@ -1,9 +1,10 @@
 # Bug: reusable workflows sjekkar ut `ref: latest`, som ikkje finst
 
 **ID:** BUG-22
-**Status:** `open`
+**Status:** `løyst`
 **Komponent:** `.github/workflows/reusable-generate.yml`, `reusable-lint.yml`, `reusable-validate.yml`
 **Oppdaga:** 2026-09-26
+**Løyst:** 2026-09-26
 
 ## Symptom
 
@@ -61,3 +62,16 @@ Skil mellom image-tag og git-ref i config-steget, t.d. ein ekstra output
 brukt som image-tag. Må gjerast likt i alle tre filene (CI-DRY-terskel 2+,
 jf. `.claude/rules/ci-workflows.md`), og `ekstern-bruk.md` må oppdaterast
 til å skildre kva `latest` faktisk tyder.
+
+## Løysing (2026-09-26)
+
+Sjå `specs/done/reusable-workflow-versjon.md`. `latest` vert no løyst til
+nyaste repo-nivå-tag `vX.Y.Z` av den delte actionen
+`.github/actions/resolve-linkml-version` (referert `@main` frå dei tre reusable
+workflowane). Same konkrete tag vert brukt både som git-ref for checkout og som
+image-tag. Release `v1.2.0` inneheld fiksen.
+
+Verifisert med `.github/workflows/royktest-reusable.yml`, køyring
+`36245764491`: 7/7 grøne. `reusable-validate / latest` logga `latest → v1.2.0`
+og `"valid": true`. Actionen avviser skjema-taggar og `main` med tydeleg feil.
+

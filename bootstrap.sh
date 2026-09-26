@@ -9,7 +9,7 @@
 # For å feste til ein konkret release, send versjonen (vX.Y.Z) som argument eller
 # set AP_NO_VERSION. Dette er VERKTØYVERSJONEN (workflowar, skript, image) — ikkje
 # ein skjemaversjon: skjemaversjonen (t.d. dcat-ap-no-v2.14.3) vert låst i
-# imports:-URL-en i skjemaet ditt. Sjå specs/backlog/reusable-workflow-versjon.md.
+# imports:-URL-en i skjemaet ditt. Sjå specs/done/reusable-workflow-versjon.md.
 
 set -euo pipefail
 

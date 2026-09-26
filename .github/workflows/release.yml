@@ -123,7 +123,7 @@ jobs:
   # (.github/renovate.json, datasource github-releases) finn nye
   # ap-no-version-/uses:-versjonar hos eksterne kallarar. Berre ved tag-push —
   # workflow_dispatch på main har ingen vX.Y.Z-tag å releasa. Sjå N3 i
-  # specs/backlog/reusable-workflow-versjon.md.
+  # specs/done/reusable-workflow-versjon.md.
   github-release:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [linkml-local, mcp-linkml-validator, mcp-linkml-modell-utkast, mcp-linkml-begrep-utkast]

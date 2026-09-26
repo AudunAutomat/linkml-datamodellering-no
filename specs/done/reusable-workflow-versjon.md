@@ -147,10 +147,10 @@ CI-DRY-terskelen (2+).
 - [x] 5. `ekstern-bruk.md`: versjonsomgrep og døme retta. Renovate-malen dekkjer òg `uses:`
 - [x] 6. `release.yml`: jobb `github-release` for `v*.*.*` (+ actionlint)
 - [x] 6b. Røyktest-workflow `royktest-reusable.yml` (O3) (+ actionlint)
-- [ ] 7. **Etter push (brukaren):** ny tag `v1.2.0` på `main` → `release.yml` byggjer image og lagar GitHub Release automatisk. **Påkravd**, sjå «Rekkjefølgje etter push»
-- [ ] 7b. (valfritt, brukaren) GitHub Release for eldre `v1.1.0`
-- [ ] 8. Røyktest grøn → BUG-22 → `løyst`
-- [ ] 9. Verifiser (a)–(d) via røyktesten
+- [x] 7. **Etter push (brukaren):** ny tag `v1.2.0` på `main` → `release.yml` byggjer image og lagar GitHub Release automatisk. **Påkravd**, sjå «Rekkjefølgje etter push»
+- [-] 7b. (valfritt, brukaren) GitHub Release for eldre `v1.1.0`: **ikkje utført**, ikkje naudsynt sidan `v1.2.0` er nyaste release
+- [x] 8. Røyktest grøn → BUG-22 → `løyst`
+- [x] 9. Verifiser (a)–(d) via røyktesten
 
 ## Opne spørsmål
 
@@ -211,7 +211,9 @@ CI-DRY-terskelen (2+).
   rettleiing (skjema-taggar som `ap-no-version`) og ei auto-oppgradering
   (Renovate) som ikkje fungerer.
 
-## Status (2026-09-26, før push)
+## Utført
+
+### Før push (2026-09-26)
 
 **Utført lokalt:**
 - `.github/actions/resolve-linkml-version/action.yml` (ny): input → config →
@@ -238,3 +240,29 @@ CI-DRY-terskelen (2+).
 
 **Står att:** steg 7 (tag `v1.2.0`, brukaren), 7b (valfritt), 8 (BUG-22 →
 `løyst` etter grøn røyktest) og 9 (verifisering via røyktesten).
+
+### Etter push og release (2026-09-26)
+
+| Kontroll | Resultat |
+|---|---|
+| Push `10ae299a` → `royktest-reusable.yml` (`36245471889`, automatisk) | 7/7 grøne. `reusable-validate / latest`: `latest → v1.1.0`, `"valid": true` |
+| Tag `v1.2.0` (brukaren) → `release.yml` (`36245671873`) | 5/5 grøne: 4 image-jobbar + ny `github-release` |
+| GitHub Release `v1.2.0` | oppretta av `github-actions[bot]` 13:36:44, er repoets `releases/latest` (Renovate-kjelde, N3) |
+| GHCR (anonym `tags/list`) | `linkml-local`, `mcp-linkml-validator`, `mcp-linkml-modell-utkast`, `mcp-linkml-begrep-utkast`: alle `v1.1.0`, `v1.2.0`, `latest` |
+| Røyktest på nytt (`36245764491`, dispatch) | 7/7 grøne. `latest → v1.2.0` |
+
+Verifisering (a)–(d) frå steg 9 er dekt av røyktesten: (a) `latest` og
+(b) `v1.1.0` i både action- og `reusable-validate`-jobbar, (c) tom input utan
+config, (d) skjema-tag `dcat-ap-no-v2.13.0` og `main` avviste med forventa
+`failure`.
+
+BUG-22: status `løyst` i `bugs/reusable-workflow-latest-ref-manglar.md` (med
+`## Løysing`) og i `BUGS.md`. PoC-punktet under «Samhandling og CI/CD» er fjerna.
+
+**Ikkje utført:** 7b (GitHub Release for `v1.1.0`). Det er valfritt og ikkje
+naudsynt, sidan Renovate berre treng nyaste release.
+
+**Kjende avgrensingar som står att:** `reusable-lint.yml` og
+`reusable-generate.yml` er ikkje dekte av røyktesten (sjå Avgjerder). Dei deler
+den testa versjonsløysinga, men ein full ende-til-ende-test krev eit eige
+testrepo utan `src/assets/`/`Makefile`.

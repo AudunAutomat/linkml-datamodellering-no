@@ -33,7 +33,7 @@ jobs:
       # Løyser version-input / ap-no-version / latest til ein konkret vX.Y.Z
       # som vert brukt både som git-ref og image-tag (BUG-22). Referert med
       # full sti @main fordi `./` peikar på kallande repo når workflowen er
-      # kalla eksternt — sjå specs/backlog/reusable-workflow-versjon.md.
+      # kalla eksternt — sjå specs/done/reusable-workflow-versjon.md.
       - name: Løys versjon (input / linkml-datamodellering.yaml / latest)
         id: config
         uses: AudunAutomat/linkml-datamodellering-no/.github/actions/resolve-linkml-version@main

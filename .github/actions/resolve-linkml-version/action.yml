@@ -13,7 +13,7 @@ description: >-
   AudunAutomat/linkml-datamodellering-no/.github/actions/resolve-linkml-version@main
   (ein reusable workflow kan ikkje bruke `./` mot sitt eige repo når han er
   kalla frå eit eksternt repo). Endringar må vere bakoverkompatible.
-  Sjå specs/backlog/reusable-workflow-versjon.md.
+  Sjå specs/done/reusable-workflow-versjon.md.
 inputs:
   version:
     description: "Ønskt versjon: '' (les linkml-datamodellering.yaml), 'latest' eller 'vX.Y.Z'"
