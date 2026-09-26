@@ -1,6 +1,6 @@
 ---
 name: make-conventions
-description: Batching- og wrapper-target-mønster for make/*.mk-generatorar, src/assets/scripts/** og mkdocs/lib/scripts/**, pluss peikar til "ingen stille feil"-prinsippet. Lastast automatisk ved arbeid med filer under make/, src/assets/scripts/ eller mkdocs/lib/scripts/.
+description: Batching- og wrapper-target-mønster for make/*.mk-generatorar, src/assets/scripts/** og mkdocs/lib/scripts/**, orkestratorar som startar containerar (verten, ikkje PYTHON_RUN), pluss peikar til "ingen stille feil"-prinsippet. Lastast automatisk ved arbeid med filer under make/, src/assets/scripts/ eller mkdocs/lib/scripts/.
 paths:
   - "make/**"
   - "src/assets/scripts/**"
@@ -61,3 +61,39 @@ variantar, ikkje forveksle:
 
 Full referanse med alle target-namn og grunngjeving: `COMMANDS.md` §§
 "Logging", "Batching" og "Wrapper-target".
+
+## Orkestratorar som startar containerar skal ikkje køyre i `$(PYTHON_RUN)`
+
+`$(PYTHON_RUN)` (python-pytest-imaget) og `$(LINKML_RUN)` inneheld verken
+`podman` eller `bash`. Eit Python-skript som sjølv startar containerar, direkte
+(`podman run`) eller via eit shell-skript (`subprocess.run(["bash", …])` →
+`podman run`), feilar difor med `FileNotFoundError` når det køyrer inne i ein
+av dei. Feilen kjem berre fram ved faktisk køyring: syntaks- og importkontrollar
+går gjennom.
+
+**Aldri** flytt eit slikt orkestreringsskript inn i `$(PYTHON_RUN)`/`$(LINKML_RUN)`
+berre for å fjerne eit verts-`python3`-kall, heller ikkje som del av ei
+generell containerisering av Python-kall.
+
+Gjer i staden slik:
+
+1. Før du endrar kor eit Python-skript køyrer: grep skriptet (og shell-skripta
+   det kallar) etter `podman`, `docker`, `bash` og `subprocess`. Treff tyder på
+   at skriptet er ein orkestrator.
+2. Ein orkestrator køyrer **på verten** (`python3 …` direkte i
+   make-oppskrifta) og skal berre bruke **stdlib**, slik at han ikkje krev
+   pakkar i verts-Python. Mønster: `src/mcp-linkml-validator/batch-flatten-and-validate.py`
+   i `validate-data`/`validate-capture` (`make/40-validation.mk`).
+3. Arbeid som treng tredjepartspakkar (PyYAML, linkml), skal skiljast ut i eit
+   eige steg som køyrer i `$(PYTHON_RUN)`/`$(LINKML_RUN)` (t.d.
+   `save-validation-log.py` per resultat). Det skal ikkje liggje i orkestratoren.
+4. Verifiser alltid ei endring av køyremiljø med **ei faktisk køyring** av
+   targetet, ikkje berre `py_compile`/`--help`.
+
+**Grunngjeving:** `run-schema-validation.py` startar validator-containeren via
+`flatten-and-validate.bash`/`batch-flatten-and-validate.py`. Han vart flytta inn i
+`$(PYTHON_RUN)` i `a1833a2d` (2026-07-30), sjølv om kartlegginga i
+`specs/done/containerisering-python-kall.md` §12 åtvara om nett dette («krev
+teknisk verifikasjon»). Begge modusane av `make validate-capture` feila deretter i
+om lag 8 veker utan at nokon merka det. Sjå F3 i
+`specs/done/validate-capture-utan-schema.md`.

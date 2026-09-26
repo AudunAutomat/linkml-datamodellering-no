@@ -425,13 +425,13 @@ jobs:
           # batch-render-plantuml.sh, batch-gen-xsd.sh,
           # batch-asyncapi-validate.sh, batch-lint.py,
           # batch-linkml-validate.py, check-import-duplicates.py,
-          # detect-validation-policy.py, run-schema-validation.py,
-          # save-validation-log.py, run-validation.sh,
+          # detect-validation-policy.py, save-validation-log.py,
+          # run-validation.sh,
           # filter_container.awk), `scaffolding/resolve-catalog-slug.sh`
           # (einaste scaffolding-fila i kallgrafen, brukt av
           # make/30-instances.mk) og `utils/**` (importert transitivt av
           # fleire `makefile/*.py`-skript: linkml_relative_import_patch.py,
-          # schema_meta.py, release_helpers.py, validation_log.py,
+          # schema_meta.py, validation_log.py,
           # codeowners.py). `demo/`, `migreringsscript/`, resten av
           # `scaffolding/` og `container/` (kun brukt via COPY i
           # Dockerfile.asyncapi-cli-minimal, som får ny image-tag via

@@ -9,7 +9,6 @@
 #
 # Relaterte script:
 # - src/assets/scripts/makefile/detect-validation-policy.py
-# - src/assets/scripts/makefile/run-schema-validation.py
 # - src/assets/scripts/makefile/save-validation-log.py
 # - src/assets/scripts/makefile/run-validation.sh
 # ==============================================================================
@@ -195,10 +194,9 @@ _mcp-valider-modell-with-header:
 
 # Merk navnekonsistens/overlapp med validate-policy-logg/validate-instance-logg
 # under: begge skriv til same output-format (validation/<versjon>/<policy>.json),
-# men er ikkje duplikat i praksis. validate-capture (run-schema-validation.py)
-# er eit manuelt batch-verktøy avgrensa til release-please-config.json sine
-# "released packages" — ikkje brukt frå CI. validate-policy-logg/validate-
-# instance-logg (run-validation.sh) er derimot kalla direkte frå
+# men er ikkje duplikat i praksis. validate-capture er eit manuelt batch-verktøy
+# for alle skjema (eller DOMAIN/SCHEMA) — ikkje brukt frå CI. validate-policy-
+# logg/validate-instance-logg (run-validation.sh) er derimot kalla direkte frå
 # .github/workflows/{generate,validate}.yml for kvart einskild skjema/manifest
 # — CI-kritisk infrastruktur. Konsolidering vart difor vurdert (jf.
 # specs/backlog/make-kommando-inkonsistens-audit.md, navnekonsistens 4) og
@@ -207,14 +205,66 @@ _mcp-valider-modell-with-header:
 # (Navna sjølve vart omdøypte 2026-08-20, jf.
 # specs/done/make-target-navn-vs-funksjon.md, Funn 7 — funksjonen og
 # CI-kritikaliteten er uendra.)
-validate-capture: ## MCP-validering med logging til validation/ [SCHEMA=<sti>]
-	$(call print_header,validate-capture,$(if $(SCHEMA),SCHEMA=$(SCHEMA),(alle skjema$(COMMA) batcha)))
+#
+# Same mønster som validate-data: batch-flatten-and-validate.py køyrer på
+# verten (stdlib, startar sjølv podman) — IKKJE i $(PYTHON_RUN), som manglar
+# bash/podman — og kvart resultat vert lagra med save-validation-log.py i
+# container. Sjå specs/done/validate-capture-utan-schema.md (F3).
+# Capture-verktøy, ikkje port: ugyldige skjema vert logga og talde, men gir
+# ikkje exit ≠ 0. Infrastrukturfeil (manglande skjema/resultat, lagringsfeil) gjer.
+validate-capture: ## MCP-validering med logging til validation/ [DOMAIN=<domene>|SCHEMA=<sti>]
+	$(call print_header,validate-capture,$(if $(SCHEMA),SCHEMA=$(SCHEMA),$(if $(DOMAIN),DOMAIN=$(DOMAIN),(alle skjema$(COMMA) batcha))))
 	@podman image exists $(MCP_IMAGE) 2>/dev/null || $(MAKE) --no-print-directory build-docker-mcp-validator
-	@if [ -n "$(SCHEMA)" ]; then \
-	    $(PYTHON_RUN) python3 /work/src/assets/scripts/makefile/run-schema-validation.py --schema $(SCHEMA); \
-	else \
-	    $(PYTHON_RUN) python3 /work/src/assets/scripts/makefile/run-schema-validation.py; \
-	fi
+	@eval "$$LOG_FUNCTIONS"; \
+	set +e; \
+	TARGET_SCHEMAS="$(call get_target_schemas)"; \
+	if [ -z "$$TARGET_SCHEMAS" ]; then \
+		log_error "FEIL: ingen skjema funne (DOMAIN=$(DOMAIN) SCHEMA=$(SCHEMA))"; \
+		exit 1; \
+	fi; \
+	BATCH_DIR=$$(mktemp -d); \
+	trap 'rm -rf "$$BATCH_DIR"' EXIT; \
+	JOBS_TSV="$$BATCH_DIR/jobs.tsv"; \
+	: > "$$JOBS_TSV"; \
+	for schema in $$TARGET_SCHEMAS; do \
+		if [ ! -f "$$schema" ]; then \
+			log_error "FEIL: $$schema finst ikkje"; \
+			exit 1; \
+		fi; \
+		manifest="$$(dirname "$$schema")/build.yaml"; \
+		if [ -f "$$manifest" ]; then \
+			policy=$$(grep '^validation_policy:' "$$manifest" | awk '{print $$2}'); \
+		else \
+			policy=bronze; \
+		fi; \
+		[ -n "$$policy" ] || policy=bronze; \
+		printf '%s\t%s\t\n' "$$schema" "$$policy" >> "$$JOBS_TSV"; \
+	done; \
+	COUNT=$$(wc -l < "$$JOBS_TSV"); \
+	t0=$$(now_ms); \
+	run_logged "batch-flatten-and-validate/capture" python3 src/mcp-linkml-validator/batch-flatten-and-validate.py --jobs-tsv "$$JOBS_TSV" \
+		--output-dir "$$BATCH_DIR"; \
+	t1=$$(now_ms); \
+	log_info "$$(printf '$(CLR_STEP)→ validate-capture  %d skjema, batcha$(CLR_RST) (%s)' "$$COUNT" "$$(fmt_elapsed_ms $$(( t1 - t0 )))")"; \
+	i=0; INVALID=0; INFRA=0; \
+	while IFS=$$'\t' read -r schema policy _; do \
+		if [ -f "$$BATCH_DIR/$$i.json" ]; then \
+			result=$$(cat "$$BATCH_DIR/$$i.json"); \
+		else \
+			log_error "FEIL: manglar batch-resultat for $$schema"; \
+			INFRA=$$((INFRA + 1)); \
+			result='{"valid":false,"errorCount":1,"warningCount":0,"issues":[{"severity":"error","code":"missing_batch_result","target":"schema","message":"Batch-resultat manglar"}]}'; \
+		fi; \
+		if echo "$$result" | grep -Eq '"valid"[[:space:]]*:[[:space:]]*false'; then \
+			INVALID=$$((INVALID + 1)); \
+			log_info "⚠ Ugyldig ($$policy): $$schema"; \
+		fi; \
+		run_logged "save-validation-log/$$policy $$(basename "$$schema" -schema.yaml)" $(PYTHON_RUN) python3 /work/src/assets/scripts/makefile/save-validation-log.py \
+			--schema "$$schema" --type "$$policy" --result "$$result" < /dev/null || INFRA=$$((INFRA + 1)); \
+		i=$$((i + 1)); \
+	done < "$$JOBS_TSV"; \
+	log_info "validate-capture: $$COUNT skjema, $$((COUNT - INVALID)) gyldige, $$INVALID ugyldige"; \
+	exit $$INFRA
 
 # ---------------------------------------------------------------------------
 # Logging av valideringsresultat

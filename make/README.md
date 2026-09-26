@@ -39,7 +39,6 @@ Viktige script:
 | `generate-modellkatalog.py` | `gen-modellkatalog-instance` | Aggreger Informasjonsmodell-instansar til per-org modellkatalogar |
 | `gen-dqv-measurements.py` | `gen-dqv-measurements` | Generer DQV-kvalitetsmålingar for datafiler |
 | `collect-concepts.py` | `gen-begrepskatalog-instance` | Samle begrep frå begrepssamlingar til begrepskatalogar |
-| `run-schema-validation.py` | `validate-capture` | Køyr MCP-validering parallelt med logging |
 | `detect-validation-policy.py` | `mcp-linkml-valider-modell` | Auto-detekter policy frå build.yaml |
 | `gen-config.sh` | `gen-config` | Generer config.mk frå build.yaml-filer |
 | `check-prereqs.bash` | `check-prereqs` | Sjekk at nødvendige verktøy er installerte |
