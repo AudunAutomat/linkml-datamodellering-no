@@ -174,6 +174,13 @@ CI-DRY-terskelen (2+).
 
 ## Avgjerder
 
+- Rules (brukar stadfesta 2026-09-26): to lærdommar er lagde til i
+  `.claude/rules/ci-workflows.md` under «Reusable workflows og composite actions»:
+  «`./` i ein reusable workflow peikar på kallande repo» (frå O4) og «Public
+  reusable workflows skal vere dekte av røyktesten» (frå O3/BUG-22). Same fil
+  fordi scopet (`.github/workflows/**`, `.github/actions/**`) er identisk. I same
+  endring er «To kategoriar» retta: `reusable-lint.yml` er òg public API, men
+  mangla i lista.
 - **O4, composite action med `@main`-referanse:** Dei tre reusable workflowane
   kallar `AudunAutomat/linkml-datamodellering-no/.github/actions/resolve-linkml-version@main`.
   `./` peikar på kallande repo når workflowen er kalla eksternt, og versjonen må

@@ -1,6 +1,6 @@
 ---
 name: ci-workflows
-description: Actionlint-plikta (inkl. utdatert action-metadata), CI-YAML sin lægre DRY-terskel (2+), reusable workflow/composite action-avgrensingar, og GHCR-referansar med små bokstavar. Lastast automatisk ved arbeid med filer under .github/workflows/ eller .github/actions/.
+description: Actionlint-plikta (inkl. utdatert action-metadata), CI-YAML sin lægre DRY-terskel (2+), reusable workflow/composite action-avgrensingar (inkl. ./-stiar ved eksterne kall og røyktest-plikt for public reusable workflows), og GHCR-referansar med små bokstavar. Lastast automatisk ved arbeid med filer under .github/workflows/ eller .github/actions/.
 paths:
   - ".github/workflows/**"
   - ".github/actions/**"
@@ -118,16 +118,61 @@ Ein composite action kan gate sine EIGNE interne steg via input-verdiar
 **kallesteget** (`if: steps.cache-id.outputs.cache-hit != 'true'` på
 sjølve `uses: ./.github/actions/X`-linja), ikkje inni actionen.
 
+### `./` i ein reusable workflow peikar på kallande repo
+
+Når ein reusable workflow (`on.workflow_call`) vert kalla frå eit **eksternt**
+repo, er arbeidskatalogen og alle `uses: ./…`-stiar kallarens repo, ikkje
+dette. `uses: ./.github/actions/<x>` finn difor ikkje actionen vår hos
+eksterne kallarar. Han verkar berre når workflowen vert kalla frå dette repoet,
+så feilen syner seg ikkje i eigen CI.
+
+**Regel:** Ein composite action som ein **public** reusable workflow brukar,
+skal refererast med full sti og statisk ref:
+`uses: AudunAutomat/linkml-datamodellering-no/.github/actions/<x>@main`.
+Actionen er då sjølv public API og må vere **bakoverkompatibel**. Skriv det i
+`description` i `action.yml`. Ein lokal `uses: ./…` er berre tillaten i interne
+workflowar (t.d. `reusable-oppsett.yml`) og i røyktesten, som medvite testar den
+lokale kopien.
+
+**Grunngjeving:** Versjonsløysinga for BUG-22 (`resolve-linkml-version`) måtte
+delast mellom tre public reusable workflows. Ho kunne ikkje brukast via `./`
+eller via eit skript henta med sparse-checkout, fordi versjonen må vere
+kjend før vår kode vert sjekka ut. Sjå O4 i
+`specs/done/reusable-workflow-versjon.md`.
+
 ### To kategoriar reusable workflows — ikkje forveksle
 
-- `reusable-generate.yml`/`reusable-validate.yml` er **public API for
-  eksterne repo** (workflow_call med `schema:`-input for validering/
-  generering av eitt enkelt skjema) — ikkje interne DRY-verktøy. Endringar
-  her er ei API-endring for andre repo.
+- `reusable-generate.yml`/`reusable-lint.yml`/`reusable-validate.yml` er
+  **public API for eksterne repo** (workflow_call med `schema:`-input for
+  validering/lint/generering av eitt enkelt skjema) — ikkje interne
+  DRY-verktøy. Endringar her er ei API-endring for andre repo.
 - `reusable-oppsett.yml` er eit **internt DRY-verktøy** (deler
   `checkout-source`+`ensure-images`), kalla berre av
   `generate.yml`/`lenkje-og-mermaid-sjekk.yml`/`validate.yml` i dette same
   repoet.
+
+### Public reusable workflows skal vere dekte av røyktesten
+
+Dei public reusable workflowane vert ikkje køyrde av nokon annan CI i dette
+repoet. Ein feil i dei (eller i actions dei brukar) syner seg difor først hos
+eksterne kallarar.
+
+**Regel:** Ved endring i `reusable-{generate,lint,validate}.yml` eller i ein
+action dei brukar (t.d. `.github/actions/resolve-linkml-version/**`):
+
+1. Utvid `.github/workflows/royktest-reusable.yml` viss endringa innfører ny
+   åtferd som ikkje alt er dekt (ny input, ny versjonsvariant, ny feilveg).
+2. Etter push: kontroller at røyktesten køyrde (push-trigger på desse stiane)
+   og er grøn før arbeidet vert rekna som ferdig. Ta med køyrings-ID i specen.
+3. `reusable-lint.yml`/`reusable-generate.yml` kan ikkje køyrast frå dette
+   repoet (dei stoppar når kallaren har `src/assets/`/`Makefile`). For dei skal
+   det delte (actions, versjonsløysing) testast i røyktesten, og avgrensinga
+   skal nemnast i specen.
+
+**Grunngjeving:** BUG-22 (`ref: latest` finst ikkje) rakk alle eksterne
+standardoppsett og var uoppdaga i 12+ veker, fordi ingenting køyrde dei public
+reusable workflowane. Sjå `specs/done/reusable-workflow-versjon.md` og
+`bugs/reusable-workflow-latest-ref-manglar.md`.
 
 ## GHCR-referansar: aldri direkte frå `github.repository_owner`
 
