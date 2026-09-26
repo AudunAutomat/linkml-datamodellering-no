@@ -23,6 +23,7 @@ modellkataloger:
   - https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/modell
   - https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/skos-ap-no
   - https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/xkos-ap-no
+  - https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/digdir-modellkatalog
   modell: *id001
   spraak:
   - http://publications.europa.eu/resource/authority/language/NOB
@@ -38,14 +39,14 @@ informasjonsmodeller:
   - Felles slot-definisjonar for alle AP-NO-profilar
   utgiver: https://data.norge.no/organizations/991825827
   identifikator_literal: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/common-ap-no
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/ap-no/common-ap-no/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/common-ap-no/
   kontaktpunkt:
   - https://www.digdir.no/om-oss/kontakt-oss/887
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-06-10'
-  versjonsnummer: 1.0.0
+  endringsdato: '2026-08-17'
+  versjonsnummer: 1.1.0
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/common-ap-no/Lisensdokument
@@ -59,14 +60,14 @@ informasjonsmodeller:
   - Offentlege tenester og hendingar
   utgiver: https://data.norge.no/organizations/991825827
   identifikator_literal: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/cpsv-ap-no
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/ap-no/cpsv-ap-no/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/cpsv-ap-no/
   kontaktpunkt:
   - https://www.digdir.no/om-oss/kontakt-oss/887
   lisens: https://data.norge.no/nlod/no/2.0
-  status: http://purl.org/adms/status/Completed
+  status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-08-02'
-  versjonsnummer: 1.10.0
+  endringsdato: '2026-08-17'
+  versjonsnummer: 2.0.0
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/cpsv-ap-no/OffentligTjeneste
@@ -95,14 +96,14 @@ informasjonsmodeller:
   - Datakatalogar og datasett
   utgiver: https://data.norge.no/organizations/991825827
   identifikator_literal: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/dcat-ap-no
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/ap-no/dcat-ap-no/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/dcat-ap-no/
   kontaktpunkt:
   - https://www.digdir.no/om-oss/kontakt-oss/887
   lisens: https://data.norge.no/nlod/no/2.0
-  status: http://purl.org/adms/status/Completed
+  status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-08-02'
-  versjonsnummer: 2.13.0
+  endringsdato: '2026-08-14'
+  versjonsnummer: 2.14.2
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/dcat-ap-no/Aktoer
@@ -128,14 +129,14 @@ informasjonsmodeller:
   - Datakvalitet
   utgiver: https://data.norge.no/organizations/991825827
   identifikator_literal: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/dqv-ap-no
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/ap-no/dqv-ap-no/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/dqv-ap-no/
   kontaktpunkt:
   - https://www.digdir.no/om-oss/kontakt-oss/887
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-08-14'
-  versjonsnummer: 1.16.0
+  endringsdato: '2026-08-17'
+  versjonsnummer: 1.16.1
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement: []
 - id: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/dqv-core
@@ -148,7 +149,7 @@ informasjonsmodeller:
     via slot_usage.
   utgiver: https://data.norge.no/organizations/991825827
   identifikator_literal: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/dqv-core
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/ap-no/dqv-core/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/dqv-core/
   kontaktpunkt:
   - https://www.digdir.no/om-oss/kontakt-oss/887
   lisens: https://data.norge.no/nlod/no/2.0
@@ -173,14 +174,14 @@ informasjonsmodeller:
   - Informasjonsmodellar
   utgiver: https://data.norge.no/organizations/991825827
   identifikator_literal: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/modelldcat-ap-no
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/ap-no/modelldcat-ap-no/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/modelldcat-ap-no/
   kontaktpunkt:
   - https://www.digdir.no/om-oss/kontakt-oss/887
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-08-14'
-  versjonsnummer: 1.15.0
+  endringsdato: '2026-08-17'
+  versjonsnummer: 1.15.1
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement: []
 - id: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/katalog
@@ -193,7 +194,7 @@ informasjonsmodeller:
     import av dcat-ap-no-schema. Basert på https://data.norge.no/specification/modelldcat-ap-no#Egenskaper-katalogdel'
   utgiver: https://data.norge.no/organizations/991825827
   identifikator_literal: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/katalog
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/ap-no/modelldcat-katalog/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/modelldcat-katalog/
   kontaktpunkt:
   - https://www.digdir.no/om-oss/kontakt-oss/887
   lisens: https://data.norge.no/nlod/no/2.0
@@ -214,7 +215,7 @@ informasjonsmodeller:
     og alle subklasser, samt Kodeelement. Basert på https://data.norge.no/specification/modelldcat-ap-no#Modeldel'
   utgiver: https://data.norge.no/organizations/991825827
   identifikator_literal: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/modell
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/ap-no/modelldcat-modell/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/modelldcat-modell/
   kontaktpunkt:
   - https://www.digdir.no/om-oss/kontakt-oss/887
   lisens: https://data.norge.no/nlod/no/2.0
@@ -256,14 +257,14 @@ informasjonsmodeller:
   - Omgrepsamlingar
   utgiver: https://data.norge.no/organizations/991825827
   identifikator_literal: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/skos-ap-no
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/ap-no/skos-ap-no/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/skos-ap-no/
   kontaktpunkt:
   - https://www.digdir.no/om-oss/kontakt-oss/887
   lisens: https://data.norge.no/nlod/no/2.0
-  status: http://purl.org/adms/status/Completed
+  status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-08-02'
-  versjonsnummer: 2.16.0
+  endringsdato: '2026-08-17'
+  versjonsnummer: 2.17.1
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/skos-ap-no/Organisasjon
@@ -281,14 +282,14 @@ informasjonsmodeller:
   - Utvida klassifikasjon
   utgiver: https://data.norge.no/organizations/991825827
   identifikator_literal: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/xkos-ap-no
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/ap-no/xkos-ap-no/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/xkos-ap-no/
   kontaktpunkt:
   - https://www.digdir.no/om-oss/kontakt-oss/887
   lisens: https://data.norge.no/nlod/no/2.0
-  status: http://purl.org/adms/status/Completed
+  status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-06-10'
-  versjonsnummer: 1.0.0
+  endringsdato: '2026-08-17'
+  versjonsnummer: 1.1.0
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/xkos-ap-no/Klassifikasjon
@@ -296,6 +297,23 @@ informasjonsmodeller:
   - https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/xkos-ap-no/Kategori
   - https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/xkos-ap-no/Klassifikasjonssamanlikning
   - https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/xkos-ap-no/Kategorisamanlikning
+- id: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/digdir-modellkatalog
+  tittel:
+  - Digitaliseringsdirektoratet - Modellkatalog
+  beskrivelse:
+  - Modellkatalog for Digitaliseringsdirektoratet sine informasjonsmodellar. Implementerer
+    ModelDCAT-AP-NO direkte via import.
+  utgiver: https://data.norge.no/organizations/991825827
+  identifikator_literal: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/digdir-modellkatalog
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/modellkatalog/digdir-modellkatalog/
+  kontaktpunkt:
+  - https://www.digdir.no/om-oss/kontakt-oss/887
+  lisens: https://data.norge.no/nlod/no/2.0
+  status: http://purl.org/adms/status/UnderDevelopment
+  utgivelsesdato: '2026-08-17'
+  endringsdato: '2026-08-28'
+  versjonsnummer: 1.1.1
+  type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
 kvalitetsmaalingar:
 - id: https://data.norge.no/organizations/991825827/modellkatalogar/digdir-modellkatalog/dqv/fullstendighet
   er_kvalitetsmaaling_av: https://data.norge.no/vocabulary/quality-metric#qm-completeness-1004

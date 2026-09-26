@@ -11,10 +11,15 @@ modellkataloger:
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog
   utgiver: https://data.norge.no/organizations/974760673
   kontaktpunkt:
-  - https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   har_del: &id001
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-begrepskatalog
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/fair-metadata
+  - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-aktoer
+  - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-digital-adresse
+  - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-geografisk-adresse
+  - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-tid
+  - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-typer
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-modellkatalog
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/ngr-virksomhet
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/enhetsregisteret-bvrbekreftelse
@@ -26,6 +31,9 @@ modellkataloger:
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/javazonetalk
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/register-over-aksjeeiere
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/referansemodell
+  - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/referansemodell-bronze
+  - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/referansemodell-gold
+  - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/referansemodell-silver
   modell: *id001
   spraak:
   - http://publications.europa.eu/resource/authority/language/NOB
@@ -45,14 +53,14 @@ informasjonsmodeller:
     midlertidige URI-ar, klare for validering og eksport til Felles Begrepskatalog.
   utgiver: https://data.norge.no/organizations/974760673
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-begrepskatalog
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/begrepskatalog/brreg-begrepskatalog/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/begrepskatalog/brreg-begrepskatalog/
   kontaktpunkt:
-  - https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   lisens: https://data.norge.no/nlod/no/2.0
-  status: http://purl.org/adms/status/Completed
+  status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2026-07-09'
-  endringsdato: '2026-08-02'
-  versjonsnummer: 1.6.1
+  endringsdato: '2026-08-17'
+  versjonsnummer: 1.7.1
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
 - id: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/fair-metadata
   tittel:
@@ -61,14 +69,14 @@ informasjonsmodeller:
   - FAIR-metadataoverbygning (FAIR-prinsippa)
   utgiver: https://data.norge.no/organizations/974760673
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/fair-metadata
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/fair/fair-metadata/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/fair/fair-metadata/
   kontaktpunkt:
-  - https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   lisens: https://data.norge.no/nlod/no/2.0
-  status: http://purl.org/adms/status/Completed
+  status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2024-01-01'
-  endringsdato: '2026-08-02'
-  versjonsnummer: 1.6.0
+  endringsdato: '2026-08-17'
+  versjonsnummer: 1.7.1
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/fair-metadata/FAIRMetadata
@@ -76,6 +84,104 @@ informasjonsmodeller:
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/fair-metadata/Gjenbruksmetadata
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/fair-metadata/Proveniensmetadata
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/fair-metadata/Katalogregistrering
+- id: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-aktoer
+  tittel:
+  - BRREG felles aktør
+  beskrivelse:
+  - Gjenbrukbare aktørklassar (Aktør, Virksomhet, Person, Rolle m.fl.) utleia frå
+    Brønnøysundregistrene (BR) sin interne BRReferansemodell_v3 (MagicDraw/XMI), pakken
+    "Aktør", pluss dei aktør-relaterte komplekstypane frå Strukturtypekatalog_v1 (Personnavn,
+    Personidentifikator, Virksomhetsidentifikator) som aktørklassane er avhengige
+    av. Importerer brreg-felles-geografisk-adresse for GeografiskAdresse og brreg-felles-digital-adresse
+    for DigitalAdresse. Sjå specs/done/felles-typar-enhetsregisteret-fra-br-katalogar.md
+    for bakgrunn, metode og avklaringane denne modellen byggjer på.
+  utgiver: https://data.norge.no/organizations/974760673
+  identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-aktoer
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/felles/brreg-felles-aktoer/
+  lisens: https://data.norge.no/nlod/no/2.0
+  status: http://purl.org/adms/status/UnderDevelopment
+  utgivelsesdato: '2026-08-31'
+  endringsdato: '2026-08-31'
+  versjonsnummer: 0.1.0
+  type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
+- id: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-digital-adresse
+  tittel:
+  - BRREG felles digital adresse
+  beskrivelse:
+  - 'Gjenbrukbare digitale adresseklassar utleia frå Brønnøysundregistrene (BR) sin
+    interne BRReferansemodell_v3 (MagicDraw/XMI), pakken "Adresse" (DigitalAdresse-hierarkiet).
+    Sjå specs/done/felles-typar-enhetsregisteret-fra-br-katalogar.md for bakgrunn,
+    metode og avklaringane denne modellen byggjer på.
+
+    BR sin eigen `Nettadresse`-undertype "Aksesspunkt" er medvite utelaten her: feltet
+    `aksesspunktoperatoer` peikar til `Virksomhet` (definert i brreg-felles-aktoer,
+    som importerer denne modellen) og ville gjort importgrafen sirkulær. Sjå nemnde
+    spec § Funn 4.'
+  utgiver: https://data.norge.no/organizations/974760673
+  identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-digital-adresse
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/felles/brreg-felles-digital-adresse/
+  lisens: https://data.norge.no/nlod/no/2.0
+  status: http://purl.org/adms/status/UnderDevelopment
+  utgivelsesdato: '2026-09-01'
+  endringsdato: '2026-09-01'
+  versjonsnummer: 0.1.0
+  type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
+- id: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-geografisk-adresse
+  tittel:
+  - BRREG felles geografisk adresse
+  beskrivelse:
+  - Gjenbrukbare geografiske adresseklassar utleia frå Brønnøysundregistrene (BR)
+    sin interne BRReferansemodell_v3 (MagicDraw/XMI), pakken "Adresse" (GeografiskAdresse-hierarkiet),
+    pluss dei adresse-relaterte komplekstypane frå Strukturtypekatalog_v1 (Poststed,
+    Kommune, Fylke, Matrikkelnummer, Adressenummer) som adressehierarkiet er avhengig
+    av. Sjå specs/done/felles-typar-enhetsregisteret-fra-br-katalogar.md for bakgrunn,
+    metode og avklaringane denne modellen byggjer på.
+  utgiver: https://data.norge.no/organizations/974760673
+  identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-geografisk-adresse
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/felles/brreg-felles-geografisk-adresse/
+  lisens: https://data.norge.no/nlod/no/2.0
+  status: http://purl.org/adms/status/UnderDevelopment
+  utgivelsesdato: '2026-09-01'
+  endringsdato: '2026-09-01'
+  versjonsnummer: 0.1.0
+  type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
+- id: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-tid
+  tittel:
+  - BRREG felles tid
+  beskrivelse:
+  - Gjenbrukbare tidsperiode-klassar utleia frå Brønnøysundregistrene (BR) sin interne
+    Strukturtypekatalog_v1 (MagicDraw/XMI), pakken "Komplekstyper" (Tidsperiode, TidsperiodeDatoKlokkeslett).
+    Sjå specs/done/felles-typar-enhetsregisteret-fra-br-katalogar.md for bakgrunn,
+    metode og avklaringane denne modellen byggjer på.
+  utgiver: https://data.norge.no/organizations/974760673
+  identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-tid
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/felles/brreg-felles-tid/
+  lisens: https://data.norge.no/nlod/no/2.0
+  status: http://purl.org/adms/status/UnderDevelopment
+  utgivelsesdato: '2026-08-31'
+  endringsdato: '2026-08-31'
+  versjonsnummer: 0.1.0
+  type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
+- id: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-typer
+  tittel:
+  - BRREG felles typer
+  beskrivelse:
+  - Gjenbrukbare primitivtypar utleia frå Brønnøysundregistrene (BR) sin interne Løsningstypekatalog_v1
+    (MagicDraw/XMI). Skjemaet er den felles kjelda for typar som elles vart lokalt
+    (og inkonsistent) redefinert i kvart av dei sju enhetsregisteret-*-skjemaa, jf.
+    specs/done/felles-typar-enhetsregisteret-fra-br-katalogar.md. Berre denne kjeldekatalogen
+    ("Løsningsmodell"-laget hos BR) er brukt her — BRReferansemodell_v3 sitt eige,
+    arva typelag i Strukturtypekatalog_v1 er eit separat, ikkje-importert lag (sjå
+    nemnde spec, Funn 3).
+  utgiver: https://data.norge.no/organizations/974760673
+  identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-felles-typer
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/felles/brreg-felles-typer/
+  lisens: https://data.norge.no/nlod/no/2.0
+  status: http://purl.org/adms/status/UnderDevelopment
+  utgivelsesdato: '2026-08-31'
+  endringsdato: '2026-08-31'
+  versjonsnummer: 0.1.0
+  type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
 - id: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-modellkatalog
   tittel:
   - Brønnøysundregistra - Modellkatalog
@@ -84,32 +190,30 @@ informasjonsmodeller:
     ModelDCAT-AP-NO direkte via import.
   utgiver: https://data.norge.no/organizations/974760673
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/brreg-modellkatalog
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/modellkatalog/brreg-modellkatalog/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/modellkatalog/brreg-modellkatalog/
   kontaktpunkt:
-  - https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2026-07-09'
-  endringsdato: '2026-08-02'
-  versjonsnummer: 1.5.1
+  endringsdato: '2026-08-28'
+  versjonsnummer: 1.6.2
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
 - id: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/ngr-virksomhet
   tittel:
   - Nasjonale grunndata - Virksomhet
   beskrivelse:
-  - Domenemodell for verksemdsdata basert på Nasjonale grunndata (utkast). Modellerer
-    Virksomhet med Underenhet og Hovudeining, roller, adresser og klassifikasjonar
-    frå Enhetsregisteret. Basert på https://informasjonsforvaltning.github.io/nasjonale-grunndata/
+  - Verksemder, roller og organisasjonsstruktur
   utgiver: https://data.norge.no/organizations/974760673
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/ngr-virksomhet
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/ngr/ngr-virksomhet/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/ngr/ngr-virksomhet/
   kontaktpunkt:
-  - https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-07-10'
-  versjonsnummer: 1.4.0
+  endringsdato: '2026-08-28'
+  versjonsnummer: 1.8.1
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/ngr-virksomhet/Underenhet
@@ -136,9 +240,9 @@ informasjonsmodeller:
   - Generert modell for 'enhetsregisteret_bvrbekreftelse'.
   utgiver: https://data.norge.no/organizations/974760673
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/enhetsregisteret-bvrbekreftelse
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrbekreftelse/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrbekreftelse/
   kontaktpunkt:
-  - https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2026-08-23'
@@ -152,9 +256,9 @@ informasjonsmodeller:
   - Generert modell for 'enhetsregisteret_bvrettersendingavvedlegg'.
   utgiver: https://data.norge.no/organizations/974760673
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/enhetsregisteret-bvrettersendingavvedlegg
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrettersendingavvedlegg/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrettersendingavvedlegg/
   kontaktpunkt:
-  - https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2026-08-23'
@@ -168,9 +272,9 @@ informasjonsmodeller:
   - Generert modell for 'enhetsregisteret_bvrfriv'.
   utgiver: https://data.norge.no/organizations/974760673
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/enhetsregisteret-bvrfriv
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrfriv/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrfriv/
   kontaktpunkt:
-  - https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2026-08-23'
@@ -184,14 +288,14 @@ informasjonsmodeller:
   - Berettigede, verger, rettighetshavere i næring (BVRiNN)
   utgiver: https://data.norge.no/organizations/974760673
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/enhetsregisteret-bvrinnfelles
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrinnfelles/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrinnfelles/
   kontaktpunkt:
-  - https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2026-06-10'
-  endringsdato: '2026-08-31'
-  versjonsnummer: 1.1.2
+  endringsdato: '2026-09-01'
+  versjonsnummer: 1.3.0
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
 - id: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/enhetsregisteret-bvrstiftelsesdokument
   tittel:
@@ -200,9 +304,9 @@ informasjonsmodeller:
   - Generert modell for 'enhetsregisteret_bvrstiftelsesdokument'.
   utgiver: https://data.norge.no/organizations/974760673
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/enhetsregisteret-bvrstiftelsesdokument
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrstiftelsesdokument/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrstiftelsesdokument/
   kontaktpunkt:
-  - https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2026-08-23'
@@ -216,9 +320,9 @@ informasjonsmodeller:
   - Generert modell for 'enhetsregisteret_frivilligorganisasjonapi'.
   utgiver: https://data.norge.no/organizations/974760673
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/enhetsregisteret-frivilligorganisasjonapi
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-frivilligorganisasjonapi/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-frivilligorganisasjonapi/
   kontaktpunkt:
-  - https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2026-08-23'
@@ -232,13 +336,13 @@ informasjonsmodeller:
   - Generert modell for 'javazonetalk'.
   utgiver: https://data.norge.no/organizations/974760673
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/javazonetalk
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/oreg/javazonetalk/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/oreg/javazonetalk/
   kontaktpunkt:
-  - https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
-  utgivelsesdato: '2026-08-31'
-  endringsdato: '2026-08-31'
+  utgivelsesdato: '2026-09-04'
+  endringsdato: '2026-09-04'
   versjonsnummer: 0.1.0
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
@@ -256,14 +360,14 @@ informasjonsmodeller:
   - Aksjeeigarar og eigedelar
   utgiver: https://data.norge.no/organizations/974760673
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/register-over-aksjeeiere
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/oreg/register-over-aksjeeiere/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/oreg/register-over-aksjeeiere/
   kontaktpunkt:
-  - https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2024-01-01'
-  endringsdato: '2026-08-28'
-  versjonsnummer: 1.9.1
+  endringsdato: '2026-09-01'
+  versjonsnummer: 1.10.0
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/register-over-aksjeeiere/Aksjeselskap
@@ -291,15 +395,69 @@ informasjonsmodeller:
   - Enkel eksempelmodell for å demonstrere gyldig LinkML-struktur
   utgiver: https://data.norge.no/organizations/974760673
   identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/referansemodell
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/referanse/referansemodell/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/referanse/referansemodell/
+  kontaktpunkt:
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2026-07-09'
-  endringsdato: '2026-07-30'
-  versjonsnummer: 1.3.0
+  endringsdato: '2026-09-01'
+  versjonsnummer: 1.5.1
+  type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
+- id: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/referansemodell-bronze
+  tittel:
+  - Referansemodell - bronsjenivå
+  beskrivelse:
+  - 'Viser minstekrava for å bestå bronsepolicyen: HTTP(S)-id, schema-metadata (title,
+    version), class_uri, identifier-slot, slot_uri og begrepsidentifikator på riktig
+    format.'
+  utgiver: https://data.norge.no/organizations/974760673
+  identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/referansemodell-bronze
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/referanse/referansemodell-bronze/
+  kontaktpunkt:
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  lisens: https://data.norge.no/nlod/no/2.0
+  status: http://purl.org/adms/status/UnderDevelopment
+  utgivelsesdato: '2026-08-23'
+  endringsdato: '2026-09-01'
+  versjonsnummer: 1.2.1
+  type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
+- id: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/referansemodell-gold
+  tittel:
+  - Referansemodell - gullnivå
+  beskrivelse:
+  - 'Viser minstekrava for å bestå gullpolicyen: alle sølv-krav pluss FAIR-metadata
+    (title, version, prefiks, lisens, proveniens).'
+  utgiver: https://data.norge.no/organizations/974760673
+  identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/referansemodell-gold
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/referanse/referansemodell-gold/
+  kontaktpunkt:
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  lisens: https://data.norge.no/nlod/no/2.0
+  status: http://purl.org/adms/status/UnderDevelopment
+  utgivelsesdato: '2026-08-23'
+  endringsdato: '2026-09-04'
+  versjonsnummer: 2.1.2
+  type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
+- id: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/referansemodell-silver
+  tittel:
+  - Referansemodell - sølvnivå
+  beskrivelse:
+  - 'Viser minstekrava for å bestå sølvpolicyen: alle bronse-krav pluss DCAT-AP-NO
+    og DQV-AP-NO-klasser med påkravde slots og containerklasse.'
+  utgiver: https://data.norge.no/organizations/974760673
+  identifikator_literal: https://data.norge.no/organizations/974760673/modellkatalogar/brreg-modellkatalog/referansemodell-silver
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/referanse/referansemodell-silver/
+  kontaktpunkt:
+  - https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  lisens: https://data.norge.no/nlod/no/2.0
+  status: http://purl.org/adms/status/UnderDevelopment
+  utgivelsesdato: '2026-08-23'
+  endringsdato: '2026-09-04'
+  versjonsnummer: 2.1.2
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
 aktoerer:
-- id: https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+- id: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   navn_aktoer:
   - Registerenheten i Brønnøysund - Modellforvaltning
 - id: https://data.norge.no/organizations/974760673

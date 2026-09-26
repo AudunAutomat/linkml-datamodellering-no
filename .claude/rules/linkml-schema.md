@@ -1,6 +1,6 @@
 ---
 name: linkml-schema
-description: LinkML skjemakonvensjonar — slots vs attributes, lenking fremfor inlining, containerklasse-reglar, katalogstruktur, manifestformat, translitterering av norske bokstavar, slotnavn, standardprefix og silver-annotasjonar. Lastast automatisk ved arbeid med filer under src/linkml/.
+description: LinkML skjemakonvensjonar — slots vs attributes, lenking fremfor inlining, containerklasse-reglar, katalogstruktur, manifestformat, translitterering av norske bokstavar, slotnavn, standardprefix, silver-annotasjonar og regenerering av committa genererte filer. Lastast automatisk ved arbeid med filer under src/linkml/.
 paths:
   - "src/linkml/**"
 ---
@@ -333,3 +333,48 @@ ADMS Status-verdiar:
 CI genererer `Informasjonsmodell`-instansar for modellkatalogen frå desse annotasjonane.
 
 Sjå `src/mcp-linkml-validator/policies/README.md` for komplett feltliste og gyldige verdiar.
+
+## Committa genererte filer
+
+### Regenerering for ei avgrensa endring
+
+Fleire filer under `src/linkml/` er genererte, men committa, og vert ikkje
+regenererte automatisk i CI:
+- `metadata/<modell>-manifest.yaml` (`make gen-informasjonsmodell-instance`)
+- `src/linkml/modellkatalog/*/data/*/*-modellkatalog.yaml` (`make gen-modellkatalog-instance`)
+
+Dei kan difor ha drive langt frå kjeldene (skjema, manifest, `CODEOWNERS.md`).
+Når ein generator vert køyrd for å få gjennom *éi* avgrensa endring (t.d. ein
+ny URL), tek regenereringa med all oppsamla drift i tillegg, som ein del av same
+diff. Det kan vere versjonsnummer, status, beskrivelsar og heile nye
+katalogoppføringar. Utan ein eksplisitt kontroll vert det liggjande i diffen
+uoppdaga, eller det vert oppdaga først etter at arbeidet er rapportert som ferdig.
+
+**Aldri** rapporter ei slik regenerering som ferdig berre fordi generatoren
+og valideringa gjekk gjennom.
+
+Gjer i staden slik:
+
+1. Skriv ned det **forventa** omfanget før du køyrer generatoren (kva felt,
+   kva verdiar, kor mange filer).
+2. Etter køyringa: samanlikn diffen med forventa omfang. Normaliser bort den
+   forventa endringa (t.d. `sed` av gammal → ny URL) og list det som står att.
+   For katalogdata: samanlikn per oppføring (nye/fjerna `id`, felt som er
+   endra), ikkje berre linjediff.
+3. Står det att noko utover forventa omfang: **stopp og spør brukaren**
+   (behalde full regenerering eller berre gjere den avgrensa endringa)
+   *før* du validerer vidare eller rapporterer. Vis kategoriane konkret (t.d.
+   «13 nye modelloppføringar, status endra for 15»).
+4. Kontroller handvedlikehaldne felt som generatoren tek med uendra (t.d.
+   `aktoerer` i katalogdata). Dei kan bli inkonsistente med felt som
+   generatoren *har* oppdatert (t.d. `kontaktpunkt`), og validering fangar
+   ikkje alltid slike brotne referansar.
+
+**Grunngjeving:** Under flyttinga til `AudunAutomat` skjedde dette to gonger i
+same økt. I 9.6 i `specs/backlog/ci-etter-origin-flytting-audunautomat.md`
+retta regenereringa av 47 manifest utdaterte felt i 33 av dei. I
+`specs/done/informasjonsmodellidentifikator-ny-eigar.md` førte regenereringa
+av 6 modellkatalogar til 13 nye oppføringar (inkl. referansemodellar i ein
+`publish_external`-katalog), 15 statusendringar og ein `kontaktpunkt` som
+peika på ein aktør-id som ikkje fanst. Begge gonger måtte brukaren spørjast
+etter at generatoren alt hadde skrive filene.

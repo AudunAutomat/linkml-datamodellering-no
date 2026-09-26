@@ -20,6 +20,7 @@ modellkataloger:
   - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-personvern
   - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-ressurs
   - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-utdanning
+  - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/novari-modellkatalog
   modell: *id001
   spraak:
   - http://publications.europa.eu/resource/authority/language/NOB
@@ -35,14 +36,14 @@ informasjonsmodeller:
   - Lønn, arbeidsforhold, organisasjon
   utgiver: https://data.norge.no/organizations/985870714
   identifikator_literal: https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-administrasjon
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/fint/fint-administrasjon/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/fint/fint-administrasjon/
   kontaktpunkt:
   - https://novari.no/kontakt
   lisens: https://data.norge.no/nlod/no/2.0
-  status: http://purl.org/adms/status/Completed
+  status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-08-02'
-  versjonsnummer: 4.5.1
+  endringsdato: '2026-09-04'
+  versjonsnummer: 4.6.2
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-administrasjon/Kontostreng
@@ -84,14 +85,14 @@ informasjonsmodeller:
   - Sak, journal, dokument
   utgiver: https://data.norge.no/organizations/985870714
   identifikator_literal: https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-arkiv
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/fint/fint-arkiv/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/fint/fint-arkiv/
   kontaktpunkt:
   - https://novari.no/kontakt
   lisens: https://data.norge.no/nlod/no/2.0
-  status: http://purl.org/adms/status/Completed
+  status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-07-30'
-  versjonsnummer: 4.5.0
+  endringsdato: '2026-08-20'
+  versjonsnummer: 4.6.2
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-arkiv/AdministrativEnhet
@@ -140,14 +141,14 @@ informasjonsmodeller:
   - Felles klasser for FINT
   utgiver: https://data.norge.no/organizations/985870714
   identifikator_literal: https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-common
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/fint/fint-common/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/fint/fint-common/
   kontaktpunkt:
   - https://novari.no/kontakt
   lisens: https://data.norge.no/nlod/no/2.0
-  status: http://purl.org/adms/status/Completed
+  status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-08-02'
-  versjonsnummer: 4.4.0
+  endringsdato: '2026-08-20'
+  versjonsnummer: 4.5.2
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-common/Elev
@@ -173,14 +174,14 @@ informasjonsmodeller:
   - Økonomi og rekneskap
   utgiver: https://data.norge.no/organizations/985870714
   identifikator_literal: https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-okonomi
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/fint/fint-okonomi/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/fint/fint-okonomi/
   kontaktpunkt:
   - https://novari.no/kontakt
   lisens: https://data.norge.no/nlod/no/2.0
-  status: http://purl.org/adms/status/Completed
+  status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-07-30'
-  versjonsnummer: 4.5.0
+  endringsdato: '2026-08-17'
+  versjonsnummer: 4.6.1
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-okonomi/Faktura
@@ -204,14 +205,14 @@ informasjonsmodeller:
   - Personvernmeldingar
   utgiver: https://data.norge.no/organizations/985870714
   identifikator_literal: https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-personvern
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/fint/fint-personvern/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/fint/fint-personvern/
   kontaktpunkt:
   - https://novari.no/kontakt
   lisens: https://data.norge.no/nlod/no/2.0
-  status: http://purl.org/adms/status/Completed
+  status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-07-30'
-  versjonsnummer: 4.5.0
+  endringsdato: '2026-08-17'
+  versjonsnummer: 4.6.1
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-personvern/Behandling
@@ -226,14 +227,14 @@ informasjonsmodeller:
   - Ressursar
   utgiver: https://data.norge.no/organizations/985870714
   identifikator_literal: https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-ressurs
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/fint/fint-ressurs/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/fint/fint-ressurs/
   kontaktpunkt:
   - https://novari.no/kontakt
   lisens: https://data.norge.no/nlod/no/2.0
-  status: http://purl.org/adms/status/Completed
+  status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-07-30'
-  versjonsnummer: 4.5.0
+  endringsdato: '2026-08-17'
+  versjonsnummer: 4.6.1
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-ressurs/Applikasjon
@@ -259,14 +260,14 @@ informasjonsmodeller:
   - Utdanning og skule
   utgiver: https://data.norge.no/organizations/985870714
   identifikator_literal: https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-utdanning
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/fint/fint-utdanning/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/fint/fint-utdanning/
   kontaktpunkt:
   - https://novari.no/kontakt
   lisens: https://data.norge.no/nlod/no/2.0
-  status: http://purl.org/adms/status/Completed
+  status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-07-30'
-  versjonsnummer: 4.5.0
+  endringsdato: '2026-08-17'
+  versjonsnummer: 4.6.1
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-utdanning/Elevforhold
@@ -335,6 +336,23 @@ informasjonsmodeller:
   - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-utdanning/Tilrettelegging
   - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-utdanning/Varseltype
   - https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/fint-utdanning/Vitnemalsmerknad
+- id: https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/novari-modellkatalog
+  tittel:
+  - Novari IKS - Modellkatalog (FINT)
+  beskrivelse:
+  - Modellkatalog for Novari IKS sine informasjonsmodellar. Implementerer ModelDCAT-AP-NO
+    direkte via import.
+  utgiver: https://data.norge.no/organizations/985870714
+  identifikator_literal: https://data.norge.no/organizations/985870714/modellkatalogar/novari-modellkatalog/novari-modellkatalog
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/modellkatalog/novari-modellkatalog/
+  kontaktpunkt:
+  - https://novari.no/kontakt
+  lisens: https://data.norge.no/nlod/no/2.0
+  status: http://purl.org/adms/status/UnderDevelopment
+  utgivelsesdato: '2026-08-17'
+  endringsdato: '2026-08-28'
+  versjonsnummer: 1.1.1
+  type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
 aktoerer:
 - id: https://novari.no/kontakt
   navn_aktoer:

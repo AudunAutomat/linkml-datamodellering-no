@@ -1054,7 +1054,24 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
    `make roundtrip SCHEMA=src/linkml/oreg/enhetsregisteret-bvrfriv/…` feilar i
    `roundtrip-ttl`, uavhengig av import-eigar. Bør òg få eigen `bugs/`-fil (9.9).
 
-   #### 9.7 `informasjonsmodellidentifikator` (eigen spec)
+   #### 9.7 `informasjonsmodellidentifikator` (eigen spec) ✅
+
+   **Utført 2026-09-26:** Eigen spec er oppretta:
+   `specs/done/informasjonsmodellidentifikator-ny-eigar.md`. Hovudfunn:
+   - Feltet er ein literal (`modelldcatno:informationModelIdentifier`,
+     `range: string`) og ikkje ressurs-URI-en. `id` er org-basert og ikkje påverka.
+   - Alle 6 `published-uris.lock` står som «ikkje publisert enno». Det finst
+     ingen eksterne konsumentar.
+   - `make gen-modellkatalog-instance` hentar feltet frå `heimeside` i
+     manifesta. Etter 9.6 er det `audunautomat.github.io`, så neste køyring byter
+     alle 34 automatisk.
+   - Tilråding i den nye specen: alternativ A (byt via generatoren) før første
+     eksterne publisering.
+   - **Gjennomført same dag (alternativ A):** alle 34 identifikatorar peikar
+     no på `audunautomat.github.io`, og alle 6 katalogane validerer. Specen er
+     flytta til `specs/done/`.
+
+   Opphavleg skildring:
 
    34 identifikatorar i 6 filer under `src/linkml/modellkatalog/**/data/**`
    brukar `https://brreg.github.io/linkml-datamodellering-no/<domene>/<modell>/`.
@@ -1134,7 +1151,7 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
 - [ ] 9.4b Ved første ekte release-PR: kontroller skrivetilgang og auto-approve/validate/auto-merge-kjeda (kontrollpunkt i 9.4)
 - [x] 9.5 Køyr `release.yml` via ny tag `v1.1.0` på `main` (O5) — køyring 36234113027 grøn, `:v1.1.0`/`:latest` på alle 4 image, og set `mcp-linkml-*-utkast` til *Public* (2f-2)
 - [x] 9.6 Byt versjonslåste raw-URL-ar (tabell i 9.6), regenerer manifest (`make gen-informasjonsmodell-instance`) og portal (`make docs-publish`)
-- [ ] 9.7 Opprett eigen spec for `informasjonsmodellidentifikator`
+- [x] 9.7 Opprett eigen spec for `informasjonsmodellidentifikator` → `specs/done/informasjonsmodellidentifikator-ny-eigar.md`
 - [x] 9.8 Avgjer O3 (historiske GitHub Releases) og oppdater `ekstern-bruk.md` — alternativ a), note-boks lagt til
 - [x] 9.9 `bugs/`-filer: BUG-22 (`latest`-checkout), BUG-23 (tag-URL for ikkje-releasa skjema, 11 skjema); `bvrfriv` = BUG-19 (utvida + test-skip)
 - [ ] 8. (Etter F9) Opprett spec `specs/backlog/github-app-for-release-please.md` for migrering frå PAT til GitHub App
@@ -1157,6 +1174,11 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
 
 ## Avgjerder
 
+- Rule (brukar stadfesta 2026-09-26): mønsteret frå 9.6 og 9.7 (regenerering
+  for ei avgrensa endring drog med utdaterte endringar i committa genererte filer)
+  er lagt til som ny seksjon «Committa genererte filer» i
+  `.claude/rules/linkml-schema.md`, og ikkje som ny fil, fordi
+  scopet (`src/linkml/**`) dekkjer både manifest og katalogdata.
 - 9.9: `bvrfriv`-roundtripfeilen fekk ikkje eiga bug-fil, fordi avviket er
   identisk med BUG-19 (datetime-separator). BUG-19 er utvida og test-skip lagt
   til i tråd med CLAUDE.md-konvensjonen (skip ↔ `bugs/`-fil med BUG-ID).

@@ -13,6 +13,7 @@ modellkataloger:
   kontaktpunkt:
   - https://www.ks.no/fagomrader/digitalisering/
   har_del: &id001
+  - https://data.norge.no/organizations/971032146/modellkatalogar/ksdigital-modellkatalog/ksdigital-modellkatalog
   - https://data.norge.no/organizations/971032146/modellkatalogar/ksdigital-modellkatalog/samt-bu
   modell: *id001
   spraak:
@@ -22,6 +23,23 @@ modellkataloger:
   - https://data.norge.no/organizations/971032146/modellkatalogar/ksdigital-modellkatalog/dqv/aktualitet
   - https://data.norge.no/organizations/971032146/modellkatalogar/ksdigital-modellkatalog/dqv/fullstendighet
 informasjonsmodeller:
+- id: https://data.norge.no/organizations/971032146/modellkatalogar/ksdigital-modellkatalog/ksdigital-modellkatalog
+  tittel:
+  - KS Digital - Modellkatalog
+  beskrivelse:
+  - Modellkatalog for KS Digital sine informasjonsmodellar. Implementerer ModelDCAT-AP-NO
+    direkte via import.
+  utgiver: https://data.norge.no/organizations/971032146
+  identifikator_literal: https://data.norge.no/organizations/971032146/modellkatalogar/ksdigital-modellkatalog/ksdigital-modellkatalog
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/modellkatalog/ksdigital-modellkatalog/
+  kontaktpunkt:
+  - https://www.ks.no/fagomrader/digitalisering/
+  lisens: https://data.norge.no/nlod/no/2.0
+  status: http://purl.org/adms/status/UnderDevelopment
+  utgivelsesdato: '2026-08-17'
+  endringsdato: '2026-08-28'
+  versjonsnummer: 1.1.1
+  type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
 - id: https://data.norge.no/organizations/971032146/modellkatalogar/ksdigital-modellkatalog/samt-bu
   tittel:
   - SAMT - Barnehagar og skular
@@ -29,14 +47,14 @@ informasjonsmodeller:
   - Skular og barnehagar
   utgiver: https://data.norge.no/organizations/971032146
   identifikator_literal: https://data.norge.no/organizations/971032146/modellkatalogar/ksdigital-modellkatalog/samt-bu
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/samt/samt-bu/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/samt/samt-bu/
   kontaktpunkt:
   - https://www.ks.no/fagomrader/digitalisering/
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2026-06-10'
-  endringsdato: '2026-08-02'
-  versjonsnummer: 1.9.0
+  endringsdato: '2026-09-04'
+  versjonsnummer: 1.12.1
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/971032146/modellkatalogar/ksdigital-modellkatalog/samt-bu/Skole

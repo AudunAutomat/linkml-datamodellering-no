@@ -13,6 +13,7 @@ modellkataloger:
   kontaktpunkt:
   - https://www.kartverket.no/om-kartverket/kontakt-oss/
   har_del: &id001
+  - https://data.norge.no/organizations/971040238/modellkatalogar/kartverket-modellkatalog/kartverket-modellkatalog
   - https://data.norge.no/organizations/971040238/modellkatalogar/kartverket-modellkatalog/ngr-adresse
   - https://data.norge.no/organizations/971040238/modellkatalogar/kartverket-modellkatalog/ngr-eiendom
   modell: *id001
@@ -23,23 +24,38 @@ modellkataloger:
   - https://data.norge.no/organizations/971040238/modellkatalogar/kartverket-modellkatalog/dqv/aktualitet
   - https://data.norge.no/organizations/971040238/modellkatalogar/kartverket-modellkatalog/dqv/fullstendighet
 informasjonsmodeller:
+- id: https://data.norge.no/organizations/971040238/modellkatalogar/kartverket-modellkatalog/kartverket-modellkatalog
+  tittel:
+  - Kartverket - Modellkatalog
+  beskrivelse:
+  - Modellkatalog for Kartverket sine informasjonsmodellar. Implementerer ModelDCAT-AP-NO
+    direkte via import.
+  utgiver: https://data.norge.no/organizations/971040238
+  identifikator_literal: https://data.norge.no/organizations/971040238/modellkatalogar/kartverket-modellkatalog/kartverket-modellkatalog
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/modellkatalog/kartverket-modellkatalog/
+  kontaktpunkt:
+  - https://www.kartverket.no/om-kartverket/kontakt-oss/
+  lisens: https://data.norge.no/nlod/no/2.0
+  status: http://purl.org/adms/status/UnderDevelopment
+  utgivelsesdato: '2026-08-17'
+  endringsdato: '2026-08-28'
+  versjonsnummer: 1.1.1
+  type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
 - id: https://data.norge.no/organizations/971040238/modellkatalogar/kartverket-modellkatalog/ngr-adresse
   tittel:
   - Nasjonale grunndata - Adresse
   beskrivelse:
-  - Domenemodell for norske adressar basert på Nasjonale grunndata (utkast). Modellerer
-    Offisiell adresse og Postboksadresse med tilhøyrande geografiske inndelingar og
-    adressekomponentar. Basert på https://informasjonsforvaltning.github.io/nasjonale-grunndata/#Adresse
+  - Adresse
   utgiver: https://data.norge.no/organizations/971040238
   identifikator_literal: https://data.norge.no/organizations/971040238/modellkatalogar/kartverket-modellkatalog/ngr-adresse
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/ngr/ngr-adresse/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/ngr/ngr-adresse/
   kontaktpunkt:
   - https://www.kartverket.no/om-kartverket/kontakt-oss/
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-07-10'
-  versjonsnummer: 1.4.0
+  endringsdato: '2026-08-28'
+  versjonsnummer: 2.1.1
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/971040238/modellkatalogar/kartverket-modellkatalog/ngr-adresse/OffisiellAdresse
@@ -66,19 +82,17 @@ informasjonsmodeller:
   tittel:
   - Nasjonale grunndata - Eiendom
   beskrivelse:
-  - Domenemodell for norske eigedomsdata basert på Nasjonale grunndata (utkast). Modellerer
-    Fast eiendom, Borettslagsandel, Matrikkelenhet, Bygning, Eierforhold og tilknytta
-    klasser. Basert på https://informasjonsforvaltning.github.io/nasjonale-grunndata/
+  - Fast eigedom, matrikkeleining og bygning
   utgiver: https://data.norge.no/organizations/971040238
   identifikator_literal: https://data.norge.no/organizations/971040238/modellkatalogar/kartverket-modellkatalog/ngr-eiendom
-  informasjonsmodellidentifikator: https://brreg.github.io/linkml-datamodellering-no/ngr/ngr-eiendom/
+  informasjonsmodellidentifikator: https://audunautomat.github.io/linkml-datamodellering-no/ngr/ngr-eiendom/
   kontaktpunkt:
   - https://www.kartverket.no/om-kartverket/kontakt-oss/
   lisens: https://data.norge.no/nlod/no/2.0
   status: http://purl.org/adms/status/UnderDevelopment
   utgivelsesdato: '2023-01-01'
-  endringsdato: '2026-07-10'
-  versjonsnummer: 1.4.0
+  endringsdato: '2026-08-28'
+  versjonsnummer: 1.8.1
   type_concept: https://data.norge.no/vocabulary/modelldcatno#LogicalDataModel
   inneholder_modellelement:
   - https://data.norge.no/organizations/971040238/modellkatalogar/kartverket-modellkatalog/ngr-eiendom/FastEiendom
