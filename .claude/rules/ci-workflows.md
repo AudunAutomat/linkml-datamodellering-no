@@ -1,6 +1,6 @@
 ---
 name: ci-workflows
-description: Actionlint-plikta (inkl. utdatert action-metadata), CI-YAML sin lægre DRY-terskel (2+), reusable workflow/composite action-avgrensingar (inkl. ./-stiar ved eksterne kall og røyktest-plikt for public reusable workflows), og GHCR-referansar med små bokstavar. Lastast automatisk ved arbeid med filer under .github/workflows/ eller .github/actions/.
+description: Actionlint-plikta (inkl. utdatert action-metadata), CI-YAML sin lægre DRY-terskel (2+), cache-nøklar for avleidde artefakter (hash deterministisk output, stadfest cache-miss før CI-verifisering), reusable workflow/composite action-avgrensingar (inkl. ./-stiar ved eksterne kall og røyktest-plikt for public reusable workflows), og GHCR-referansar med små bokstavar. Lastast automatisk ved arbeid med filer under .github/workflows/ eller .github/actions/.
 paths:
   - ".github/workflows/**"
   - ".github/actions/**"
@@ -82,6 +82,48 @@ cross-workflow-cache-delinga umerkt, ingen feilmelding, berre stille
 dårlegare yting. Full kartlegging av kva som faktisk vart trekt ut ved
 denne terskelen (composite actions + éin intern reusable workflow) står i
 `specs/done/evaluering-dry-github-workflows.md`.
+
+## Cache-nøklar for avleidde artefakter
+
+Ein `actions/cache`-nøkkel for noko som vert *generert* (`generated/`,
+`mkdocs/docs`, `mkdocs/site` o.l.) må endre seg når, og berre når, innhaldet
+ville blitt annleis. Ein for smal nøkkel gir **stille, utdatert innhald**:
+jobben er grøn, og ein fiks ser ut til å ikkje verke. Ein for brei nøkkel gir
+unødvendig regenerering. Begge har skjedd her.
+
+**Aldri** avgrens nøkkelen til kjeldedata (`src/linkml/**`) åleine når
+resultatet òg avheng av generatorlaget (malar, `src/assets/scripts/**`,
+import-patchar, Dockerfiler, `make/*.mk`). **Aldri** bruk breie glob-ar
+(`src/assets/scripts/**`, `make/**`) utan å sjekke at filene faktisk er i
+kallgrafen til det som vert cacha.
+
+Framgangsmåte:
+
+1. Hash det **deterministiske outputet** når det finst, i staden for ei
+   manuell liste over input. Stadfest determinisme med to påfølgjande
+   lokale genereringar og `diff -rq`. Døme: docs-cachen i
+   `lenkje-og-mermaid-sjekk.yml` hashar `generated/**/*.md`. `.ttl` er
+   **ikkje** deterministisk (`linkml:generation_date`, rekkjefølgja i
+   `rdf:List`).
+2. Når output ikkje er deterministisk, list **eksplisitte** input-filer frå
+   kallgrafen (jf. `v4-generated`-nøkkelen i `generate.yml`).
+3. Bump versjonsprefikset (`vN-` → `vN+1-`) når nøkkelformelen endrar
+   semantikk, slik at gamle innslag ikkje vert treffe.
+4. **Før du konkluderer om ein generatorfiks ut frå ei CI-køyring:** sjekk i
+   jobbloggen at cachen for det aktuelle artefaktet *missa*
+   (`Cache hit for: …` / eit hoppa-over «Hopp over bygg (cache-treff)»-steg).
+   Ved treff seier køyringa ingenting om fiksen.
+
+**Grunngjeving:** lenkjesjekk-køyring `36250233352` viste uendra 646
+unsupported etter BUG-24-fiksen. `generated-oreg`-artefaktet i same køyring
+hadde fiksen, men `v2-docs-…`-nøkkelen hasha berre `src/linkml/**` og
+`publish.sh`-kjelder, så ein gammal `mkdocs/docs/` vart gjenbrukt. Sjå
+`specs/done/lenkjesjekk-docs-cache-generert-md.md`. Motsett retning (for
+brei): `specs/done/scripts-glob-cache-miss-generate-jobb.md` og
+`specs/done/docs-only-endring-cache-miss-alle-domene.md`. Drift mellom
+dupliserte nøkkelformlar: P3 i
+`specs/done/evaluering-gjentakande-monster-backlog.md` (sjå DRY-seksjonen
+over).
 
 ## Reusable workflows og composite actions — kva som IKKJE kan delast
 

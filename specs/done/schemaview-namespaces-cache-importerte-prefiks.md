@@ -69,3 +69,5 @@ berre er deklarert i eit importert skjema, vert råka.
   - `dqv-ap-no`: docs og OWL uendra.
 
 **Attståande etter push:** nattleg/manuell `lenkje-og-mermaid-sjekk` skal vise unsupported ≈ 0 (frå 646). Eventuelle restar er lista i `lenkjesjekk-unsupported.md`.
+
+**Oppdatering:** CI-køyring `36250233352` viste framleis 646 fordi docs-cachen i lenkjesjekken ikkje fanga generatorendringar — retta i `specs/done/lenkjesjekk-docs-cache-generert-md.md`. CI-verifiseringa av BUG-24 skjer via den specen.
