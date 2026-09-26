@@ -26,9 +26,12 @@ concurrency:
 jobs:
   release-please:
     runs-on: ubuntu-22.04
+    # Alle skrivande handlingar (PR, push, merge, releases, taggar) går no via
+    # installasjonstokenet til GitHub-appen linkml-release-bot, ikkje
+    # GITHUB_TOKEN. GITHUB_TOKEN treng difor berre lesetilgang (checkout).
+    # Sjå specs/backlog/github-app-for-release-please.md.
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
     steps:
       - name: Checkout for scope-sjekk
         if: github.event_name == 'push'
@@ -99,11 +102,40 @@ jobs:
           echo "skip=true" >> $GITHUB_OUTPUT
           echo "Siste commit er ikkje feat/fix — hoppar over"
 
+      - name: Hent token for linkml-release-bot
+        id: app-token
+        if: |
+          (github.event_name == 'push' && steps.check_commit_type.outputs.skip != 'true') ||
+          github.event_name == 'workflow_dispatch'
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-issues: write
+
+      - name: Hent git-identitet for linkml-release-bot
+        id: bot-user
+        if: steps.app-token.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+        run: |
+          user_id=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)
+          echo "name=${APP_SLUG}[bot]" >> "$GITHUB_OUTPUT"
+          echo "email=${user_id}+${APP_SLUG}[bot]@users.noreply.github.com" >> "$GITHUB_OUTPUT"
+
+      # token: → git push av dato-commiten (T2b) går som appen, slik at
+      # pull_request_target (auto-approve) vert utløyst og gir ny godkjenning
+      # etter siste push (dismiss_stale_reviews_on_push i ruleset-en).
       - name: Checkout for release-please
         if: |
           (github.event_name == 'push' && steps.check_commit_type.outputs.skip != 'true') ||
           github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
         if: |
@@ -111,14 +143,16 @@ jobs:
           github.event_name == 'workflow_dispatch'
         id: release-please
         with:
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           config-file: .github/release-please-config.json
           manifest-file: .github/release-please-manifest.json
 
       - name: Oppdater schema-versjonar i release-PR
         if: ${{ steps.release-please.outputs.prs_created == 'true' }}
         env:
-          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          BOT_NAME: ${{ steps.bot-user.outputs.name }}
+          BOT_EMAIL: ${{ steps.bot-user.outputs.email }}
         run: |
           # `separate-pull-requests: true` gjer at release-please lagar éin PR
           # per komponent — outputs.prs (fleirtal) er JSON-arrayen med ALLE
@@ -141,8 +175,8 @@ jobs:
             python3 src/assets/scripts/update-schema-dates.py
 
             # Commit og push endringane til PR-branchen
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.name "$BOT_NAME"
+            git config user.email "$BOT_EMAIL"
             git add -A
 
             if ! git diff --staged --quiet; then
@@ -157,7 +191,7 @@ jobs:
       - name: Informer om release-PR og aktiver auto-merge
         if: ${{ steps.release-please.outputs.prs_created == 'true' }}
         env:
-          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           # Same grunngjeving som steget over: løkk over outputs.prs (fleirtal),
           # ikkje det eintalige outputs.pr.
@@ -171,9 +205,14 @@ jobs:
             # Eitt automatisk gjenforsøk med kort pause — GitHub kan bruke nokre
             # sekund på å ferdigrekne mergeability rett etter PR-oppretting, som
             # elles gir ein forbigåande "Pull Request is not mergeable"-feil.
-            if ! gh pr merge "$PR_NUMBER" --auto --squash 2>/tmp/merge-err-"$PR_NUMBER".log; then
+            # --merge (ikkje --squash): commit-filteret øvst i denne workflowen
+            # slepp berre gjennom "Merge pull request #N from
+            # .../release-please--branches--main" etter merge — ein squash-commit
+            # ("chore: release main (#N)") ville vorte hoppa over som chore, og
+            # ingen release ville vorte laga.
+            if ! gh pr merge "$PR_NUMBER" --auto --merge 2>/tmp/merge-err-"$PR_NUMBER".log; then
               sleep 5
-              if ! gh pr merge "$PR_NUMBER" --auto --squash 2>>/tmp/merge-err-"$PR_NUMBER".log; then
+              if ! gh pr merge "$PR_NUMBER" --auto --merge 2>>/tmp/merge-err-"$PR_NUMBER".log; then
                 echo "::warning::Kunne ikkje aktivere auto-merge for PR #$PR_NUMBER: $(cat /tmp/merge-err-"$PR_NUMBER".log)"
                 continue
               fi
@@ -181,9 +220,14 @@ jobs:
             echo "Auto-merge aktivert for PR #$PR_NUMBER"
           done
 
+      # persist-credentials: false — byggestega under (make build-docker-*,
+      # make gen-*) skal ikkje ha tilgang til noko skrivetoken. Taggane vert
+      # laga via API i eige steg (O4 i specs/backlog/github-app-for-release-please.md).
       - name: Checkout for artefakt-generering
         if: ${{ steps.release-please.outputs.releases_created == 'true' }}
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Generer artefakter for releases
         if: ${{ steps.release-please.outputs.releases_created == 'true' }}
@@ -210,7 +254,7 @@ jobs:
       - name: Last opp artefakter til GitHub Releases
         if: ${{ steps.release-please.outputs.releases_created == 'true' }}
         env:
-          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           # Iterer gjennom alle releases som vart oppretta
           echo '${{ toJSON(steps.release-please.outputs) }}' | jq -r '.paths_released[]' | while read pkg_path; do
@@ -237,12 +281,13 @@ jobs:
       - name: Opprett per-schema git-tags
         if: ${{ steps.release-please.outputs.releases_created == 'true' }}
         env:
-          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
           echo "Opprettar per-schema tags for release..."
+
+          # Taggane vert laga via API (annotert tag-objekt + ref) i staden for
+          # git tag/push, sidan checkout-en over ikkje har lagra credentials.
+          sha=$(git rev-parse HEAD)
 
           # Iterer berre over schema i paths_released (ikkje alle schema)
           echo '${{ toJSON(steps.release-please.outputs) }}' | jq -r '.paths_released[]' | while read pkg_path; do
@@ -260,14 +305,26 @@ jobs:
             domain=$(basename "$(dirname "$(dirname "$schema_file")")")
             tag_name="${schema}-v${version}"
 
-            # Sjekk om tag allereie finst
-            if git tag -l | grep -q "^${tag_name}$"; then
+            # Sjekk om tag allereie finst — mot origin via API, ikkje lokalt:
+            # checkout-en er grunn (fetch-depth 1) og hentar ikkje taggar, så
+            # `git tag -l` fann aldri taggar som alt låg i origin. 404 er venta
+            # når taggen manglar.
+            if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag_name" >/dev/null 2>&1; then
               echo "✅ Tag $tag_name finst allereie"
               continue
             fi
 
             echo "🏷️  Opprettar tag $tag_name for $domain/$schema"
-            git tag -a "$tag_name" -m "Release $schema version $version"
-            git push origin "$tag_name"
+            if ! tag_obj=$(gh api -X POST "repos/$GITHUB_REPOSITORY/git/tags" \
+                  -f tag="$tag_name" -f message="Release $schema version $version" \
+                  -f object="$sha" -f type=commit --jq .sha); then
+              echo "::error::Kunne ikkje lage tag-objekt for $tag_name"
+              exit 1
+            fi
+            if ! gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" \
+                  -f ref="refs/tags/$tag_name" -f sha="$tag_obj" >/dev/null; then
+              echo "::error::Kunne ikkje lage ref refs/tags/$tag_name"
+              exit 1
+            fi
             echo "::notice::Oppretta git-tag: $tag_name"
           done

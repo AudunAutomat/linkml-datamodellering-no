@@ -516,6 +516,13 @@ auto-merge (`specs/done/auto-merge-release-pr.md`). Forsøket på å leggje
 
 #### Kva tokenet må kunne
 
+> **Retting 2026-09-26** (kartlegging i `specs/backlog/github-app-for-release-please.md`):
+> T2 (`git push` av schema-datoar, `release-please.yml:150`) og T5 (`git push`
+> av per-schema-taggar, `:271`) går i praksis med `GITHUB_TOKEN`, ikkje
+> PAT-en. `actions/checkout` utan `token:` lagrar `GITHUB_TOKEN`, og `GH_TOKEN`
+> i `env:` gjeld berre `gh`-CLI. Tabellen under skildrar kva tokenet *bør*
+> kunne, ikkje kva det gjer i dag.
+
 | # | Handling | Stad | Kvifor ikkje `GITHUB_TOKEN`? |
 |---|---|---|---|
 | T1 | Opprette release-PR-ar | `release-please.yml:114` | PR-ar frå `GITHUB_TOKEN` startar ikkje `validate.yml` (loop-vern) |
@@ -1148,13 +1155,13 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
 - [x] 9.2 Lag manglande tag `modelldcat-modell-v1.14.0` på `46792cdc`
 - [x] 9.3 Tørrkøyr release-please (`--dry-run`) og kontroller CHANGELOG-omfang
 - [x] 9.4 `gh workflow run release-please.yml` → grøn (36233290337), F2 verifisert for lesetilgang
-- [ ] 9.4b Ved første ekte release-PR: kontroller skrivetilgang og auto-approve/validate/auto-merge-kjeda (kontrollpunkt i 9.4)
+- [x] 9.4b Første ekte release-PR (#1, 2026-09-26): PR, dato-push, 10 releases, artefakter og per-schema-taggar ✅. Auto-merge fullførte **ikkje** (`require_last_push_approval`), og PR-en vart merga manuelt. Vert løyst av GitHub App-migreringa (`specs/backlog/github-app-for-release-please.md`)
 - [x] 9.5 Køyr `release.yml` via ny tag `v1.1.0` på `main` (O5) — køyring 36234113027 grøn, `:v1.1.0`/`:latest` på alle 4 image, og set `mcp-linkml-*-utkast` til *Public* (2f-2)
 - [x] 9.6 Byt versjonslåste raw-URL-ar (tabell i 9.6), regenerer manifest (`make gen-informasjonsmodell-instance`) og portal (`make docs-publish`)
 - [x] 9.7 Opprett eigen spec for `informasjonsmodellidentifikator` → `specs/done/informasjonsmodellidentifikator-ny-eigar.md`
 - [x] 9.8 Avgjer O3 (historiske GitHub Releases) og oppdater `ekstern-bruk.md` — alternativ a), note-boks lagt til
 - [x] 9.9 `bugs/`-filer: BUG-22 (`latest`-checkout), BUG-23 (tag-URL for ikkje-releasa skjema, 11 skjema); `bvrfriv` = BUG-19 (utvida + test-skip)
-- [ ] 8. (Etter F9) Opprett spec `specs/backlog/github-app-for-release-please.md` for migrering frå PAT til GitHub App
+- [x] 8. (Etter F9) Opprett spec `specs/backlog/github-app-for-release-please.md` for migrering frå PAT til GitHub App — oppretta 2026-09-26
 
 ## Opne spørsmål
 

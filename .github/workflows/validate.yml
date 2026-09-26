@@ -271,11 +271,27 @@ jobs:
             echo "Endringar funne - lagar PR"
           fi
 
+      # Token frå GitHub-appen linkml-release-bot (ikkje GITHUB_TOKEN): ein PR
+      # oppretta med GITHUB_TOKEN utløyser ikkje validate.yml på PR-en.
+      # Same token-steg som i release-please.yml — kan ikkje delast som
+      # composite action der, sidan steget må køyre før første checkout.
+      # Sjå specs/backlog/github-app-for-release-please.md.
+      - name: Hent token for linkml-release-bot
+        id: app-token
+        if: steps.check-changes.outputs.has_changes == 'true'
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-issues: write
+
       - name: Lag PR med valideringsloggar
         if: steps.check-changes.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
         with:
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           commit-message: "chore(validation): oppdater valideringsloggar"
           branch: validation-logs-update
           delete-branch: true

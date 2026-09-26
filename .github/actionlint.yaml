@@ -1,0 +1,12 @@
+# Konfigurasjon for actionlint (sjå .claude/rules/ci-workflows.md).
+paths:
+  .github/workflows/**/*.yml:
+    ignore:
+      # actionlint 1.7.12 (2026-03-30) har innebygd metadata for
+      # actions/create-github-app-token frå v3.0.0, før `client-id` vart lagt
+      # til i v3.1.0. action.yml i v3.2.0 har `client-id` (tilrådd) og `app-id`
+      # (deprecated), og ingen av dei er påkravde. Fjern desse linjene når
+      # actionlint har oppdatert metadata. Sjå
+      # specs/backlog/github-app-for-release-please.md.
+      - 'input "client-id" is not defined in action "actions/create-github-app-token@v3"'
+      - 'missing input "app-id" which is required by action "actions/create-github-app-token@v3"'
