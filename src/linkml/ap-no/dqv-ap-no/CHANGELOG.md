@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.2](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/dqv-ap-no-v1.16.1...dqv-ap-no-v1.16.2) (2026-09-26)
+
+
+### Bug Fixes
+
+* **imports:** byt versjonslåste brreg-importar til AudunAutomat, regenerer manifest ([f281324](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/f281324f252513fdf870d214c5edaeda66ab42f1))
+
 ## [1.16.1](https://github.com/brreg/linkml-datamodellering-no/compare/dqv-ap-no-v1.16.0...dqv-ap-no-v1.16.1) (2026-08-17)
 
 
