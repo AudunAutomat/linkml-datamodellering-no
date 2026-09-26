@@ -7,9 +7,9 @@
 ---
 
 For kommandoreferanse (korleis *køyre* targeta) — sjå
-[`COMMANDS.md`](https://github.com/brreg/linkml-datamodellering-no/blob/main/COMMANDS.md).
+[`COMMANDS.md`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/COMMANDS.md).
 For prinsippa bak importhierarkiet skjemaa sjølve følgjer — sjå
-[`PRINCIPLES.md`](https://github.com/brreg/linkml-datamodellering-no/blob/main/PRINCIPLES.md)
+[`PRINCIPLES.md`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/PRINCIPLES.md)
 § 3 og [Importhierarki](../arkitektur/importhierarki.md). Denne sida dekkjer laget *mellom*
 kjeldeskjema og publisert portal: kva som skjer i `make/*.mk`, kva script
 som køyrer inni kvar container, og kvar kvart felt i sluttresultatet
@@ -154,7 +154,7 @@ feltsett i alle tilfelle: `{schema, domain, version, validation_policy,
 validated_at, result}`. Fram til dette vart retta skreiv dei tre vegane
 ulike feltnavn (`validation_policy` vs `validation_type`, med/utan
 `validated_at`) — sjå
-[bugs/valideringslogg-json-inkonsistent-skjema.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/bugs/valideringslogg-json-inkonsistent-skjema.md)
+[bugs/valideringslogg-json-inkonsistent-skjema.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/bugs/valideringslogg-json-inkonsistent-skjema.md)
 (BUG-12, `løyst`) for historikk. Eksisterande, allereie committa
 `validation/**/*.json`-filer frå før retting kan framleis ha det gamle
 feltnavnet — `mkdocs/lib/scripts/generate-validation-md.py` er uavhengig av
@@ -183,7 +183,7 @@ frå alle `begrepssamling-*`-katalogar.
 `<modell>-manifest.yaml`-stien direkte frå `SCHEMA` (same mønster som
 `generate-informasjonsmodell.py` sjølv brukar for filnavnet). Han refererte
 tidlegare til den gamle, delte stien `metadata/modelldcat.yaml` — sjå
-[bugs/informasjonsmodell-instance-stale-metadata-sti.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/bugs/informasjonsmodell-instance-stale-metadata-sti.md)
+[bugs/informasjonsmodell-instance-stale-metadata-sti.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/bugs/informasjonsmodell-instance-stale-metadata-sti.md)
 (BUG-11, `løyst`) for historikk.
 
 ### 3.7 CHANGELOG.md — genereres IKKJE av make-pipelinen

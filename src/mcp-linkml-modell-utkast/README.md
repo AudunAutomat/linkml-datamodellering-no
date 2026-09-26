@@ -49,7 +49,7 @@ JSON Schema (fil)
 | `title` | Frå `schemaTitle`-argumentet, eller `TODO: tittel for <name>` |
 | `description` | Frå JSON Schema `description`, eller auto-generert |
 | `version` | `0.1.0` (bronze-krav) |
-| `license` | `https://data.norge.no/nlod/no/2.0` (endre ved behov — sjå [gyldige lisensar](https://brreg.github.io/linkml-datamodellering-no/ap-no/common-ap-no/klasser/eulicence/)) |
+| `license` | `https://data.norge.no/nlod/no/2.0` (endre ved behov — sjå [gyldige lisensar](https://audunautomat.github.io/linkml-datamodellering-no/ap-no/common-ap-no/klasser/eulicence/)) |
 | `annotations.*` | Berre i silver-policy: `utgiver`, `endringsdato`, `utgivelsesdato`, `status` med TODO-stubs |
 | `prefixes` | Standard vokabularprefiksar frå policyen (`dct`, `dcat`, `foaf`, `skos`, `xsd` m.fl.) + schema-avleia prefiks |
 | `default_prefix` | Absolutt HTTPS-URI avleia frå `schemaId` (t.d. `https://data.norge.no/ngr/adresse/`) |
@@ -160,4 +160,4 @@ Det genererte skjemaet er eit **utkast** og krev manuell tilpassing:
 make mcp-linkml-valider-modell SCHEMA=src/linkml/<domene>/<modell>/<modell>-schema.yaml POLICY=bronze
 ```
 
-Sjå [Ny domenemodell](https://brreg.github.io/linkml-datamodellering-no/kom-i-gang/ny-domenemodell/) for full rettleiing.
+Sjå [Ny domenemodell](https://audunautomat.github.io/linkml-datamodellering-no/kom-i-gang/ny-domenemodell/) for full rettleiing.

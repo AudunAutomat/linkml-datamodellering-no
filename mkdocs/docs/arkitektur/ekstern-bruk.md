@@ -13,13 +13,13 @@ Alt du treng er **to filer** og eit enkelt bootstrap-steg.
 I rota av ditt eige repo:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/bootstrap.sh | bash
+curl -sSL https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/bootstrap.sh | bash
 ```
 
 For å feste til ein konkret versjon:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/bootstrap.sh \
+curl -sSL https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/bootstrap.sh \
   | AP_NO_VERSION=dcat-ap-no-v2.13.0 bash
 ```
 
@@ -41,12 +41,12 @@ versjon-tag eller `main`:
 https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/{versjon}/{sti}
 ```
 
-GitHub Pages-URL-ar (`https://brreg.github.io/linkml-datamodellering-no/...`)
+GitHub Pages-URL-ar (`https://audunautomat.github.io/linkml-datamodellering-no/...`)
 peikar alltid til siste versjon på `main`. For ein **stabil, versjonert
 adresse** til ein historisk versjon — t.d. for import frå eit eksternt
 repo — bruk i staden:
 
-- **[GitHub Releases](https://github.com/brreg/linkml-datamodellering-no/releases)** (anbefalt) — kanonisk adresse for eldre versjonar
+- **[GitHub Releases](https://github.com/AudunAutomat/linkml-datamodellering-no/releases)** (anbefalt) — kanonisk adresse for eldre versjonar
 - **`raw.githubusercontent.com`-URL med tag**, som over
 
 !!! tip "Anbefaling"
@@ -92,7 +92,7 @@ on: [push, pull_request]
 
 jobs:
   validate:
-    uses: brreg/linkml-datamodellering-no/.github/workflows/reusable-validate.yml@main
+    uses: AudunAutomat/linkml-datamodellering-no/.github/workflows/reusable-validate.yml@main
     with:
       schema: src/linkml/mitt-domene/min-modell/min-modell-schema.yaml
       policy: bronze
@@ -110,7 +110,7 @@ jobs:
 ```yaml
 jobs:
   lint:
-    uses: brreg/linkml-datamodellering-no/.github/workflows/reusable-lint.yml@main
+    uses: AudunAutomat/linkml-datamodellering-no/.github/workflows/reusable-lint.yml@main
     with:
       schema: src/linkml/mitt-domene/min-modell/min-modell-schema.yaml
 ```
@@ -128,7 +128,7 @@ navnekollisjons-sjekk mot importerte skjema som lokal `make lint`.
 ```yaml
 jobs:
   generate:
-    uses: brreg/linkml-datamodellering-no/.github/workflows/reusable-generate.yml@main
+    uses: AudunAutomat/linkml-datamodellering-no/.github/workflows/reusable-generate.yml@main
     with:
       schema: src/linkml/mitt-domene/min-modell/min-modell-schema.yaml
 
@@ -173,14 +173,14 @@ container-imagene og AP-NO-skjema. Du treng ikkje sende inn `version`-inputen ek
 ein ny release av `linkml-datamodellering-no`. Kopier malen til rota av ditt repo:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/.github/renovate.json \
+curl -sSL https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/.github/renovate.json \
   -o renovate.json
 ```
 
 Eller hent han saman med bootstrap:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/.github/renovate.json \
+curl -sSL https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/.github/renovate.json \
   -o renovate.json
 # (bootstrap.sh er allereie køyrt)
 ```
@@ -194,7 +194,7 @@ og brukar GitHub Releases som kjelde:
     "customType": "regex",
     "fileMatch": ["^linkml-datamodellering\\.yaml$"],
     "matchStrings": ["ap-no-version:\\s*(?<currentValue>\\S+)"],
-    "depNameTemplate": "brreg/linkml-datamodellering-no",
+    "depNameTemplate": "AudunAutomat/linkml-datamodellering-no",
     "datasourceTemplate": "github-releases"
   }]
 }
@@ -202,7 +202,7 @@ og brukar GitHub Releases som kjelde:
 
 !!! note "Har du allereie renovate.json?"
     Legg berre til `customManagers`- og `packageRules`-blokkane frå
-    [`renovate.json`](https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/.github/renovate.json)
+    [`renovate.json`](https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/.github/renovate.json)
     i din eksisterande konfig. Ikkje dupliser `extends`.
 
 ---
@@ -215,7 +215,7 @@ Før du køyrer podman-eksempla under, sjekk at Podman (rootless), user
 namespace-mapping og diskplass er korrekt konfigurert:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/assets/scripts/makefile/check-prereqs.bash | bash
+curl -sSL https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/assets/scripts/makefile/check-prereqs.bash | bash
 ```
 
 Scriptet krev ingen tilgang til dette repoet sin Makefile eller
@@ -231,19 +231,19 @@ Container-imagene er offentleg tilgjengelege frå GHCR — ingen innlogging er n
 # Strukturvalidering (fail-fast, ingen fil skriven)
 podman run --rm \
   -v "$(pwd):/work" -w /work \
-  ghcr.io/brreg/linkml-local:latest \
+  ghcr.io/audunautomat/linkml-local:latest \
   gen-linkml src/linkml/mitt-domene/min-modell/min-modell-schema.yaml
 
 # Stilsjekk (navnekonvensjonar, URI-ar, obligatoriske felt)
 podman run --rm \
   -v "$(pwd):/work" -w /work \
-  ghcr.io/brreg/linkml-local:latest \
+  ghcr.io/audunautomat/linkml-local:latest \
   linkml lint src/linkml/mitt-domene/min-modell/min-modell-schema.yaml
 
 # Generer JSON Schema
 podman run --rm \
   -v "$(pwd):/work" -w /work \
-  ghcr.io/brreg/linkml-local:latest \
+  ghcr.io/audunautomat/linkml-local:latest \
   gen-json-schema src/linkml/mitt-domene/min-modell/min-modell-schema.yaml
 ```
 
@@ -251,7 +251,7 @@ Tilgjengelege image-taggar: `latest`, `main`, skjema-spesifikke taggar (`dcat-ap
 
 !!! note "`linkml lint` utan `--config` bruker eit anna regelsett enn CI"
     Dette repoet sin eigen lint-config
-    ([`.linkmllint.yaml`](https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/assets/containers/.linkmllint.yaml))
+    ([`.linkmllint.yaml`](https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/assets/containers/.linkmllint.yaml))
     slår av `standard_naming`-regelen (som elles forventar engelske
     navnekonvensjonar, i konflikt med norsk bokmål-navngjeving). Utan denne
     configen brukar `linkml lint` sitt eige standardregelsett. For
@@ -260,7 +260,7 @@ Tilgjengelege image-taggar: `latest`, `main`, skjema-spesifikke taggar (`dcat-ap
 
 !!! warning "Policy-validering (bronze/silver/gold) krev meir enn éin podman-kommando lokalt"
     `make mcp-linkml-valider-modell` (sjå [Rettleiing: ny domenemodell](../kom-i-gang/ny-domenemodell.md#3-valider-undervegs))
-    brukar `ghcr.io/brreg/mcp-linkml-validator` — biletet **er** offentleg
+    brukar `ghcr.io/audunautomat/mcp-linkml-validator` — biletet **er** offentleg
     tilgjengeleg, men i motsetnad til `gen-linkml`/`linkml lint` over held
     det ikkje å montere skjemaet inn: sjølve valideringslogikken vert
     styrt av `flatten-and-validate.bash` og `policies/`-katalogen, som må
@@ -289,14 +289,14 @@ dette til i sin eigen `.mcp.json`:
     "linkml-modell-utkast": {
       "type": "stdio",
       "command": "podman",
-      "args": ["run", "-i", "--rm", "ghcr.io/brreg/mcp-linkml-modell-utkast:latest"]
+      "args": ["run", "-i", "--rm", "ghcr.io/audunautomat/mcp-linkml-modell-utkast:latest"]
     },
     "linkml-begrep-utkast": {
       "type": "stdio",
       "command": "bash",
       "args": [
         "-c",
-        "REPO=$(git rev-parse --show-toplevel) && podman run -i --rm -v \"$REPO:/repo:ro\" -v \"$REPO/src/linkml:/repo/src/linkml:rw\" ghcr.io/brreg/mcp-linkml-begrep-utkast:latest"
+        "REPO=$(git rev-parse --show-toplevel) && podman run -i --rm -v \"$REPO:/repo:ro\" -v \"$REPO/src/linkml:/repo/src/linkml:rw\" ghcr.io/audunautomat/mcp-linkml-begrep-utkast:latest"
       ]
     }
   }
@@ -315,7 +315,7 @@ repoet (les/skriv, som over). Følgjer ikkje det eksterne repoet
 ```json
 "args": [
   "-c",
-  "REPO=$(git rev-parse --show-toplevel) && podman run -i --rm -e SCHEMA_ROOT=schema -v \"$REPO:/repo:ro\" -v \"$REPO/schema:/repo/schema:rw\" ghcr.io/brreg/mcp-linkml-begrep-utkast:latest"
+  "REPO=$(git rev-parse --show-toplevel) && podman run -i --rm -e SCHEMA_ROOT=schema -v \"$REPO:/repo:ro\" -v \"$REPO/schema:/repo/schema:rw\" ghcr.io/audunautomat/mcp-linkml-begrep-utkast:latest"
 ]
 ```
 

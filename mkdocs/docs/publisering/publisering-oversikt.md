@@ -15,7 +15,7 @@
     - **"Etablert standardiserte grensesnitt som muliggjør maskinell overføring av data"**
       — dekt av repoet sitt artefaktbibliotek (JSON Schema, SHACL, OpenAPI,
       AsyncAPI, Protobuf, GraphQL — sjå
-      [Genererte artefakter](https://github.com/brreg/linkml-datamodellering-no#genererte-artefakter)
+      [Genererte artefakter](https://github.com/AudunAutomat/linkml-datamodellering-no#genererte-artefakter)
       i README)
     - **"Publisert datasett og API-ar på data.norge.no"** — dekt av
       pull-arkitekturen skildra på denne sida (Felles Datakatalog/
@@ -52,7 +52,7 @@ flowchart TB
     
     subgraph GitHub
         F --> H[GitHub Releases<br/>v1.0.0, v1.1.0, ...]
-        F --> G[GitHub Pages<br/>brreg.github.io/linkml-datamodellering-no/]
+        F --> G[GitHub Pages<br/>audunautomat.github.io/linkml-datamodellering-no/]
         
     end
     
@@ -131,7 +131,7 @@ Alle genererte artefakter vert automatisk publisert til GitHub Pages ved push ti
 - **Modellkatalogar:** `.ttl`-filer frå `src/linkml/modellkatalog/*/data/` (konvertert frå YAML)
 - **MkDocs-dokumentasjonsportal:** Menneskelesbar dokumentasjon med ER-diagram og artefakt-nedlastingar
 
-**URL:** `https://brreg.github.io/linkml-datamodellering-no/`
+**URL:** `https://audunautomat.github.io/linkml-datamodellering-no/`
 
 **Versjonering:** Peikar alltid til siste versjon på `main`. For versjonsstabile adresser, sjå [Bruk frå eksternt repo](../arkitektur/ekstern-bruk.md#versjonerte-artefakter).
 
@@ -144,11 +144,11 @@ Repoet **pusher ikkje** direkte til data.norge.no — det publiserer SKOS/Turtle
 **Kva må skje for at høsting skal fungere:**
 
 1. **Datafila må validere:** `make mcp-linkml-valider-modell SCHEMA=<skjema> POLICY=felles-begrepskatalog` (eller `felles-datakatalog`) gir null feil. Denne validatoren sjekkar skjemakvalitet — SHACL-shapes vert avleidde automatisk frå LinkML-skjemaet og er ikkje identiske med data.norge.no sine kanoniske shapes. Køyr difor også den genererte `.ttl`-fila gjennom [data.norge.no/validator](https://data.norge.no/validator) (dekkjer DCAT-AP-NO og SKOS-AP-NO — **ikkje** ModellDCAT-AP-NO) før høstingsendepunktet vert registrert
-2. **Verksemdsadministrator godkjenner bruksvilkår på data.norge.no:** eingongssteg per organisasjon, uavhengig av registreringa i punkt 3 — sjå [Onboarding av ny organisasjon](https://github.com/brreg/linkml-datamodellering-no/blob/main/GOVERNANCE.md#onboarding-av-ny-organisasjon)
+2. **Verksemdsadministrator godkjenner bruksvilkår på data.norge.no:** eingongssteg per organisasjon, uavhengig av registreringa i punkt 3 — sjå [Onboarding av ny organisasjon](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/GOVERNANCE.md#onboarding-av-ny-organisasjon)
 3. **Koordinering med Digitaliseringsdirektoratet:** Organisasjonen registrerer høstingsendepunktet (krev ID-porten-innlogging og Altinn-rolle) — sjå §Registrering av høstingsendepunkt i [publisering-begrep.md](publisering-begrep.md#registrering-av-hstingsendepunkt-ein-gong) eller [publisering-modell.md](publisering-modell.md#registrering-av-hstingsendepunkt-ein-gong)
 4. **Høsting skjer eksternt:** Felles Begrepskatalog/Datakatalog høstar data frå GitHub Pages — repoet har ingen kontroll over når/om dette skjer. Endepunktet kan verifiserast på førehand, sjå [Verifisere at høstingsendepunkt er tilgjengelege eksternt](../automasjon/monitorering.md#verifisere-at-hstingsendepunkt-er-tilgjengelege-eksternt)
 
-**PoC-status:** Høsting til Felles Begrepskatalog/Datakatalog er ikkje aktivt i PoC-fasen. Data publisert med `publish_external: true` er testdata med avgrensa kvalitetsgaranti. Sjå [GOVERNANCE.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/GOVERNANCE.md) for publiseringspolicy.
+**PoC-status:** Høsting til Felles Begrepskatalog/Datakatalog er ikkje aktivt i PoC-fasen. Data publisert med `publish_external: true` er testdata med avgrensa kvalitetsgaranti. Sjå [GOVERNANCE.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/GOVERNANCE.md) for publiseringspolicy.
 
 **Detaljerte rettleiingar:**
 
@@ -240,7 +240,7 @@ Data mesh / data lakehouse-plattformar kan høste metadata for:
 
 ### 2. GitHub Pages (automatisk publisering)
 
-**URL:** `https://brreg.github.io/linkml-datamodellering-no/`
+**URL:** `https://audunautomat.github.io/linkml-datamodellering-no/`
 
 **Kvar kom det frå:** CI-jobben `generate.yml` (kjører på push til `main`)
 
@@ -260,7 +260,7 @@ Data mesh / data lakehouse-plattformar kan høste metadata for:
 
 ### 3. GitHub Releases (versjonerte artefakter)
 
-**URL:** `https://github.com/brreg/linkml-datamodellering-no/releases`
+**URL:** `https://github.com/AudunAutomat/linkml-datamodellering-no/releases`
 
 **Kvar kom det frå:** `release-please` opprettar release ved merge av release-PR
 
@@ -295,7 +295,7 @@ sequenceDiagram
     Git->>CI: Trigger generate.yml
     CI->>CI: make mcp-linkml-valider-modell POLICY=felles-begrepskatalog
     CI->>CI: make convert-data (YAML → TTL)
-    CI->>Pages: Deploy til brreg.github.io
+    CI->>Pages: Deploy til audunautomat.github.io
     Pages-->>Dev: ✓ Synleg på GitHub Pages
 ```
 
@@ -347,7 +347,7 @@ git push -u origin feature/mi-endring
 
 **3. GitHub Pages er oppdatert:**
 
-`https://brreg.github.io/linkml-datamodellering-no/begrepskatalog/brreg-begrepskatalog/brreg-begrepskatalog.ttl` inneheld no den oppdaterte datafila i SKOS/Turtle-format.
+`https://audunautomat.github.io/linkml-datamodellering-no/begrepskatalog/brreg-begrepskatalog/brreg-begrepskatalog.ttl` inneheld no den oppdaterte datafila i SKOS/Turtle-format.
 
 **4. Felles Begrepskatalog høstar** (ekstern prosess, varierer — minutt til dagar):
 
@@ -385,7 +385,7 @@ validation_policy: felles-begrepskatalog  # Valideringspolicy
 ### Problem: "Eg har pusha til main, men ser ikkje endringane på GitHub Pages"
 
 **Løysing:**
-1. Sjekk at CI-jobben `generate` er grøn: https://github.com/brreg/linkml-datamodellering-no/actions
+1. Sjekk at CI-jobben `generate` er grøn: https://github.com/AudunAutomat/linkml-datamodellering-no/actions
 2. Sjekk at `publish_external: true` i `build.yaml`
 3. Vent 3-5 minutt for at GitHub Pages skal oppdaterast
 4. Hard-refresh i nettlesaren (Ctrl+Shift+R)
@@ -422,4 +422,4 @@ validation_policy: felles-begrepskatalog  # Valideringspolicy
 - [publisering-begrep.md](publisering-begrep.md) — rettleiing for begrepskatalog
 - [publisering-modell.md](publisering-modell.md) — rettleiing for modellkatalog
 - [monitorering.md](../automasjon/monitorering.md) — korleis monitorere publisering
-- [GOVERNANCE.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/GOVERNANCE.md) — publiseringspolicy
+- [GOVERNANCE.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/GOVERNANCE.md) — publiseringspolicy

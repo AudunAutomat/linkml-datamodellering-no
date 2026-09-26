@@ -2,7 +2,7 @@
 
 !!! note "Beskrivelse"
 
-    Denne sida dokumenterer korleis Modell-dokumentasjon `index.md`-fila for kvar modell blir bygd opp og generert av `mkdocs/publish.sh` (t.d. `mkdocs/docs/samt/samt-bu/index.md` som publiseres som [SAMT - Kommunale integrasjonar/samt-bu](https://brreg.github.io/linkml-datamodellering-no/samt/samt-bu/) i navigasjonsmenyen til venstre i denne portalen).
+    Denne sida dokumenterer korleis Modell-dokumentasjon `index.md`-fila for kvar modell blir bygd opp og generert av `mkdocs/publish.sh` (t.d. `mkdocs/docs/samt/samt-bu/index.md` som publiseres som [SAMT - Kommunale integrasjonar/samt-bu](https://audunautomat.github.io/linkml-datamodellering-no/samt/samt-bu/) i navigasjonsmenyen til venstre i denne portalen).
 
 ## Oversikt
 
@@ -240,6 +240,6 @@ mkdocs/docs/<domain>/<schema>/index.md              ← OUTPUT (auto-generert, i
 
 ## Relatert dokumentasjon
 
-- [`CLAUDE.md`](https://github.com/brreg/linkml-datamodellering-no/blob/main/CLAUDE.md) — normativ kjelde for modelleringsprinsipper
-- [`COMMANDS.md`](https://github.com/brreg/linkml-datamodellering-no/blob/main/COMMANDS.md) — fullstendig oversikt over make-targets
+- [`CLAUDE.md`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CLAUDE.md) — normativ kjelde for modelleringsprinsipper
+- [`COMMANDS.md`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/COMMANDS.md) — fullstendig oversikt over make-targets
 - [Ny domenemodell](../kom-i-gang/ny-domenemodell.md) — steg-for-steg-rettleiing for å lage ny modell

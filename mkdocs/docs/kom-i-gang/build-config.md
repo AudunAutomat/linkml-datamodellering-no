@@ -133,16 +133,16 @@ under `data/`. Gyldige verdiar:
 
 | Verdi | Brukstilfelle |
 |---|---|
-| [`bronze`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#bronse) | Minimumskrav — strukturelt korrekt LinkML |
-| [`silver`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#s%C3%B8lv) | Tilrådde felt er fylt ut |
-| [`gold`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#gull) | Alle felt utfylt, med kvalitetskontrollar |
-| [`felles-datakatalog`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#felles-datakatalog-felles-datakatalog) | ModelDCAT-AP-NO — publisering til Felles Datakatalog |
-| [`felles-begrepskatalog`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#felles-begrepskatalog-felles-begrepskatalog) | SKOS-AP-NO-Begrep — publisering til Felles Begrepskatalog |
+| [`bronze`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#bronse) | Minimumskrav — strukturelt korrekt LinkML |
+| [`silver`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#s%C3%B8lv) | Tilrådde felt er fylt ut |
+| [`gold`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#gull) | Alle felt utfylt, med kvalitetskontrollar |
+| [`felles-datakatalog`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#felles-datakatalog-felles-datakatalog) | ModelDCAT-AP-NO — publisering til Felles Datakatalog |
+| [`felles-begrepskatalog`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#felles-begrepskatalog-felles-begrepskatalog) | SKOS-AP-NO-Begrep — publisering til Felles Begrepskatalog |
 
 ### Generatorflag
 
 Dei boolske felta svarar 1:1 til `build.yaml flag`-kolonnen i
-[tabellen over genererte artefakter](https://github.com/brreg/linkml-datamodellering-no#genererte-artefakter)
+[tabellen over genererte artefakter](https://github.com/AudunAutomat/linkml-datamodellering-no#genererte-artefakter)
 i README. Alle har standardverdi `true`.
 
 I tillegg kjem to flagg-felt for generatorar som treng ekstra parametrar:

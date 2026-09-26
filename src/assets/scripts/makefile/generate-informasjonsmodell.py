@@ -187,14 +187,14 @@ def generate_mkdocs_url(schema_path: Path) -> str:
     """
     Generer mkdocs-dokumentasjons-URL frå schema-path.
 
-    Format: https://brreg.github.io/linkml-datamodellering-no/<domain>/<modell>/
+    Format: https://audunautomat.github.io/linkml-datamodellering-no/<domain>/<modell>/
     """
     schema_parts = schema_path.parts
     linkml_idx = schema_parts.index('linkml')
     domain = schema_parts[linkml_idx + 1]
     modell = schema_parts[linkml_idx + 2]
 
-    return f"https://brreg.github.io/linkml-datamodellering-no/{domain}/{modell}/"
+    return f"https://audunautomat.github.io/linkml-datamodellering-no/{domain}/{modell}/"
 
 
 def get_github_raw_base_url() -> str:
@@ -210,7 +210,7 @@ def get_github_raw_base_url() -> str:
     2. .git/config (lokal utvikling — les direkte frå config-fila i staden
        for å shelle ut til git-binæren, sidan denne funksjonen køyrer i ein
        minimal Python-container utan git installert)
-    3. Hardkoda fallback: brreg/linkml-datamodellering-no
+    3. Hardkoda fallback: AudunAutomat/linkml-datamodellering-no
     """
     github_repository = os.environ.get("GITHUB_REPOSITORY", "")
     if "/" in github_repository:
@@ -244,7 +244,7 @@ def get_github_raw_base_url() -> str:
         print(f"⚠️  Kunne ikkje lese git remote-URL frå {git_config_path} ({e}) — brukar fallback-URL", file=sys.stderr)
 
     # Fallback
-    return "https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/"
+    return "https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/"
 
 
 def generate_kontaktopplysning(kontaktpunkt_data: Dict) -> Dict:

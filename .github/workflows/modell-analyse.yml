@@ -39,7 +39,7 @@ jobs:
         uses: ./.github/actions/ensure-image
         with:
           name: python-pytest
-          tag: ghcr.io/${{ github.repository_owner }}/python-pytest:${{ fromJson(steps.image-tags.outputs.image_tags)['python-pytest'] }}
+          tag: ${{ fromJson(steps.image-tags.outputs.image_tags)['python-pytest'] }}
           make_target: build-docker-python
 
   similar-classes-domain:

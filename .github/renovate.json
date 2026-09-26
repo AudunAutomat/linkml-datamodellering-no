@@ -6,13 +6,13 @@
       "customType": "regex",
       "fileMatch": ["^linkml-datamodellering\\.yaml$"],
       "matchStrings": ["ap-no-version:\\s*(?<currentValue>\\S+)"],
-      "depNameTemplate": "brreg/linkml-datamodellering-no",
+      "depNameTemplate": "AudunAutomat/linkml-datamodellering-no",
       "datasourceTemplate": "github-releases"
     }
   ],
   "packageRules": [
     {
-      "matchDepNames": ["brreg/linkml-datamodellering-no"],
+      "matchDepNames": ["AudunAutomat/linkml-datamodellering-no"],
       "labels": ["linkml", "dependencies"],
       "commitMessageTopic": "AP-NO (linkml-datamodellering-no)"
     }

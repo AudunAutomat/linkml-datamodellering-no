@@ -5,6 +5,9 @@ on:
   push:
     tags: ['v*.*.*']
 
+# REGISTRY vert rekna ut i bash per steg: GitHub-uttrykk har ingen lower(),
+# og github.repository_owner kan ha store bokstavar (t.d. AudunAutomat) —
+# sjå specs/backlog/ci-etter-origin-flytting-audunautomat.md (F1).
 jobs:
   linkml-local:
     runs-on: ubuntu-22.04
@@ -21,16 +24,17 @@ jobs:
 
       - name: Hent eller bygg linkml-local
         run: |
-          HASH_TAG="ghcr.io/${{ github.repository_owner }}/linkml-local:${{ hashFiles('src/assets/containers/Dockerfile.linkml') }}"
+          REGISTRY="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}"  # OCI krev små bokstavar (F1)
+          HASH_TAG="${REGISTRY}/linkml-local:${{ hashFiles('src/assets/containers/Dockerfile.linkml') }}"
           if ! podman pull "$HASH_TAG" 2>/dev/null; then
             podman build -f src/assets/containers/Dockerfile.linkml -t localhost/linkml-local:latest .
             podman tag localhost/linkml-local:latest "$HASH_TAG"
             podman push "$HASH_TAG"
           fi
-          podman tag "$HASH_TAG" "ghcr.io/${{ github.repository_owner }}/linkml-local:${{ github.ref_name }}"
-          podman tag "$HASH_TAG" "ghcr.io/${{ github.repository_owner }}/linkml-local:latest"
-          podman push "ghcr.io/${{ github.repository_owner }}/linkml-local:${{ github.ref_name }}"
-          podman push "ghcr.io/${{ github.repository_owner }}/linkml-local:latest"
+          podman tag "$HASH_TAG" "${REGISTRY}/linkml-local:${{ github.ref_name }}"
+          podman tag "$HASH_TAG" "${REGISTRY}/linkml-local:latest"
+          podman push "${REGISTRY}/linkml-local:${{ github.ref_name }}"
+          podman push "${REGISTRY}/linkml-local:latest"
 
   mcp-linkml-validator:
     runs-on: ubuntu-22.04
@@ -47,16 +51,17 @@ jobs:
 
       - name: Hent eller bygg mcp-linkml-validator
         run: |
-          HASH_TAG="ghcr.io/${{ github.repository_owner }}/mcp-linkml-validator:${{ hashFiles('src/assets/containers/Dockerfile.mcp-linkml') }}"
+          REGISTRY="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}"  # OCI krev små bokstavar (F1)
+          HASH_TAG="${REGISTRY}/mcp-linkml-validator:${{ hashFiles('src/assets/containers/Dockerfile.mcp-linkml') }}"
           if ! podman pull "$HASH_TAG" 2>/dev/null; then
             podman build --format docker -f src/assets/containers/Dockerfile.mcp-linkml --target validator -t localhost/mcp-linkml-validator:latest .
             podman tag localhost/mcp-linkml-validator:latest "$HASH_TAG"
             podman push "$HASH_TAG"
           fi
-          podman tag "$HASH_TAG" "ghcr.io/${{ github.repository_owner }}/mcp-linkml-validator:${{ github.ref_name }}"
-          podman tag "$HASH_TAG" "ghcr.io/${{ github.repository_owner }}/mcp-linkml-validator:latest"
-          podman push "ghcr.io/${{ github.repository_owner }}/mcp-linkml-validator:${{ github.ref_name }}"
-          podman push "ghcr.io/${{ github.repository_owner }}/mcp-linkml-validator:latest"
+          podman tag "$HASH_TAG" "${REGISTRY}/mcp-linkml-validator:${{ github.ref_name }}"
+          podman tag "$HASH_TAG" "${REGISTRY}/mcp-linkml-validator:latest"
+          podman push "${REGISTRY}/mcp-linkml-validator:${{ github.ref_name }}"
+          podman push "${REGISTRY}/mcp-linkml-validator:latest"
 
   mcp-linkml-modell-utkast:
     runs-on: ubuntu-22.04
@@ -73,17 +78,18 @@ jobs:
 
       - name: Bygg og push mcp-linkml-modell-utkast
         run: |
+          REGISTRY="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}"  # OCI krev små bokstavar (F1)
           podman build \
             --format docker \
             -f src/assets/containers/Dockerfile.mcp-linkml \
             --target modell-utkast \
-            -t "ghcr.io/${{ github.repository_owner }}/mcp-linkml-modell-utkast:${{ github.ref_name }}" \
+            -t "${REGISTRY}/mcp-linkml-modell-utkast:${{ github.ref_name }}" \
             .
           podman tag \
-            "ghcr.io/${{ github.repository_owner }}/mcp-linkml-modell-utkast:${{ github.ref_name }}" \
-            "ghcr.io/${{ github.repository_owner }}/mcp-linkml-modell-utkast:latest"
-          podman push "ghcr.io/${{ github.repository_owner }}/mcp-linkml-modell-utkast:${{ github.ref_name }}"
-          podman push "ghcr.io/${{ github.repository_owner }}/mcp-linkml-modell-utkast:latest"
+            "${REGISTRY}/mcp-linkml-modell-utkast:${{ github.ref_name }}" \
+            "${REGISTRY}/mcp-linkml-modell-utkast:latest"
+          podman push "${REGISTRY}/mcp-linkml-modell-utkast:${{ github.ref_name }}"
+          podman push "${REGISTRY}/mcp-linkml-modell-utkast:latest"
 
   mcp-linkml-begrep-utkast:
     runs-on: ubuntu-22.04
@@ -100,14 +106,15 @@ jobs:
 
       - name: Bygg og push mcp-linkml-begrep-utkast
         run: |
+          REGISTRY="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}"  # OCI krev små bokstavar (F1)
           podman build \
             --format docker \
             -f src/assets/containers/Dockerfile.mcp-linkml \
             --target begrep-utkast \
-            -t "ghcr.io/${{ github.repository_owner }}/mcp-linkml-begrep-utkast:${{ github.ref_name }}" \
+            -t "${REGISTRY}/mcp-linkml-begrep-utkast:${{ github.ref_name }}" \
             .
           podman tag \
-            "ghcr.io/${{ github.repository_owner }}/mcp-linkml-begrep-utkast:${{ github.ref_name }}" \
-            "ghcr.io/${{ github.repository_owner }}/mcp-linkml-begrep-utkast:latest"
-          podman push "ghcr.io/${{ github.repository_owner }}/mcp-linkml-begrep-utkast:${{ github.ref_name }}"
-          podman push "ghcr.io/${{ github.repository_owner }}/mcp-linkml-begrep-utkast:latest"
+            "${REGISTRY}/mcp-linkml-begrep-utkast:${{ github.ref_name }}" \
+            "${REGISTRY}/mcp-linkml-begrep-utkast:latest"
+          podman push "${REGISTRY}/mcp-linkml-begrep-utkast:${{ github.ref_name }}"
+          podman push "${REGISTRY}/mcp-linkml-begrep-utkast:latest"

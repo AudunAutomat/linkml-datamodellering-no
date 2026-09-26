@@ -4,10 +4,10 @@
 
     `make new-begrepskatalog` (scaffolding for det monolittiske
     `BegrepContainer`-formatet denne sida skildrar) er fjerna, sjå
-    [spesifikasjonen for grunngjevinga](https://github.com/brreg/linkml-datamodellering-no/blob/main/specs/done/make-target-namn-vs-funksjon.md).
+    [spesifikasjonen for grunngjevinga](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/specs/done/make-target-namn-vs-funksjon.md).
     Bruk `make new-begrepssamling DOMAIN=<domene> NAME=<begrepssamling>` for
     nye begrepssamlingar (`begrep/`-katalog med éin fil per begrep) — sjå
-    [COMMANDS.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/COMMANDS.md#ny-modellbegrepskatalogmodellkatalog).
+    [COMMANDS.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/COMMANDS.md#ny-modellbegrepskatalogmodellkatalog).
     Resten av denne sida er halden ved like som referanse for det eksisterande,
     monolittiske formatet (`src/linkml/begrepskatalog/brreg-begrepskatalog`) —
     scaffold eit nytt slikt skjema manuelt ved å kopiere den katalogen som mal
@@ -271,5 +271,5 @@ sjå [Publiser til Felles Begrepskatalog](../publisering/publisering-begrep.md).
 
 - [Begrep - domeneindeks](../begrepskatalog/index.md)
 - [Publiser til Felles Begrepskatalog](../publisering/publisering-begrep.md) — pipeline og URI-stabilitet
-- [`specs/done/begrep-modellering.md`](https://github.com/brreg/linkml-datamodellering-no/blob/main/specs/done/begrep-modellering.md) — fullstendig teknisk spesifikasjon
-- [`src/mcp-linkml-begrep-utkast/README.md`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/mcp-linkml-begrep-utkast/README.md) — dokumentasjon for MCP-serveren
+- [`specs/done/begrep-modellering.md`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/specs/done/begrep-modellering.md) — fullstendig teknisk spesifikasjon
+- [`src/mcp-linkml-begrep-utkast/README.md`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-begrep-utkast/README.md) — dokumentasjon for MCP-serveren

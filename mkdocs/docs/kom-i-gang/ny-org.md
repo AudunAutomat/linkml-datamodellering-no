@@ -90,7 +90,7 @@ Sjå [Ny domenemodell](ny-domenemodell.md) for full rettleiing om korleis ein mo
     katalogfila frå botnen** ut frå kvart skjema sin genererte
     Informasjonsmodell-instans — han skriv ikkje lenger `TODO`-stubs for
     felt som `tema`/`lisens`/`kontaktpunkt` som manglar kjelde. Sjå
-    [spesifikasjonen for grunngjevinga](https://github.com/brreg/linkml-datamodellering-no/blob/main/specs/done/make-target-namn-vs-funksjon.md).
+    [spesifikasjonen for grunngjevinga](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/specs/done/make-target-namn-vs-funksjon.md).
     Verifiser at manuelt utfylte felt i eksisterande katalogoppføringar
     framleis er korrekte etter fyrste køyring med den nye kommandoen.
 
@@ -210,12 +210,12 @@ Følgjande avgrensingar gjeld i PoC-fasen:
 - Dersom to org-ar treng motstridige endringar i same AP-NO-profil må dette løysast gjennom RFC-prosess (sjå GOVERNANCE.md)
 - Konfliktløysingsmekanismar er ikkje fullt dokumenterte enno
 
-**Fullstendig oversikt:** Sjå [BUGS.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/BUGS.md) for komplett liste over kjende bugs og workarounds.
+**Fullstendig oversikt:** Sjå [BUGS.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/BUGS.md) for komplett liste over kjende bugs og workarounds.
 
-**Rapporter nye problem:** Opne eit [GitHub Issue](https://github.com/brreg/linkml-datamodellering-no/issues) med merkelappen `bug`.
+**Rapporter nye problem:** Opne eit [GitHub Issue](https://github.com/AudunAutomat/linkml-datamodellering-no/issues) med merkelappen `bug`.
 
 ## Relatert dokumentasjon
 
 - [Ny domenemodell](ny-domenemodell.md) — opprette nytt skjema for den nye organisasjonen
 - [Ny begrepskatalog](ny-begrepsmodell.md) — opprette ny begrepskatalog for den nye organisasjonen
-- [GOVERNANCE.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/GOVERNANCE.md) — roller, eigarskap og RFC-prosess
+- [GOVERNANCE.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/GOVERNANCE.md) — roller, eigarskap og RFC-prosess

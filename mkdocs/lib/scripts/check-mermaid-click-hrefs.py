@@ -217,7 +217,7 @@ def check_page(url: str, known_paths: set[str], site_netloc: str) -> tuple[str, 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("site_url", help="Bas-URL til publisert portal, t.d. https://brreg.github.io/linkml-datamodellering-no")
+    parser.add_argument("site_url", help="Bas-URL til publisert portal, t.d. https://audunautomat.github.io/linkml-datamodellering-no")
     parser.add_argument("--concurrency", type=int, default=5)
     parser.add_argument("--report", type=Path, default=None, help="Skriv markdown-rapport til denne fila")
     args = parser.parse_args()

@@ -10,8 +10,14 @@ on:
 jobs:
   auto-approve:
     runs-on: ubuntu-22.04
+    # Release-PR-ar vert oppretta med RELEASE_PLEASE_TOKEN (PAT frå
+    # repo-eigaren), så PR-forfattaren er github.repository_owner — ikkje
+    # hardkoda. head.repo-sjekken hindrar at ein fork-PR med same
+    # branch-prefiks vert godkjend (repoet er offentleg).
     if: |
-      (github.actor == 'github-actions[bot]' || github.actor == 'AudunVindenesEggeBR') &&
+      (github.event.pull_request.user.login == 'github-actions[bot]' ||
+       github.event.pull_request.user.login == github.repository_owner) &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
       startsWith(github.head_ref, 'release-please--branches--')
     permissions:
       pull-requests: write

@@ -132,7 +132,7 @@ linkml:types  # direkte import
 
 > Dette er den autoritative kjelda for modellen. Alle tabellar, diagram og artefakt på denne sida er genererte frå dette skjemaet.
 
-Kjelde-datamodell i LinkML-format: [`brreg-felles-typer-schema.yaml`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-typer/brreg-felles-typer-schema.yaml)
+Kjelde-datamodell i LinkML-format: [`brreg-felles-typer-schema.yaml`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-typer/brreg-felles-typer-schema.yaml)
 
 ---
 
@@ -248,7 +248,7 @@ Kjelde-datamodell i LinkML-format: [`brreg-felles-typer-schema.yaml`](https://gi
 | Modellmanifest ihht Modelldcat-ap-no | [brreg-felles-typer-manifest.yaml](brreg-felles-typer-manifest.yaml) |
 | ER-diagram (Mermaid) | [brreg-felles-typer-erdiagram.md](brreg-felles-typer-erdiagram.md) |
 
-*Full byggekonfigurasjon: [build.yaml](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-typer/build.yaml)*
+*Full byggekonfigurasjon: [build.yaml](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-typer/build.yaml)*
 
 ---
 
@@ -277,5 +277,5 @@ Kjelde-datamodell i LinkML-format: [`brreg-felles-typer-schema.yaml`](https://gi
 
 > Her finn du informasjon om forvaltningsansvarleg, kontaktpunkt og kanal for feilrapportering eller forslag til forbetringar.
 
-**Support:** [GitHub Issues](https://github.com/brreg/linkml-datamodellering-no/issues)
+**Support:** [GitHub Issues](https://github.com/AudunAutomat/linkml-datamodellering-no/issues)
 

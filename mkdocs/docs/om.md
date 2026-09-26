@@ -17,24 +17,24 @@ Ikkje minst legges det tilrete for å eksportere modeller og data på W3C-semant
 
 ## Bidra og gje tilbakemelding
 
-- [GOVERNANCE.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/GOVERNANCE.md) —
+- [GOVERNANCE.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/GOVERNANCE.md) —
   roller, myndigheit og korleis avgjerder vert tekne
-- [CONTRIBUTING.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md) —
+- [CONTRIBUTING.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md) —
   korleis du bidrar med modellar, feilretting eller verktøyutvikling
-- [Opne eit GitHub Issue](https://github.com/brreg/linkml-datamodellering-no/issues) —
+- [Opne eit GitHub Issue](https://github.com/AudunAutomat/linkml-datamodellering-no/issues) —
   for feilrapportering, spørsmål eller forslag til nye modellar/funksjonalitet
-- [SECURITY.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/SECURITY.md) —
+- [SECURITY.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/SECURITY.md) —
   korleis du rapporterer sikkerheitssårbarheiter
 
 ## Lisens
 
-Dette repoet er lisensiert under [MIT-lisens](https://github.com/brreg/linkml-datamodellering-no/blob/main/LICENSE).
+Dette repoet er lisensiert under [MIT-lisens](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/LICENSE).
 Dei enkelte modellane har egne lisensar for bruk — sjå `license`-feltet i det einskilde skjemaet.
 
 ## Attribusjoner
 
 Dette repoet bygger og publiserer containerbilete
-(`ghcr.io/brreg/linkml-local`, `mcp-linkml-validator`, `mcp-linkml-modell-utkast`,
+(`ghcr.io/audunautomat/linkml-local`, `mcp-linkml-validator`, `mcp-linkml-modell-utkast`,
 `mcp-linkml-begrep-utkast` m.fl.) og denne dokumentasjonsportalen ved hjelp av
 følgjande tredjepartsverktøy. Verktøy som berre brukast internt i CI eller
 lokalt byggesteg — og aldri bundlast i eit publisert containerbilete eller i
@@ -56,4 +56,4 @@ den publiserte portalen — er utelatne.
 
 Fullstendig oversikt over alle verktøy som er vurdert — inkludert dei som
 ikkje krev attribution, og kvifor — finst i
-[`specs/done/verktoy-lisensoversikt.md`](https://github.com/brreg/linkml-datamodellering-no/blob/main/specs/done/verktoy-lisensoversikt.md).
+[`specs/done/verktoy-lisensoversikt.md`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/specs/done/verktoy-lisensoversikt.md).

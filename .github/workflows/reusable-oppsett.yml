@@ -130,5 +130,5 @@ jobs:
         uses: ./.github/actions/ensure-image
         with:
           name: ${{ matrix.image.name }}
-          tag: ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:${{ fromJson(needs.checkout-source.outputs.image_tags)[matrix.image.name] }}
+          tag: ${{ fromJson(needs.checkout-source.outputs.image_tags)[matrix.image.name] }}
           make_target: ${{ matrix.image.make_target }}

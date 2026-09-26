@@ -83,7 +83,7 @@ Release-please opprettar automatisk ein release-PR når du pushar `feat:` eller 
 
 **Manuell trigger** (valfritt):
 
-1. Gå til [Actions → Release Please](https://github.com/brreg/linkml-datamodellering-no/actions/workflows/release-please.yml)
+1. Gå til [Actions → Release Please](https://github.com/AudunAutomat/linkml-datamodellering-no/actions/workflows/release-please.yml)
 2. Klikk **Run workflow** → velg branch → **Run workflow**
 
 ### Steg 2: Merge release-PR
@@ -98,7 +98,7 @@ Etter merge må du opprette GitHub Release manuelt (krev repo-admin-tilgang).
 
 **Alternativ A: Via GitHub UI**
 
-1. Gå til [Releases](https://github.com/brreg/linkml-datamodellering-no/releases) → **Draft a new release**
+1. Gå til [Releases](https://github.com/AudunAutomat/linkml-datamodellering-no/releases) → **Draft a new release**
 2. **Choose a tag:** Skriv tag-navn frå release-PR (t.d. `samt-bu-v1.0.4`) → **Create new tag on publish**
 3. **Release title:** `samt-bu 1.0.4` (komponent + versjon)
 4. **Description:** Kopier frå `CHANGELOG.md` eller skriv manuelt
@@ -215,7 +215,7 @@ Dette repoet er ein **Proof of Concept** og har ingen garantert support-SLA:
 - ❌ Ingen garantert feilretting innan bestemte tidsfrister
 - ❌ Ingen 24/7-support eller varslingssystem
 - ✅ Best-effort-support frå repo-administrator og bidragsytarar
-- ✅ Community-driven feilsøking via GitHub Issues og [Discussions](https://github.com/brreg/linkml-datamodellering-no/discussions)
+- ✅ Community-driven feilsøking via GitHub Issues og [Discussions](https://github.com/AudunAutomat/linkml-datamodellering-no/discussions)
 
 ### Rapportering av feil
 
@@ -242,11 +242,11 @@ Dette repoet er ein **Proof of Concept** og har ingen garantert support-SLA:
 **Bidragsytarar sitt ansvar:**
 - Rapporterer feil og forbetringsforslag via GitHub Issues
 - Sender PR-ar for feilrettingar og forbetringar
-- Hjelper andre brukarar i [GitHub Discussions](https://github.com/brreg/linkml-datamodellering-no/discussions)
+- Hjelper andre brukarar i [GitHub Discussions](https://github.com/AudunAutomat/linkml-datamodellering-no/discussions)
 
 ### Kjende avgrensingar
 
-Sjå [BUGS.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/BUGS.md) for fullstendig liste over kjende bugs og workarounds.
+Sjå [BUGS.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/BUGS.md) for fullstendig liste over kjende bugs og workarounds.
 
 Kvar rettleiing har òg ein "Kjende avgrensingar"-seksjon nedst som listar opp avgrensingar spesifikke for den arbeidsflyta.
 
@@ -266,9 +266,9 @@ Kvar rettleiing har òg ein "Kjende avgrensingar"-seksjon nedst som listar opp a
 
 ### Få hjelp
 
-1. **Les dokumentasjonen først:** [brreg.github.io/linkml-datamodellering-no](https://brreg.github.io/linkml-datamodellering-no/)
+1. **Les dokumentasjonen først:** [audunautomat.github.io/linkml-datamodellering-no](https://audunautomat.github.io/linkml-datamodellering-no/)
 2. **Søk i eksisterande issues:** Nokon andre kan ha rapportert same problemet
-3. **Sjekk kjende avgrensingar:** [BUGS.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/BUGS.md)
-4. **Still spørsmål eller del idear:** Bruk [GitHub Discussions](https://github.com/brreg/linkml-datamodellering-no/discussions) for generelle spørsmål og forslag som ikkje er ein konkret bug
+3. **Sjekk kjende avgrensingar:** [BUGS.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/BUGS.md)
+4. **Still spørsmål eller del idear:** Bruk [GitHub Discussions](https://github.com/AudunAutomat/linkml-datamodellering-no/discussions) for generelle spørsmål og forslag som ikkje er ein konkret bug
 5. **Opne ein ny issue:** Med merkelapp `bug`, `question` eller `data-quality`
 6. **Vær tolmodig:** Dette er ein PoC med avgrensa ressursar

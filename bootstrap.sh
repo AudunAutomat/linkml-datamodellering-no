@@ -3,7 +3,7 @@
 #
 # Bruk:
 #   bash bootstrap.sh
-#   curl -sSL https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/bootstrap.sh | bash
+#   curl -sSL https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/bootstrap.sh | bash
 #
 # Standardversjon er "latest" (alltid siste release).
 # For å feste til ein konkret release, send versjonen som argument eller set AP_NO_VERSION.
@@ -27,7 +27,7 @@ if [ -f linkml-datamodellering.yaml ]; then
     echo "  linkml-datamodellering.yaml finst allereie — hoppar over."
 else
     cat > linkml-datamodellering.yaml << EOF
-# Pinnar versjonen av brreg/linkml-datamodellering-no som dette repoet nyttar.
+# Pinnar versjonen av AudunAutomat/linkml-datamodellering-no som dette repoet nyttar.
 # Oppdater ap-no-version for å oppgradere til ein ny release.
 ap-no-version: ${VERSION}
 EOF
@@ -47,7 +47,7 @@ on: [push, pull_request]
 
 jobs:
   validate:
-    uses: brreg/linkml-datamodellering-no/.github/workflows/reusable-validate.yml@${WORKFLOW_REF}
+    uses: AudunAutomat/linkml-datamodellering-no/.github/workflows/reusable-validate.yml@${WORKFLOW_REF}
     with:
       schema: src/linkml/DOMENE/MODELL/MODELL-schema.yaml
       policy: bronze

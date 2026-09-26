@@ -144,7 +144,7 @@ linkml:types  # direkte import
 
 > Dette er den autoritative kjelda for modellen. Alle tabellar, diagram og artefakt på denne sida er genererte frå dette skjemaet.
 
-Kjelde-datamodell i LinkML-format: [`brreg-felles-geografisk-adresse-schema.yaml`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-geografisk-adresse/brreg-felles-geografisk-adresse-schema.yaml)
+Kjelde-datamodell i LinkML-format: [`brreg-felles-geografisk-adresse-schema.yaml`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-geografisk-adresse/brreg-felles-geografisk-adresse-schema.yaml)
 
 ---
 
@@ -298,7 +298,7 @@ Kjelde-datamodell i LinkML-format: [`brreg-felles-geografisk-adresse-schema.yaml
 | ER-diagram (Mermaid) | [brreg-felles-geografisk-adresse-erdiagram.md](brreg-felles-geografisk-adresse-erdiagram.md) |
 | PlantUML-diagram | [brreg-felles-geografisk-adresse-filtered.svg](diagrams/brreg-felles-geografisk-adresse-filtered.svg) · [brreg-felles-geografisk-adresse-filtered.puml](diagrams/brreg-felles-geografisk-adresse-filtered.puml) · [brreg-felles-geografisk-adresse.puml](diagrams/brreg-felles-geografisk-adresse.puml) (full) |
 
-*Full byggekonfigurasjon: [build.yaml](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-geografisk-adresse/build.yaml)*
+*Full byggekonfigurasjon: [build.yaml](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-geografisk-adresse/build.yaml)*
 
 ---
 
@@ -322,5 +322,5 @@ Kjelde-datamodell i LinkML-format: [`brreg-felles-geografisk-adresse-schema.yaml
 
 > Her finn du informasjon om forvaltningsansvarleg, kontaktpunkt og kanal for feilrapportering eller forslag til forbetringar.
 
-**Support:** [GitHub Issues](https://github.com/brreg/linkml-datamodellering-no/issues)
+**Support:** [GitHub Issues](https://github.com/AudunAutomat/linkml-datamodellering-no/issues)
 

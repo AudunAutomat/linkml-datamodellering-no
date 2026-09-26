@@ -103,7 +103,7 @@ kontainer, ikkje berre Makefile-targeta:
    cache-hit i staden for reell re-køyring
 6. **`Dockerfile*` sine `COPY`-lister** — den avgjerande, lett gløymde
    staden: eit `podman run`-kall utan eksplisitt filmontering (t.d. det
-   publiserte `ghcr.io/brreg/*`-biletet brukt av reusable workflows/eksterne
+   publiserte `ghcr.io/audunautomat/*`-biletet brukt av reusable workflows/eksterne
    repo) er heilt avhengig av at modulen faktisk vart bygd inn i biletet.
    Sjekk **kvart** `FROM ... AS <stadium>`-steg i `Dockerfile.mcp-linkml`
    (validator/modell-utkast/begrep-utkast har separate `COPY`-linjer) —

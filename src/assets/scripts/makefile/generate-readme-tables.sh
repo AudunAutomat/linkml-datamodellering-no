@@ -98,7 +98,7 @@ generate_schema_table() {
       # så berre eit kontekst-uavhengig, absolutt mål er korrekt begge stader.
       # Sjå specs/backlog/lenkjesjekk-runde3-fiks-resterande-feil.md kategori E.
       ghpages_schema_link="${schema_dir#src/linkml/}"
-      local ghpages_base="https://brreg.github.io/linkml-datamodellering-no"
+      local ghpages_base="https://audunautomat.github.io/linkml-datamodellering-no"
 
       echo "| [$(domain_short_label "$domain")]($ghpages_base/$domain/) | [$schema_name]($ghpages_base/$ghpages_schema_link/) | $description | $doc_link"
     done <<< "${DOMAIN_SCHEMAS[$domain]}"
@@ -128,13 +128,13 @@ generate_begrepskatalog_table() {
     fi
 
     # Lenk begrepskatalog-domenet til dokumentasjonsportalen
-    domain_link="https://brreg.github.io/linkml-datamodellering-no/begrepskatalog/"
+    domain_link="https://audunautomat.github.io/linkml-datamodellering-no/begrepskatalog/"
 
     # Konverter src/linkml/begrepskatalog/<katalog>/ til begrepskatalog/<katalog>/ for GitHub Pages.
     # Absolutt URL — sjå grunngjeving i generate_schema_table() over.
     ghpages_link="${schema_dir#src/linkml/}"
 
-    echo "| [begrepskatalog]($domain_link) | [$schema_name](https://brreg.github.io/linkml-datamodellering-no/$ghpages_link/) | $org | Begrepskatalog for $org sine begrep | [\`gen-begrepskatalog-instance\`](https://github.com/brreg/linkml-datamodellering-no/blob/main/COMMANDS.md#gen-begrepskatalog-instance) |"
+    echo "| [begrepskatalog]($domain_link) | [$schema_name](https://audunautomat.github.io/linkml-datamodellering-no/$ghpages_link/) | $org | Begrepskatalog for $org sine begrep | [\`gen-begrepskatalog-instance\`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/COMMANDS.md#gen-begrepskatalog-instance) |"
   done < <(find src/linkml/begrepskatalog -name "*-schema.yaml" -type f | sort)
 }
 
@@ -161,13 +161,13 @@ generate_modellkatalog_table() {
     fi
 
     # Lenk modellkatalog-domenet til dokumentasjonsportalen
-    domain_link="https://brreg.github.io/linkml-datamodellering-no/modellkatalog/"
+    domain_link="https://audunautomat.github.io/linkml-datamodellering-no/modellkatalog/"
 
     # Konverter src/linkml/modellkatalog/<katalog>/ til modellkatalog/<katalog>/ for GitHub Pages.
     # Absolutt URL — sjå grunngjeving i generate_schema_table() over.
     ghpages_link="${schema_dir#src/linkml/}"
 
-    echo "| [modellkatalog]($domain_link) | [$schema_name](https://brreg.github.io/linkml-datamodellering-no/$ghpages_link/) | $org | Modellkatalog for $org sine informasjonsmodellar | [\`gen-modellkatalog-instance\`](https://github.com/brreg/linkml-datamodellering-no/blob/main/COMMANDS.md#gen-modellkatalog-instance) |"
+    echo "| [modellkatalog]($domain_link) | [$schema_name](https://audunautomat.github.io/linkml-datamodellering-no/$ghpages_link/) | $org | Modellkatalog for $org sine informasjonsmodellar | [\`gen-modellkatalog-instance\`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/COMMANDS.md#gen-modellkatalog-instance) |"
   done < <(find src/linkml/modellkatalog -name "*-schema.yaml" -type f | sort)
 }
 

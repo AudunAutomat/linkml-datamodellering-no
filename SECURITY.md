@@ -89,4 +89,4 @@ Dersom ein sårbarheit er **kritisk** (t.d. lekking av credentials, RCE i CI/CD)
 2. Vi svarer innan **1 arbeidsdagdag**
 3. Offentleggjering vert utsett til ein fix er tilgjengeleg
 
-Dersom du ikkje får svar innan 2 arbeidsdagar, kontakt [GitHub Security Advisory](https://github.com/brreg/linkml-datamodellering-no/security/advisories).
+Dersom du ikkje får svar innan 2 arbeidsdagar, kontakt [GitHub Security Advisory](https://github.com/AudunAutomat/linkml-datamodellering-no/security/advisories).

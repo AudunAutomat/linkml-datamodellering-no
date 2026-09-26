@@ -331,11 +331,11 @@ title: "Brønnøysundregistra"
 
 | Fil | Rolle |
 |---|---|
-| [`README.md`](https://github.com/brreg/linkml-datamodellering-no/blob/main/README.md) | Målfil for auto-genererte tabellar |
-| [`src/assets/scripts/makefile/generate-readme-tables.sh`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/assets/scripts/makefile/generate-readme-tables.sh) | Genereringsscript |
-| [`src/assets/scripts/makefile/extract-schema-metadata.py`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/assets/scripts/makefile/extract-schema-metadata.py) | Metadata-ekstraksjon frå YAML-skjema |
-| [`mkdocs/publish.sh`](https://github.com/brreg/linkml-datamodellering-no/blob/main/mkdocs/publish.sh) | Kallar `generate-readme-tables.sh` som del av `make docs-publish` |
-| [`make/50-docs.mk`](https://github.com/brreg/linkml-datamodellering-no/blob/main/make/50-docs.mk) | `docs-publish`-målet |
+| [`README.md`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/README.md) | Målfil for auto-genererte tabellar |
+| [`src/assets/scripts/makefile/generate-readme-tables.sh`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/assets/scripts/makefile/generate-readme-tables.sh) | Genereringsscript |
+| [`src/assets/scripts/makefile/extract-schema-metadata.py`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/assets/scripts/makefile/extract-schema-metadata.py) | Metadata-ekstraksjon frå YAML-skjema |
+| [`mkdocs/publish.sh`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/mkdocs/publish.sh) | Kallar `generate-readme-tables.sh` som del av `make docs-publish` |
+| [`make/50-docs.mk`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/make/50-docs.mk) | `docs-publish`-målet |
 
 ---
 
@@ -343,4 +343,4 @@ title: "Brønnøysundregistra"
 
 - [Ny domenemodell](../kom-i-gang/ny-domenemodell.md)
 - [Ny organisasjon](../kom-i-gang/ny-org.md)
-- [CONTRIBUTING.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md)
+- [CONTRIBUTING.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md)

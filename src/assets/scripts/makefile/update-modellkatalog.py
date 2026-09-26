@@ -37,7 +37,7 @@ from utils.codeowners import load_codeowners as _load_codeowners  # noqa: E402
 
 CODEOWNERS_PATH = "CODEOWNERS.md"
 CATALOG_DATA_TEMPLATE = "src/linkml/modellkatalog/{slug}/data/{slug}/{slug}.yaml"
-PORTAL_BASE = "https://brreg.github.io/linkml-datamodellering-no"
+PORTAL_BASE = "https://audunautomat.github.io/linkml-datamodellering-no"
 RELEASE_MANIFEST_PATH = ".release-please-manifest.json"
 
 # modellkatalog er outputdomenet (sjølvreferanse), begrepskatalog er SKOS-AP-NO

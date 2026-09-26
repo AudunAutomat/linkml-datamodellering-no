@@ -49,7 +49,7 @@ ARTIFACT_ORDER="shapes.ttl context.jsonld schema.json schema.xsd openapi.yaml as
 generate_validation_docs() {
     local policies_readme="$REPO_ROOT/src/mcp-linkml-validator/policies/README.md"
     local output="$DOCS/arkitektur/valideringsregler.md"
-    local github_base="https://github.com/brreg/linkml-datamodellering-no/blob/main"
+    local github_base="https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main"
 
     # Ingen eigen før/etter-logging her — kalt via timed_run(), som alt
     # loggar navn+tid ved suksess og navn+tid+kommando ved feil. Sjå
@@ -64,7 +64,7 @@ generate_validation_docs() {
 
      Valideringsreglar består av policyer som du kan velge å etterleve og maskinelt validere etterlevelsen av. Alle må som minimum etterleve bronze policyen.
      
-     Denne sida er generert automatisk frå validator-dokumentasjonen i `src/mcp-linkml-validator/policies/`. Sjå [GitHub-repoet](https://github.com/brreg/linkml-datamodellering-no/tree/main/src/mcp-linkml-validator) for siste versjon.
+     Denne sida er generert automatisk frå validator-dokumentasjonen i `src/mcp-linkml-validator/policies/`. Sjå [GitHub-repoet](https://github.com/AudunAutomat/linkml-datamodellering-no/tree/main/src/mcp-linkml-validator) for siste versjon.
 
 ---
 
@@ -115,7 +115,7 @@ Desse sidene viser navnelikskaps-analysar køyrde på tvers av **alle**
 domene i repoet — til skilnad frå dei domene-scopa analysane som ligg
 under kvar enkelt modell sin `## Modellanalyse`-seksjon.
 
-Alle modellanalyser blir kjørt automatisk i [Modell-analyse](https://github.com/brreg/linkml-datamodellering-no/actions/workflows/modell-analyse.yml) workflowen. Klikk deg inn på den siste køyringa av jobben for fulstendig analyseresultat.
+Alle modellanalyser blir kjørt automatisk i [Modell-analyse](https://github.com/AudunAutomat/linkml-datamodellering-no/actions/workflows/modell-analyse.yml) workflowen. Klikk deg inn på den siste køyringa av jobben for fulstendig analyseresultat.
 
 - [Liknande klassenavn](liknande-klassenavn-alle-domene.md)
 - [Liknande slotnavn](liknande-slotnavn-alle-domene.md)
@@ -546,10 +546,10 @@ t4=$(now_ms)
 cat << 'STATIC'
 site_name:  Norske W3C-profiler og offentlige domenemodellar i LinkML-format
 site_description: Norske W3C-applikasjonsprofilar og offentlige domenemodellar i LinkML-format
-site_url: https://brreg.github.io/linkml-datamodellering-no
+site_url: https://audunautomat.github.io/linkml-datamodellering-no
 docs_dir: docs
 copyright: >
-  Repoet er lisensiert under <a href="https://github.com/brreg/linkml-datamodellering-no/blob/main/LICENSE">MIT-lisens</a>.
+  Repoet er lisensiert under <a href="https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/LICENSE">MIT-lisens</a>.
   Dei enkelte modellane har egne lisensar — sjå <code>license:</code>-feltet i det einskilde skjemaet.
 
 theme:

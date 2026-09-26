@@ -33,7 +33,7 @@ Modellmanifestet er ein YAML-datafil som inneheld metadata om eit LinkML-skjema 
 | `tema` | Liste av Los-tema-URI-ar (valgfri) | `<modell>-schema.yaml` | `annotations.tema` |
 | `dekningsomraade` | Geografisk URI (valgfri) | `<modell>-schema.yaml` | `annotations.dekningsomraade` |
 | `nokkelord` | LangString-liste (valgfri) | `<modell>-schema.yaml` | `annotations.nokkelord` |
-| `heimeside` | `https://brreg.github.io/linkml-datamodellering-no/<domain>/<modell>/` | (generert) | mkdocs-URL |
+| `heimeside` | `https://audunautomat.github.io/linkml-datamodellering-no/<domain>/<modell>/` | (generert) | mkdocs-URL |
 | `er_i_samsvar_med` | Standard-instans (inline) | `build.yaml` | `external_spec_url` + `external_spec_label` |
 | `har_del` | Liste av submodell-URI-ar | `build.yaml` | `submodels` |
 | `kontaktpunkt` | Kontaktopplysning-instans (inline) | `CODEOWNERS.md` | `organizations[].contact_uri` + `organizations[].name` |
@@ -106,7 +106,7 @@ endringsdato: '2026-07-04'
 utgivelsesdato: '2023-01-01'
 status: http://purl.org/adms/status/Completed
 
-heimeside: https://brreg.github.io/linkml-datamodellering-no/ap-no/dcat-ap-no/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/dcat-ap-no/
 
 er_i_samsvar_med:
 - id: https://informasjonsforvaltning.github.io/dcat-ap-no/
@@ -131,11 +131,11 @@ inneholder_modellelement:
 - https://data.norge.no/ap-no/dcat-ap-no#Distribusjon
 
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/dcat-ap-no/dcat-ap-no-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/dcat-ap-no/dcat-ap-no-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/dcat-ap-no/dcat-ap-no-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/dcat-ap-no/dcat-ap-no-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/ap-no/dcat-ap-no/dcat-ap-no-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/dcat-ap-no/dcat-ap-no-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/dcat-ap-no/dcat-ap-no-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/dcat-ap-no/dcat-ap-no-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/dcat-ap-no/dcat-ap-no-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/ap-no/dcat-ap-no/dcat-ap-no-schema.yaml
 ```
 
 ## Plassering i dokumentasjonsportalen
@@ -220,7 +220,7 @@ Dersom `gen-informasjonsmodell-instance` feiler for eit skjema:
 
 ## Relatert dokumentasjon
 
-- [specs/done/manifest-som-modelldcat-datafil.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/specs/done/manifest-som-modelldcat-datafil.md) — Hovudspec for ModelDCAT-manifest-design
-- [specs/done/autogenerer-modellmanifest-i-domain-make.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/specs/done/autogenerer-modellmanifest-i-domain-make.md) — Implementeringsspec (generering i domain-*)
+- [specs/done/manifest-som-modelldcat-datafil.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/specs/done/manifest-som-modelldcat-datafil.md) — Hovudspec for ModelDCAT-manifest-design
+- [specs/done/autogenerer-modellmanifest-i-domain-make.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/specs/done/autogenerer-modellmanifest-i-domain-make.md) — Implementeringsspec (generering i domain-*)
 - [index-md-struktur.md](index-md-struktur.md) — Struktur for `index.md` per modell
-- [COMMANDS.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/COMMANDS.md) — Kommandoreferanse (make-targets)
+- [COMMANDS.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/COMMANDS.md) — Kommandoreferanse (make-targets)

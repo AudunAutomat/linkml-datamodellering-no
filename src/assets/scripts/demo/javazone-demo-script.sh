@@ -778,7 +778,7 @@ fi
 echo ""
 echo ""
 if podman image exists "$FUN_IMAGE" 2>/dev/null; then
-    printf 'https://brreg.github.io/linkml-datamodellering-no/' \
+    printf 'https://audunautomat.github.io/linkml-datamodellering-no/' \
         | fun cowsay -n
 fi
 echo ""

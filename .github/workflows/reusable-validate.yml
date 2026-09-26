@@ -48,10 +48,10 @@ jobs:
 
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Hent validator-komponenter frå brreg/linkml-datamodellering-no
+      - name: Hent validator-komponenter frå AudunAutomat/linkml-datamodellering-no
         uses: actions/checkout@v7
         with:
-          repository: brreg/linkml-datamodellering-no
+          repository: AudunAutomat/linkml-datamodellering-no
           ref: ${{ steps.config.outputs.version }}
           persist-credentials: false
           sparse-checkout: |
@@ -65,8 +65,8 @@ jobs:
         env:
           VERSION: ${{ steps.config.outputs.version }}
         run: |
-          podman pull "ghcr.io/brreg/mcp-linkml-validator:${VERSION}"
-          podman tag  "ghcr.io/brreg/mcp-linkml-validator:${VERSION}" mcp-linkml-validator
+          podman pull "ghcr.io/audunautomat/mcp-linkml-validator:${VERSION}"
+          podman tag  "ghcr.io/audunautomat/mcp-linkml-validator:${VERSION}" mcp-linkml-validator
 
       - name: Valider skjema
         env:

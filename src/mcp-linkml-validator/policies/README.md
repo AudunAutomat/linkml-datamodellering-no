@@ -248,7 +248,7 @@ som har ein tilhøyrande datafil.
 ### felles-begrepskatalog
 
 For begrepskatalogskjema som publiserer til [data.norge.no/concepts](https://data.norge.no/concepts)
-via SKOS-AP-NO-Begrep. Sjå [Publiser til Felles Begrepskatalog](https://brreg.github.io/linkml-datamodellering-no/publisering/publisering-begrep/) for full rettleiing.
+via SKOS-AP-NO-Begrep. Sjå [Publiser til Felles Begrepskatalog](https://audunautomat.github.io/linkml-datamodellering-no/publisering/publisering-begrep/) for full rettleiing.
 
 | Kategori | Krav | Alvor | Kode | Kjelde |
 |---|---|---|---|---|
@@ -300,7 +300,7 @@ gjennomgang av `.ttl`-fila for å verifiere at både `@nb` og `@nn` er til stade
 ### felles-datakatalog
 
 For modellkatalogskjema som publiserer til [data.norge.no/models](https://data.norge.no/models)
-via ModelDCAT-AP-NO. Sjå [Publiser til Felles Datakatalog](https://brreg.github.io/linkml-datamodellering-no/publisering/publisering-modell/) for full rettleiing.
+via ModelDCAT-AP-NO. Sjå [Publiser til Felles Datakatalog](https://audunautomat.github.io/linkml-datamodellering-no/publisering/publisering-modell/) for full rettleiing.
 
 | Kategori | Krav | Alvor | Kode | Kjelde |
 |---|---|---|---|---|

@@ -15,7 +15,7 @@ direkte til data.norge.no — det følgjer "pull, ikkje push"-prinsippet.
 ```mermaid
 flowchart LR
     A["src/linkml/modellkatalog/<organisasjon>-modellkatalog/\ndata/<organisasjon>-modellkatalog/\n<organisasjon>-modellkatalog.yaml"] -->|make convert-data| B["generated/modellkatalog/\n<organisasjon>-modellkatalog/\n<organisasjon>-modellkatalog.ttl"]
-    B -->|GitHub Pages| C["brreg.github.io/\n.../<organisasjon>-modellkatalog.ttl"]
+    B -->|GitHub Pages| C["audunautomat.github.io/\n.../<organisasjon>-modellkatalog.ttl"]
     C -->|Automatisk høsting| D["data.norge.no/\nmodels"]
 ```
 
@@ -30,7 +30,7 @@ fullstendig, verkeleg eksempel, sjå `src/linkml/modellkatalog/brreg-modellkatal
 
 1. **Modellering:** Du lagar eller oppdaterer LinkML-skjemaer i `src/linkml/<domain>/<modell>/`
 2. **Generering:** `make <domain>` genererer ModelDCAT-AP-NO-metadata frå skjema-annotasjonar
-3. **Publisering til GitHub Pages:** CI publiserer metadata til `https://brreg.github.io/linkml-datamodellering-no/...`
+3. **Publisering til GitHub Pages:** CI publiserer metadata til `https://audunautomat.github.io/linkml-datamodellering-no/...`
 4. **Høsting (ekstern prosess):** Felles Datakatalog kan konfigurere seg til å høste frå GitHub Pages-adressa
 
 **Status i PoC-fasen:** Steg 1-3 er implementerte. Steg 4 (faktisk høsting til Felles Datakatalog) 
@@ -111,7 +111,7 @@ informasjonsmodellar:
         "@language": "nb"
     utgiver: https://data.norge.no/organizations/<orgnr>
     identifikator_literal: "https://<organisasjon>.no/modellkatalogar/<organisasjon>-modellkatalog/<slug>"
-    informasjonsmodellidentifikator: "https://brreg.github.io/linkml-datamodellering-no/<domain>/<skjema>/"
+    informasjonsmodellidentifikator: "https://audunautomat.github.io/linkml-datamodellering-no/<domain>/<skjema>/"
     kontaktpunkt:
       - https://<organisasjon>.no/kontakt/modellforvaltning
     tema:
@@ -163,7 +163,7 @@ med ID-porten og verifiser at Din organisasjon er synleg.
 | **Katalogtype** | Informasjonsmodellar |
 | **Datakildentype** | ModelDCAT-AP-NO |
 | **Format** | Turtle |
-| **Datakjelde-URL** | `https://brreg.github.io/linkml-datamodellering-no/modell/<organisasjon>-modellkatalog/<organisasjon>-modellkatalog-eksempel.ttl` |
+| **Datakjelde-URL** | `https://audunautomat.github.io/linkml-datamodellering-no/modell/<organisasjon>-modellkatalog/<organisasjon>-modellkatalog-eksempel.ttl` |
 | **Autentisering** | (tomt — endepunktet er offentleg) |
 
 **Steg 3** — Klikk **«Høst»** for umiddelbar høsting. Verifiser på
@@ -213,7 +213,7 @@ make docs-publish
 ## Relatert dokumentasjon
 
 - [Ny domenemodell](../kom-i-gang/ny-domenemodell.md) — opprette nytt skjema
-- [`felles-datakatalog.yaml`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/felles-datakatalog.yaml) — full policy-definisjon
-- [`specs/done/publisering-felles-datakatalog.md`](https://github.com/brreg/linkml-datamodellering-no/blob/main/specs/done/publisering-felles-datakatalog.md) — teknisk spesifikasjon
+- [`felles-datakatalog.yaml`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/felles-datakatalog.yaml) — full policy-definisjon
+- [`specs/done/publisering-felles-datakatalog.md`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/specs/done/publisering-felles-datakatalog.md) — teknisk spesifikasjon
 - [ModelDCAT-AP-NO-spesifikasjonen](https://data.norge.no/specification/modelldcat-ap-no)
 - [Felles Datakatalog — modellar](https://data.norge.no/models)

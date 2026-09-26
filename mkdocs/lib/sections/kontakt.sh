@@ -35,10 +35,10 @@ generate_contact_info() {
             echo "**Kontakt:** [$name - Kontakt]($contact_uri)"
             echo ""
         fi
-        echo "**Support:** [GitHub Issues](https://github.com/brreg/linkml-datamodellering-no/issues)"
+        echo "**Support:** [GitHub Issues](https://github.com/AudunAutomat/linkml-datamodellering-no/issues)"
     else
         # Fallback — ingen match funne
-        echo "**Support:** [GitHub Issues](https://github.com/brreg/linkml-datamodellering-no/issues)"
+        echo "**Support:** [GitHub Issues](https://github.com/AudunAutomat/linkml-datamodellering-no/issues)"
     fi
     echo ""
 }

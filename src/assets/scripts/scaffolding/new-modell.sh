@@ -206,7 +206,7 @@ body_out = body_out.replace(
 body_out = body_out.replace(
     'license: https://data.norge.no/nlod/no/2.0\n',
     'license: https://data.norge.no/nlod/no/2.0'
-    '  # Andre gyldige lisensar: https://brreg.github.io/linkml-datamodellering-no/ap-no/common-ap-no/klasser/eulicence/\n',
+    '  # Andre gyldige lisensar: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/common-ap-no/klasser/eulicence/\n',
     1,
 )
 

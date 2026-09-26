@@ -55,7 +55,7 @@ name: tilskudd
 title: 'TODO: tittel for tilskudd'
 description: Generert modell for 'tilskudd'.
 version: 0.1.0
-license: https://data.norge.no/nlod/no/2.0  # Andre gyldige lisensar: https://brreg.github.io/linkml-datamodellering-no/ap-no/common-ap-no/klasser/eulicence/
+license: https://data.norge.no/nlod/no/2.0  # Andre gyldige lisensar: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/common-ap-no/klasser/eulicence/
 annotations:
   utgiver: https://data.norge.no/organizations/<orgnr>
   endringsdato: '<dagens dato>'
@@ -141,7 +141,7 @@ klasser der det er relevant.
 | `begrepsidentifikator: …/TODO` | URI frå [data.norge.no/concepts](https://data.norge.no/concepts) |
 | `description: TODO: beskriv klassen` | Norsk skildring av kva klassen representerer |
 | `dcat-ap-no`-importet (TODO-kommentar på importlina) | `dcat-ap-no` er alt sett som standard AP-NO-profil, versjonslåst til ein konkret git-tag. Byt til ein annan profil eller legg til fleire imports dersom `dcat-ap-no` sine felles slots ikkje dekkjer behovet |
-| `license: https://data.norge.no/nlod/no/2.0` | Alt sett til standard (NLOD 2.0) — byt berre dersom modellen krev ein annan lisens, sjå [gyldige lisensar](https://brreg.github.io/linkml-datamodellering-no/ap-no/common-ap-no/klasser/eulicence/) |
+| `license: https://data.norge.no/nlod/no/2.0` | Alt sett til standard (NLOD 2.0) — byt berre dersom modellen krev ein annan lisens, sjå [gyldige lisensar](https://audunautomat.github.io/linkml-datamodellering-no/ap-no/common-ap-no/klasser/eulicence/) |
 | `annotations.utgiver` | Auto-utleidd frå `CODEOWNERS.md` sitt `path_patterns`-oppslag for `DOMAIN`. Vert `https://data.norge.no/organizations/TODO` dersom domenet ikkje har ein registrert eigar der (skript skriv ei åtvaring til stderr i så fall) |
 | `annotations.endringsdato`/`utgivelsesdato` | Sett til dagens dato automatisk — juster ved behov |
 | `annotations.status` | Alt sett til `UnderDevelopment` («Under utarbeidelse») — oppdater etter kvart som modellen modnar (sjå ADMS-status-tabellen i `CLAUDE.md`) |
@@ -198,7 +198,7 @@ make mcp-linkml-modell-utkast SCHEMA=tmp/modell.json POLICY=silver
 
 ## 2 — Rediger skjemaet
 
-Sjå [Referanseskjema](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/linkml/referanse/referansemodell/referansemodell-schema.yaml) for eksempel på gyldig skjema med forklaringer.
+Sjå [Referanseskjema](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/referanse/referansemodell/referansemodell-schema.yaml) for eksempel på gyldig skjema med forklaringer.
 
 Opne `src/linkml/<domain>/<modell>/<modell>-schema.yaml` og legg til klasser, slots og importar. Sjå [Importhierarki](#importhierarki) og [Kva importerer du?](#kva-importerer-du) nedanfor.
 
@@ -224,9 +224,9 @@ make mcp-linkml-valider-modell SCHEMA=src/linkml/<domain>/<modell>/<modell>-sche
 
 | Policy | Sjekkar |
 |---|---|
-| [`bronze`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/README.md) | `id`, `name`, `title` (error); `default_prefix` (https-URI, error); `description`, `version`, `license` (warning); PascalCase-klasser, snake_case-slots, `class_uri`, `slot_uri`, `begrepsidentifikator` (warning) |
-| [`silver`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/README.md) | Bronze + `annotations.utgiver`, `annotations.endringsdato`, `annotations.status` (warning) + DCAT-AP-NO/DQV-AP-NO strukturkrav (error) |
-| [`gold`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/README.md) | Silver + FAIR F1-R1.3: full semantisk interoperabilitet |
+| [`bronze`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/README.md) | `id`, `name`, `title` (error); `default_prefix` (https-URI, error); `description`, `version`, `license` (warning); PascalCase-klasser, snake_case-slots, `class_uri`, `slot_uri`, `begrepsidentifikator` (warning) |
+| [`silver`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/README.md) | Bronze + `annotations.utgiver`, `annotations.endringsdato`, `annotations.status` (warning) + DCAT-AP-NO/DQV-AP-NO strukturkrav (error) |
+| [`gold`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/README.md) | Silver + FAIR F1-R1.3: full semantisk interoperabilitet |
 
 Sjå [Valideringsreglar](../arkitektur/valideringsregler.md) for fullstendig oversikt over kva som vert sjekka på kvart nivå.
 
@@ -352,7 +352,7 @@ make mcp-linkml-valider-modell SCHEMA=src/linkml/<domain>/<modell>/<modell>-sche
 
 ## Genererte artefakter
 
-Sjå [Genererte artefakter](https://github.com/brreg/linkml-datamodellering-no#genererte-artefakter) i README for full oversikt over kva som vert generert per skjema.
+Sjå [Genererte artefakter](https://github.com/AudunAutomat/linkml-datamodellering-no#genererte-artefakter) i README for full oversikt over kva som vert generert per skjema.
 
 ---
 
@@ -375,7 +375,7 @@ domenetype (standard, FINT, AP-NO/FAIR).
 
 ## Referanseskjema
 
-[`src/linkml/referanse/referansemodell/referansemodell-schema.yaml`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/linkml/referanse/referansemodell/referansemodell-schema.yaml) er eit annotert eksempelskjema som viser alle hovudmønster brukte i dette repoet: containerklasse, globale slots, import frå AP-NO-profil, `class_uri`/`slot_uri`, `LangString` og `in_subset`. Bruk det som oppslagsverk når du startar eit nytt skjema.
+[`src/linkml/referanse/referansemodell/referansemodell-schema.yaml`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/referanse/referansemodell/referansemodell-schema.yaml) er eit annotert eksempelskjema som viser alle hovudmønster brukte i dette repoet: containerklasse, globale slots, import frå AP-NO-profil, `class_uri`/`slot_uri`, `LangString` og `in_subset`. Bruk det som oppslagsverk når du startar eit nytt skjema.
 
 ---
 
@@ -435,7 +435,7 @@ Følgjande avgrensingar gjeld i PoC-fasen:
 
 ### Validering
 
-- **BUG-1**: `rdflib_loader` rekonstruerer ikkje `LangString`-verdiar korrekt frå TTL ved roundtrip-testing ([bugs/langstring-rdflib-roundtrip.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/bugs/langstring-rdflib-roundtrip.md))
+- **BUG-1**: `rdflib_loader` rekonstruerer ikkje `LangString`-verdiar korrekt frå TTL ved roundtrip-testing ([bugs/langstring-rdflib-roundtrip.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/bugs/langstring-rdflib-roundtrip.md))
 - MCP-validator kjører berre bronze/silver/gold-policy — ingen automatisk validering mot eksterne API-ar enno
 
 ### Generatorar
@@ -449,9 +449,9 @@ Følgjande avgrensingar gjeld i PoC-fasen:
 - Publisering til Felles Begrepskatalog er delvis implementert — sjå [publisering-begrep.md](../publisering/publisering-begrep.md) for faktisk status
 - Modellkatalogar med `publish_external: true` vert ikkje automatisk registrerte i data.norge.no enno — høsting må koordinerast manuelt
 
-**Fullstendig oversikt:** Sjå [BUGS.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/BUGS.md) for komplett liste over kjende bugs og workarounds.
+**Fullstendig oversikt:** Sjå [BUGS.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/BUGS.md) for komplett liste over kjende bugs og workarounds.
 
-**Rapporter nye problem:** Opne eit [GitHub Issue](https://github.com/brreg/linkml-datamodellering-no/issues) med merkelappen `bug`.
+**Rapporter nye problem:** Opne eit [GitHub Issue](https://github.com/AudunAutomat/linkml-datamodellering-no/issues) med merkelappen `bug`.
 
 ## Relatert dokumentasjon
 

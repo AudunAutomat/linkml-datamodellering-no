@@ -18,7 +18,7 @@ generate_datamodell() {
 
 > Dette er den autoritative kjelda for modellen. Alle tabellar, diagram og artefakt på denne sida er genererte frå dette skjemaet.
 
-Kjelde-datamodell i LinkML-format: [\`$schema-schema.yaml\`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/linkml/$domain/$source_dir/$schema-schema.yaml)
+Kjelde-datamodell i LinkML-format: [\`$schema-schema.yaml\`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/$domain/$source_dir/$schema-schema.yaml)
 
 EOF
 }

@@ -14,17 +14,17 @@ I PoC-fasen er **GitHub Actions-loggar** den primære monitoreringsmekanismen.
 
 **Hovudoversikt over alle workflows:**
 ```
-https://github.com/brreg/linkml-datamodellering-no/actions
+https://github.com/AudunAutomat/linkml-datamodellering-no/actions
 ```
 
 **Spesifikke workflows:**
 
 | Workflow | URL | Kva det gjer |
 |---|---|---|
-| `generate.yml` | [actions/workflows/generate.yml](https://github.com/brreg/linkml-datamodellering-no/actions/workflows/generate.yml) | Validerer, genererer artefakter og publiserer til GitHub Pages |
-| `validate.yml` | [actions/workflows/validate.yml](https://github.com/brreg/linkml-datamodellering-no/actions/workflows/validate.yml) | Nattleg validering (02:00 UTC) som lagrar loggar til `src/linkml/*/validation/` og opprettar PR ved endringar |
-| `release-please.yml` | [actions/workflows/release-please.yml](https://github.com/brreg/linkml-datamodellering-no/actions/workflows/release-please.yml) | Opprettar release-PR automatisk |
-| `release.yml` | [actions/workflows/release.yml](https://github.com/brreg/linkml-datamodellering-no/actions/workflows/release.yml) | Byggjer og pushar container-images ved release |
+| `generate.yml` | [actions/workflows/generate.yml](https://github.com/AudunAutomat/linkml-datamodellering-no/actions/workflows/generate.yml) | Validerer, genererer artefakter og publiserer til GitHub Pages |
+| `validate.yml` | [actions/workflows/validate.yml](https://github.com/AudunAutomat/linkml-datamodellering-no/actions/workflows/validate.yml) | Nattleg validering (02:00 UTC) som lagrar loggar til `src/linkml/*/validation/` og opprettar PR ved endringar |
+| `release-please.yml` | [actions/workflows/release-please.yml](https://github.com/AudunAutomat/linkml-datamodellering-no/actions/workflows/release-please.yml) | Opprettar release-PR automatisk |
+| `release.yml` | [actions/workflows/release.yml](https://github.com/AudunAutomat/linkml-datamodellering-no/actions/workflows/release.yml) | Byggjer og pushar container-images ved release |
 
 ---
 
@@ -78,7 +78,7 @@ Etter at release-PR er merga, må brukar opprette GitHub Release manuelt. Dette 
 
 **Alternativ 1: Via GitHub UI**
 
-1. Gå til [Releases](https://github.com/brreg/linkml-datamodellering-no/releases)
+1. Gå til [Releases](https://github.com/AudunAutomat/linkml-datamodellering-no/releases)
 2. Klikk **Draft a new release**
 3. Klikk **Choose a tag** → skriv inn tag-navn (t.d. `samt-bu-v1.0.4`) → klikk **Create new tag: samt-bu-v1.0.4 on publish**
 4. Fyll inn:
@@ -110,7 +110,7 @@ gh release create "samt-bu-v${VERSION}" \
   --notes "Release ${VERSION} for samt-bu"
 ```
 
-Sjå [CONTRIBUTING.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md) for fullstendig prosedyre.
+Sjå [CONTRIBUTING.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md) for fullstendig prosedyre.
 
 ---
 
@@ -203,7 +203,7 @@ GitHub lagrar workflow-loggar i **90 dagar**. Etter det vert dei automatisk slet
 
 ### Eksempel: Sjekke siste publisering
 
-1. Gå til https://github.com/brreg/linkml-datamodellering-no/actions/workflows/generate.yml
+1. Gå til https://github.com/AudunAutomat/linkml-datamodellering-no/actions/workflows/generate.yml
 2. Sjekk at øvste køyringa er grøn (✓)
 3. Klikk på køyringa for å sjå detaljert logg
 4. Sjekk "Deploy to GitHub Pages"-steget — vellukka dersom grøn hake
@@ -216,7 +216,7 @@ Etter at `generate.yml` har køyrt vellukka, verifiser at artefaktane faktisk er
 
 ### Hovudportal
 
-**URL:** https://brreg.github.io/linkml-datamodellering-no/
+**URL:** https://audunautomat.github.io/linkml-datamodellering-no/
 
 **Kva som skal vere der:**
 - MkDocs-dokumentasjonsportal
@@ -227,17 +227,17 @@ Etter at `generate.yml` har køyrt vellukka, verifiser at artefaktane faktisk er
 
 **Eksempel — SHACL shapes for ngr-virksomhet:**
 ```
-https://brreg.github.io/linkml-datamodellering-no/ngr/ngr-virksomhet/ngr-virksomhet-shapes.ttl
+https://audunautomat.github.io/linkml-datamodellering-no/ngr/ngr-virksomhet/ngr-virksomhet-shapes.ttl
 ```
 
 **Eksempel — JSON Schema:**
 ```
-https://brreg.github.io/linkml-datamodellering-no/ngr/ngr-virksomhet/ngr-virksomhet-schema.json
+https://audunautomat.github.io/linkml-datamodellering-no/ngr/ngr-virksomhet/ngr-virksomhet-schema.json
 ```
 
 **Eksempel — Begrepskatalog (SKOS/Turtle):**
 ```
-https://brreg.github.io/linkml-datamodellering-no/begrepskatalog/brreg-begrepskatalog/brreg-begrepskatalog.ttl
+https://audunautomat.github.io/linkml-datamodellering-no/begrepskatalog/brreg-begrepskatalog/brreg-begrepskatalog.ttl
 ```
 
 ### Verifisere at fila er oppdatert
@@ -245,7 +245,7 @@ https://brreg.github.io/linkml-datamodellering-no/begrepskatalog/brreg-begrepska
 **Manuell sjekk:**
 
 ```bash
-curl -I https://brreg.github.io/linkml-datamodellering-no/ngr/ngr-virksomhet/ngr-virksomhet-schema.json
+curl -I https://audunautomat.github.io/linkml-datamodellering-no/ngr/ngr-virksomhet/ngr-virksomhet-schema.json
 ```
 
 Sjekk `Last-Modified`-headeren:
@@ -264,7 +264,7 @@ Last-Modified: Sun, 29 Jun 2026 14:32:15 GMT
 **Test at TTL-filer er tilgjengelege for Felles Begrepskatalog/Datakatalog:**
 
 ```bash
-curl -H "Accept: text/turtle" https://brreg.github.io/linkml-datamodellering-no/begrepskatalog/brreg-begrepskatalog/brreg-begrepskatalog.ttl
+curl -H "Accept: text/turtle" https://audunautomat.github.io/linkml-datamodellering-no/begrepskatalog/brreg-begrepskatalog/brreg-begrepskatalog.ttl
 ```
 
 Dersom du får tilbake Turtle-data (startar med `@prefix`), fungerer høstingsendepunktet.
@@ -330,7 +330,7 @@ Desse alternativa kan leggjast til etter behov, men er **ikkje nødvendige i PoC
 2. Legg til ny monitor:
    - **Monitor Type:** HTTP(s)
    - **Friendly Name:** LinkML Datamodellering Portal
-   - **URL:** `https://brreg.github.io/linkml-datamodellering-no/`
+   - **URL:** `https://audunautomat.github.io/linkml-datamodellering-no/`
    - **Monitoring Interval:** 5 minutt
 3. Legg til e-postadresse for varsel
 
@@ -342,7 +342,7 @@ Desse alternativa kan leggjast til etter behov, men er **ikkje nødvendige i PoC
 
 **URL:**
 ```
-https://github.com/brreg/linkml-datamodellering-no/releases.atom
+https://github.com/AudunAutomat/linkml-datamodellering-no/releases.atom
 ```
 
 **Bruk:**
@@ -400,4 +400,4 @@ skjer *etter* at artefakter er publiserte til GitHub Pages.
 - [Publiser til Felles Begrepskatalog](../publisering/publisering-begrep.md) — rettleiing for begrepskatalogar
 - [Publiser til Felles Datakatalog](../publisering/publisering-modell.md) — rettleiing for modellkatalogar
 - [Publiseringsoversikt](../publisering/publisering-oversikt.md) — publiseringsflyt frå repo til eksterne katalogar
-- [GOVERNANCE.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/GOVERNANCE.md) — publiseringspolicy
+- [GOVERNANCE.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/GOVERNANCE.md) — publiseringspolicy

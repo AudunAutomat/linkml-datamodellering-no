@@ -13,7 +13,7 @@ Repoet publiserer SKOS/Turtle-filer til GitHub Pages som eit høstingsendepunkt.
 ```mermaid
 flowchart LR
     A["src/linkml/begrepskatalog/\n<organisasjon>-begrepskatalog/data/.../\n<organisasjon>-begrepskatalog.yaml"] -->|make convert-data| B["generated/.../\n<organisasjon>-begrepskatalog.ttl"]
-    B -->|GitHub Pages| C["brreg.github.io/\n.../<organisasjon>-begrepskatalog.ttl"]
+    B -->|GitHub Pages| C["audunautomat.github.io/\n.../<organisasjon>-begrepskatalog.ttl"]
     C -->|Automatisk høsting| D["data.norge.no/\nconcepts"]
 ```
 
@@ -34,7 +34,7 @@ fullstendig, verkeleg eksempel, sjå `src/linkml/begrepskatalog/brreg-begrepskat
 
 1. **Lokal redigering:** Du redigerer begrep i `data/<katalog>/<katalog>.yaml`
 2. **Generering:** `make convert-data` konverterer YAML til SKOS/Turtle
-3. **Publisering til GitHub Pages:** CI publiserer `.ttl`-filen til `https://brreg.github.io/linkml-datamodellering-no/...`
+3. **Publisering til GitHub Pages:** CI publiserer `.ttl`-filen til `https://audunautomat.github.io/linkml-datamodellering-no/...`
 4. **Høsting (ekstern prosess):** Felles Begrepskatalog kan konfigurere seg til å høste frå GitHub Pages-adressa
 
 **Status i PoC-fasen:** Steg 1-3 er implementerte. Steg 4 (faktisk høsting til Felles Begrepskatalog) må manuelt settas opp i Felles Begrepskatalog for kvar organisasjon som skal publisere sine begrepskataloger.
@@ -85,7 +85,7 @@ CI-pipelinen køyrer same validering automatisk og publiserer ny `.ttl`-fil
 til GitHub Pages. Felles Begrepskatalog høstar oppdateringa ved neste syklus.
 
 !!! note "Kva policyen sjekkar"
-    [felles-begrepskatalog](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#felles-begrepskatalog-felles-begrepskatalog)-policyen validerer at:
+    [felles-begrepskatalog](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#felles-begrepskatalog-felles-begrepskatalog)-policyen validerer at:
 
     - Skjemaet importerer SKOS-AP-NO-Begrep
     - `Begrep`-klassen har alle obligatoriske felt (`skos:prefLabel`, `dct:identifier`,
@@ -204,7 +204,7 @@ og legg til ny datakjelde:
 | **Katalogtype** | Begreper |
 | **Datakildentype** | SKOS-AP-NO |
 | **Format** | Turtle |
-| **Datakjelde-URL** | `https://brreg.github.io/linkml-datamodellering-no/begrepskatalog/<organisasjon>-begrepskatalog/<organisasjon>-begrepskatalog.ttl` |
+| **Datakjelde-URL** | `https://audunautomat.github.io/linkml-datamodellering-no/begrepskatalog/<organisasjon>-begrepskatalog/<organisasjon>-begrepskatalog.ttl` |
 | **Autentisering** | (tomt — endepunktet er offentleg) |
 
 **Steg 3** — Klikk **«Høst»** for umiddelbar høsting utan å vente på neste
@@ -320,16 +320,16 @@ Følgjande avgrensingar gjeld i PoC-fasen:
 - `felles-begrepskatalog`-policy validerer metadata, men validerer ikkje at `anbefalt_term` er eit gyldigt norsk ord
 - Ingen automatisk sjekk for duplikate begrep på tvers av katalogar
 
-**Fullstendig oversikt:** Sjå [BUGS.md](https://github.com/brreg/linkml-datamodellering-no/blob/main/BUGS.md) for komplett liste over kjende bugs og workarounds.
+**Fullstendig oversikt:** Sjå [BUGS.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/BUGS.md) for komplett liste over kjende bugs og workarounds.
 
-**Rapporter nye problem:** Opne eit [GitHub Issue](https://github.com/brreg/linkml-datamodellering-no/issues) med merkelappen `bug`.
+**Rapporter nye problem:** Opne eit [GitHub Issue](https://github.com/AudunAutomat/linkml-datamodellering-no/issues) med merkelappen `bug`.
 
 ---
 
 ## Relatert dokumentasjon
 
 - [Ny begrepskatalog](../kom-i-gang/ny-begrepsmodell.md) — opprette nytt skjema
-- [`felles-begrepskatalog.yaml`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/felles-begrepskatalog.yaml) — full policy-definisjon
-- [`specs/done/publisering-felles-begrepskatalog.md`](https://github.com/brreg/linkml-datamodellering-no/blob/main/specs/done/publisering-felles-begrepskatalog.md) — teknisk spesifikasjon
+- [`felles-begrepskatalog.yaml`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/felles-begrepskatalog.yaml) — full policy-definisjon
+- [`specs/done/publisering-felles-begrepskatalog.md`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/specs/done/publisering-felles-begrepskatalog.md) — teknisk spesifikasjon
 - [SKOS-AP-NO-Begrep-spesifikasjonen](https://informasjonsforvaltning.github.io/skos-ap-no-begrep/)
 - [Dele data — data.norge.no](https://data.norge.no/nb/docs/sharing-data)

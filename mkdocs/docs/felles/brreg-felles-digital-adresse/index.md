@@ -145,7 +145,7 @@ linkml:types  # direkte import
 
 > Dette er den autoritative kjelda for modellen. Alle tabellar, diagram og artefakt på denne sida er genererte frå dette skjemaet.
 
-Kjelde-datamodell i LinkML-format: [`brreg-felles-digital-adresse-schema.yaml`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-digital-adresse/brreg-felles-digital-adresse-schema.yaml)
+Kjelde-datamodell i LinkML-format: [`brreg-felles-digital-adresse-schema.yaml`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-digital-adresse/brreg-felles-digital-adresse-schema.yaml)
 
 ---
 
@@ -251,7 +251,7 @@ Kjelde-datamodell i LinkML-format: [`brreg-felles-digital-adresse-schema.yaml`](
 | ER-diagram (Mermaid) | [brreg-felles-digital-adresse-erdiagram.md](brreg-felles-digital-adresse-erdiagram.md) |
 | PlantUML-diagram | [brreg-felles-digital-adresse-filtered.svg](diagrams/brreg-felles-digital-adresse-filtered.svg) · [brreg-felles-digital-adresse-filtered.puml](diagrams/brreg-felles-digital-adresse-filtered.puml) · [brreg-felles-digital-adresse.puml](diagrams/brreg-felles-digital-adresse.puml) (full) |
 
-*Full byggekonfigurasjon: [build.yaml](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-digital-adresse/build.yaml)*
+*Full byggekonfigurasjon: [build.yaml](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-digital-adresse/build.yaml)*
 
 ---
 
@@ -275,5 +275,5 @@ Kjelde-datamodell i LinkML-format: [`brreg-felles-digital-adresse-schema.yaml`](
 
 > Her finn du informasjon om forvaltningsansvarleg, kontaktpunkt og kanal for feilrapportering eller forslag til forbetringar.
 
-**Support:** [GitHub Issues](https://github.com/brreg/linkml-datamodellering-no/issues)
+**Support:** [GitHub Issues](https://github.com/AudunAutomat/linkml-datamodellering-no/issues)
 

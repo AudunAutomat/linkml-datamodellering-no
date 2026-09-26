@@ -146,7 +146,7 @@ linkml:types  # direkte import
 
 > Dette er den autoritative kjelda for modellen. Alle tabellar, diagram og artefakt på denne sida er genererte frå dette skjemaet.
 
-Kjelde-datamodell i LinkML-format: [`brreg-felles-aktoer-schema.yaml`](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-aktoer/brreg-felles-aktoer-schema.yaml)
+Kjelde-datamodell i LinkML-format: [`brreg-felles-aktoer-schema.yaml`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-aktoer/brreg-felles-aktoer-schema.yaml)
 
 ---
 
@@ -287,7 +287,7 @@ Kjelde-datamodell i LinkML-format: [`brreg-felles-aktoer-schema.yaml`](https://g
 | ER-diagram (Mermaid) | [brreg-felles-aktoer-erdiagram.md](brreg-felles-aktoer-erdiagram.md) |
 | PlantUML-diagram | [brreg-felles-aktoer-filtered.svg](diagrams/brreg-felles-aktoer-filtered.svg) · [brreg-felles-aktoer-filtered.puml](diagrams/brreg-felles-aktoer-filtered.puml) · [brreg-felles-aktoer.puml](diagrams/brreg-felles-aktoer.puml) (full) |
 
-*Full byggekonfigurasjon: [build.yaml](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-aktoer/build.yaml)*
+*Full byggekonfigurasjon: [build.yaml](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/felles/brreg-felles-aktoer/build.yaml)*
 
 ---
 
@@ -311,5 +311,5 @@ Kjelde-datamodell i LinkML-format: [`brreg-felles-aktoer-schema.yaml`](https://g
 
 > Her finn du informasjon om forvaltningsansvarleg, kontaktpunkt og kanal for feilrapportering eller forslag til forbetringar.
 
-**Support:** [GitHub Issues](https://github.com/brreg/linkml-datamodellering-no/issues)
+**Support:** [GitHub Issues](https://github.com/AudunAutomat/linkml-datamodellering-no/issues)
 

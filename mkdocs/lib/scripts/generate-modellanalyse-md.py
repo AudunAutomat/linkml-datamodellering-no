@@ -164,7 +164,7 @@ REPORTS = [
 ]
 
 MODELL_ANALYSE_WORKFLOW_URL = (
-    "https://github.com/brreg/linkml-datamodellering-no/actions/workflows/modell-analyse.yml"
+    "https://github.com/AudunAutomat/linkml-datamodellering-no/actions/workflows/modell-analyse.yml"
 )
 
 

@@ -242,7 +242,7 @@ jobs:
       - name: Evaluer mermaid click-hrefs i publisert portal
         run: |
           python3 mkdocs/lib/scripts/check-mermaid-click-hrefs.py \
-            https://brreg.github.io/linkml-datamodellering-no \
+            https://audunautomat.github.io/linkml-datamodellering-no \
             --concurrency "$CLICK_HREF_SJEKK_CONCURRENCY" \
             --report click-href-sjekk-report.md
 

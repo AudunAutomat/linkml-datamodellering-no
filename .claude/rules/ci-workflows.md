@@ -1,6 +1,6 @@
 ---
 name: ci-workflows
-description: Actionlint-plikta, CI-YAML sin lægre DRY-terskel (2+), og reusable workflow/composite action-avgrensingar. Lastast automatisk ved arbeid med filer under .github/workflows/ eller .github/actions/.
+description: Actionlint-plikta, CI-YAML sin lægre DRY-terskel (2+), reusable workflow/composite action-avgrensingar, og GHCR-referansar med små bokstavar. Lastast automatisk ved arbeid med filer under .github/workflows/ eller .github/actions/.
 paths:
   - ".github/workflows/**"
   - ".github/actions/**"
@@ -98,3 +98,38 @@ sjølve `uses: ./.github/actions/X`-linja), ikkje inni actionen.
   `checkout-source`+`ensure-images`), kalla berre av
   `generate.yml`/`lenkje-og-mermaid-sjekk.yml`/`validate.yml` i dette same
   repoet.
+
+## GHCR-referansar: aldri direkte frå `github.repository_owner`
+
+OCI-image-referansar må vere berre små bokstavar, men
+`github.repository_owner` (og `$GITHUB_REPOSITORY_OWNER`) gir eigarnavnet
+slik det er skrive på GitHub, som kan ha store bokstavar. `skopeo`/`podman`
+avviser då referansen (`invalid reference format: repository name must be
+lowercase`). Feilen er usynleg så lenge eigaren tilfeldigvis berre har små
+bokstavar. Han dukkar først opp ved flytting, i ein fork eller ved ein ny
+eigar. GitHub-uttrykk har ingen `lower()`, så feilen kan ikkje rettast
+inni `${{ }}`.
+
+**Aldri** skriv `ghcr.io/${{ github.repository_owner }}/...` (eller
+`ghcr.io/$GITHUB_REPOSITORY_OWNER/...`) i ein workflow eller composite action.
+
+Gjer i staden slik:
+
+1. For image i `src/assets/containers/images.json`: bruk verdien frå
+   `image_tags` (output frå `./.github/actions/compute-image-tags`). Han er
+   alt ein full referanse (`ghcr.io/<eigar i små bokstavar>/<navn>:<hash>`), så du
+   treng ikkje setje saman noko sjølv.
+2. For image som ikkje står i `images.json` (t.d. `mcp-linkml-*-utkast` i
+   `release.yml`): rekn ut prefikset i bash,
+   `REGISTRY="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}"`, og bruk `$REGISTRY`.
+3. I **public** reusable workflows (`reusable-generate.yml`,
+   `reusable-lint.yml`, `reusable-validate.yml`) skal image-eigaren vere
+   hardkoda med små bokstavar (`ghcr.io/audunautomat/...`).
+   `github.repository_owner` er der eigaren av det *kallande* repoet, ikkje
+   dette.
+
+**Grunngjeving:** Etter at origin vart flytta frå `brreg` til `AudunAutomat`
+feila alle `oppsett / build-image / *`-jobbar i `generate.yml`,
+`validate.yml` og `lenkje-og-mermaid-sjekk.yml` (og `ensure-images` i
+`modell-analyse.yml`) med feilmeldinga over. Sjå F1 i
+`specs/backlog/ci-etter-origin-flytting-audunautomat.md`.

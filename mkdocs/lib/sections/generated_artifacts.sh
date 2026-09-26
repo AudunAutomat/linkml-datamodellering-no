@@ -96,7 +96,7 @@ generate_artifacts_table() {
             # sjå tilsvarande kommentar i datamodell.sh.
             local source_dir="${PARENT_MODEL:-$schema}"
             echo ""
-            echo "*Full byggekonfigurasjon: [build.yaml](https://github.com/brreg/linkml-datamodellering-no/blob/main/src/linkml/$domain/$source_dir/build.yaml)*"
+            echo "*Full byggekonfigurasjon: [build.yaml](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/$domain/$source_dir/build.yaml)*"
         fi
     fi
 }

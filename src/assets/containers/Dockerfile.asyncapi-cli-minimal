@@ -2,7 +2,7 @@ FROM node:26-alpine
 
 LABEL org.opencontainers.image.title="AsyncAPI Validator (Minimal)"
 LABEL org.opencontainers.image.description="Minimal AsyncAPI validator using only @asyncapi/parser (~296 MB vs 4.43 GB)"
-LABEL org.opencontainers.image.source="https://github.com/brreg/linkml-datamodellering-no"
+LABEL org.opencontainers.image.source="https://github.com/AudunAutomat/linkml-datamodellering-no"
 LABEL org.opencontainers.image.authors="Brønnøysundregistrene"
 
 WORKDIR /app

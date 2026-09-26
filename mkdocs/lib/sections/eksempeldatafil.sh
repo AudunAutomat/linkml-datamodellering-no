@@ -40,7 +40,7 @@ generate_example() {
     '
     echo "\`\`\`"
     echo ""
-    echo "[📄 Full eksempelfil (YAML)](https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/$relative_path/examples/$schema-eksempel.yaml)"
+    echo "[📄 Full eksempelfil (YAML)](https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/$relative_path/examples/$schema-eksempel.yaml)"
     echo ""
     echo "*Detaljerte eksempel per klasse finst på kvar klasseside, t.d. [Classes](#classes).*"
     echo ""
