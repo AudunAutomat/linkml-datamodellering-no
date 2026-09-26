@@ -169,9 +169,14 @@ eksterne kallarar. Han verkar berre når workflowen vert kalla frå dette repoet
 så feilen syner seg ikkje i eigen CI.
 
 **Regel:** Ein composite action som ein **public** reusable workflow brukar,
-skal refererast med full sti og statisk ref:
-`uses: AudunAutomat/linkml-datamodellering-no/.github/actions/<x>@main`.
-Actionen er då sjølv public API og må vere **bakoverkompatibel**. Skriv det i
+skal refererast med full sti, låst til commit-SHA:
+`uses: AudunAutomat/linkml-datamodellering-no/.github/actions/<x>@<40-teikns-sha> # main`.
+Aldri `@main`: det gir CodeQL-varselet `actions/unpinned-tag`, og ein kallar
+som har låst workflowen til `@vX.Y.Z`, får likevel actionen frå `main`.
+Endrar du actionen, bump SHA-en til den nye commiten i same push.
+Jobben `pinned-action-drift` i `royktest-reusable.yml` feilar elles. Sjå
+`specs/done/codeql-reusable-workflows-7-varsel.md`. Actionen er
+sjølv public API og må vere **bakoverkompatibel**. Skriv det i
 `description` i `action.yml`. Ein lokal `uses: ./…` er berre tillaten i interne
 workflowar (t.d. `reusable-oppsett.yml`) og i røyktesten, som medvite testar den
 lokale kopien.

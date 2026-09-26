@@ -35,11 +35,14 @@ jobs:
 
       # Løyser version-input / ap-no-version / latest til ein konkret vX.Y.Z
       # som vert brukt både som git-ref og image-tag (BUG-22). Referert med
-      # full sti @main fordi `./` peikar på kallande repo når workflowen er
-      # kalla eksternt — sjå specs/done/reusable-workflow-versjon.md.
+      # full sti fordi `./` peikar på kallande repo når workflowen er kalla
+      # eksternt — sjå specs/done/reusable-workflow-versjon.md. Låst til SHA
+      # (ikkje @main), så ein release-tag av workflowen alltid brukar same
+      # actionversjon; royktest-reusable.yml feilar dersom SHA-en har drifta
+      # frå actionen på HEAD — sjå specs/done/codeql-reusable-workflows-7-varsel.md.
       - name: Løys versjon (input / linkml-datamodellering.yaml / latest)
         id: config
-        uses: AudunAutomat/linkml-datamodellering-no/.github/actions/resolve-linkml-version@main
+        uses: AudunAutomat/linkml-datamodellering-no/.github/actions/resolve-linkml-version@bf95adf2ece22b6dd16fda9a8db39083f7aae0ef # main
         with:
           version: ${{ inputs.version }}
 
@@ -81,8 +84,9 @@ jobs:
           rm -rf _linkml-tools
 
       - name: Trekk inn linkml-local image
+        env:
+          VERSION: ${{ steps.config.outputs.version }}
         run: |
-          VERSION="${{ steps.config.outputs.version }}"
           podman pull "ghcr.io/audunautomat/linkml-local:${VERSION}"
           podman tag  "ghcr.io/audunautomat/linkml-local:${VERSION}" localhost/linkml-local:latest
 

@@ -11,6 +11,12 @@ name: Røyktest - reusable workflows
 # src/assets/ eller Makefile (for ikkje å overskrive), og det har dette
 # repoet. Dei deler same versjonsløysing (resolve-linkml-version) som
 # vert testa her.
+#
+# resolve-linkml-version er SHA-låst i reusable-*.yml (CodeQL
+# actions/unpinned-tag, og slik at ein release-tag alltid brukar same
+# actionversjon). Jobben pinned-action-drift feilar dersom den låste SHA-en
+# ikkje lenger har same actioninnhald som HEAD — endrar du actionen, bump
+# SHA-en i same push. Sjå specs/done/codeql-reusable-workflows-7-varsel.md.
 
 on:
   workflow_dispatch: {}
@@ -87,6 +93,42 @@ jobs:
             exit 1
           fi
           echo "OK: outcome=$OUTCOME version='$GOT'"
+
+  pinned-action-drift:
+    name: "resolve-linkml-version / SHA-pin utan drift"
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Kontroller at låst SHA har same actioninnhald som HEAD
+        run: |
+          set -euo pipefail
+          action=.github/actions/resolve-linkml-version
+          failed=0
+          for f in .github/workflows/reusable-*.yml; do
+            refs=$(grep -oE "resolve-linkml-version@[^[:space:]]+" "$f" | sed 's/.*@//' | sort -u || true)
+            [ -z "$refs" ] && continue
+            for ref in $refs; do
+              if ! echo "$ref" | grep -Eq '^[0-9a-f]{40}$'; then
+                echo "::error file=$f::resolve-linkml-version er referert som '@$ref' — må vere låst til 40-teikns commit-SHA."
+                failed=1
+              elif ! git cat-file -e "${ref}^{commit}" 2>/dev/null; then
+                echo "::error file=$f::Låst SHA $ref finst ikkje i historikken til repoet."
+                failed=1
+              elif ! git diff --quiet "$ref" HEAD -- "$action"; then
+                echo "::error file=$f::Låst SHA $ref har anna innhald i $action enn HEAD — bump SHA-en til $(git log -1 --format=%H -- "$action")."
+                git diff --stat "$ref" HEAD -- "$action"
+                failed=1
+              else
+                echo "OK: $f → $ref"
+              fi
+            done
+          done
+          exit "$failed"
 
   reusable-validate:
     name: "reusable-validate / ${{ matrix.version }}"
