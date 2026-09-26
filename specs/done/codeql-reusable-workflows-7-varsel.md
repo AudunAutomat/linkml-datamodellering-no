@@ -145,7 +145,7 @@ Forslag til avvisingstekst (C1):
 4. [x] Oppdater «Avgrensing»-kommentaren i `royktest-reusable.yml` og rule-seksjonen «`./` i ein reusable workflow …», med SHA-pin-mønsteret (endring i actionen → bump SHA i same push)
 5. [x] `actionlint` på alle endra workflow-filer
 6. [x] Kategori C (C1): brukaren avviser #1 og #2 (eller eg, via `gh api`, etter eksplisitt godkjenning)
-7. [ ] **Attståande (etter push):** røyktesten er grøn (inkl. drift-sjekken), og ny CodeQL-analyse viser #5, #7, #9, #10 og #11 som *fixed*
+7. [x] Etter push: røyktesten er grøn (inkl. drift-sjekken), og ny CodeQL-analyse viser #5, #7, #9, #10 og #11 som *fixed*
 
 ## Handlingsliste
 
@@ -153,7 +153,7 @@ Forslag til avvisingstekst (C1):
 - [x] B — SHA-lås actionen (3 filer) + drift-sjekk i røyktesten
 - [x] C — avvis #1/#2 som false positive
 - [x] actionlint
-- [ ] Verifiser røyktest og CodeQL etter push
+- [x] Verifiser røyktest og CodeQL etter push
 
 ## Opne spørsmål
 
@@ -180,3 +180,8 @@ Forslag til avvisingstekst (C1):
 - `gh api`: #1 og #2 avviste som *false positive* (C).
 
 **Attståande etter push** (jf. røyktest-plikta i rula): røyktesten må vere grøn (inkl. `pinned-action-drift`, køyrings-ID skal førast inn her), og neste CodeQL-analyse må vise #5, #7, #9, #10 og #11 som *fixed*. Deretter flyttar eg specen til `specs/done/`.
+
+## Verifisert etter push
+
+- Commit `8e79e67a`. Røyktest-køyring `36252383022` (push) er grøn, alle 8 jobbar, inkl. `resolve-linkml-version / SHA-pin utan drift` og `reusable-validate` for `latest` og `v1.1.0`.
+- CodeQL: #5, #7, #9, #10 og #11 er *fixed* (2026-09-26 15:34), #1 og #2 er *dismissed* (false positive). 0 opne varsel.
