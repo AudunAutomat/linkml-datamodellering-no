@@ -177,7 +177,7 @@ kategoriserte frå D1-rapporten.
 4. [x] Kategori C: byt ut dei 5 digdir-URL-ane i `mkdocs/docs/arkitektur/standardetterleving.md`
 5. [x] Kategori D1: `-v` + unsupported-rapport i `lenkjesjekk`-steget i `lenkje-og-mermaid-sjekk.yml`; køyr `actionlint`
 6. [x] Kategori D2: `expand_curie` i `src/assets/templates/docgen/index.md.jinja2`; `make gen-doc` for eitt AP-NO-skjema og kontroller Types-tabellen
-7. [ ] **Attståande (etter push):** Køyr `lenkje-og-mermaid-sjekk` (workflow_dispatch) etter push og kontroller: Errors ≈ 0, unsupported-lista er tilgjengeleg, talet redusert
+7. [x] Køyr `lenkje-og-mermaid-sjekk` (workflow_dispatch) etter push og kontroller: Errors ≈ 0, unsupported-lista er tilgjengeleg, talet redusert
 8. [x] ~~Vurder eiga oppfølgingsspec for A2+A3~~ — forkasta (O1: berre A1)
 
 ## Handlingsliste
@@ -187,7 +187,7 @@ kategoriserte frå D1-rapporten.
 - [x] C — 5 digdir-URL-ar i `standardetterleving.md`
 - [x] D1 — logg unsupported-lenkjer i CI (Step Summary + artefakt)
 - [x] D2 — ekspander CURIE i Types-tabellen i `index.md.jinja2`
-- [ ] Verifiser i CI (attståande, krev push)
+- [x] Verifiser i CI (køyring `36248679932`)
 
 ## Opne spørsmål
 
@@ -214,3 +214,14 @@ kategoriserte frå D1-rapporten.
 - **D2:** `src/assets/templates/docgen/index.md.jinja2` — Types-tabellen ekspanderer CURIE. Verifisert med `make gen-schema-docs SCHEMA=src/linkml/ap-no/common-ap-no/common-ap-no-schema.yaml`: `[rdf:langString](http://www.w3.org/1999/02/22-rdf-syntax-ns#langString)`.
 
 **Attståande etter push:** køyr `lenkje-og-mermaid-sjekk` (workflow_dispatch). Forventa: Errors 88 → ~0 (A1 fjernar 78, B1 5, C 5), unsupported-talet redusert frå 666, og `lenkjesjekk-unsupported.md` viser kva som eventuelt står att. Dersom unsupported ikkje går mot 0, kategoriser restane frå den nye rapporten i ein ny spec.
+
+**CI-verifisering (køyring `36248679932`, commit `87f3b807`):** Errors 88 → **0**.
+Unsupported 666 → **646** (alle `rdf:langString` borte). Den nye
+`lenkjesjekk-unsupported.md` viser at restane er 52 unike CURIE-ar
+(`dqv:`, `adms:`, `vcard:`, `odrs:` m.fl.) som `gen.uri_link()` i slot- og
+klassesidene til dei 6 oreg-skjemaa med versjonslåst URL-import av
+`dcat-ap-no` ikkje ekspanderer. Rotårsak (stadfesta i `linkml-local`,
+linkml-runtime 1.11.1): `SchemaView.namespaces()` er `@lru_cache`-a og vert
+kalla av `load_import()` før importane er lasta, så berre prefiksa i
+rotskjemaet vert bufra. `SchemaView.namespaces.cache_clear()` etter
+`imports_closure()` gir rett ekspansjon. Dette vert følgt opp i ein eigen spec.

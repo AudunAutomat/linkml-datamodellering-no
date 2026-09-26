@@ -29,7 +29,11 @@ Dei tre stadene:
 1. `linkml_runtime.utils.schemaview.SchemaView.imports_closure()` — brukt av
    generatorar som byggjer på `SchemaView` direkte
    (owlgen/shaclgen/jsonschemagen/docgen/linkmlgen, samt
-   mcp-linkml-validator).
+   mcp-linkml-validator). Den patcha versjonen tømer i tillegg
+   `SchemaView.namespaces()`-cachen etter at closure-en er lasta (BUG-24,
+   bugs/schemaview-namespaces-cache-importerte-prefiks.md) — elles vert
+   CURIE-ar med prefiks som berre er deklarerte i importerte skjema aldri
+   ekspanderte.
 2. `linkml.utils.mergeutils.resolve_merged_imports()` — brukt av den eldre
    `SchemaLoader`-baserte generator-familien
    (pythongen/protogen/rdfgen/graphqlgen/plantumlgen/jsonldcontextgen, jf.
@@ -157,6 +161,13 @@ def _apply_schemaview_patch() -> None:
                 for c in s.classes.values():
                     for a in c.attributes.values():
                         a.from_schema = s.id
+
+        # BUG-24: namespaces() er @lru_cache-a og vart kalla av load_import()
+        # medan schema_map framleis vart fylt — det bufra kartet manglar då
+        # prefiks som berre er deklarerte i importerte skjema. Tøm cachen no
+        # som heile closure-en er lasta. Sjå
+        # bugs/schemaview-namespaces-cache-importerte-prefiks.md.
+        sv_mod.SchemaView.namespaces.cache_clear()
         return closure
 
     sv_mod.SchemaView.imports_closure = patched_imports_closure

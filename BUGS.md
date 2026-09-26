@@ -30,6 +30,7 @@ Dette repoet er ein **Proof of Concept** og har fleire kjente avgrensingar:
 - **BUG-14**: Mermaid sin `classDiagram` støttar berre eitt `click`-mål per klasseboks — attributt-rader i diagrammet peikar difor alltid til klassa sjølv, ikkje til sloten
 - **BUG-17**: `gen-rdf` fetchar `<import>.context.jsonld` over nettverk for versjonslåste URL-importar og feilar med 404 — slike skjema vert automatisk hoppa over for rdf-generering
 - **BUG-20**: `gen-doc` strippar backticks (kode-span) frå `description`-felt, slik at backtick-verna plassholdar-URL-ar endar opp som bar prosa i genererte sider
+- **BUG-24**: `SchemaView.namespaces()` bufrar prefiks-kartet før importane er lasta — CURIE-ar med prefiks frå importerte skjema vert ikkje ekspanderte (workaround i import-patchen)
 
 ### Publisering
 - Publisering til Felles Begrepskatalog/Datakatalog krev manuell koordinering med Digitaliseringsdirektoratet
@@ -72,6 +73,7 @@ Sjå [GOVERNANCE.md](GOVERNANCE.md) for kva stabilitet og support du kan forvent
 | [BUG-21](bugs/monotonisk-tidtaking-make.md) | `date +%s%3N`-basert elapsed-tidtaking er vegg-klokke-basert og kan gi absurd store tal ved klokkehopp (t.d. WSL2-drift ved dvale/oppvakning) eller ved `uutils coreutils` sin `date` (ignorerer `%3N`-breidde) | `løyst` | `make/00-settings.mk`, `make/40-validation.mk`, `batch-render-plantuml.sh`, `run-domain-pipeline.sh`, `mkdocs/publish.sh` | alle make-targets med elapsed-tidtaking, `make docs-publish` |
 | [BUG-22](bugs/reusable-workflow-latest-ref-manglar.md) | Public reusable workflows sjekkar ut `ref: latest` (standard når `ap-no-version` manglar), men ingen git-ref heiter `latest` — checkout feilar for eksterne kallarar | `løyst` | `.github/workflows/reusable-{generate,lint,validate}.yml` | eksterne kallarar utan låst `ap-no-version: vX.Y.Z` |
 | [BUG-23](bugs/kom-i-gang-import-tag-for-ikkje-releasa-skjema.md) | «Kom i gang»-seksjonen genererer import-URL til `<skjema>-v<versjon>`-tag også for skjema som ikkje er release-please-komponentar — taggen vert aldri laga (404) | `open` | `mkdocs/lib/sections/kom_i_gang.sh` | `brreg-felles-{aktoer,digital-adresse,geografisk-adresse,tid,typer}`, `enhetsregisteret-{bvrbekreftelse,bvrettersendingavvedlegg,bvrfriv,bvrstiftelsesdokument,frivilligorganisasjonapi}`, `javazonetalk` |
+| [BUG-24](bugs/schemaview-namespaces-cache-importerte-prefiks.md) | `SchemaView.namespaces()` er `@lru_cache`-a og vert kalla av `load_import()` før `schema_map` er fylt — prefiks som berre er deklarerte i importerte skjema manglar, og `expand_curie()` returnerer CURIE-en uendra | `upstream` | `linkml-runtime` | skjema som brukar prefiks berre deklarerte i importerte skjema (stadfesta: `enhetsregisteret-{bvrbekreftelse,bvrettersendingavvedlegg,bvrfriv,bvrstiftelsesdokument,frivilligorganisasjonapi}`, `javazonetalk`) |
 
 ## Statusforklaring
 
