@@ -118,3 +118,30 @@ jobs:
             "${REGISTRY}/mcp-linkml-begrep-utkast:latest"
           podman push "${REGISTRY}/mcp-linkml-begrep-utkast:${{ github.ref_name }}"
           podman push "${REGISTRY}/mcp-linkml-begrep-utkast:latest"
+
+  # GitHub Release for verktøyversjonen (vX.Y.Z), slik at Renovate-malen
+  # (.github/renovate.json, datasource github-releases) finn nye
+  # ap-no-version-/uses:-versjonar hos eksterne kallarar. Berre ved tag-push —
+  # workflow_dispatch på main har ingen vX.Y.Z-tag å releasa. Sjå N3 i
+  # specs/backlog/reusable-workflow-versjon.md.
+  github-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [linkml-local, mcp-linkml-validator, mcp-linkml-modell-utkast, mcp-linkml-begrep-utkast]
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Lag GitHub Release for ${{ github.ref_name }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          # «release not found» er venta når releasen manglar; andre feil
+          # (t.d. auth) vil uansett feile synleg i create-kallet under.
+          if gh release view "$TAG" --json tagName > /dev/null 2>&1; then
+            echo "GitHub Release $TAG finst alt — hoppar over"
+            exit 0
+          fi
+          gh release create "$TAG" --verify-tag --generate-notes --title "$TAG"
+          echo "::notice::Oppretta GitHub Release $TAG"

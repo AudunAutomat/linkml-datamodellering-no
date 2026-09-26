@@ -16,7 +16,7 @@ on:
         type: string
         default: ''
       version:
-        description: 'Versjon av linkml-datamodellering-no (t.d. v1.0.0). Overstyrer linkml-datamodellering.yaml. Standard: latest.'
+        description: 'Versjon av linkml-datamodellering-no (t.d. v1.0.0). Overstyrer linkml-datamodellering.yaml. Standard: latest (= nyaste vX.Y.Z).'
         type: string
         default: ''
 
@@ -30,23 +30,15 @@ jobs:
       - name: Sjekk ut kallande repo
         uses: actions/checkout@v7
 
-      - name: Les versjon frå linkml-datamodellering.yaml
+      # Løyser version-input / ap-no-version / latest til ein konkret vX.Y.Z
+      # som vert brukt både som git-ref og image-tag (BUG-22). Referert med
+      # full sti @main fordi `./` peikar på kallande repo når workflowen er
+      # kalla eksternt — sjå specs/backlog/reusable-workflow-versjon.md.
+      - name: Løys versjon (input / linkml-datamodellering.yaml / latest)
         id: config
-        run: |
-          VERSION="${{ inputs.version }}"
-          if [ -z "$VERSION" ] && [ -f linkml-datamodellering.yaml ]; then
-            VERSION=$(grep '^ap-no-version:' linkml-datamodellering.yaml | awk '{print $2}')
-          fi
-          VERSION="${VERSION:-latest}"
-
-          # Tryggleik: avgrens checkout-ref til forventa, stabile verdiar.
-          # Tillat berre "latest" eller semver-taggar på forma vMAJOR.MINOR.PATCH.
-          if ! echo "$VERSION" | grep -Eq '^(latest|v[0-9]+\.[0-9]+\.[0-9]+)$'; then
-            echo "::error::Ugyldig versjon '$VERSION'. Tillatne verdiar er 'latest' eller semver-tag på forma vX.Y.Z."
-            exit 1
-          fi
-
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        uses: AudunAutomat/linkml-datamodellering-no/.github/actions/resolve-linkml-version@main
+        with:
+          version: ${{ inputs.version }}
 
       - name: Hent validator-komponenter frå AudunAutomat/linkml-datamodellering-no
         uses: actions/checkout@v7

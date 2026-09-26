@@ -1,0 +1,73 @@
+name: 'Løys linkml-datamodellering-no-versjon'
+description: >-
+  Løyser verktøyversjonen (ap-no-version) for dei public reusable workflowane
+  til ein konkret repo-nivå-tag vX.Y.Z, som vert brukt BÅDE som git-ref for
+  verktøyskripta og som image-tag. Rekkjefølgje: input `version` →
+  `ap-no-version` i linkml-datamodellering.yaml i kallande repo → `latest`.
+  `latest` vert slått opp til nyaste v*.*.*-tag i
+  AudunAutomat/linkml-datamodellering-no — det finst ingen git-ref som heiter
+  `latest` (BUG-22). Skjema-taggar (t.d. dcat-ap-no-v2.13.0) er IKKJE gyldige
+  verktøyversjonar; skjemaversjonen vert låst i imports:-URL-en.
+
+  PUBLIC API: vert referert frå reusable-{generate,lint,validate}.yml som
+  AudunAutomat/linkml-datamodellering-no/.github/actions/resolve-linkml-version@main
+  (ein reusable workflow kan ikkje bruke `./` mot sitt eige repo når han er
+  kalla frå eit eksternt repo). Endringar må vere bakoverkompatible.
+  Sjå specs/backlog/reusable-workflow-versjon.md.
+inputs:
+  version:
+    description: "Ønskt versjon: '' (les linkml-datamodellering.yaml), 'latest' eller 'vX.Y.Z'"
+    required: false
+    default: ''
+  config-file:
+    description: 'Sti til linkml-datamodellering.yaml i kallande repo'
+    required: false
+    default: 'linkml-datamodellering.yaml'
+outputs:
+  version:
+    description: 'Konkret repo-nivå-tag vX.Y.Z (aldri latest)'
+    value: ${{ steps.resolve.outputs.version }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Løys versjon
+      id: resolve
+      shell: bash
+      env:
+        VERSION_INPUT: ${{ inputs.version }}
+        CONFIG_FILE: ${{ inputs.config-file }}
+        UPSTREAM: https://github.com/AudunAutomat/linkml-datamodellering-no
+      run: |
+        set -euo pipefail
+        VERSION="$VERSION_INPUT"
+        if [ -z "$VERSION" ] && [ -f "$CONFIG_FILE" ]; then
+          VERSION=$(grep '^ap-no-version:' "$CONFIG_FILE" | awk '{print $2}' || true)
+        fi
+        VERSION="${VERSION:-latest}"
+
+        # Tryggleik: avgrens til forventa, stabile verdiar.
+        if ! echo "$VERSION" | grep -Eq '^(latest|v[0-9]+\.[0-9]+\.[0-9]+)$'; then
+          if echo "$VERSION" | grep -Eq -- '-v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::'$VERSION' er ein skjema-tag, ikkje ein verktøyversjon. ap-no-version/version tek berre 'latest' eller vX.Y.Z. Skjemaversjonen skal låsast i imports:-URL-en (sjå ekstern-bruk.md)."
+          else
+            echo "::error::Ugyldig versjon '$VERSION'. Tillatne verdiar er 'latest' eller semver-tag på forma vX.Y.Z."
+          fi
+          exit 1
+        fi
+
+        if [ "$VERSION" = "latest" ]; then
+          if ! TAGS=$(git ls-remote --tags --sort=-v:refname "$UPSTREAM" 'v*.*.*'); then
+            echo "::error::Klarte ikkje hente taggar frå $UPSTREAM for å løyse 'latest'."
+            exit 1
+          fi
+          RESOLVED=$(echo "$TAGS" | grep -v '\^{}' | sed -E 's#.*refs/tags/##' \
+            | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1 || true)
+          if [ -z "$RESOLVED" ]; then
+            echo "::error::Fann ingen vX.Y.Z-tag i $UPSTREAM — kan ikkje løyse 'latest'."
+            exit 1
+          fi
+          echo "latest → $RESOLVED"
+          VERSION="$RESOLVED"
+        fi
+
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"

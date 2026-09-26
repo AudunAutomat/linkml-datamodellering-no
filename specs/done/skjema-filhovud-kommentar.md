@@ -146,7 +146,7 @@ framtidige, og fjernar eit manuelt verktøy som har vist seg å rote seg vekk.
 - [x] 5. Verifiser (begge header-variantar, idempotens, dry-run, grep)
 - [x] 6. K6: fjern `lunchregisteret` frå config og manifest, slett katalogen, fjern død test-skip
 - [x] 7. K7 etter O4 (generalisert BUG-17-skip)
-- [~] 8. Verifiser K6/K7 (release-please-tørrkøyring står att til etter push, sjå Utført): `release-please --dry-run` (36 komponentar, ingen feil), `update-schema-dates.py --dry-run` utan `ÅTVARING`, `bash -n tests/test_make.sh`
+- [x] 8. Verifiser K6/K7 (release-please-tørrkøyring etter push `2d061ce9` ✅, sjå Utført): `release-please --dry-run` (36 komponentar, ingen feil), `update-schema-dates.py --dry-run` utan `ÅTVARING`, `bash -n tests/test_make.sh`
 
 ## Opne spørsmål
 
@@ -236,7 +236,17 @@ Gjennomført 2026-09-26 (O1 = C, O2 = ved neste release, O3 = rydd no, O4 = a).
   Kontroll utan versjonslåst import: `gen-rdf (referansemodell)` → `OK`, med
   reell test.
 
-**Står att etter push (steg 8):** Tørrkøyringa av release-please les config og
+**Etter push (steg 8), utført 2026-09-26 mot `origin/main` = `2d061ce9`:**
+`release-please@17 release-pr --dry-run` → exit 0, **36 komponentar**
+(`Building candidate release pull request` × 36), **0 treff på
+`lunchregisteret`**, `Would open 0 pull requests`. Det kom ingen `Expected …
+releases`-åtvaring, fordi alle 36 no vert funne som GitHub Releases. 36 ×
+`commit could not be parsed … unexpected token` gjeld same commit, `45314da7
+Merge branch 'main' of …` (lokal merge utan conventional-format). Release-please
+ignorerer han, og han er difor harmlaus. Han vert logga éin gong per komponent,
+fordi commiten ligg innanfor spennet sidan førre release for alle.
+
+**Opphavleg plan for steg 8:** Tørrkøyringa av release-please les config og
 manifest frå `main` på GitHub, ikkje frå arbeidstreet. Køyrd før push viste ho
 framleis `lunchregisteret` (37 forventa). Etter push skal
 `release-please release-pr --dry-run` (kommando i steg 9.3 i

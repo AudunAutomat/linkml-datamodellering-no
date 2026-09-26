@@ -1,0 +1,103 @@
+name: Røyktest - reusable workflows
+
+# Røyktest for versjonskjeda som eksterne kallarar brukar (BUG-22):
+# resolve-linkml-version-actionen og reusable-validate.yml med ulike
+# versjonar. BUG-22 var uoppdaga i 12+ veker fordi ingenting køyrde dei
+# public reusable workflowane frå dette repoet — sjå
+# specs/backlog/reusable-workflow-versjon.md (O3).
+#
+# Avgrensing: reusable-lint.yml og reusable-generate.yml kan ikkje
+# røyktestast herifrå — dei stoppar medvite når kallande repo har
+# src/assets/ eller Makefile (for ikkje å overskrive), og det har dette
+# repoet. Dei deler same versjonsløysing (resolve-linkml-version) som
+# vert testa her.
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 5 * * 1'   # måndag morgon
+  push:
+    branches: [main]
+    paths:
+      - '.github/actions/resolve-linkml-version/**'
+      - '.github/workflows/reusable-*.yml'
+      - '.github/workflows/royktest-reusable.yml'
+
+jobs:
+  resolve-version:
+    name: "resolve-linkml-version / ${{ matrix.case }}"
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case: latest
+            version: latest
+            expect: newest
+          - case: fast-versjon
+            version: v1.1.0
+            expect: v1.1.0
+          - case: tom-input-utan-config
+            version: ''
+            expect: newest
+          - case: skjema-tag-avvist
+            version: dcat-ap-no-v2.13.0
+            expect: fail
+          - case: branch-avvist
+            version: main
+            expect: fail
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Finn forventa nyaste vX.Y.Z (uavhengig oppslag)
+        id: newest
+        run: |
+          set -euo pipefail
+          newest=$(git ls-remote --tags --sort=-v:refname \
+            https://github.com/AudunAutomat/linkml-datamodellering-no 'v*.*.*' \
+            | grep -v '\^{}' | sed -E 's#.*refs/tags/##' | head -n 1)
+          echo "newest=$newest" >> "$GITHUB_OUTPUT"
+
+      # Testar den lokale versjonen av actionen (denne committen), ikkje @main.
+      - name: Køyr resolve-linkml-version
+        id: resolve
+        continue-on-error: ${{ matrix.expect == 'fail' }}
+        uses: ./.github/actions/resolve-linkml-version
+        with:
+          version: ${{ matrix.version }}
+          config-file: finst-ikkje.yaml
+
+      - name: Kontroller resultat
+        env:
+          EXPECT: ${{ matrix.expect }}
+          NEWEST: ${{ steps.newest.outputs.newest }}
+          OUTCOME: ${{ steps.resolve.outcome }}
+          GOT: ${{ steps.resolve.outputs.version }}
+        run: |
+          set -euo pipefail
+          case "$EXPECT" in
+            fail)   want_outcome=failure; want="" ;;
+            newest) want_outcome=success; want="$NEWEST" ;;
+            *)      want_outcome=success; want="$EXPECT" ;;
+          esac
+          if [ "$OUTCOME" != "$want_outcome" ] || [ "$GOT" != "$want" ]; then
+            echo "::error::Forventa outcome=$want_outcome version='$want', fekk outcome=$OUTCOME version='$GOT'"
+            exit 1
+          fi
+          echo "OK: outcome=$OUTCOME version='$GOT'"
+
+  reusable-validate:
+    name: "reusable-validate / ${{ matrix.version }}"
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [latest, v1.1.0]
+    permissions:
+      contents: read
+    uses: ./.github/workflows/reusable-validate.yml
+    with:
+      schema: src/linkml/referanse/referansemodell/referansemodell-schema.yaml
+      policy: bronze
+      version: ${{ matrix.version }}

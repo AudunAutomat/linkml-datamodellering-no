@@ -16,12 +16,15 @@ I rota av ditt eige repo:
 curl -sSL https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/bootstrap.sh | bash
 ```
 
-For å feste til ein konkret versjon:
+For å feste til ein konkret versjon av verktøya (repo-nivå-tag `vX.Y.Z`):
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/bootstrap.sh \
-  | AP_NO_VERSION=dcat-ap-no-v2.13.0 bash
+  | AP_NO_VERSION=v1.1.0 bash
 ```
+
+Utan versjon løyser bootstrap `latest` til nyaste `vX.Y.Z` og låser
+`uses: …@vX.Y.Z` i den genererte workflowen.
 
 Scriptet opprettar:
 
@@ -169,9 +172,17 @@ container-imagene og AP-NO-skjema. Du treng ikkje sende inn `version`-inputen ek
 
 | `ap-no-version` | Åtferd |
 |---|---|
-| `latest` | Brukar siste release-tag (flytande) — anbefalt |
-| `dcat-ap-no-v2.13.0` | Brukar nøyaktig denne skjema-versjonen |
-| (fila manglar) | Brukar `latest` |
+| `latest` | Vert løyst til nyaste repo-nivå-tag `vX.Y.Z` ved kvar køyring (flytande) |
+| `v1.1.0` | Brukar nøyaktig denne verktøyversjonen: same tag for skript og container-image |
+| (fila manglar) | Som `latest` |
+
+!!! warning "Verktøyversjon ≠ skjemaversjon"
+    `ap-no-version` er **verktøyversjonen** av dette repoet (`latest` eller
+    `vX.Y.Z`). Han styrer reusable workflows, skript og container-image.
+    **Skjemaversjonen** til ein AP-NO-profil (t.d. `dcat-ap-no-v2.14.3`) vert
+    låst i `imports:`-URL-en i skjemaet ditt (sjå
+    [Skjema-URL-ar og versjonering](#versjonerte-artefakter)). Ein skjema-tag som
+    `ap-no-version` vert avvist med ei feilmelding.
 
 ---
 
@@ -193,8 +204,9 @@ curl -sSL https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-
 # (bootstrap.sh er allereie køyrt)
 ```
 
-`renovate.json` ser etter endringar i `ap-no-version:` i `linkml-datamodellering.yaml`
-og brukar GitHub Releases som kjelde:
+`renovate.json` ser etter nye verktøyversjonar i `ap-no-version:` i
+`linkml-datamodellering.yaml` **og** i `uses: …/reusable-*.yml@vX.Y.Z` i
+workflowane dine, og brukar GitHub Releases for `vX.Y.Z` som kjelde:
 
 ```json
 {
@@ -202,6 +214,12 @@ og brukar GitHub Releases som kjelde:
     "customType": "regex",
     "fileMatch": ["^linkml-datamodellering\\.yaml$"],
     "matchStrings": ["ap-no-version:\\s*(?<currentValue>\\S+)"],
+    "depNameTemplate": "AudunAutomat/linkml-datamodellering-no",
+    "datasourceTemplate": "github-releases"
+  }, {
+    "customType": "regex",
+    "fileMatch": ["^\\.github/workflows/[^/]+\\.ya?ml$"],
+    "matchStrings": ["AudunAutomat/linkml-datamodellering-no/\\.github/workflows/[^@\\s]+@(?<currentValue>v\\d+\\.\\d+\\.\\d+)"],
     "depNameTemplate": "AudunAutomat/linkml-datamodellering-no",
     "datasourceTemplate": "github-releases"
   }]
