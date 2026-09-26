@@ -73,8 +73,11 @@ exclude = [
   # dcat-ap-no-v2.7.0, dqv-ap-no-v1.8.0) — ein separat feil i
   # release-please sin tag-opprettingslogikk, ikkje noko denne lenkja sjølv
   # kan rette. Sjå specs/done/lenkjesjekk-runde2-verifisering.md
-  # kategori G for vidare gransking.
-  "^https://github\\.com/AudunAutomat/linkml-datamodellering-no/compare/",
+  # kategori G for vidare gransking. Eldre CHANGELOG-oppføringar (før
+  # repoflyttinga) peikar til brreg/-repoet, som har same tag-gap — difor
+  # begge eigarane. Sjå specs/done/lenkjesjekk-runde4-88-feil-og-unsupported.md
+  # kategori A.
+  "^https://github\\.com/(AudunAutomat|brreg)/linkml-datamodellering-no/compare/",
   # schema.fintlabs.no er default_prefix/fint:-navnerommet for alle
   # FINT-domeneskjema (fint-administrasjon, fint-arkiv, fint-common,
   # fint-okonomi, fint-personvern, fint-ressurs, fint-utdanning). Stadfesta

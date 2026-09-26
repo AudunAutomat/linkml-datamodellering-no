@@ -289,7 +289,7 @@
 {%- set uri_link = 'https://www.w3.org/TR/xmlschema11-2/#' + local_name -%}
 {%- elif t.uri -%}
 {%- set uri_text = t.uri -%}
-{%- set uri_link = t.uri -%}
+{%- set uri_link = schemaview.expand_curie(t.uri) -%}
 {%- else -%}
 {%- set uri_text = type_name -%}
 {%- set uri_link = '#' -%}

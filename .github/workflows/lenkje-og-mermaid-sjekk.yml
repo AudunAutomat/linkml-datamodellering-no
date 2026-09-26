@@ -373,7 +373,8 @@ jobs:
             --no-progress \
             --format markdown \
             --output lenkjesjekk-report.md \
-            '**/*.md' || true
+            --verbose \
+            '**/*.md' 2> lenkjesjekk-verbose.log || true
 
           if [ ! -f lenkjesjekk-report.md ]; then
             echo "# Lenkjesjekk" > lenkjesjekk-report.md
@@ -398,10 +399,58 @@ jobs:
             cat lenkjesjekk-report.md
           } >> "$GITHUB_STEP_SUMMARY"
 
+      # lychee 0.24.2 tel unsupported-lenkjer (t.d. CURIE-ar utan vertsnavn
+      # som `rdf:langString`) i Summary, men listar dei ikkje — `--verbose`
+      # skriv kvar av dei som `[IGNORED] <url> (at L:C) | Unsupported: ...`
+      # til stderr (utan filnavn). Grupperer per URL og finn døme på filer
+      # med grep. Kan forenklast når ein lychee-release har unsupported_map.
+      # Sjå specs/done/lenkjesjekk-runde4-88-feil-og-unsupported.md kategori D.
+      - name: Rapporter unsupported-lenkjer
+        if: always()
+        run: |
+          set -uo pipefail
+          report=lenkjesjekk-unsupported.md
+          if [ ! -f lenkjesjekk-verbose.log ]; then
+            echo "::warning::lenkjesjekk-verbose.log manglar — kan ikkje liste unsupported-lenkjer"
+            echo "Ingen verbose-logg frå lychee — unsupported-lenkjer kunne ikkje listast." > "$report"
+          else
+            grep '^\[IGNORED\]' lenkjesjekk-verbose.log > unsupported-raw.txt || true
+            total=$(wc -l < unsupported-raw.txt)
+            unique=$(sed -E 's/ \(at [0-9]+:[0-9]+\).*//' unsupported-raw.txt | sort -u | wc -l)
+            echo "Unsupported-lenkjer: $total førekomstar, $unique unike URL-ar."
+            {
+              echo "## Unsupported-lenkjer ($total førekomstar, $unique unike)"
+              if [ "$total" -eq 0 ]; then
+                echo "Ingen unsupported-lenkjer."
+              else
+                echo ""
+                echo "Gruppert per URL (maks 50). Døme på filer er funne med grep etter \`](<url>)\`, ikkje frå lychee."
+                echo ""
+                echo "| Tal | URL | Grunn | Døme på filer |"
+                echo "|---|---|---|---|"
+                sed -E 's/^\[IGNORED\] (.*) \(at [0-9]+:[0-9]+\) \| (.*)$/\1\t\2/' unsupported-raw.txt \
+                  | sort | uniq -c | sort -rn | head -50 \
+                  | while IFS= read -r line; do
+                      cnt=$(awk '{print $1}' <<< "$line")
+                      rest=$(sed -E 's/^ *[0-9]+ //' <<< "$line")
+                      url=${rest%%$'\t'*}
+                      reason=${rest#*$'\t'}
+                      files=$(grep -rlF --include='*.md' --exclude-dir=generated --exclude-dir=site \
+                        --exclude-dir=node_modules --exclude-dir=specs -- "]($url)" . \
+                        | head -3 | paste -sd ',' - | sed 's/,/, /g')
+                      echo "| $cnt | \`${url//|/\\|}\` | ${reason//|/\\|} | ${files:-–} |"
+                    done
+              fi
+            } > "$report"
+          fi
+          cat "$report" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Last opp lenkjesjekk-rapport
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: lenkjesjekk-report
-          path: lenkjesjekk-report.md
+          path: |
+            lenkjesjekk-report.md
+            lenkjesjekk-unsupported.md
           retention-days: 30
