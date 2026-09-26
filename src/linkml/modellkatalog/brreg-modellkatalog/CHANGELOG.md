@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.3](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/brreg-modellkatalog-v1.6.2...brreg-modellkatalog-v1.6.3) (2026-09-26)
+
+
+### Bug Fixes
+
+* **imports:** byt versjonslåste brreg-importar til AudunAutomat, regenerer manifest ([f281324](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/f281324f252513fdf870d214c5edaeda66ab42f1))
+
 ## [1.6.2](https://github.com/brreg/linkml-datamodellering-no/compare/brreg-modellkatalog-v1.6.1...brreg-modellkatalog-v1.6.2) (2026-08-28)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.3](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/referansemodell-gold-v2.1.2...referansemodell-gold-v2.1.3) (2026-09-26)
+
+
+### Bug Fixes
+
+* **imports:** byt versjonslåste brreg-importar til AudunAutomat, regenerer manifest ([f281324](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/f281324f252513fdf870d214c5edaeda66ab42f1))
+
 ## [2.1.2](https://github.com/brreg/linkml-datamodellering-no/compare/referansemodell-gold-v2.1.1...referansemodell-gold-v2.1.2) (2026-09-04)
 
 
