@@ -143,10 +143,6 @@
       "component": "enhetsregisteret-bvrinnfelles",
       "release-type": "simple"
     },
-    "src/linkml/oreg/lunchregisteret": {
-      "component": "lunchregisteret",
-      "release-type": "simple"
-    },
     "src/linkml/samt/samt-bu": {
       "component": "samt-bu",
       "release-type": "simple"

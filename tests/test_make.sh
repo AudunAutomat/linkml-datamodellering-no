@@ -1190,6 +1190,25 @@ assert '\$defs' in d or 'properties' in d, '\$defs og properties manglar i $outf
 " || return 1
 }
 
+# schema_has_versioned_import <skjema> — true (0) dersom eitt av elementa i
+# toppnivå-lista `imports:` inneheld "://" (versjonslåst URL-import). Same
+# kriterium som schema_has_versioned_import() i
+# src/assets/scripts/makefile/batch-generate.py, slik at testen hoppar over
+# nøyaktig dei skjemaa genereringa hoppar over (BUG-17). YAML-kommentarar
+# (` #…`) vert strippa før sjekken, som YAML-parsaren gjer.
+schema_has_versioned_import() {
+    awk '
+        /^imports:/ { in_imports = 1; next }
+        in_imports && /^[^[:space:]#-]/ { in_imports = 0 }
+        in_imports && /^[[:space:]]*-/ {
+            line = $0
+            sub(/[[:space:]]+#.*/, "", line)
+            if (index(line, "://")) found = 1
+        }
+        END { exit !found }
+    ' "$1"
+}
+
 test_gen_rdf() {
     local schema="$1" outfile="$2" domain="$3"
     local name
@@ -1198,9 +1217,10 @@ test_gen_rdf() {
     # URL-import (RDFGenerator fetchar <import>.context.jsonld over
     # nettverk, som aldri finst for slike importar). Sjå
     # bugs/gen-rdf-manglar-stotte-for-versjonslaste-importar.md
-    case "$name" in
-        lunchregisteret) echo "Hoppar over gen-rdf for $name (BUG-17: versjonslåst URL-import)"; return 0 ;;
-    esac
+    if schema_has_versioned_import "$schema"; then
+        echo "Hoppar over gen-rdf for $name (BUG-17: versjonslåst URL-import)"
+        return 0
+    fi
     phase_a_check rdf "$schema" || return 1
     assert_file_nonempty "$outfile" || return 1
     phase_a_check rdf_validity "$outfile" || return 1

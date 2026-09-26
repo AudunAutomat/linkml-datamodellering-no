@@ -6,6 +6,9 @@ Oppdaterer version og datoannotasjonar i skjema-YAML-filer etter ein release.
   dersom han er endra (unngår unødvendige diff-ar)
 - annotations.endringsdato: sett til dagens dato når version endrar seg
 - annotations.utgivelsesdato: sett berre viss feltet manglar (første publisering)
+- filhovudkommentar om at felta over er CI-forvalta: lagt til dersom han
+  manglar (erstattar add-schema-header-comments.py, sjå
+  specs/done/skjema-filhovud-kommentar.md)
 
 Skjemastien for kvar pakke vert utleia direkte frå pakke-stien i manifestet:
 <pkg_path>/<basename(pkg_path)>-schema.yaml — same mønster som CONVENTIONS.md
@@ -21,6 +24,11 @@ import re
 import sys
 from datetime import date
 from pathlib import Path
+
+
+HEADER_MARKER = "version, endringsdato og utgivelsesdato vert automatisk oppdatert av CI"
+HEADER_LINE_1 = f"# {HEADER_MARKER}."
+HEADER_LINE_2 = "# Sjå CONTRIBUTING.md for detaljar om kva som er manuelt vs. automatisk."
 
 
 def resolve_schema_path(pkg_path: str) -> Path:
@@ -68,6 +76,35 @@ def update_dates(content: str, today: str) -> str:
     return content
 
 
+def ensure_header(content: str, schema_path: Path) -> str:
+    """Legg til filhovudkommentaren om CI-forvalta felt dersom han manglar.
+
+    Idempotent (HEADER_MARKER). Skjema som startar med ei `##`-blokk får
+    linjene som `##`-linjer rett før den avsluttande `##`-linja i blokka;
+    andre får dei som `#`-linjer øvst. Finst det ingen avsluttande `##`,
+    vert innhaldet returnert uendra med ei åtvaring til stderr.
+    """
+    if HEADER_MARKER in content:
+        return content
+
+    if content.startswith("##"):
+        lines = content.split("\n")
+        closing_hash = -1
+        for i, line in enumerate(lines):
+            if not line.startswith("##") and line.strip() != "":
+                break
+            if line.startswith("##"):
+                closing_hash = i
+        if closing_hash < 0:
+            print(f"  ÅTVARING: fann ikkje avsluttande ## i {schema_path} — filhovudkommentar ikkje lagt til", file=sys.stderr)
+            return content
+        lines.insert(closing_hash, "#" + HEADER_LINE_2)
+        lines.insert(closing_hash, "#" + HEADER_LINE_1)
+        return "\n".join(lines)
+
+    return f"{HEADER_LINE_1}\n{HEADER_LINE_2}\n\n{content}"
+
+
 def sync_package(pkg_path: str, manifest_version: str, today: str, dry_run: bool) -> bool:
     schema_path = resolve_schema_path(pkg_path)
     if not schema_path.exists():
@@ -81,6 +118,7 @@ def sync_package(pkg_path: str, manifest_version: str, today: str, dry_run: bool
     content = schema_path.read_text(encoding="utf-8")
     content = update_version(content, manifest_version)
     content = update_dates(content, today)
+    content = ensure_header(content, schema_path)
 
     prefix = "[dry-run] " if dry_run else ""
     print(f"  {prefix}OPPDATERT: {schema_path} (version {current_version} → {manifest_version})")
