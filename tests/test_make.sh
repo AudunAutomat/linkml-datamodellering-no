@@ -109,11 +109,6 @@ convert_rdf_job() {
     if [ -f "$build_yaml" ] && grep -q "^  example_rdf: false" "$build_yaml"; then
         return 1
     fi
-    # BUG-2: historisk skip — YAML→TTL fungerer for NGR per 2026-09-26, så
-    # denne skippen er truleg forelda. Sjå bugs/inlined-as-list-rdflib-roundtrip.md
-    case "$name" in
-        ngr-adresse|ngr-eiendom|ngr-virksomhet) return 1 ;;
-    esac
     [ -f "$example" ] || return 1
     return 0
 }
@@ -1365,8 +1360,6 @@ test_convert_rdf() {
             echo "Hoppar over convert-instance-rdf for $domain (ingen tree_root)"
         elif [ -f "$build_yaml" ] && grep -q "^  example_rdf: false" "$build_yaml"; then
             echo "Hoppar over convert-instance-rdf for $name (example_rdf: false)"
-        elif [[ "$name" == "ngr-adresse" || "$name" == "ngr-eiendom" || "$name" == "ngr-virksomhet" ]]; then
-            echo "Hoppar over convert-instance-rdf for $name (BUG-2: historisk skip, truleg forelda)"
         else
             echo "Ingen eksempelfil: $example (hoppar over)"
         fi

@@ -29,6 +29,11 @@ byggartefakter. Sjå `.claude/rules/bug-diagnostisering.md` og
 
 ## Opprydding
 
-Lychee-eksklusjonen `"^https://psi\\.norge\\.no/los/tema/$"` i
-`.github/lychee.toml` er truleg ikkje lenger naudsynt. Fjern ho og
-stadfest med neste lenkjesjekk-køyring i CI.
+Lychee-eksklusjonen `"^https://psi\\.norge\\.no/los/tema/$"` er fjerna frå
+`.github/lychee.toml` (2026-09-26). Verifisert med `lychee --dump` over
+ferskt genererte sider (`make gen-schema-docs`, alle skjema): 56 sider
+inneheld plassholdaren, men ingen `los/tema/`-URL vert ekstrahert. Kontroll:
+dei forelda sidene i `mkdocs/docs/` (utan backticks) gir den trunkerte
+URL-en. Lychee skannar berre `**/*.md` i CI, så plassholdaren i
+`.ttl`-artefaktane er ikkje med. Endeleg stadfesting: neste lenkjesjekk-køyring
+i CI.

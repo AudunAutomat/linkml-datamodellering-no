@@ -34,9 +34,9 @@ Dei sju katalogskjemaa var tidlegare tilskrivne BUG-1 (LangString). Den
 faktiske krasjen er denne bugen; LangString-problemet (BUG-1) finst i
 tillegg, men krasjar ikkje.
 
-`ngr-*` er òg skippa i `test_convert_rdf` (YAML→TTL) med grunngjeving BUG-2.
-Det steget fungerer no for alle tre NGR-skjema (verifisert 2026-09-26 med
-`linkml-convert`), så den skippen er truleg forelda og kan fjernast.
+`ngr-*` var tidlegare òg skippa i `test_convert_rdf` (YAML→TTL). Den skippen
+er fjerna 2026-09-26: `convert-instance-rdf` passerer for alle tre
+NGR-skjema (`TEST_FILTER=convert-instance-rdf make test SCHEMA=...`).
 
 ## Rot-årsak (stadfesta med minimal reproduksjon)
 

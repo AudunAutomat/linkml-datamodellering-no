@@ -35,7 +35,7 @@ LinkML-relaterte feila som framleis gjeld.
 - [x] Steg 8 — sjå § Tilrådingar
 - [ ] Meld U1-U8 upstream (brukaren gjer dette sjølv, sjå § Tilrådingar)
 - [x] Oppdater `bugs/*.md` og `BUGS.md` med korrigerte rotårsaker og issue-lenkjer (2026-09-26, sjå § Avgjerder)
-- [ ] Fjern forelda `convert-instance-rdf`-skip for NGR i `tests/test_make.sh` og lychee-eksklusjonen for BUG-20 (krev verifisering med `make test`/CI)
+- [x] Fjern forelda `convert-instance-rdf`-skip for NGR i `tests/test_make.sh` og lychee-eksklusjonen for BUG-20 (2026-09-26; verifisert med `make test`-filter og `lychee --dump`, endeleg CI-stadfesting ved neste lenkjesjekk)
 
 ## Testoppsett
 
@@ -682,3 +682,6 @@ whose context cannot be fetched.
 - **BUG-8 endra frå `open` til `workaround`:** det er ikkje ein upstream-bug, og workarounden (eige containerattributt per subklasse) er allereie regel. Modelleringsregelen i `linkml-schema.md` er ikkje endra; designator-alternativet er berre dokumentert i bug-fila.
 - **BUG-20 sett til `løyst`** (ikkje reproduserbar). Lychee-eksklusjonen er ikkje fjerna før ein lenkjesjekk i CI har stadfesta at han er overflødig.
 - **Følgjerettingar utanfor `bugs/`/`BUGS.md`:** `tests/README.md` (skip-tabell, inkl. manglande BUG-19-skip for `bvrinnfelles`), `.claude/rules/linkml-schema.md` (setning som grunngav inlining-regelen med gammal BUG-2-diagnose) og ein merknad om forelda premiss i `specs/backlog/fix-roundtrip-ngr-inlined-as-list.md`.
+- **Verifisering av lychee-fjerninga lokalt med `lychee --dump`, ikkje full sjekk:** lenkjesjekken har ingen make-target og køyrer berre i CI. `--dump` viser kva URL-ar lychee ekstraherer, og det var nettopp ekstraheringa som var problemet. Ei full nettverkssjekk av ~98 000 lenkjer er ikkje naudsynt for å stadfeste dette. Negativ kontroll mot dei forelda sidene i `mkdocs/docs/` stadfesta at metoden fangar feilen.
+- **NGR-skippen fjerna etter `TEST_FILTER=convert-instance-rdf make test SCHEMA=...`** for alle tre skjema (OK i fase A og B). Full `make test` er ikkje køyrd; endringa påverkar berre denne testen for dei tre skjemaa.
+

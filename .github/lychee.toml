@@ -134,17 +134,6 @@ exclude = [
   # breitt brukt navnerom. Sjå
   # specs/done/lenkjesjekk-runde3-fiks-resterande-feil.md kategori C4.
   "^https://brreg-linkml\\.goatcounter\\.com/$",
-  # LinkML gen-doc si eiga docgen-pipeline strippar backticks (kode-span)
-  # frå description-felt ved rendring til slot-/klasse-sider, slik at
-  # plassholdarsyntaksen `https://psi.norge.no/los/tema/<navn>` (korrekt
-  # verna med backticks i kjeldeskjemaet) endar opp som bar prosa i den
-  # genererte sida — lychee sin bare-URL-detektor stoppar då ved `<` og
-  # ekstraherer ein trunkert URL utan temanavn. Eksakt-treff (trailing
-  # slash utan suffiks) sidan reell bruk alltid har eit temanavn etter
-  # skråstreken. Rotårsak (LinkML-intern, ikkje vår eigen mal-kode) er
-  # dokumentert i bugs/linkml-docgen-strip-backtick-description.md. Sjå
-  # specs/done/lenkjesjekk-runde3-fiks-resterande-feil.md kategori D2.
-  "^https://psi\\.norge\\.no/los/tema/$",
 ]
 
 # purl.org (dct:/adms:-navnerom, jf. CLAUDE.md § Standardprefix) opptrer i
