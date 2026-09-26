@@ -20,7 +20,7 @@ utgiver: https://data.norge.no/organizations/991825827
 endringsdato: '2026-08-14'
 utgivelsesdato: '2026-08-17'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/ap-no/dqv-core/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/dqv-core/
 er_i_samsvar_med:
 - id: https://informasjonsforvaltning.github.io/dqv-ap-no/
   tittel:
@@ -43,11 +43,9 @@ inneholder_modellelement:
 - http://www.w3.org/ns/dqv#QualityMeasurement
 - http://www.w3.org/ns/oa#TextualBody
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/dqv-core/dqv-core-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/dqv-core/dqv-core-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/dqv-core/dqv-core-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/dqv-core/dqv-core-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/dqv-core/dqv-core-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/dqv-core/dqv-core-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/dqv-core/dqv-core-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/ap-no/dqv-core/dqv-core-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/dqv-core/diagrams/dqv-core-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/dqv-core/diagrams/dqv-core.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/dqv-core/dqv-core-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/dqv-core/dqv-core-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/dqv-core/dqv-core-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/ap-no/dqv-core/dqv-core-schema.yaml

@@ -10,25 +10,27 @@ beskrivelse:
     ModelDCAT-AP-NO direkte via import.
   nn: Modellkatalog for Brønnøysundregistra sine informasjonsmodellar. Implementerer
     ModelDCAT-AP-NO direkte via import.
-versjonsnummer: 1.5.1
+versjonsnummer: 1.6.2
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/974760673
-endringsdato: '2026-08-02'
+endringsdato: '2026-08-28'
 utgivelsesdato: '2026-07-09'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/modellkatalog/brreg-modellkatalog/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/modellkatalog/brreg-modellkatalog/
 kontaktpunkt:
-- id: https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+- id: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   navn_vcard:
     nb: Brønnøysundregistra
     nn: Brønnøysundregistra
-  har_kontaktside: https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  har_kontaktside: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-openapi.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/diagrams/brreg-modellkatalog-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/brreg-modellkatalog/diagrams/brreg-modellkatalog.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/modellkatalog/brreg-modellkatalog/brreg-modellkatalog-schema.yaml

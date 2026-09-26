@@ -8,20 +8,28 @@ tittel:
 beskrivelse:
   nb: Enkel eksempelmodell for å demonstrere gyldig LinkML-struktur
   nn: Enkel eksempelmodell for å demonstrere gyldig LinkML-struktur
-versjonsnummer: 1.3.0
+versjonsnummer: 1.5.1
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/974760673
-endringsdato: '2026-07-30'
+endringsdato: '2026-09-01'
 utgivelsesdato: '2026-07-09'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/referanse/referansemodell/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/referanse/referansemodell/
+kontaktpunkt:
+- id: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  navn_vcard:
+    nb: Brønnøysundregistra
+    nn: Brønnøysundregistra
+  har_kontaktside: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
 inneholder_modellelement:
 - http://purl.org/dc/terms/BibliographicResource
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell/referansemodell-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell/referansemodell-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell/referansemodell-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell/referansemodell-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell/referansemodell-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell/referansemodell-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/referanse/referansemodell/referansemodell-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell/diagrams/referansemodell-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell/diagrams/referansemodell.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell/referansemodell-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell/referansemodell-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell/referansemodell-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell/referansemodell-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell/referansemodell-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell/referansemodell-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/referanse/referansemodell/referansemodell-schema.yaml

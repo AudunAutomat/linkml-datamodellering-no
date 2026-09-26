@@ -10,8 +10,19 @@ beskrivelse:
     og DQV-AP-NO-klasser med påkravde slots og containerklasse.'
   nn: 'Viser minstekrava for å bestå sølvpolicyen: alle bronse-krav pluss DCAT-AP-NO
     og DQV-AP-NO-klasser med påkravde slots og containerklasse.'
-versjonsnummer: 1.0.0
-heimeside: https://brreg.github.io/linkml-datamodellering-no/referanse/referansemodell-silver/
+versjonsnummer: 2.1.2
+lisens: https://data.norge.no/nlod/no/2.0
+utgiver: https://data.norge.no/organizations/974760673
+endringsdato: '2026-09-04'
+utgivelsesdato: '2026-08-23'
+status: http://purl.org/adms/status/UnderDevelopment
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/referanse/referansemodell-silver/
+kontaktpunkt:
+- id: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  navn_vcard:
+    nb: Brønnøysundregistra
+    nn: Brønnøysundregistra
+  har_kontaktside: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
 inneholder_modellelement:
 - http://www.w3.org/ns/dcat#Catalog
 - http://www.w3.org/ns/dcat#CatalogRecord
@@ -24,10 +35,12 @@ inneholder_modellelement:
 - http://www.w3.org/ns/dqv#Dimension
 - http://www.w3.org/ns/dqv#QualityAnnotation
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/referansemodell-silver-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/referansemodell-silver-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/referansemodell-silver-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/referansemodell-silver-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/referansemodell-silver-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/referansemodell-silver-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/referanse/referansemodell-silver/referansemodell-silver-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/diagrams/referansemodell-silver-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/diagrams/referansemodell-silver.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/referansemodell-silver-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/referansemodell-silver-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/referansemodell-silver-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/referansemodell-silver-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/referansemodell-silver-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-silver/referansemodell-silver-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/referanse/referansemodell-silver/referansemodell-silver-schema.yaml

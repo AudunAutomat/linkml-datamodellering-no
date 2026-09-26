@@ -8,13 +8,13 @@ tittel:
 beskrivelse:
   nb: Utdanning og skule
   nn: Utdanning og skule
-versjonsnummer: 4.5.0
+versjonsnummer: 4.6.1
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/985870714
-endringsdato: '2026-07-30'
+endringsdato: '2026-08-17'
 utgivelsesdato: '2023-01-01'
-status: http://purl.org/adms/status/Completed
-heimeside: https://brreg.github.io/linkml-datamodellering-no/fint/fint-utdanning/
+status: http://purl.org/adms/status/UnderDevelopment
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/fint/fint-utdanning/
 er_i_samsvar_med:
 - id: https://informasjonsmodell.felleskomponent.no/docs/package_utdanning?v=v4.0.30
   tittel:
@@ -100,11 +100,13 @@ inneholder_modellelement:
 - https://schema.fintlabs.no/utdanning/Varseltype
 - https://schema.fintlabs.no/utdanning/Vitnemalsmerknad
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/fint/fint-utdanning/fint-utdanning-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-utdanning/diagrams/fint-utdanning-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-utdanning/diagrams/fint-utdanning.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-openapi.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-utdanning/fint-utdanning-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/fint/fint-utdanning/fint-utdanning-schema.yaml

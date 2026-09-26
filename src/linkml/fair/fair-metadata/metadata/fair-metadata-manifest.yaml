@@ -8,13 +8,13 @@ tittel:
 beskrivelse:
   nb: FAIR-metadataoverbygning (FAIR-prinsippa)
   nn: FAIR-metadataoverbygning (FAIR-prinsippa)
-versjonsnummer: 1.6.0
+versjonsnummer: 1.7.1
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/974760673
-endringsdato: '2026-08-02'
+endringsdato: '2026-08-17'
 utgivelsesdato: '2024-01-01'
-status: http://purl.org/adms/status/Completed
-heimeside: https://brreg.github.io/linkml-datamodellering-no/fair/fair-metadata/
+status: http://purl.org/adms/status/UnderDevelopment
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/fair/fair-metadata/
 er_i_samsvar_med:
 - id: https://www.go-fair.org/fair-principles/
   tittel:
@@ -22,11 +22,11 @@ er_i_samsvar_med:
     nn: FAIR Principles
   har_referanse: https://www.go-fair.org/fair-principles/
 kontaktpunkt:
-- id: https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+- id: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   navn_vcard:
     nb: Brønnøysundregistra
     nn: Brønnøysundregistra
-  har_kontaktside: https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  har_kontaktside: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
 inneholder_modellelement:
 - https://data.norge.no/fair/FAIRMetadata
 - https://data.norge.no/fair/Tilgangsmetadata
@@ -34,11 +34,13 @@ inneholder_modellelement:
 - https://data.norge.no/fair/Proveniensmetadata
 - https://data.norge.no/fair/Katalogregistrering
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/fair/fair-metadata/fair-metadata-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fair/fair-metadata/diagrams/fair-metadata-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fair/fair-metadata/diagrams/fair-metadata.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-openapi.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fair/fair-metadata/fair-metadata-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/fair/fair-metadata/fair-metadata-schema.yaml

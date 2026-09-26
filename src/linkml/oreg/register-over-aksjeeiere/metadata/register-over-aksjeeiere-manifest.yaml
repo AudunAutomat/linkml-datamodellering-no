@@ -8,19 +8,19 @@ tittel:
 beskrivelse:
   nb: Aksjeeigarar og eigedelar
   nn: Aksjeeigarar og eigedelar
-versjonsnummer: 1.9.2
+versjonsnummer: 1.10.0
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/974760673
-endringsdato: '2026-08-28'
+endringsdato: '2026-09-01'
 utgivelsesdato: '2024-01-01'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/oreg/register-over-aksjeeiere/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/oreg/register-over-aksjeeiere/
 kontaktpunkt:
-- id: https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+- id: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   navn_vcard:
     nb: Brønnøysundregistra
     nn: Brønnøysundregistra
-  har_kontaktside: https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  har_kontaktside: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
 inneholder_modellelement:
 - https://data.norge.no/oreg/register-over-aksjeeiere/Aksjeselskap
 - https://data.norge.no/oreg/register-over-aksjeeiere/Aksjekapital
@@ -41,13 +41,13 @@ inneholder_modellelement:
 - https://data.norge.no/oreg/register-over-aksjeeiere/InnbetaltAksjekapital
 - https://data.norge.no/oreg/register-over-aksjeeiere/InnbetaltOverkurs
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/diagrams/register-over-aksjeeiere-filtered.puml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/diagrams/register-over-aksjeeiere.puml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/oreg/register-over-aksjeeiere/register-over-aksjeeiere-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/diagrams/register-over-aksjeeiere-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/diagrams/register-over-aksjeeiere.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-openapi.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/oreg/register-over-aksjeeiere/register-over-aksjeeiere-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/oreg/register-over-aksjeeiere/register-over-aksjeeiere-schema.yaml

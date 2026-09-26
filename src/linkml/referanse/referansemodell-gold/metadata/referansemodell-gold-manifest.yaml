@@ -10,8 +10,19 @@ beskrivelse:
     (title, version, prefiks, lisens, proveniens).'
   nn: 'Viser minstekrava for å bestå gullpolicyen: alle sølv-krav pluss FAIR-metadata
     (title, version, prefiks, lisens, proveniens).'
-versjonsnummer: 1.0.0
-heimeside: https://brreg.github.io/linkml-datamodellering-no/referanse/referansemodell-gold/
+versjonsnummer: 2.1.2
+lisens: https://data.norge.no/nlod/no/2.0
+utgiver: https://data.norge.no/organizations/974760673
+endringsdato: '2026-09-04'
+utgivelsesdato: '2026-08-23'
+status: http://purl.org/adms/status/UnderDevelopment
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/referanse/referansemodell-gold/
+kontaktpunkt:
+- id: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  navn_vcard:
+    nb: Brønnøysundregistra
+    nn: Brønnøysundregistra
+  har_kontaktside: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
 inneholder_modellelement:
 - http://www.w3.org/ns/dcat#Catalog
 - http://www.w3.org/ns/dcat#CatalogRecord
@@ -24,10 +35,12 @@ inneholder_modellelement:
 - http://www.w3.org/ns/dqv#Dimension
 - http://www.w3.org/ns/dqv#QualityAnnotation
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/referansemodell-gold-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/referansemodell-gold-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/referansemodell-gold-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/referansemodell-gold-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/referansemodell-gold-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/referansemodell-gold-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/referanse/referansemodell-gold/referansemodell-gold-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/diagrams/referansemodell-gold-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/diagrams/referansemodell-gold.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/referansemodell-gold-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/referansemodell-gold-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/referansemodell-gold-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/referansemodell-gold-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/referansemodell-gold-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-gold/referansemodell-gold-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/referanse/referansemodell-gold/referansemodell-gold-schema.yaml

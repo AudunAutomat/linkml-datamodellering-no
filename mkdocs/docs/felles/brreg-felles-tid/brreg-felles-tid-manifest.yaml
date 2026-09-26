@@ -20,14 +20,9 @@ utgiver: https://data.norge.no/organizations/974760673
 endringsdato: '2026-08-31'
 utgivelsesdato: '2026-08-31'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/felles/brreg-felles-tid/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/felles/brreg-felles-tid/
 inneholder_modellelement:
 - http://purl.org/dc/terms/PeriodOfTime
 - https://data.norge.no/felles/brreg-felles-tid/TidsperiodeDatoKlokkeslett
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-tid/brreg-felles-tid-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-tid/brreg-felles-tid-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-tid/brreg-felles-tid-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-tid/diagrams/brreg-felles-tid-filtered.puml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-tid/diagrams/brreg-felles-tid.puml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/felles/brreg-felles-tid/brreg-felles-tid-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/felles/brreg-felles-tid/brreg-felles-tid-schema.yaml

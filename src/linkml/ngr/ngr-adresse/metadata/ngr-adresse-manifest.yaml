@@ -6,19 +6,15 @@ tittel:
   nb: Nasjonale grunndata - Adresse
   nn: Nasjonale grunndata - Adresse
 beskrivelse:
-  nb: Domenemodell for norske adressar basert på Nasjonale grunndata (utkast). Modellerer
-    Offisiell adresse og Postboksadresse med tilhøyrande geografiske inndelingar og
-    adressekomponentar. Basert på https://informasjonsforvaltning.github.io/nasjonale-grunndata/#Adresse
-  nn: Domenemodell for norske adressar basert på Nasjonale grunndata (utkast). Modellerer
-    Offisiell adresse og Postboksadresse med tilhøyrande geografiske inndelingar og
-    adressekomponentar. Basert på https://informasjonsforvaltning.github.io/nasjonale-grunndata/#Adresse
-versjonsnummer: 1.4.0
+  nb: Adresse
+  nn: Adresse
+versjonsnummer: 2.1.1
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/971040238
-endringsdato: '2026-07-10'
+endringsdato: '2026-08-28'
 utgivelsesdato: '2023-01-01'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/ngr/ngr-adresse/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/ngr/ngr-adresse/
 kontaktpunkt:
 - id: https://www.kartverket.no/om-kartverket/kontakt-oss/
   navn_vcard:
@@ -34,7 +30,7 @@ inneholder_modellelement:
 - https://data.norge.no/vocabulary/ngr-adresse#Adressekode
 - https://data.norge.no/vocabulary/ngr-adresse#Husnummer
 - https://data.norge.no/vocabulary/ngr-adresse#Bruksenhetsnummer
-- https://data.norge.no/vocabulary/ngr-adresse#Representasjonspunkt
+- http://www.w3.org/ns/locn#Geometry
 - https://data.norge.no/vocabulary/ngr-adresse#GeografiskOmrade
 - https://data.norge.no/vocabulary/ngr-adresse#Fylke
 - https://data.norge.no/vocabulary/ngr-adresse#Kommune
@@ -49,11 +45,13 @@ inneholder_modellelement:
 - https://data.norge.no/vocabulary/ngr-adresse#Bygning
 - https://data.norge.no/vocabulary/ngr-adresse#Bruksenhet
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/ngr/ngr-adresse/ngr-adresse-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/diagrams/ngr-adresse-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/diagrams/ngr-adresse.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-openapi.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-adresse/ngr-adresse-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/ngr/ngr-adresse/ngr-adresse-schema.yaml

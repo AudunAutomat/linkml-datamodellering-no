@@ -30,7 +30,7 @@ utgiver: https://data.norge.no/organizations/974760673
 endringsdato: '2026-09-01'
 utgivelsesdato: '2026-09-01'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/felles/brreg-felles-digital-adresse/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/felles/brreg-felles-digital-adresse/
 inneholder_modellelement:
 - https://data.norge.no/felles/brreg-felles-digital-adresse/DigitalAdresse
 - https://data.norge.no/felles/brreg-felles-digital-adresse/IPAdresse
@@ -40,14 +40,4 @@ inneholder_modellelement:
 - https://data.norge.no/felles/brreg-felles-digital-adresse/Mobiltelefonnummer
 - https://data.norge.no/felles/brreg-felles-digital-adresse/Telefonnummer
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-digital-adresse/brreg-felles-digital-adresse-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-digital-adresse/brreg-felles-digital-adresse-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-digital-adresse/brreg-felles-digital-adresse-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-digital-adresse/brreg-felles-digital-adresse-schema.graphql
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-digital-adresse/brreg-felles-digital-adresse-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-digital-adresse/brreg-felles-digital-adresse-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-digital-adresse/brreg-felles-digital-adresse-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-digital-adresse/brreg-felles-digital-adresse-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-digital-adresse/diagrams/brreg-felles-digital-adresse-filtered.puml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-digital-adresse/diagrams/brreg-felles-digital-adresse.puml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/felles/brreg-felles-digital-adresse/brreg-felles-digital-adresse-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/felles/brreg-felles-digital-adresse/brreg-felles-digital-adresse-schema.yaml

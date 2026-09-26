@@ -32,7 +32,7 @@ bakgrunn og metode.
 
 ```yaml
 imports:
-  - https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/brreg-felles-aktoer-v0.1.0/src/linkml/felles/brreg-felles-aktoer/brreg-felles-aktoer-schema
+  - https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/brreg-felles-aktoer-v0.1.0/src/linkml/felles/brreg-felles-aktoer/brreg-felles-aktoer-schema
 ```
 
 ### Valider skjemaet mot silver-policy

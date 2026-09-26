@@ -8,13 +8,13 @@ tittel:
 beskrivelse:
   nb: Økonomi og rekneskap
   nn: Økonomi og rekneskap
-versjonsnummer: 4.5.0
+versjonsnummer: 4.6.1
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/985870714
-endringsdato: '2026-07-30'
+endringsdato: '2026-08-17'
 utgivelsesdato: '2023-01-01'
-status: http://purl.org/adms/status/Completed
-heimeside: https://brreg.github.io/linkml-datamodellering-no/fint/fint-okonomi/
+status: http://purl.org/adms/status/UnderDevelopment
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/fint/fint-okonomi/
 er_i_samsvar_med:
 - id: https://informasjonsmodell.felleskomponent.no/docs/package_okonomi?v=v4.0.30
   tittel:
@@ -43,11 +43,13 @@ inneholder_modellelement:
 - https://schema.fintlabs.no/okonomi/Merverdiavgift
 - https://schema.fintlabs.no/okonomi/Valuta
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/fint/fint-okonomi/fint-okonomi-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-okonomi/diagrams/fint-okonomi-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-okonomi/diagrams/fint-okonomi.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-openapi.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-okonomi/fint-okonomi-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/fint/fint-okonomi/fint-okonomi-schema.yaml

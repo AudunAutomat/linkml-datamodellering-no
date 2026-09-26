@@ -20,7 +20,7 @@ utgiver: https://data.norge.no/organizations/991825827
 endringsdato: '2026-08-02'
 utgivelsesdato: '2026-07-27'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/ap-no/modelldcat-katalog/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/modelldcat-katalog/
 er_i_samsvar_med:
 - id: https://data.norge.no/specification/modelldcat-ap-no
   tittel:
@@ -38,11 +38,9 @@ inneholder_modellelement:
 - http://www.w3.org/ns/dcat#Catalog
 - https://data.norge.no/vocabulary/modelldcatno#InformationModel
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/modelldcat-katalog/modelldcat-katalog-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/modelldcat-katalog/modelldcat-katalog-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/modelldcat-katalog/modelldcat-katalog-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/modelldcat-katalog/modelldcat-katalog-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/modelldcat-katalog/modelldcat-katalog-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/modelldcat-katalog/modelldcat-katalog-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/modelldcat-katalog/modelldcat-katalog-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/ap-no/modelldcat-katalog/modelldcat-katalog-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/modelldcat-katalog/diagrams/modelldcat-katalog-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/modelldcat-katalog/diagrams/modelldcat-katalog.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/modelldcat-katalog/modelldcat-katalog-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/modelldcat-katalog/modelldcat-katalog-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/modelldcat-katalog/modelldcat-katalog-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/ap-no/modelldcat-katalog/modelldcat-katalog-schema.yaml

@@ -8,13 +8,13 @@ tittel:
 beskrivelse:
   nb: Berettigede, verger, rettighetshavere i næring (BVRiNN)
   nn: Berettigede, verger, rettighetshavere i næring (BVRiNN)
-versjonsnummer: 1.2.0
+versjonsnummer: 1.3.0
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/974760673
 endringsdato: '2026-09-01'
 utgivelsesdato: '2026-06-10'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrinnfelles/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrinnfelles/
 er_i_samsvar_med:
 - id: https://www.brreg.no/om-oss/registrene-vare/om-enhetsregisteret/
   tittel:
@@ -22,11 +22,11 @@ er_i_samsvar_med:
     nn: Enhetsregisteret - BVINN
   har_referanse: https://www.brreg.no/om-oss/registrene-vare/om-enhetsregisteret/
 kontaktpunkt:
-- id: https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+- id: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   navn_vcard:
     nb: Brønnøysundregistra
     nn: Brønnøysundregistra
-  har_kontaktside: https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  har_kontaktside: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
 inneholder_modellelement:
 - https://data.norge.no/oreg/enhetsregisteret-bvrinnfelles/Innrapportering
 - https://data.norge.no/oreg/enhetsregisteret-bvrinnfelles/VirksomhetsinformasjonHovedenhet
@@ -68,10 +68,4 @@ inneholder_modellelement:
 - https://data.norge.no/oreg/enhetsregisteret-bvrinnfelles/Signering
 - https://data.norge.no/oreg/enhetsregisteret-bvrinnfelles/Gebyransvarlig
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/enhetsregisteret-bvrinnfelles/diagrams/enhetsregisteret-bvrinnfelles-filtered.puml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/enhetsregisteret-bvrinnfelles/diagrams/enhetsregisteret-bvrinnfelles.puml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/enhetsregisteret-bvrinnfelles/enhetsregisteret-bvrinnfelles-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/enhetsregisteret-bvrinnfelles/enhetsregisteret-bvrinnfelles-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/enhetsregisteret-bvrinnfelles/enhetsregisteret-bvrinnfelles-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/enhetsregisteret-bvrinnfelles/enhetsregisteret-bvrinnfelles-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/oreg/enhetsregisteret-bvrinnfelles/enhetsregisteret-bvrinnfelles-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/oreg/enhetsregisteret-bvrinnfelles/enhetsregisteret-bvrinnfelles-schema.yaml

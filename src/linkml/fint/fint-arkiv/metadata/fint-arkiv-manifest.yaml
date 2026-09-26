@@ -8,13 +8,13 @@ tittel:
 beskrivelse:
   nb: Sak, journal, dokument
   nn: Sak, journal, dokument
-versjonsnummer: 4.5.0
+versjonsnummer: 4.6.2
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/985870714
-endringsdato: '2026-07-30'
+endringsdato: '2026-08-20'
 utgivelsesdato: '2023-01-01'
-status: http://purl.org/adms/status/Completed
-heimeside: https://brreg.github.io/linkml-datamodellering-no/fint/fint-arkiv/
+status: http://purl.org/adms/status/UnderDevelopment
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/fint/fint-arkiv/
 er_i_samsvar_med:
 - id: https://informasjonsmodell.felleskomponent.no/docs/package_arkiv?v=v4.0.30
   tittel:
@@ -71,11 +71,13 @@ inneholder_modellelement:
 - https://schema.fintlabs.no/arkiv/TilknyttetRegistreringSom
 - https://schema.fintlabs.no/arkiv/Variantformat
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/fint/fint-arkiv/fint-arkiv-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-arkiv/diagrams/fint-arkiv-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-arkiv/diagrams/fint-arkiv.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-openapi.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-arkiv/fint-arkiv-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/fint/fint-arkiv/fint-arkiv-schema.yaml

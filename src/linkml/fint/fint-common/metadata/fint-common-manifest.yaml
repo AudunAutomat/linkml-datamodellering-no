@@ -8,13 +8,13 @@ tittel:
 beskrivelse:
   nb: Felles klasser for FINT
   nn: Felles klasser for FINT
-versjonsnummer: 4.4.0
+versjonsnummer: 4.5.2
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/985870714
-endringsdato: '2026-08-02'
+endringsdato: '2026-08-20'
 utgivelsesdato: '2023-01-01'
-status: http://purl.org/adms/status/Completed
-heimeside: https://brreg.github.io/linkml-datamodellering-no/fint/fint-common/
+status: http://purl.org/adms/status/UnderDevelopment
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/fint/fint-common/
 kontaktpunkt:
 - id: https://novari.no/kontakt
   navn_vcard:
@@ -42,11 +42,13 @@ inneholder_modellelement:
 - https://schema.fintlabs.no/Kontaktperson
 - https://schema.fintlabs.no/Virksomhet
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/fint/fint-common/fint-common-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-common/diagrams/fint-common-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-common/diagrams/fint-common.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-openapi.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/fint/fint-common/fint-common-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/fint/fint-common/fint-common-schema.yaml

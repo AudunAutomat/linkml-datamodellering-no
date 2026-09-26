@@ -38,7 +38,7 @@ Alle skjema i dette repoet er tilgjengelege via GitHub Raw med ein
 versjon-tag eller `main`:
 
 ```
-https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/{versjon}/{sti}
+https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/{versjon}/{sti}
 ```
 
 GitHub Pages-URL-ar (`https://audunautomat.github.io/linkml-datamodellering-no/...`)
@@ -48,6 +48,14 @@ repo — bruk i staden:
 
 - **[GitHub Releases](https://github.com/AudunAutomat/linkml-datamodellering-no/releases)** (anbefalt) — kanonisk adresse for eldre versjonar
 - **`raw.githubusercontent.com`-URL med tag**, som over
+
+!!! note "Releases frå før september 2026"
+    Repoet vart flytta frå `brreg/linkml-datamodellering-no` til
+    `AudunAutomat/linkml-datamodellering-no` i september 2026. Alle
+    versjon-taggar er flytta med, men GitHub Releases (med opplasta
+    artefakter) frå før flyttinga ligg framleis under
+    [github.com/brreg/linkml-datamodellering-no/releases](https://github.com/brreg/linkml-datamodellering-no/releases).
+    Nye releases vert publiserte i det nye repoet.
 
 !!! tip "Anbefaling"
     Bruk alltid ein **skjema-spesifikk versjon-tag** (t.d. `dcat-ap-no-v2.13.0`, `common-ap-no-v1.0.0`) i imports — aldri `main` eller `latest` — for å unngå overraskande endringer når dette repoet vert oppdatert.
@@ -59,12 +67,12 @@ repo — bruk i staden:
 
 | Profil | Import-URL (`versjon`) | Brukstilfelle |
 |---|---|---|
-| `dcat-ap-no` | `https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/dcat-ap-no-v2.13.0/src/linkml/ap-no/dcat-ap-no/dcat-ap-no-schema` | Datakatalogar og datasett |
-| `skos-ap-no` | `https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/skos-ap-no-v2.16.0/src/linkml/ap-no/skos-ap-no/skos-ap-no-schema` | Omgrepsamlingar |
-| `modelldcat-ap-no` | `https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/modelldcat-ap-no-v1.10.0/src/linkml/ap-no/modelldcat-ap-no/modelldcat-ap-no-schema` | Informasjonsmodellar |
-| `dqv-ap-no` | `https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/dqv-ap-no-v1.15.0/src/linkml/ap-no/dqv-ap-no/dqv-ap-no-schema` | Datakvalitet |
-| `cpsv-ap-no` | `https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/cpsv-ap-no-v1.10.0/src/linkml/ap-no/cpsv-ap-no/cpsv-ap-no-schema` | Offentlege tenester og hendingar |
-| `xkos-ap-no` | `https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/xkos-ap-no-v1.0.0/src/linkml/ap-no/xkos-ap-no/xkos-ap-no-schema` | Utvida klassifikasjon |
+| `dcat-ap-no` | `https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/dcat-ap-no-v2.13.0/src/linkml/ap-no/dcat-ap-no/dcat-ap-no-schema` | Datakatalogar og datasett |
+| `skos-ap-no` | `https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/skos-ap-no-v2.16.0/src/linkml/ap-no/skos-ap-no/skos-ap-no-schema` | Omgrepsamlingar |
+| `modelldcat-ap-no` | `https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/modelldcat-ap-no-v1.10.0/src/linkml/ap-no/modelldcat-ap-no/modelldcat-ap-no-schema` | Informasjonsmodellar |
+| `dqv-ap-no` | `https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/dqv-ap-no-v1.15.0/src/linkml/ap-no/dqv-ap-no/dqv-ap-no-schema` | Datakvalitet |
+| `cpsv-ap-no` | `https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/cpsv-ap-no-v1.10.0/src/linkml/ap-no/cpsv-ap-no/cpsv-ap-no-schema` | Offentlege tenester og hendingar |
+| `xkos-ap-no` | `https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/xkos-ap-no-v1.0.0/src/linkml/ap-no/xkos-ap-no/xkos-ap-no-schema` | Utvida klassifikasjon |
 
 !!! note "`.yaml`-ending er valfri"
     LinkML løyser importer utan filending — begge variantar fungerer:
@@ -75,7 +83,7 @@ Døme på importdel i eit eksternt skjema:
 ```yaml
 imports:
   - linkml:types
-  - https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/dcat-ap-no-v2.13.0/src/linkml/ap-no/dcat-ap-no/dcat-ap-no-schema
+  - https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/dcat-ap-no-v2.13.0/src/linkml/ap-no/dcat-ap-no/dcat-ap-no-schema
 ```
 
 ---

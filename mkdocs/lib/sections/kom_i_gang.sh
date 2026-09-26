@@ -39,7 +39,7 @@ generate_quickstart() {
     echo ""
     echo "\`\`\`yaml"
     echo "imports:"
-    echo "  - https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/$version_path/src/linkml/$domain/$schema/$schema-schema"
+    echo "  - https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/$version_path/src/linkml/$domain/$schema/$schema-schema"
     echo "\`\`\`"
     echo ""
     echo "### Valider skjemaet mot $policy-policy"

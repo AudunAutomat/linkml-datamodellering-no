@@ -8,13 +8,13 @@ tittel:
 beskrivelse:
   nb: Skular og barnehagar
   nn: Skular og barnehagar
-versjonsnummer: 1.9.0
+versjonsnummer: 1.12.1
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/971032146
-endringsdato: '2026-08-02'
+endringsdato: '2026-09-04'
 utgivelsesdato: '2026-06-10'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/samt/samt-bu/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/samt/samt-bu/
 er_i_samsvar_med:
 - id: https://docs.samt-bu.no/om/
   tittel:
@@ -37,13 +37,15 @@ inneholder_modellelement:
 - https://data.norge.no/samt/samt-bu/skole/Person
 - https://data.norge.no/samt/samt-bu/skole/Elev
 - https://data.norge.no/samt/samt-bu/skole/Rektor
-- https://data.norge.no/samt/samt-bu/Kontaktlaerer
+- https://data.norge.no/samt/samt-bu/skole/Kontaktlaerer
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/samt/samt-bu/samt-bu-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/samt/samt-bu/diagrams/samt-bu-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/samt/samt-bu/diagrams/samt-bu.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-openapi.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/samt/samt-bu/samt-bu-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/samt/samt-bu/samt-bu-schema.yaml

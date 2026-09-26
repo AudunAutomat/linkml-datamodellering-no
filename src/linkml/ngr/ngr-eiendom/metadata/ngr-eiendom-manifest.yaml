@@ -6,19 +6,15 @@ tittel:
   nb: Nasjonale grunndata - Eiendom
   nn: Nasjonale grunndata - Eiendom
 beskrivelse:
-  nb: Domenemodell for norske eigedomsdata basert på Nasjonale grunndata (utkast).
-    Modellerer Fast eiendom, Borettslagsandel, Matrikkelenhet, Bygning, Eierforhold
-    og tilknytta klasser. Basert på https://informasjonsforvaltning.github.io/nasjonale-grunndata/
-  nn: Domenemodell for norske eigedomsdata basert på Nasjonale grunndata (utkast).
-    Modellerer Fast eiendom, Borettslagsandel, Matrikkelenhet, Bygning, Eierforhold
-    og tilknytta klasser. Basert på https://informasjonsforvaltning.github.io/nasjonale-grunndata/
-versjonsnummer: 1.4.0
+  nb: Fast eigedom, matrikkeleining og bygning
+  nn: Fast eigedom, matrikkeleining og bygning
+versjonsnummer: 1.8.1
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/971040238
-endringsdato: '2026-07-10'
+endringsdato: '2026-08-28'
 utgivelsesdato: '2023-01-01'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/ngr/ngr-eiendom/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/ngr/ngr-eiendom/
 kontaktpunkt:
 - id: https://www.kartverket.no/om-kartverket/kontakt-oss/
   navn_vcard:
@@ -44,7 +40,7 @@ inneholder_modellelement:
 - https://data.norge.no/vocabulary/ngr-eiendom#Seksjonsnummer
 - https://data.norge.no/vocabulary/ngr-eiendom#Bygning
 - https://data.norge.no/vocabulary/ngr-eiendom#Bygningsnummer
-- https://data.norge.no/vocabulary/ngr-eiendom#Representasjonspunkt
+- http://www.w3.org/ns/locn#Geometry
 - https://data.norge.no/vocabulary/ngr-eiendom#YtreInngang
 - https://data.norge.no/vocabulary/ngr-eiendom#Bruksenhet
 - https://data.norge.no/vocabulary/ngr-eiendom#Bruksenhetsnummer
@@ -64,15 +60,17 @@ inneholder_modellelement:
 - https://data.norge.no/vocabulary/ngr-eiendom#RettighetForAaBenytteEiendom
 - https://data.norge.no/vocabulary/ngr-eiendom#Borettslag
 - https://data.norge.no/vocabulary/ngr-eiendom#OffisiellAdresse
-- https://data.norge.no/vocabulary/ngr-eiendom#Person
-- https://data.norge.no/vocabulary/ngr-eiendom#Hovedenhet
+- http://www.w3.org/ns/person#Person
+- http://www.w3.org/ns/regorg#RegisteredOrganization
 - https://data.norge.no/vocabulary/ngr-eiendom#Kommune
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/ngr/ngr-eiendom/ngr-eiendom-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/diagrams/ngr-eiendom-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/diagrams/ngr-eiendom.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-openapi.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ngr/ngr-eiendom/ngr-eiendom-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/ngr/ngr-eiendom/ngr-eiendom-schema.yaml

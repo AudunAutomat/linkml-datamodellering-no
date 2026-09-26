@@ -14,13 +14,13 @@ utgiver: https://data.norge.no/organizations/974760673
 endringsdato: '2026-08-23'
 utgivelsesdato: '2026-08-23'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrstiftelsesdokument/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/oreg/enhetsregisteret-bvrstiftelsesdokument/
 kontaktpunkt:
-- id: https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+- id: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
   navn_vcard:
     nb: Brønnøysundregistra
     nn: Brønnøysundregistra
-  har_kontaktside: https://github.com/brreg/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  har_kontaktside: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
 inneholder_modellelement:
 - https://data.norge.no/oreg/enhetsregisteret-bvrstiftelsesdokument/Stiftelsesdokument
 - https://data.norge.no/oreg/enhetsregisteret-bvrstiftelsesdokument/Stiftelsesutgift
@@ -48,9 +48,4 @@ inneholder_modellelement:
 - https://data.norge.no/oreg/enhetsregisteret-bvrstiftelsesdokument/AvtaleforpliktelseVedStiftelse
 - https://data.norge.no/oreg/enhetsregisteret-bvrstiftelsesdokument/SaerskiltRettighetEllerFordel
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/enhetsregisteret-bvrstiftelsesdokument/diagrams/enhetsregisteret-bvrstiftelsesdokument-filtered.puml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/enhetsregisteret-bvrstiftelsesdokument/diagrams/enhetsregisteret-bvrstiftelsesdokument.puml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/enhetsregisteret-bvrstiftelsesdokument/enhetsregisteret-bvrstiftelsesdokument-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/enhetsregisteret-bvrstiftelsesdokument/enhetsregisteret-bvrstiftelsesdokument-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/oreg/enhetsregisteret-bvrstiftelsesdokument/enhetsregisteret-bvrstiftelsesdokument-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/oreg/enhetsregisteret-bvrstiftelsesdokument/enhetsregisteret-bvrstiftelsesdokument-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/oreg/enhetsregisteret-bvrstiftelsesdokument/enhetsregisteret-bvrstiftelsesdokument-schema.yaml

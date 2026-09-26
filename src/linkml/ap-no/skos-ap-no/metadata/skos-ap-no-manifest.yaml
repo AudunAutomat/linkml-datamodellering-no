@@ -8,13 +8,13 @@ tittel:
 beskrivelse:
   nb: Omgrepsamlingar
   nn: Omgrepsamlingar
-versjonsnummer: 2.16.0
+versjonsnummer: 2.17.1
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/991825827
-endringsdato: '2026-08-02'
+endringsdato: '2026-08-17'
 utgivelsesdato: '2023-01-01'
-status: http://purl.org/adms/status/Completed
-heimeside: https://brreg.github.io/linkml-datamodellering-no/ap-no/skos-ap-no/
+status: http://purl.org/adms/status/UnderDevelopment
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/skos-ap-no/
 er_i_samsvar_med:
 - id: https://informasjonsforvaltning.github.io/skos-ap-no-begrep/
   tittel:
@@ -37,11 +37,9 @@ inneholder_modellelement:
 - https://data.norge.no/vocabulary/skosno#PartitiveConceptRelation
 - http://www.w3.org/2004/02/skos/core#Collection
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/skos-ap-no/skos-ap-no-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/skos-ap-no/skos-ap-no-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/skos-ap-no/skos-ap-no-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/skos-ap-no/skos-ap-no-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/skos-ap-no/skos-ap-no-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/skos-ap-no/skos-ap-no-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/skos-ap-no/skos-ap-no-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/ap-no/skos-ap-no/skos-ap-no-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/skos-ap-no/diagrams/skos-ap-no-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/skos-ap-no/diagrams/skos-ap-no.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/skos-ap-no/skos-ap-no-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/skos-ap-no/skos-ap-no-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/skos-ap-no/skos-ap-no-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/ap-no/skos-ap-no/skos-ap-no-schema.yaml

@@ -8,13 +8,13 @@ tittel:
 beskrivelse:
   nb: Offentlege tenester og hendingar
   nn: Offentlege tenester og hendingar
-versjonsnummer: 1.10.0
+versjonsnummer: 2.0.0
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/991825827
-endringsdato: '2026-08-02'
+endringsdato: '2026-08-17'
 utgivelsesdato: '2023-01-01'
-status: http://purl.org/adms/status/Completed
-heimeside: https://brreg.github.io/linkml-datamodellering-no/ap-no/cpsv-ap-no/
+status: http://purl.org/adms/status/UnderDevelopment
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/cpsv-ap-no/
 er_i_samsvar_med:
 - id: https://informasjonsforvaltning.github.io/cpsv-ap-no/
   tittel:
@@ -48,11 +48,9 @@ inneholder_modellelement:
 - http://www.w3.org/ns/locn#Address
 - http://www.w3.org/ns/dcat#Catalog
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/cpsv-ap-no/cpsv-ap-no-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/cpsv-ap-no/cpsv-ap-no-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/cpsv-ap-no/cpsv-ap-no-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/cpsv-ap-no/cpsv-ap-no-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/cpsv-ap-no/cpsv-ap-no-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/cpsv-ap-no/cpsv-ap-no-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/ap-no/cpsv-ap-no/cpsv-ap-no-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/ap-no/cpsv-ap-no/cpsv-ap-no-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/cpsv-ap-no/cpsv-ap-no-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/cpsv-ap-no/cpsv-ap-no-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/cpsv-ap-no/cpsv-ap-no-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/cpsv-ap-no/diagrams/cpsv-ap-no-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/ap-no/cpsv-ap-no/diagrams/cpsv-ap-no.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/ap-no/cpsv-ap-no/cpsv-ap-no-schema.yaml

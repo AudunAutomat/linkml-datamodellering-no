@@ -35,6 +35,10 @@ gjort offentleg, er funna kontrollerte mot faktiske køyringar
 `gh api repos/AudunAutomat/linkml-datamodellering-no/pages` → `404`: Pages er
 ikkje sett opp i det nye repoet.
 
+**Etter fiks (2026-09-26, `a3946dad`):** Alle dei raude workflowane over er
+grøne. Detaljar under steg 7. Pages er sett opp
+(<https://audunautomat.github.io/linkml-datamodellering-no/>).
+
 ## Funn (tverrgåande)
 
 ### F1 — Eigarnavnet har store bokstavar → alle GHCR-referansar er ugyldige (kodefeil) [stadfesta]
@@ -206,18 +210,18 @@ hentar `mcp-linkml-*`-image ikkje hente dei før synlegheita er sett til
 
 ## Funn per workflow
 
-| Workflow | Trigger | Venta feil | Årsak | Fiks |
-|---|---|---|---|---|
-| `generate.yml` | push/dispatch | `oppsett / build-image / *` raud på `podman tag/push`; `publish` raud på `configure-pages` | F1, F3 (Pages) | F1-kode + slå på Pages (Actions) |
-| `validate.yml` | PR/schedule/dispatch | `oppsett / build-image / *` raud (F1); `create-pr-with-validation-logs` raud (token) | F1, F2 | F1-kode + `RELEASE_PLEASE_TOKEN` |
-| `modell-analyse.yml` | schedule/dispatch | `ensure-images` raud → alle nedstraums-jobbar vert hoppa over | F1 | F1-kode |
-| `lenkje-og-mermaid-sjekk.yml` | schedule/dispatch | `oppsett` raud (F1). Mermaid-sjekken testar `https://brreg.github.io/...` og gir falske resultat eller feil dersom brreg-portalen ikkje lenger vert oppdatert | F1, F5 | F1-kode + F5 |
-| `release-please.yml` | push/dispatch | release-please-steget raud (manglar token); auto-merge feilar utan «Allow auto-merge» | F2, F3 | secret + innstillingar |
-| `auto-approve-release-please.yml` | pull_request_target | Hoppar over eller feilar: `github.actor` vert `AudunAutomat` (eigaren av PAT-en), ikkje `AudunVindenesEggeBR`; `gh pr review --approve` krev «Allow GitHub Actions to … approve» | F3, hardkoda aktør | byt/utvid aktør (sjå steg 4) + innstilling |
-| `release.yml` | push av tag/dispatch | alle fire `podman push` raude | F1 | F1-kode |
-| `codeql.yml` | push/PR/schedule | `Analyser` raud: code scanning er ikkje slått på **[stadfesta]** | F3 | slå på code scanning |
-| `trivy.yml` | push/schedule | `upload-sarif` vil feile av same grunn (grøn 23.09, men `scan-requirements` er ikkje kontrollert i detalj) | F3 | slå på code scanning |
-| `reusable-*.yml` | workflow_call | Vert ikkje køyrde direkte, så dei gir ikkje raude køyringar. Men dei hentar kode og image frå `brreg/...` (F6) | F6 | steg 6 |
+| Workflow | Trigger | Venta feil | Årsak | Fiks | Resultat etter fiks (steg 7) |
+|---|---|---|---|---|---|
+| `generate.yml` | push/dispatch | `oppsett / build-image / *` raud på `podman tag/push`; `publish` raud på `configure-pages` | F1, F3 (Pages) | F1-kode + slå på Pages (Actions) | ✅ 36230891223: alle `build-image` grøne, portal publisert |
+| `validate.yml` | PR/schedule/dispatch | `oppsett / build-image / *` raud (F1); `create-pr-with-validation-logs` raud (token) | F1, F2 | F1-kode + `RELEASE_PLEASE_TOKEN` | ✅ 36231138870. Token ikkje brukt (ingen nye loggar, ingen PR) |
+| `modell-analyse.yml` | schedule/dispatch | `ensure-images` raud → alle nedstraums-jobbar vert hoppa over | F1 | F1-kode | ✅ 36231141184 |
+| `lenkje-og-mermaid-sjekk.yml` | schedule/dispatch | `oppsett` raud (F1). Mermaid-sjekken testar `https://brreg.github.io/...` og gir falske resultat eller feil dersom brreg-portalen ikkje lenger vert oppdatert | F1, F5 | F1-kode + F5 | ✅ 36231265932 mot ny portal, inkl. `lenkjesjekk` og `mermaid-click-href-sjekk` |
+| `release-please.yml` | push/dispatch | release-please-steget raud (manglar token); auto-merge feilar utan «Allow auto-merge» | F2, F3 | secret + innstillingar | ⏸ push-køyring grøn, men hoppa over; manuell køyring utsett til steg 9 (F10). F2 ikkje verifisert |
+| `auto-approve-release-please.yml` | pull_request_target | Hoppar over eller feilar: `github.actor` vert `AudunAutomat` (eigaren av PAT-en), ikkje `AudunVindenesEggeBR`; `gh pr review --approve` krev «Allow GitHub Actions to … approve» | F3, hardkoda aktør | byt/utvid aktør (sjå steg 4) + innstilling | ⏸ ikkje utløyst (ingen release-PR enno). Innstillinga `can_approve_pull_request_reviews: true` er stadfesta |
+| `release.yml` | push av tag/dispatch | alle fire `podman push` raude | F1 | F1-kode | ⏸ ikkje køyrd (krev tag `v*.*.*`). Same F1-fiks er lint-verifisert (actionlint) |
+| `codeql.yml` | push/PR/schedule | `Analyser` raud: code scanning er ikkje slått på **[stadfesta]** | F3 | slå på code scanning | ✅ push-køyring på `a3946dad` |
+| `trivy.yml` | push/schedule | `upload-sarif` vil feile av same grunn (grøn 23.09, men `scan-requirements` er ikkje kontrollert i detalj) | F3 | slå på code scanning | ✅ push-køyring på `a3946dad` |
+| `reusable-*.yml` | workflow_call | Vert ikkje køyrde direkte, så dei gir ikkje raude køyringar. Men dei hentar kode og image frå `brreg/...` (F6) | F6 | steg 6 | ⏸ ikkje testa frå eksternt repo. Krev taggar (F10), `release.yml`-køyring og offentlege pakkar (2f) |
 
 Merk: `auto-approve` godkjenner ein PR oppretta av same konto som eig
 PAT-en. GitHub nektar ein brukar å godkjenne sin eigen PR, men her godkjenner
@@ -476,6 +480,27 @@ påkravde status checks, så han er ikkje avhengig av F1-fiksen. Men
 auto-merge av release-PR-ar (steg 7) føreset at `RELEASE_PLEASE_TOKEN` er
 laga av `AudunAutomat` (F2a), slik at admin-bypass slår inn.
 
+#### F8b — Verifisering av gjenskapt ruleset (2026-09-26)
+
+Ruleset `main protection` (id 24036454) i `AudunAutomat/linkml-datamodellering-no`
+er samanlikna felt for felt med `brreg`-ruleset 16642329 (`name`, `target`,
+`enforcement`, `conditions`, `rules`, `bypass_actors`, sorterte JSON-ar
+via `diff`):
+
+- Identisk: `enforcement: active`, mål `~DEFAULT_BRANCH`, `deletion`,
+  `non_fast_forward`, `pull_request` med `required_approving_review_count: 1`,
+  `dismiss_stale_reviews_on_push: true`, `require_last_push_approval: true`,
+  `require_extra_approval_for_unattributed_changes: true`,
+  `require_code_owner_review: false`, `required_review_thread_resolution: false`,
+  `allowed_merge_methods: [merge, squash, rebase]`, og bypass for
+  Repository admin (`always`).
+- Einaste skilnad: `dismissal_restriction: {enabled: false, allowed_actors: []}`
+  manglar i det nye. Det er standardverdien (avslått), så åtferda er den same.
+  Feltet vert truleg ikkje sett på personlege repo, der det ikkje finst team
+  eller brukarar å avgrense til.
+- Effektive reglar på `main` (`rules/branches/main`): `deletion`,
+  `non_fast_forward`, `pull_request`, alle frå ruleset 24036454.
+
 ### F9 — Evaluering: kan vi slutte å bruke ein PAT som er knytt til brukaren?
 
 **Spørsmål (brukaren, 2026-09-26):** No som repoet ligg under brukaren sin
@@ -703,39 +728,392 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
      | `allow_auto_merge`, bypass-liste, code scanning, secret | ❓ krev admin-tilgang, kan ikkje lesast som `AudunVindenesEggeBR` |
    - Siste køyringar (schedule 26.09) er framleis raude med F1-feilen, som
      venta: dei køyrer koden i origin.
+   **Status 2026-09-26 (etter push av `a3946dad`, `gh` som `AudunAutomat`):**
+   | Workflow | Køyring | Resultat |
+   |---|---|---|
+   | Generate and publish (push) | 36230891223 | ✅ alle 7 `build-image` grøne (F1 løyst); image pusha til `ghcr.io/audunautomat/*` (t.d. `linkml-local:5c74…`); portal publisert |
+   | Validate (dispatch) | 36231138870 | ✅; `create-pr-with-validation-logs` grøn, men **laga ingen PR** («Ingen endringar å committe»), så tokenet vart ikkje brukt |
+   | Modell-analyse (dispatch) | 36231141184 | ✅ |
+   | CodeQL (push) | – | ✅ (code scanning slått på, advanced setup) |
+   | Trivy (push) | – | ✅ |
+   | Lenkje- og mermaid-sjekk (dispatch, mot ny portal) | 36231265932 | ✅ inkl. `lenkjesjekk` og `mermaid-click-href-sjekk` |
+   | Release Please (push) | 36230891008 | ✅, men hoppa over av commit-type-filteret. **Ikkje starta manuelt**, sidan taggane framleis manglar (F10) og ei køyring då kunne laga release-PR-ar med feil versjonar/CHANGELOG |
+
+   Portal: <https://audunautomat.github.io/linkml-datamodellering-no/> (HTTP 200).
+
+   Innstillingar (lesne som admin): secret `RELEASE_PLEASE_TOKEN` finst;
+   `allow_auto_merge: true`; workflow-permissions `write` +
+   `can_approve_pull_request_reviews: true`; miljøet `github-pages` tillèt
+   `main`; ruleset-bypass = Repository admin (always).
+
+   **Står att frå steg 7:**
+   - **F2 (`RELEASE_PLEASE_TOKEN`) er framleis ikkje verifisert.** Tokenet vert først
+     brukt ved ein manuell køyring av `release-please.yml`, som skal vente
+     til steg 9.1 (taggar) er gjort, eller når `validate.yml` finn nye
+     valideringsloggar.
+   - ~~Ruleset `main protection` manglar `pull_request`-regelen.~~ Retta av
+     brukaren og verifisert 2026-09-26, sjå F8b.
+   - ~~2f: GHCR-pakkane er private.~~ Retta av brukaren. Anonym
+     `GET ghcr.io/v2/audunautomat/<image>/tags/list` gir HTTP 200 for alle 7
+     image i `images.json` (2026-09-26). Dei har berre hash-taggar.
+   - `latest`/`vX.Y.Z`-taggar på image og dei to `mcp-linkml-*-utkast`-imaga
+     manglar, fordi `release.yml` ikkje har køyrt (krev `v*.*.*`-tag, jf. F10).
+     Til det har skjedd, vil eksterne kallarar av `reusable-*.yml` (som hentar
+     `:${VERSION}`, standard `latest`) feile.
 8. (Etter F9) Opprett spec for GitHub App, sjå handlingslista.
-9. **F10 — taggar og versjonslåste referansar** (ikkje utført; krev
-   brukaravgjerd):
-   1. Overfør alle taggar frå `brreg/linkml-datamodellering-no` til det nye
-      repoet (du må gjere det sjølv), og stadfest med
-      `git ls-remote --tags origin | wc -l`.
-   2. Deretter: byt versjonslåste `raw.githubusercontent.com/brreg/…/<tag>/…`
-      i `src/linkml/**/*-schema.yaml`, `mkdocs/docs/**`, `README.md`,
-      `SCOPE.md`, `CONVENTIONS.md`, `bootstrap.sh`,
-      `mkdocs/lib/sections/kom_i_gang.sh` og
-      `src/assets/scripts/scaffolding/new-modell.sh` til `AudunAutomat`.
-      Endringar i skjema gir nye release-please-versjonar per modell.
-   3. Avgjer separat om `informasjonsmodellidentifikator`-URI-ane i
-      `src/linkml/modellkatalog/**/data/**` skal endrast. Det er ei semantisk
-      identitetsendring mot eksterne katalogar og bør ha eigen spec.
+9. **F10 — taggar, versjonslåste referansar og første release i nytt repo**
+   (ikkje utført). Del-stega har denne rekkjefølgja: 9.1 → 9.2 → 9.3 → 9.4 → 9.5.
+   9.6 og 9.7 krev at 9.1 er gjort, men er elles uavhengige. 9.8 og 9.9 er
+   avgjerder.
+
+   **Kartlegging (2026-09-26):**
+
+   | Kva | Resultat |
+   |---|---|
+   | Taggar i `brreg` | 367 (40 annoterte, 327 lette) |
+   | Taggar i lokal klone | 367, **identisk sett** med `brreg` (`diff` av sorterte lister er tom). Ingen henting frå `brreg` trengst |
+   | Taggar i `origin` (AudunAutomat) | 0 |
+   | Namnemønster | `<komponent>-vX.Y.Z` (release-please, `include-component-in-tag: true`) for 39 komponentar; éin repo-nivå-tag `v1.0.0` |
+   | Forventa taggar (komponent + versjon i `.github/release-please-manifest.json`) | alle finst, **unntatt `modelldcat-modell-v1.14.0`** (sjå 9.2) |
+   | GitHub Releases | 330 i `brreg`, 0 i nytt repo. Releases (med opplasta artefakter) er GitHub-objekt og vert ikkje med i git (sjå 9.8) |
+
+   #### 9.1 Overfør taggane til nytt origin (du må gjere det sjølv) ✅
+
+   **Utført av brukaren, verifisert 2026-09-26:** `git ls-remote --tags origin`
+   gir 367 taggar (40 annoterte). Settet er identisk med lokal klone og
+   `brreg` (`diff` av sorterte lister er tom). Ingen workflow-køyringar vart
+   utløyste av pushen. `modelldcat-modell-v1.14.0` manglar framleis, som
+   venta (9.2).
+
+
+   Stadfest først at den lokale klonen har alle taggane:
+   ```bash
+   git tag | wc -l                                                     # → 367
+   git ls-remote --tags https://github.com/brreg/linkml-datamodellering-no \
+     | grep -v '\^{}' | wc -l                                          # → 367
+   ```
+   Overfør alle taggane til `origin`, og stadfest resultatet:
+   ```bash
+   git push origin --tags
+   git ls-remote --tags origin | grep -v '\^{}' | wc -l                # → 367
+   ```
+   Merknader:
+   - GitHub lagar **ingen** `push`-hendingar når meir enn tre taggar vert
+     pusha samstundes. Det er ønskt her: `release.yml` (`on: push: tags:
+     ['v*.*.*']`) vert ikkje utløyst av den gamle `v1.0.0`, og ingen andre
+     workflowar startar.
+   - Ruleset-en `main protection` gjeld berre branchar (`target: branch`), så
+     tag-pushen vert ikkje blokkert.
+
+   #### 9.2 Rett manglande `modelldcat-modell-v1.14.0` (feil som fanst alt i `brreg`) ✅
+
+   **Utført av brukaren, verifisert 2026-09-26:** annotert tag
+   `modelldcat-modell-v1.14.0` (objekt `5c5e4f2d`) peikar på `46792cdc`.
+   Origin har no 368 taggar.
+
+
+   Komponenten `modelldcat-modell` vart flytta til ny sti i `46792cdc`
+   (`refactor(ap-no): flytt dqv-core, modelld…`, 2026-08-17) og fekk `1.14.0`
+   direkte i manifestet utan at ein tag vart laga. Nyaste tag er
+   `modelldcat-modell-v1.11.0`, og det finst heller ingen GitHub Release for
+   1.12–1.14 i `brreg`. Utan tag finn ikkje release-please førre release for
+   komponenten. Han vil då ta med alle commit-ar bakover (opp til
+   søkjedjupna) i CHANGELOG for neste versjon.
+
+   Tilrådd fiks (du må gjere det sjølv): lag den manglande taggen på commit-en
+   som sette 1.14.0 i manifestet. Kommandoane er skrivne slik at dei stoppar
+   dersom føresetnadene ikkje held:
+   ```bash
+   # 1. Kontroller at taggen framleis manglar (lokalt og i origin) — forventa: ingen output
+   git tag -l modelldcat-modell-v1.14.0
+   git ls-remote --tags origin modelldcat-modell-v1.14.0
+
+   # 2. Kontroller at 46792cdc er commit-en som sette 1.14.0 og ligg på main
+   git show 46792cdc:.github/release-please-manifest.json | grep '"src/linkml/ap-no/modelldcat-modell": "1.14.0"'
+   git merge-base --is-ancestor 46792cdc origin/main && echo "46792cdc er på main"
+
+   # 3. Lag annotert tag (same form som per-schema-taggane i release-please.yml)
+   git tag -a modelldcat-modell-v1.14.0 46792cdc -m "Release modelldcat-modell version 1.14.0 (etterregistrert etter flytting, jf. specs/backlog/ci-etter-origin-flytting-audunautomat.md 9.2)"
+
+   # 4. Push berre denne éine taggen
+   git push origin modelldcat-modell-v1.14.0
+
+   # 5. Verifiser — forventa: éi linje med …refs/tags/modelldcat-modell-v1.14.0 og éi med ^{}
+   git ls-remote --tags origin 'modelldcat-modell-v1.14.0*'
+   ```
+   Merk: ein push av éin enkelt tag lagar ei `push`-hending, men ingen
+   workflowar lyttar på `modelldcat-modell-v*`. `release.yml` reagerer berre
+   på `v*.*.*`.
+   Alternativ utan tag: set `"last-release-sha": "46792cdc…"` på pakken i
+   `.github/release-please-config.json`. Det krev ei kodeendring og må
+   fjernast att etter neste release, så taggen er enklare.
+
+   #### 9.3 Tørrkøyr release-please før første ekte køyring ✅
+
+   **Utført 2026-09-26** med `release-please@17` (same major som
+   `release-please-action@v5` / `45996ed`, som krev `^17.6.0`) i
+   `node:22`-container, `--dry-run`:
+   - `Expected 37 releases, only found 0` → `Missing 37 paths`, deretter
+     **37 av 37** funne via taggar (`looking for tagName` → `found`), t.d.
+     `modelldcat-modell-v1.14.0 → 46792cdc` (9.2 verka).
+   - Utfall: 20 × «No user facing commits found since <tag-SHA>», 17 × «No
+     commits for path», **`Would open 0 pull requests`**. Ingen komponent får
+     historikken sin på nytt.
+   - Harmlause åtvaringar: `Release SHA … did not have an associated pull
+     request` (releases frå `brreg` er ikkje kopla til PR-ar i nytt repo), og
+     `commit could not be parsed: … Merge branch 'main' of github.com:brreg/…`
+     (merge-commit utan conventional-format vert ignorert).
+
+
+   release-please finn førre release per komponent først via GitHub Releases.
+   Når dei manglar (0 i nytt repo), er det forventa at han fell tilbake til å
+   leite etter taggar med forventa namn (`<komponent>-v<manifest-versjon>`).
+   Dette skal stadfestast før release-please får skrive noko. Tørrkøyringa
+   er eit eingongs diagnoseverktøy, ikkje eit make-target:
+   ```bash
+   podman run --rm -e GH_TOKEN="$(gh auth token)" docker.io/library/node:22 \
+     sh -c 'npx -y release-please release-pr --dry-run \
+       --repo-url=AudunAutomat/linkml-datamodellering-no --target-branch=main \
+       --token="$GH_TOKEN" \
+       --config-file=.github/release-please-config.json \
+       --manifest-file=.github/release-please-manifest.json'
+   ```
+   Sjå etter følgjande i loggen:
+   - ✅ Ingen `Expected N releases, only found M`-åtvaring, eller at
+     åtvaringa vert følgd av at alle manglande stiar vert funne via taggar.
+   - ✅ Kvar planlagde release-PR/CHANGELOG inneheld berre commit-ar etter
+     taggen til komponenten, og ikkje heile historikken.
+   - ❌ Viss ein komponent får ein CHANGELOG med hundrevis av commit-ar eller
+     eit uventa versjonshopp, manglar taggen hans. Løys det som i 9.2 før du
+     går vidare.
+
+   #### 9.4 Første ekte køyring av release-please (verifiserer F2) ✅ (delvis)
+
+   **Utført 2026-09-26:** `workflow_dispatch`, køyring `36233290337` → ✅
+   `success`. `release-please-action` køyrde med `token: ***`
+   (`RELEASE_PLEASE_TOKEN`), gjorde same 37 tag-oppslag som tørrkøyringa, og
+   laga ingen PR (ingen `feat`/`fix` sidan taggane).
+   - **F2 verifisert for lesetilgang:** tokenet er gyldig og har tilgang til
+     repoet, elles hadde API-kalla feila med `401 Bad credentials`.
+   - **Ikkje verifisert enno:** skrivetilgangane (lage PR, pushe til
+     PR-branch, `gh pr merge --auto`, lage GitHub Release/tag) og kjeda
+     auto-approve → validate → auto-merge. Dette vert først testa ved første
+     `feat`/`fix` som endrar ein `*-schema.yaml` i ein release-please-komponent.
+     Kontrollpunkta under gjeld då.
+
+
+   ```bash
+   gh workflow run release-please.yml -R AudunAutomat/linkml-datamodellering-no
+   gh run watch -R AudunAutomat/linkml-datamodellering-no \
+     "$(gh run list -R AudunAutomat/linkml-datamodellering-no -w release-please.yml -L 1 --json databaseId -q '.[0].databaseId')"
+   ```
+   `workflow_dispatch` hoppar over commit-type-filteret, så
+   `release-please-action` køyrer alltid med `RELEASE_PLEASE_TOKEN`.
+   - **Grøn køyring = F2 verifisert** (API-kall med ugyldig token gir `401 Bad
+     credentials`), sjølv om ingen PR vert laga.
+   - Viss det finst `feat`/`fix` sidan førre tag, vert det laga ein release-PR.
+     Kontroller då kjeda:
+     1. PR-forfattar er `AudunAutomat`, og `auto-approve-release-please.yml`
+        køyrer og godkjenner (verifiserer steg 4).
+     2. `validate.yml` køyrer på PR-en. Det viser at PAT-en startar
+        workflowar, noko `GITHUB_TOKEN` ikkje ville gjort.
+     3. «Oppdater schema-versjonar i release-PR» pushar til PR-branchen.
+     4. Auto-merge er aktivert. PR-en vert merga via admin-bypass (F8).
+     5. Push-køyringa etter merge lagar GitHub Release(s), lastar opp
+        artefakter og lagar per-schema-taggar.
+
+   #### 9.5 Image-taggar `latest`/`vX.Y.Z` og `mcp-linkml-*-utkast`-image
+
+   **Status 2026-09-26: klar, ventar på brukaren.** Taggen må lagast av
+   brukaren, fordi LLM ikkje køyrer git-kommandoar som endrar
+   versjonskontroll-tilstand. Å lage taggen via GitHub-API-et har same verknad
+   og vert difor heller ikkje gjort. Føresetnad: `v1.1.0` skal peike på ein
+   commit i `origin/main` som inneheld endringane frå 9.6. Då får eksterne som
+   låser `ap-no-version: v1.1.0` oppdaterte `bootstrap.sh` og import-URL-ar.
+   ```bash
+   # 1. Kontroller at 9.6-endringane er med i origin/main — forventa: ingen output
+   git fetch origin
+   git grep -l 'raw.githubusercontent.com/brreg/linkml-datamodellering-no' origin/main -- bootstrap.sh mkdocs/lib/sections/kom_i_gang.sh src/assets/scripts/scaffolding/new-modell.sh
+
+   # 2. Kontroller at taggen ikkje finst frå før — forventa: ingen output
+   git ls-remote --tags origin v1.1.0
+
+   # 3. Lag og push taggen (éin tag → push-hending → release.yml startar)
+   git tag -a v1.1.0 origin/main -m "v1.1.0: første release etter flytting til AudunAutomat"
+   git push origin v1.1.0
+   ```
+   Etterpå (LLM): følg `release.yml`-køyringa, og kontroller at alle 4 jobbane er
+   grøne og at `:v1.1.0` og `:latest` finst. Deretter set brukaren
+   `mcp-linkml-modell-utkast` og `mcp-linkml-begrep-utkast` til *Public*
+   (2f-2), og LLM verifiserer anonymt (kommando under).
+
+
+   `release.yml` (utløyst av `v*.*.*`-tag eller `workflow_dispatch`) er det
+   einaste som lagar `:latest`/`:<ref_name>` for image og byggjer
+   `mcp-linkml-modell-utkast`/`mcp-linkml-begrep-utkast`. Reusable workflows
+   hentar `:${VERSION}` (standard `latest`), så eksterne kallarar feilar til
+   dette har skjedd.
+
+   **Ikkje** køyr `release.yml` med `--ref v1.0.0`. Workflowen vert då henta
+   frå den gamle commit-en, som manglar F1-fiksen, og feilar med same
+   feil som før.
+
+   **Avgjort (O5, 2026-09-26): alternativ a) med `v1.1.0`.** Alternativa
+   som vart vurderte:
+   - **a) Ny repo-nivå-tag på dagens `main`** (t.d. `v1.1.0`, jf.
+     versjonspolitikken i `GOVERNANCE.md`). Éin tag-push utløyser
+     `release.yml` og gir image-taggane `:v1.1.0` og `:latest`. Eksterne kan
+     då låse `ap-no-version: v1.1.0`.
+   - **b) Berre `latest` no:** `gh workflow run release.yml -R
+     AudunAutomat/linkml-datamodellering-no` (på `main`). Då vert
+     `ref_name` = `main`, og image får taggane `:main` og `:latest`.
+
+   Etterpå: set `mcp-linkml-modell-utkast` og `mcp-linkml-begrep-utkast` til
+   *Public* (2f-2). Verifiser anonymt:
+   ```bash
+   for img in linkml-local mcp-linkml-validator mcp-linkml-modell-utkast mcp-linkml-begrep-utkast; do
+     tok=$(curl -s "https://ghcr.io/token?scope=repository:audunautomat/$img:pull" | jq -r .token)
+     curl -s -H "Authorization: Bearer $tok" "https://ghcr.io/v2/audunautomat/$img/tags/list" | jq -c '{name, tags}'
+   done
+   ```
+
+   #### 9.6 Byt versjonslåste `raw.githubusercontent.com/brreg/…` til `AudunAutomat` (etter 9.1) ✅
+
+   **Utført 2026-09-26:**
+   - Tekstutskifting i 15 filer: dei 6 `oreg`-skjemaa, `README.md`,
+     `SCOPE.md`, `CONVENTIONS.md`, `ekstern-bruk.md` (8),
+     `importhierarki.md`, `ny-domenemodell.md`, `bootstrap.sh` (2),
+     `kom_i_gang.sh` og `new-modell.sh`. Nye URL-ar er kontrollerte (HTTP 200
+     for `dcat-ap-no-v2.14.1`, `-v2.13.0` og `common-ap-no-v1.0.0`).
+   - Validering av dei 6 skjemaa: `make lint` → alle exit 0. `make roundtrip` →
+     5 ✅, **`enhetsregisteret-bvrfriv` ✗ `roundtrip-ttl`**. Feilen fanst
+     **før endringa**: same feil med opphavleg `brreg`-import (kontrollert ved å
+     setje importen mellombels tilbake). Sjå 9.9.
+   - `make gen-informasjonsmodell-instance` (alle skjema) → 47 manifest
+     regenererte, ingen nye filer. I **33** av dei retta regenereringa òg
+     utdaterte felt (t.d. `ngr-adresse` `versjonsnummer` 1.4.0 → 2.1.1,
+     `beskrivelse`, `endringsdato`, `inneholder_modellelement`). Brukaren valde å
+     behalde full regenerering (sjå Avgjerder).
+   - `mkdocs/docs/felles/*/*-manifest.yaml` (5): kopierte frå kjelda med `cp`,
+     slik `mkdocs/lib/copy_artifacts.sh` gjer. Dei var byte-like med kjelda i
+     HEAD. `mkdocs/docs/felles/*/index.md` (5): import-linja er bytt slik den
+     endra `kom_i_gang.sh` ville generert henne. `make docs-publish` er ikkje
+     køyrd, fordi han skriv om alle 512 tracka filer under `mkdocs/docs/felles/`.
+   - Att med `raw.githubusercontent.com/brreg`: berre
+     `src/linkml/ap-no/dqv-ap-no/metadata/modelldcat.yaml`. Det er ei utdatert
+     fil med gammal sti, dekt av BUG-11
+     (`bugs/informasjonsmodell-instance-stale-metadata-sti.md`), og vert ikkje
+     rørt her.
+
+
+   Utskiftinga er
+   `raw.githubusercontent.com/brreg/linkml-datamodellering-no/` →
+   `raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/`. Tag-delen
+   er uendra. Filene som skal endrast:
+
+   | Fil(er) | Kva | Merknad |
+   |---|---|---|
+   | 6 skjema i `src/linkml/oreg/`: `enhetsregisteret-bvrbekreftelse`, `-bvrettersendingavvedlegg`, `-bvrfriv`, `-bvrstiftelsesdokument`, `-frivilligorganisasjonapi`, `javazonetalk` | `imports:` av `dcat-ap-no-v2.14.1` | Ingen av dei er release-please-komponentar, så endringa utløyser **ingen** release. Køyr `make lint SCHEMA=…` og `make roundtrip SCHEMA=…` per skjema etterpå |
+   | `README.md`, `SCOPE.md`, `CONVENTIONS.md` | døme-importar (`dcat-ap-no-v2.8.0`, `-v2.0.0`, `common-ap-no-v1.0.0`) | dokumentasjon |
+   | `mkdocs/docs/arkitektur/ekstern-bruk.md` | profiltabell, døme og `{versjon}`-mønster | dokumentasjon |
+   | `mkdocs/docs/arkitektur/importhierarki.md`, `mkdocs/docs/kom-i-gang/ny-domenemodell.md` | døme-importar | dokumentasjon |
+   | `bootstrap.sh` (2 linjer, `${WORKFLOW_REF}`) | import-døme og `renovate.json`-nedlasting | verktøy for eksterne |
+   | `mkdocs/lib/sections/kom_i_gang.sh` | **generator** for «Importer i egne LinkML-skjema» på modellsidene | etter endring: køyr `make docs-publish`, så vert `mkdocs/docs/**/index.md` (t.d. `felles/*/index.md`) regenererte |
+   | `src/assets/scripts/scaffolding/new-modell.sh` | **generator** for import i nye skjema | påverkar berre nye modellar |
+
+   Genererte filer skal **ikkje** handredigerast. Regenerer dei i staden:
+   - `src/linkml/**/metadata/*-manifest.yaml` (47) og
+     `metadata/modelldcat.yaml` inneheld `raw.githubusercontent.com/brreg/…/main/…`
+     og `heimeside: https://brreg.github.io/…`. Generatoren
+     (`generate-informasjonsmodell.py`) brukar no `AudunAutomat` (steg 5).
+     Lokalt les han `.git/config` (origin = AudunAutomat), og i CI les han
+     `GITHUB_REPOSITORY`. Regenerer med `make gen-informasjonsmodell-instance
+     DOMAIN=<domene>` for kvart domene. Dette er uavhengig av taggane og kan
+     gjerast når som helst.
+   - `mkdocs/docs/felles/*/*-manifest.yaml` er kopiar av manifesta og vert
+     oppdaterte av `make docs-publish`.
+
+   Feil som fanst alt i `brreg` og som ikkje vert retta av 9.6: `felles/*/index.md`
+   refererer `brreg-felles-{aktoer,digital-adresse,geografisk-adresse,tid,typer}-v0.1.0`.
+   Desse taggane finst verken i `brreg` eller lokalt, og `felles`-modellane
+   er ikkje release-please-komponentar. Lenkjene er brotne uansett eigar.
+   Bør få eigen `bugs/`-fil.
+
+   Tilsvarande feil som fanst før flyttinga, funnen i 9.6:
+   `make roundtrip SCHEMA=src/linkml/oreg/enhetsregisteret-bvrfriv/…` feilar i
+   `roundtrip-ttl`, uavhengig av import-eigar. Bør òg få eigen `bugs/`-fil (9.9).
+
+   #### 9.7 `informasjonsmodellidentifikator` (eigen spec)
+
+   34 identifikatorar i 6 filer under `src/linkml/modellkatalog/**/data/**`
+   brukar `https://brreg.github.io/linkml-datamodellering-no/<domene>/<modell>/`.
+   Dei identifiserer publiserte informasjonsmodellar i eksterne katalogar,
+   så ei endring er ei identitetsendring (ny URI = ny modell for
+   konsumentane). Dette skal ikkje gjerast som del av denne specen. Opprett
+   eigen spec som vurderer (a) behalde gamle URI-ar som stabile
+   identifikatorar, (b) byte med `owl:sameAs`/`dct:replaces` til gammal URI,
+   eller (c) byte utan kopling.
+
+   #### 9.8 Historiske GitHub Releases (avgjerd O3)
+
+   De 330 releasane i `brreg` (med artefakter som `*-schema.json`,
+   `*-shapes.ttl`, `*-ontology.ttl`) vert ikkje med. `ekstern-bruk.md`
+   peikar no på `github.com/AudunAutomat/…/releases` som «kanonisk adresse
+   for eldre versjonar», men den sida er tom. Alternativ:
+   **Avgjort (O3, 2026-09-26): alternativ a).** `ekstern-bruk.md` har fått ein
+   `!!! note`-boks under lista over versjonerte adresser. Han seier at
+   releases frå før flyttinga ligg i `brreg`, og at nye releases vert
+   publiserte i det nye repoet.
+
+   - **a) (tilrådd, valt)** Behald historikken i `brreg`. Presiser i
+     `ekstern-bruk.md` at releases før flyttinga (2026-09) ligg i
+     `github.com/brreg/linkml-datamodellering-no/releases`, og at nye releases
+     ligg i det nye repoet. Krev ingen kopiering, men føreset at `brreg`-repoet
+     vert ståande.
+   - **b)** Kopier releasane med skript (`gh release view` i `brreg` →
+     `gh release download` → `gh release create --notes … <tag> <assets>` i
+     nytt repo). Det er 330 releases, krev 9.1 først, og gir nye
+     publiseringsdatoar.
+   - **c)** Ikkje gjer noko, og aksepter at lenkja er tom for gamle versjonar.
+
+   #### 9.9 Observasjon: `VERSION=latest` i reusable workflows (feil som fanst alt i `brreg`)
+
+   `reusable-{generate,lint,validate}.yml` sjekkar ut
+   `AudunAutomat/linkml-datamodellering-no` med `ref: ${VERSION}`, der
+   standardverdien er `latest`. Det finst ingen branch eller tag som heiter
+   `latest`, verken i `brreg` eller i nytt repo, så checkout feilar for
+   eksterne kallarar som ikkje set `ap-no-version: vX.Y.Z`. Dette kjem ikkje av
+   flyttinga, men vert synleg når eksterne tek i bruk det nye repoet. Bør få
+   eigen `bugs/`-fil og fiks (t.d. mappe `latest` → `main` for checkout,
+   men behalde `:latest` for image).
 
 ## Handlingsliste
 
 - [x] 1. Hent faktiske feilloggar og stadfest/juster funna (F2 står att, sjå steg 7)
-- [ ] 2a. Opprett `RELEASE_PLEASE_TOKEN` (fine-grained PAT, AudunAutomat), sjå F2a
-- [ ] 2b. Slå på «Allow GitHub Actions to create and approve pull requests»
-- [ ] 2c. Slå på «Allow auto-merge»
-- [ ] 2d. Pages-kjelde = GitHub Actions; sjekk `github-pages`-miljøet
-- [ ] 2e. Slå på code scanning (Advanced setup)
-- [ ] 2f. Set GHCR-pakkane under `audunautomat` til *Public* (etter første push)
-- [ ] 2g. Gjenskap ruleset `main protection` på `main` (F8a), og verifiser `protected: true`
+- [x] 2a. Opprett `RELEASE_PLEASE_TOKEN` (fine-grained PAT, AudunAutomat), sjå F2a
+- [x] 2b. Slå på «Allow GitHub Actions to create and approve pull requests»
+- [x] 2c. Slå på «Allow auto-merge»
+- [x] 2d. Pages-kjelde = GitHub Actions; sjekk `github-pages`-miljøet
+- [x] 2e. Slå på code scanning (Advanced setup)
+- [x] 2f. Set GHCR-pakkane under `audunautomat` til *Public* — verifisert 2026-09-26 med anonym `tags/list` (HTTP 200) for alle 7 image i `images.json`
+- [ ] 2f-2. Set `mcp-linkml-modell-utkast` og `mcp-linkml-begrep-utkast` til *Public* etter at `release.yml` har pusha dei første gong (finst ikkje enno, anonym tilgang gir 403)
+- [x] 2g. Gjenskap ruleset `main protection` på `main` (F8a), og verifiser `protected: true` — verifisert 2026-09-26, funksjonelt identisk med `brreg` (sjå F8b)
 - [ ] 2h. (Valfritt) Inviter `AudunVindenesEggeBR` som collaborator med *Write*, dersom kontoen skal vere reviewar
 - [x] 3. F1: lowercase GHCR-prefiks via `compute-image-tags` + actionlint
 - [x] 4. Auto-approve-aktør utan hardkoding + actionlint
 - [x] 5. F5: portal-URL-ar → `audunautomat.github.io` / `github.com/AudunAutomat` (utan versjonslåste importar/identifikatorar)
 - [x] 6. F6: reusable workflows → `AudunAutomat` / `ghcr.io/audunautomat` + `ekstern-bruk.md`
-- [ ] 7. Manuell verifisering via `workflow_dispatch`
-- [ ] 9. F10: taggar overførte til nytt origin → deretter versjonslåste importar (steg 9)
+- [x] 7. Manuell verifisering via `workflow_dispatch` (alle grøne; F2 og `release-please.yml` utsette til steg 9, sjå status)
+- [x] 9.1 Overfør 367 taggar til `origin` (stadfest 367 i `git ls-remote --tags origin`)
+- [x] 9.2 Lag manglande tag `modelldcat-modell-v1.14.0` på `46792cdc`
+- [x] 9.3 Tørrkøyr release-please (`--dry-run`) og kontroller CHANGELOG-omfang
+- [x] 9.4 `gh workflow run release-please.yml` → grøn (36233290337), F2 verifisert for lesetilgang
+- [ ] 9.4b Ved første ekte release-PR: kontroller skrivetilgang og auto-approve/validate/auto-merge-kjeda (kontrollpunkt i 9.4)
+- [ ] 9.5 Køyr `release.yml` via ny tag `v1.1.0` på `main` (O5) — kommandoar klare i 9.5, ventar på brukaren, og set `mcp-linkml-*-utkast` til *Public* (2f-2)
+- [x] 9.6 Byt versjonslåste raw-URL-ar (tabell i 9.6), regenerer manifest (`make gen-informasjonsmodell-instance`) og portal (`make docs-publish`)
+- [ ] 9.7 Opprett eigen spec for `informasjonsmodellidentifikator`
+- [x] 9.8 Avgjer O3 (historiske GitHub Releases) og oppdater `ekstern-bruk.md` — alternativ a), note-boks lagt til
+- [ ] 9.9 Opprett `bugs/`-filer for `VERSION=latest`-checkout, `brreg-felles-*-v0.1.0`-lenkjer og `enhetsregisteret-bvrfriv` roundtrip-ttl
 - [ ] 8. (Etter F9) Opprett spec `specs/backlog/github-app-for-release-please.md` for migrering frå PAT til GitHub App
 
 ## Opne spørsmål
@@ -747,9 +1125,50 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
 - ~~**O2:** Er AudunAutomat kanonisk upstream?~~ **Løyst 2026-09-26:** Ja,
   `AudunAutomat/linkml-datamodellering-no` er den nye kanoniske upstreamen.
   Steg 5 og 6 skal gjerast utan vilkår.
+- ~~**O3:** Historiske GitHub Releases (330 i `brreg`)?~~ **Løyst
+  2026-09-26:** Dei vert liggjande i `brreg`, og `ekstern-bruk.md` peikar dit
+  for releases før flyttinga (9.8, alternativ a).
+- ~~**O5:** Korleis skal første `release.yml`-køyring skje?~~ **Løyst
+  2026-09-26:** Ny repo-nivå-tag `v1.1.0` på `main` (9.5, alternativ a).
+  Det er ein minor-bump: tooling-API-et er uendra, men eigar og URL-ar er nye.
 
 ## Avgjerder
 
+- 9.6 (brukarval 2026-09-26): full regenerering av manifest er behalden, sjølv om
+  33 av 47 fekk endringar i tillegg til eigarbytet (utdaterte versjonsnummer,
+  beskrivelsar, datoar og modellelement). Manifesta skal vere ein funksjon av
+  dagens skjema. Alternativet var å setje filene tilbake til HEAD og berre byte
+  URL-ar.
+- 9.6: `mkdocs/docs/felles/**` er oppdatert målretta (`cp` + import-linje) i
+  staden for med `make docs-publish`, som ville skrive om alle 512 tracka filer
+  der.
+- 9.5 før 9.6 vart snudd til 9.6 før 9.5, slik at `v1.1.0` inneheld dei
+  oppdaterte `bootstrap.sh`- og import-URL-ane.
+- 9.3: Tørrkøyringa brukte `release-please@17` fordi
+  `release-please-action@45996ed` (v5.0.0) krev `release-please ^17.6.0`. Då
+  er backfill-åtferda den same som i CI.
+- 9.4: F2 er berre rekna som verifisert for lesetilgang. Ei grøn køyring utan
+  PR prøver ikkje skriveløyva, så dei er skilde ut i 9.4b i staden for å
+  kryssast av.
+- O5: Brukaren godkjende «tilrådinga» for O5, men specen hadde ikkje merkt noko
+  alternativ som tilrådd. Valet vart difor stadfesta eksplisitt med brukaren
+  (`v1.1.0`, minor), ikkje tolka.
+- 9.8: Merknaden om releases frå før flyttinga er lagd til som `!!! note`
+  rett etter lista over versjonerte adresser i `ekstern-bruk.md`. Lenkja til
+  nye releases er ikkje endra.
+- Steg 9 (dokumentert 2026-09-26 etter ønske frå brukaren): git-kommandoane for
+  tag-overføring (9.1/9.2) er skrivne inn som framgangsmåte som brukaren sjølv
+  køyrer. LLM køyrer ikkje git-kommandoar som endrar versjonskontroll-tilstand.
+- 9.2: Den manglande `modelldcat-modell-v1.14.0` er tilrådd løyst med ein tag
+  på `46792cdc` i staden for `last-release-sha` i config, fordi ein tag ikkje
+  krev kodeendring og ikkje må fjernast att.
+- 9.3: Tørrkøyringa brukar `podman run` direkte (node-container), ikkje eit
+  make-target. Det er ein eingongs diagnose, jf. unntaket for feilsøking i
+  CLAUDE.md.
+- 9.5: Frårår `release.yml --ref v1.0.0`, fordi workflow-fila då vert henta frå
+  den gamle commit-en utan F1-fiksen.
+- 9.9 og `brreg-felles-*-v0.1.0` er registrerte som feil som fanst alt før
+  flyttinga, og vert ikkje retta i denne specen.
 - Steg 3: I staden for ein ny `registry`-output som skulle sendast gjennom
   `reusable-oppsett.yml` og vidare til alle `pull-images`-kallarane (skissa i F1), lagar
   `compute-image-tags` no **fullstendige referansar**

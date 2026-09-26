@@ -199,7 +199,7 @@ body_out = yaml.dump(schema, allow_unicode=True, default_flow_style=False, sort_
 body_out = body_out.replace(
     '- linkml:types\n',
     '- linkml:types\n'
-    '- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/dcat-ap-no-v$DCAT_AP_NO_VERSION/src/linkml/ap-no/dcat-ap-no/dcat-ap-no-schema'
+    '- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/dcat-ap-no-v$DCAT_AP_NO_VERSION/src/linkml/ap-no/dcat-ap-no/dcat-ap-no-schema'
     '  # TODO: endre/legg til imports etter behov\n',
     1,
 )

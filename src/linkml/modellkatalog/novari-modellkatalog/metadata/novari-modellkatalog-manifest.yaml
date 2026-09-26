@@ -10,9 +10,13 @@ beskrivelse:
     direkte via import.
   nn: Modellkatalog for Novari IKS sine informasjonsmodellar. Implementerer ModelDCAT-AP-NO
     direkte via import.
-versjonsnummer: 1.0.0
+versjonsnummer: 1.1.1
+lisens: https://data.norge.no/nlod/no/2.0
+utgiver: https://data.norge.no/organizations/985870714
+endringsdato: '2026-08-28'
+utgivelsesdato: '2026-08-17'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/modellkatalog/novari-modellkatalog/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/modellkatalog/novari-modellkatalog/
 kontaktpunkt:
 - id: https://novari.no/kontakt
   navn_vcard:
@@ -20,11 +24,13 @@ kontaktpunkt:
     nn: Novari IKS
   har_kontaktside: https://novari.no/kontakt
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/modellkatalog/novari-modellkatalog/novari-modellkatalog-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/diagrams/novari-modellkatalog-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/diagrams/novari-modellkatalog.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-openapi.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/modellkatalog/novari-modellkatalog/novari-modellkatalog-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/modellkatalog/novari-modellkatalog/novari-modellkatalog-schema.yaml

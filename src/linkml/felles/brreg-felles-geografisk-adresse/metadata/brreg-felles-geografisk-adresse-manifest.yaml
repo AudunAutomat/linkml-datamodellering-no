@@ -24,7 +24,7 @@ utgiver: https://data.norge.no/organizations/974760673
 endringsdato: '2026-09-01'
 utgivelsesdato: '2026-09-01'
 status: http://purl.org/adms/status/UnderDevelopment
-heimeside: https://brreg.github.io/linkml-datamodellering-no/felles/brreg-felles-geografisk-adresse/
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/felles/brreg-felles-geografisk-adresse/
 inneholder_modellelement:
 - http://www.w3.org/ns/locn#Address
 - https://data.norge.no/felles/brreg-felles-geografisk-adresse/Postboksadresse
@@ -38,14 +38,4 @@ inneholder_modellelement:
 - https://data.norge.no/felles/brreg-felles-geografisk-adresse/Matrikkelnummer
 - https://data.norge.no/felles/brreg-felles-geografisk-adresse/Adressenummer
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-geografisk-adresse/brreg-felles-geografisk-adresse-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-geografisk-adresse/brreg-felles-geografisk-adresse-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-geografisk-adresse/brreg-felles-geografisk-adresse-openapi.yaml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-geografisk-adresse/brreg-felles-geografisk-adresse-schema.graphql
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-geografisk-adresse/brreg-felles-geografisk-adresse-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-geografisk-adresse/brreg-felles-geografisk-adresse-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-geografisk-adresse/brreg-felles-geografisk-adresse-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-geografisk-adresse/brreg-felles-geografisk-adresse-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-geografisk-adresse/diagrams/brreg-felles-geografisk-adresse-filtered.puml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/felles/brreg-felles-geografisk-adresse/diagrams/brreg-felles-geografisk-adresse.puml
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/felles/brreg-felles-geografisk-adresse/brreg-felles-geografisk-adresse-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/felles/brreg-felles-geografisk-adresse/brreg-felles-geografisk-adresse-schema.yaml

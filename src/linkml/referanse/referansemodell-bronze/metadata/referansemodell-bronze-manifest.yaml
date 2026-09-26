@@ -12,15 +12,28 @@ beskrivelse:
   nn: 'Viser minstekrava for å bestå bronsepolicyen: HTTP(S)-id, schema-metadata (title,
     version), class_uri, identifier-slot, slot_uri og begrepsidentifikator på riktig
     format.'
-versjonsnummer: 1.0.0
-heimeside: https://brreg.github.io/linkml-datamodellering-no/referanse/referansemodell-bronze/
+versjonsnummer: 1.2.1
+lisens: https://data.norge.no/nlod/no/2.0
+utgiver: https://data.norge.no/organizations/974760673
+endringsdato: '2026-09-01'
+utgivelsesdato: '2026-08-23'
+status: http://purl.org/adms/status/UnderDevelopment
+heimeside: https://audunautomat.github.io/linkml-datamodellering-no/referanse/referansemodell-bronze/
+kontaktpunkt:
+- id: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
+  navn_vcard:
+    nb: Brønnøysundregistra
+    nn: Brønnøysundregistra
+  har_kontaktside: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
 inneholder_modellelement:
 - http://purl.org/dc/terms/BibliographicResource
 finnes_i_format:
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/referansemodell-bronze-context.jsonld
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/referansemodell-bronze-ontology.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/referansemodell-bronze-schema.json
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/referansemodell-bronze-schema.proto
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/referansemodell-bronze-schema.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/referansemodell-bronze-shapes.ttl
-- https://raw.githubusercontent.com/brreg/linkml-datamodellering-no/main/src/linkml/referanse/referansemodell-bronze/referansemodell-bronze-schema.yaml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/diagrams/referansemodell-bronze-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/diagrams/referansemodell-bronze.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/referansemodell-bronze-context.jsonld
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/referansemodell-bronze-ontology.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/referansemodell-bronze-schema.json
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/referansemodell-bronze-schema.proto
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/referansemodell-bronze-schema.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/referanse/referansemodell-bronze/referansemodell-bronze-shapes.ttl
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/referanse/referansemodell-bronze/referansemodell-bronze-schema.yaml
