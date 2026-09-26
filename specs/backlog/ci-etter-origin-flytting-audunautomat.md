@@ -922,9 +922,20 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
      5. Push-køyringa etter merge lagar GitHub Release(s), lastar opp
         artefakter og lagar per-schema-taggar.
 
-   #### 9.5 Image-taggar `latest`/`vX.Y.Z` og `mcp-linkml-*-utkast`-image
+   #### 9.5 Image-taggar `latest`/`vX.Y.Z` og `mcp-linkml-*-utkast`-image ✅
 
-   **Status 2026-09-26: klar, ventar på brukaren.** Taggen må lagast av
+   **Utført 2026-09-26:** Brukaren pusha annotert tag `v1.1.0` (objekt
+   `6384c2ae`) → `f281324f` (`fix(imports): …`, inneheld 9.6 — kontrollert
+   med `git grep` mot `origin/main`). `release.yml`-køyring `36234113027` →
+   ✅ alle 4 jobbar (`linkml-local`, `mcp-linkml-validator`,
+   `mcp-linkml-modell-utkast`, `mcp-linkml-begrep-utkast`). Anonym
+   `tags/list` på `ghcr.io/audunautomat/<image>` → HTTP 200 og taggane
+   `v1.1.0` og `latest` for alle fire. Dei to `mcp-linkml-*-utkast`-imaga var
+   allereie offentlege etter første push, så 2f-2 kravde ingen manuell handling.
+   Eksterne kallarar med `ap-no-version: v1.1.0` har no både git-ref og
+   image-taggar å hente. `VERSION=latest` feilar framleis ved checkout (9.9).
+
+   Opphavleg plan: Taggen må lagast av
    brukaren, fordi LLM ikkje køyrer git-kommandoar som endrar
    versjonskontroll-tilstand. Å lage taggen via GitHub-API-et har same verknad
    og vert difor heller ikkje gjort. Føresetnad: `v1.1.0` skal peike på ein
@@ -1076,7 +1087,19 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
      publiseringsdatoar.
    - **c)** Ikkje gjer noko, og aksepter at lenkja er tom for gamle versjonar.
 
-   #### 9.9 Observasjon: `VERSION=latest` i reusable workflows (feil som fanst alt i `brreg`)
+   #### 9.9 Observasjon: `VERSION=latest` i reusable workflows (feil som fanst alt i `brreg`) ✅
+
+   **Utført 2026-09-26.** Dei tre kandidatane er no registrerte i `bugs/`:
+   | Kandidat | Resultat |
+   |---|---|
+   | `VERSION=latest`-checkout | ny **BUG-22** (`bugs/reusable-workflow-latest-ref-manglar.md`), `open` |
+   | `brreg-felles-*-v0.1.0`-lenkjer | ny **BUG-23** (`bugs/kom-i-gang-import-tag-for-ikkje-releasa-skjema.md`), `open`. Rotårsaka ligg i `kom_i_gang.sh`, som utleier tag frå `version:` utan å sjekke om skjemaet er release-please-komponent. Kartlegginga fann **11** ramma skjema, ikkje berre dei 5 i `felles`: òg dei 6 `oreg`-skjemaa frå 9.6 |
+   | `enhetsregisteret-bvrfriv` `roundtrip-ttl` | **ikkje ny bug.** Isolert ved å ta vare på `a.json`/`d.json` under `make roundtrip`. Einaste avvik er `innsendingstidspunkt` `'2024-01-01T00:00:00'` → `'2024-01-01 00:00:00'`, altså **BUG-19**. BUG-19 er utvida med skjemaet, og skip er lagt til i `tests/test_make.sh` (begge stadene, same mønster som `bvrinnfelles`). `make roundtrip SCHEMA=…bvrfriv…` gir no `2 OK, 0 feil`, og loggen viser «Hoppar over roundtrip-ttl … (BUG-19 …)» |
+
+   `BUGS.md`: indeksrader for BUG-22/23, BUG-19-rada er utvida, og det er lagt til punkt under
+   «Publisering» (BUG-23) og «Samhandling og CI/CD» (BUG-22).
+
+   Opphavleg observasjon:
 
    `reusable-{generate,lint,validate}.yml` sjekkar ut
    `AudunAutomat/linkml-datamodellering-no` med `ref: ${VERSION}`, der
@@ -1096,7 +1119,7 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
 - [x] 2d. Pages-kjelde = GitHub Actions; sjekk `github-pages`-miljøet
 - [x] 2e. Slå på code scanning (Advanced setup)
 - [x] 2f. Set GHCR-pakkane under `audunautomat` til *Public* — verifisert 2026-09-26 med anonym `tags/list` (HTTP 200) for alle 7 image i `images.json`
-- [ ] 2f-2. Set `mcp-linkml-modell-utkast` og `mcp-linkml-begrep-utkast` til *Public* etter at `release.yml` har pusha dei første gong (finst ikkje enno, anonym tilgang gir 403)
+- [x] 2f-2. `mcp-linkml-modell-utkast` og `mcp-linkml-begrep-utkast` offentlege — verifisert anonymt 2026-09-26 etter `release.yml` (v1.1.0)
 - [x] 2g. Gjenskap ruleset `main protection` på `main` (F8a), og verifiser `protected: true` — verifisert 2026-09-26, funksjonelt identisk med `brreg` (sjå F8b)
 - [ ] 2h. (Valfritt) Inviter `AudunVindenesEggeBR` som collaborator med *Write*, dersom kontoen skal vere reviewar
 - [x] 3. F1: lowercase GHCR-prefiks via `compute-image-tags` + actionlint
@@ -1109,11 +1132,11 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
 - [x] 9.3 Tørrkøyr release-please (`--dry-run`) og kontroller CHANGELOG-omfang
 - [x] 9.4 `gh workflow run release-please.yml` → grøn (36233290337), F2 verifisert for lesetilgang
 - [ ] 9.4b Ved første ekte release-PR: kontroller skrivetilgang og auto-approve/validate/auto-merge-kjeda (kontrollpunkt i 9.4)
-- [ ] 9.5 Køyr `release.yml` via ny tag `v1.1.0` på `main` (O5) — kommandoar klare i 9.5, ventar på brukaren, og set `mcp-linkml-*-utkast` til *Public* (2f-2)
+- [x] 9.5 Køyr `release.yml` via ny tag `v1.1.0` på `main` (O5) — køyring 36234113027 grøn, `:v1.1.0`/`:latest` på alle 4 image, og set `mcp-linkml-*-utkast` til *Public* (2f-2)
 - [x] 9.6 Byt versjonslåste raw-URL-ar (tabell i 9.6), regenerer manifest (`make gen-informasjonsmodell-instance`) og portal (`make docs-publish`)
 - [ ] 9.7 Opprett eigen spec for `informasjonsmodellidentifikator`
 - [x] 9.8 Avgjer O3 (historiske GitHub Releases) og oppdater `ekstern-bruk.md` — alternativ a), note-boks lagt til
-- [ ] 9.9 Opprett `bugs/`-filer for `VERSION=latest`-checkout, `brreg-felles-*-v0.1.0`-lenkjer og `enhetsregisteret-bvrfriv` roundtrip-ttl
+- [x] 9.9 `bugs/`-filer: BUG-22 (`latest`-checkout), BUG-23 (tag-URL for ikkje-releasa skjema, 11 skjema); `bvrfriv` = BUG-19 (utvida + test-skip)
 - [ ] 8. (Etter F9) Opprett spec `specs/backlog/github-app-for-release-please.md` for migrering frå PAT til GitHub App
 
 ## Opne spørsmål
@@ -1134,6 +1157,12 @@ neste release-please-køyring som lagar ein release-PR**. Sjå steg 9.
 
 ## Avgjerder
 
+- 9.9: `bvrfriv`-roundtripfeilen fekk ikkje eiga bug-fil, fordi avviket er
+  identisk med BUG-19 (datetime-separator). BUG-19 er utvida og test-skip lagt
+  til i tråd med CLAUDE.md-konvensjonen (skip ↔ `bugs/`-fil med BUG-ID).
+- 9.9: BUG-23 er formulert rundt rotårsaka i `kom_i_gang.sh` (11 skjema), ikkje
+  berre dei 5 `felles`-lenkjene som var utgangspunktet. BUG-22 og BUG-23 er
+  berre dokumenterte. Fiksane er ikkje gjorde i denne specen.
 - 9.6 (brukarval 2026-09-26): full regenerering av manifest er behalden, sjølv om
   33 av 47 fekk endringar i tillegg til eigarbytet (utdaterte versjonsnummer,
   beskrivelsar, datoar og modellelement). Manifesta skal vere ein funksjon av

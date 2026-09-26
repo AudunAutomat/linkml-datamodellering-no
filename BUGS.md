@@ -36,11 +36,13 @@ Dette repoet er ein **Proof of Concept** og har fleire kjente avgrensingar:
 - Ingen automatisk validering av at høstingsendepunkt faktisk er tilgjengelege frå data.norge.no
 - Tilbaketrekking av feil-publiserte data må handterast manuelt
 - **BUG-8**: Polymorf `inlined_as_list` støttes ikkje fullt ut — påverkar framtidige ModelDCAT-AP-NO-utvidingar
+- **BUG-23**: «Kom i gang»-import-URL-ar peikar på taggar som ikkje finst for skjema som ikkje er release-please-komponentar (`felles`, fleire `oreg`-skjema)
 
 ### Samhandling og CI/CD
 - GitHub-team-konfigurasjon føresett at alle medlemmar har write-tilgang til heile repoet (ikkje berre eigne modellar)
 - CI køyrer under repo-eigar sin GitHub-konto — alle organisasjonar må godta dette
 - `.github/CODEOWNERS`-fila må oppdaterast manuelt basert på `CODEOWNERS.md` (ingen automatisk synkronisering)
+- **BUG-22**: Public reusable workflows feilar ved checkout når `ap-no-version` manglar eller er `latest` — lås til `vX.Y.Z`
 
 Sjå [GOVERNANCE.md](GOVERNANCE.md) for kva stabilitet og support du kan forvente i PoC-fasen.
 
@@ -66,9 +68,11 @@ Sjå [GOVERNANCE.md](GOVERNANCE.md) for kva stabilitet og support du kan forvent
 | [BUG-16](bugs/codeowners-frontmatter-format-mismatch.md) | `update-modellkatalog.py::load_org_registry()` forventa `---`-frontmatter, men CODEOWNERS.md brukar ```yaml`-fence — fann alltid 0 organisasjonar | `løyst` | `src/assets/scripts/makefile/update-modellkatalog.py` | `gen-modelldcat-elements`, `update-modellkatalog` |
 | [BUG-17](bugs/gen-rdf-manglar-stotte-for-versjonslaste-importar.md) | `RDFGenerator`/`JSONLDGenerator` fetchar `<import>.context.jsonld` over nettverk for versjonslåste URL-importar — 404, sidan byggoutput aldri er committa | `workaround` | `linkml` | alle skjema med `rdf: true` og minst eitt versjonslåst URL-import |
 | [BUG-18](bugs/curie-id-ikkje-reekspandert-ttl-roundtrip.md) | `rdflib_loader` re-ekspanderer ikkje ein kompaktert CURIE til full URI for `uriorcurie`-identifikatorar ved TTL-roundtrip | `workaround` | `linkml-runtime` | skjema med identifikatorverdi (full URI) i eige navnerom |
-| [BUG-19](bugs/datetime-separator-rdflib-roundtrip.md) | `rdflib_loader` rekonstruerer `datetime`-verdiar med mellomrom i staden for `T`-separator ved TTL-roundtrip | `open` | `linkml-runtime` | `enhetsregisteret-bvrinnfelles` (stadfesta), potensielt `fint-*` (maskert av BUG-3) |
+| [BUG-19](bugs/datetime-separator-rdflib-roundtrip.md) | `rdflib_loader` rekonstruerer `datetime`-verdiar med mellomrom i staden for `T`-separator ved TTL-roundtrip | `open` | `linkml-runtime` | `enhetsregisteret-bvrinnfelles`, `enhetsregisteret-bvrfriv` (stadfesta), potensielt `fint-*` (maskert av BUG-3) |
 | [BUG-20](bugs/linkml-docgen-strip-backtick-description.md) | `gen-doc` strippar backticks frå `description`-felt ved rendring til slot-/klasse-sider | `open` | `linkml` (docgen) | `dcat-ap-no` (stadfesta via `tema`-slot), truleg fleire skjema med backtick-verna eksempel-URL-ar i description |
 | [BUG-21](bugs/monotonisk-tidtaking-make.md) | `date +%s%3N`-basert elapsed-tidtaking er vegg-klokke-basert og kan gi absurd store tal ved klokkehopp (t.d. WSL2-drift ved dvale/oppvakning) eller ved `uutils coreutils` sin `date` (ignorerer `%3N`-breidde) | `løyst` | `make/00-settings.mk`, `make/40-validation.mk`, `batch-render-plantuml.sh`, `run-domain-pipeline.sh`, `mkdocs/publish.sh` | alle make-targets med elapsed-tidtaking, `make docs-publish` |
+| [BUG-22](bugs/reusable-workflow-latest-ref-manglar.md) | Public reusable workflows sjekkar ut `ref: latest` (standard når `ap-no-version` manglar), men ingen git-ref heiter `latest` — checkout feilar for eksterne kallarar | `open` | `.github/workflows/reusable-{generate,lint,validate}.yml` | eksterne kallarar utan låst `ap-no-version: vX.Y.Z` |
+| [BUG-23](bugs/kom-i-gang-import-tag-for-ikkje-releasa-skjema.md) | «Kom i gang»-seksjonen genererer import-URL til `<skjema>-v<versjon>`-tag også for skjema som ikkje er release-please-komponentar — taggen vert aldri laga (404) | `open` | `mkdocs/lib/sections/kom_i_gang.sh` | `brreg-felles-{aktoer,digital-adresse,geografisk-adresse,tid,typer}`, `enhetsregisteret-{bvrbekreftelse,bvrettersendingavvedlegg,bvrfriv,bvrstiftelsesdokument,frivilligorganisasjonapi}`, `javazonetalk` |
 
 ## Statusforklaring
 
