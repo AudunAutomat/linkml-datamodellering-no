@@ -11,6 +11,9 @@ eval "$LOG_FUNCTIONS"
 export REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 GEN="$REPO_ROOT/generated"
 DOCS="$REPO_ROOT/mkdocs/docs"
+# Publisert portal-adresse (GitHub Pages) — base for site_url, språkveljar og
+# portal-lenkjer i omsette sider.
+PORTAL_URL="https://audunautomat.github.io/linkml-datamodellering-no"
 
 # log_step — banner/deloverskrift, alltid synleg (uavhengig av LOGLVL),
 # same kontrakt som print_header i make/03-output.mk. SEP/CLR_*-variablane
@@ -129,7 +132,17 @@ generate_cross_domain_modellanalyse_docs() {
 write_index_from_readme() {
     local readme
     if readme=$(i18n_source "$REPO_ROOT/README.md"); then
-        i18n_strip_front_matter "$readme" > "$DOCS/index.md"
+        if [ "$readme" = "$REPO_ROOT/README.md" ]; then
+            cp "$readme" "$DOCS/index.md"
+        else
+            # README-tabellane vert berre oppdaterte i README.md — hent dei
+            # derifrå og la lenkjene peike på same språk.
+            local stripped
+            stripped=$(mktemp)
+            i18n_strip_front_matter "$readme" > "$stripped"
+            i18n_fill_auto_blocks "$stripped" "$REPO_ROOT/README.md" "$PORTAL_URL" > "$DOCS/index.md"
+            rm -f "$stripped"
+        fi
     else
         cp "$readme" "$DOCS/index.md"
         i18n_note_untranslated "$DOCS/index.md"
@@ -648,7 +661,6 @@ log_info "$(printf "${CLR_OK}✓ Steg 2c ferdig${CLR_RST} (%s)" "$(fmt_elapsed_m
 # Skriv ein mkdocs-konfig for gjeldande språk ($I18N_LANG): tittel, copyright
 # og nav-etikettar frå strengkatalogen, og språkveljar (extra.alternate) når
 # <alternate> er true. Sjå steg 7-8 i specs/backlog/lokalisering-dokumentasjonsportal.md.
-PORTAL_URL="https://audunautomat.github.io/linkml-datamodellering-no"
 write_mkdocs_config() {
     local out="$1" docs_dir="$2" site_url="$3" custom_dir="$4" site_dir="$5" alternate="$6"
     local base_path="${PORTAL_URL#https://*/}"

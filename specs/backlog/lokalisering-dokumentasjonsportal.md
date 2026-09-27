@@ -286,7 +286,7 @@ val vert teke i steg 2 (sjå handlingslista).
 - [x] 7. `mkdocs.yml` per språk og `extra.alternate` (`mkdocs/build/mkdocs.{nn,en}.yml`, begge bygde i sandkassa)
 - [x] 8. Makefile, CI-deploy og lenkjesjekk for `/en/` (sandkasse: `docs-publish` + `docs-build` grøne, 513/513 artefaktlenkjer, 8068/8068 vidaresendingar)
 - [x] 9. `source_hash` og `make i18n-status` (309 nøklar stempla, 35 kjeldesider utan omsetjing)
-- [ ] 10. Første engelske innhald, LLM-omsett (katalog, framside, `om.md`)
+- [x] 10. Første engelske innhald, LLM-omsett (katalog gjennomgått, `README.en.md`, `om.en.md`, stempla)
 - [ ] 11. Dokumentasjon og rules
 
 ## Opne saker
@@ -726,6 +726,47 @@ valt å la dette stå ope inntil vidare.
     køyrer i `make i18n-check`, som har 20/20 grøne. I sandkassa vart ei
     stempla `mkdocs/docs/om.en.md` brukt utan front-matter i `build/en/om.md` og
     utan «Not yet translated»-merknad, og ho er ikkje med i `build/nn`.
+- **Første engelske innhald (steg 10):**
+  - **Katalogen er gjennomgått** (309 engelske verdiar):
+    - Engelsk skrivemåte er no konsekvent amerikansk, fordi `license` alt
+      følgjer LinkML: *catalog*, *organization*, *modeling*.
+    - Nye ordval: «ER diagram» som tittel, «ModelDCAT-AP-NO», «NGR - National
+      master data» og `In_development`.
+    - Nynorsk er òg retta: skrivefeilen «Refransar» → «Referansar», og
+      «Kardinalitet og domene» → «Kardinalitet og range», sidan range ikkje er
+      domene og er ein LinkML-term.
+    - `i18n-status` varsla dei to nøklane som utdaterte (stadfestar
+      mekanismen frå steg 9), og dei vart stempla på nytt.
+  - **`README.en.md`** (framsida på engelsk) ligg ved sida av `README.md` og vert
+    òg vist på GitHub.
+    - Portal-lenkjer peikar på `/en/`-adressene.
+    - Interne anker er tilpassa dei engelske overskriftene (`#limitations`,
+      `#for-contributors`, `#schemas`, `#generated-artifacts`).
+    - `make docs-serve` er vist med `DOCS_LANG=en`.
+  - **Auto-genererte tabellar:** `README.en.md` har dei same
+    `BEGIN/END AUTO-GENERATED`-markørane, men utan innhald.
+    - `publish.sh` fyller dei med gjeldande blokker frå `README.md`
+      (`i18n_fill_auto_blocks`) og skriv portal-lenkjene i blokkene om til
+      `/<lang>/`.
+    - `i18n_status.source_hash` hashar kjeldesida utan innhaldet i slike
+      blokker. Ei ny tabellrad gjer difor ikkje omsetjinga utdatert.
+    - **Kjend avgrensing:** tabellhovuda kjem frå `generate-readme-tables.sh`
+      og er på nynorsk («Domene | Skjema | Skildring»). Skildringane er
+      modellinnhald og er på norsk uansett.
+  - **`om.en.md`**: fullstendig omsett. E-post og namn på repo-administratoren er
+    uendra.
+  - **`README.md`:** `make docs-serve`-lenkja var utdatert etter steg 8 og er
+    oppdatert til `http://localhost:8000/linkml-datamodellering-no/nn/`.
+  - **`PORTAL_URL`** er flytta til toppen av `publish.sh`. Han var definert i
+    Steg 3, men den engelske framsida vert laga i Steg 2b.
+  - **Status etterpå:** katalog 0 utdaterte/ustempla, sider 2 omsette og
+    oppdaterte, 33 manglar (fallback). `make i18n-check` 20/20.
+  - **Sandkasse:**
+    - `build/en/index.md` har ingen front-matter, tabellane er fylte med
+      `/en/`-lenkjer, og det er ingen lenkjer til gamle adresser.
+    - `build/en/om.md` er engelsk, og `build/nn/index.md` er uendra.
+  - **Merk:** absolutte `/en/`-lenkjer i `README.en.md` svarar 404 i lychee fram
+    til første publisering med L2-strukturen.
 - **Prototypen køyrer containerar direkte (steg 2):** `make docs-publish`/`docs-build`
   byggjer alltid heile portalen og skriv til `mkdocs/docs/`. Prototypen køyrde
   difor `squidfunk/mkdocs-material:9.7` (same image som `Dockerfile.mkdocs`)

@@ -55,6 +55,22 @@ def sha(data):
     return "sha256:" + hashlib.sha256(data).hexdigest()
 
 
+def source_hash(path):
+    """Hash av ei kjeldeside utan innhaldet i <!-- BEGIN/END AUTO-GENERATED -->-
+    blokker (t.d. README-tabellane frå generate-readme-tables.sh). Blokkene vert
+    fylte frå originalen ved bygging (i18n_fill_auto_blocks i publish.sh), så
+    endringar der skal ikkje gjere omsetjinga utdatert."""
+    out, skip = [], False
+    for line in Path(path).read_text(encoding="utf-8").splitlines(keepends=True):
+        if line.startswith("<!-- END AUTO-GENERATED"):
+            skip = False
+        if not skip:
+            out.append(line)
+        if line.startswith("<!-- BEGIN AUTO-GENERATED"):
+            skip = True
+    return sha("".join(out))
+
+
 def split_front_matter(text):
     """(front-matter-dict eller None, resten av teksten)."""
     if not text.startswith("---\n"):
@@ -135,7 +151,7 @@ def status(root, strict=False, out=sys.stdout):
             stamped = ((meta or {}).get("i18n") or {}).get("source_hash")
             if not stamped:
                 page_unstamped.append(rel)
-            elif stamped != sha(src.read_bytes()):
+            elif stamped != source_hash(src):
                 page_stale.append(rel)
             else:
                 ok += 1
@@ -174,7 +190,7 @@ def stamp_page(root, variant):
     if not source.is_file():
         raise CatalogError(f"{variant}: originalen {source} finst ikkje")
     i18n["source"] = Path(os.path.relpath(source, variant.parent)).as_posix()
-    i18n["source_hash"] = sha(source.read_bytes())
+    i18n["source_hash"] = source_hash(source)
     meta["i18n"] = i18n
     fm = yaml.safe_dump(meta, allow_unicode=True, sort_keys=False, default_flow_style=False)
     variant.write_text(f"---\n{fm}---\n{body}", encoding="utf-8")

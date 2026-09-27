@@ -105,7 +105,7 @@ make mcp-linkml-valider-modell \
 # → src/linkml/domene/modell/build.yaml
 
 # 4b. Generer artefakter og publiser til dokumentasjonsportal
-make <domene> && make docs-publish && make docs-serve   # → http://localhost:8000
+make <domene> && make docs-publish && make docs-serve   # → http://localhost:8000/linkml-datamodellering-no/nn/
 ```
 
 Nye skjema under `src/linkml/<domene>/<modell>/` vert oppdaga automatisk.
@@ -145,7 +145,7 @@ make mcp-linkml-valider-modell \
 #    → src/linkml/begrepskatalog/<organisasjon>-begrepskatalog/data/<organisasjon>-begrepskatalog/build.yaml
 
 # 5b. Generer artefakter og publiser til dokumentasjonsportal
-make begrepskatalog && make docs-publish && make docs-serve   # → http://localhost:8000
+make begrepskatalog && make docs-publish && make docs-serve   # → http://localhost:8000/linkml-datamodellering-no/nn/
 ```
 
 Nye begrepssamlingar under `src/linkml/<domene>/<begrepssamling>/` vert oppdaga automatisk.

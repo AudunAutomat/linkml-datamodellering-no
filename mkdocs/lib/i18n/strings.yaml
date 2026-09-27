@@ -58,13 +58,13 @@ strings:
     en: AP-NO - Application profiles
   domene.begrepskatalog:
     nn: Begrepskatalog - Begrepskatalogmodellar
-    en: Begrepskatalog - Concept catalogue models
+    en: Begrepskatalog - Concept catalog models
   domene.modellkatalog:
     nn: Modellkatalog - Informasjonsmodellar
     en: Modellkatalog - Information models
   domene.ngr:
     nn: NGR - Nasjonale Grunndata
-    en: NGR - National base data
+    en: NGR - National master data
   domene.fint:
     nn: FINT - Fylkeskommunale integrasjonar
     en: FINT - County municipality integrations
@@ -131,7 +131,7 @@ strings:
     en: Example data (Turtle)
   artefakt.manifest:
     nn: Modellmanifest ihht Modelldcat-ap-no
-    en: Model manifest according to Modelldcat-ap-no
+    en: Model manifest according to ModelDCAT-AP-NO
   artefakt.plantuml:
     nn: PlantUML-diagram
     en: PlantUML diagram
@@ -160,7 +160,7 @@ strings:
     en: Completed
   badge.status.under_utvikling:
     nn: Under_utvikling
-    en: Under_development
+    en: In_development
   badge.status.foreldet:
     nn: Foreldet
     en: Deprecated
@@ -228,7 +228,7 @@ strings:
 
   seksjon.er_diagram.tittel:
     nn: ER-diagram
-    en: Entity-relationship diagram
+    en: ER diagram
   seksjon.er_diagram.forklaring:
     nn: ER-diagrammet viser struktur og relasjonar mellom dei lokale klassane i modellen. Importerte klasser er som standard filtrerte bort for å gjere diagrammet enklare å lese.
     en: The ER diagram shows the structure and relationships between the local classes of the model. Imported classes are filtered out by default to make the diagram easier to read.
@@ -336,7 +336,7 @@ strings:
     en: Validation results
   seksjon.validering.forklaring:
     nn: Valideringsrapporten viser i kva grad modellen etterlever definerte modelleringsreglar og kvalitetskrav. Resultata kan omfatte både lokale og importerte element avhengig av kva reglar som er evaluerte.
-    en: The validation report shows to what extent the model complies with defined modelling rules and quality requirements. The results may cover both local and imported elements, depending on which rules were evaluated.
+    en: The validation report shows to what extent the model complies with defined modeling rules and quality requirements. The results may cover both local and imported elements, depending on which rules were evaluated.
   seksjon.validering.ikkje_tilgjengeleg:
     nn: Valideringsresultat ikkje tilgjengeleg — ingen validering enno.
     en: Validation results not available — no validation yet.
@@ -370,7 +370,7 @@ strings:
     en: Model analysis
   seksjon.modellanalyse.forklaring_kort:
     nn: Modellanalysen gjer analyser som kan påpeike moglege avvik for oppfølging. Dette er meir informativ innsikt til hjelp med modelleringa.
-    en: The model analysis performs analyses that can point out possible deviations for follow-up. This is informative insight to help with the modelling.
+    en: The model analysis performs analyses that can point out possible deviations for follow-up. This is informative insight to help with the modeling.
   seksjon.modellanalyse.ikkje_tilgjengeleg:
     nn: Modellanalyse ikkje tilgjengeleg — krev at generate-workflowen har køyrt.
     en: Model analysis not available — requires the generate workflow to have run.
@@ -491,10 +491,10 @@ strings:
     en: Contact
   seksjon.kontakt.forklaring:
     nn: Her finn du informasjon om forvaltningsansvarleg, kontaktpunkt og kanal for feilrapportering eller forslag til forbetringar.
-    en: Here you will find information about the responsible organisation, the contact point and the channel for reporting errors or suggesting improvements.
+    en: Here you will find information about the responsible organization, the contact point and the channel for reporting errors or suggesting improvements.
   seksjon.kontakt.forvaltningsansvarleg:
     nn: Forvaltningsansvarleg
-    en: Responsible organisation
+    en: Responsible organization
   seksjon.kontakt.kontakt:
     nn: Kontakt
     en: Contact
@@ -528,7 +528,7 @@ strings:
     en: Metadata is still available (A2) — but the data is gone.
   side404.tilbake:
     nn: Gå tilbake til katalogen
-    en: Go back to the catalogue
+    en: Go back to the catalog
 
   # --- gen-doc-malar (src/assets/templates/docgen/*.jinja2) — steg 5 ---
   docgen.ja:
@@ -556,7 +556,7 @@ strings:
     nn: "Klasse"
     en: "Class"
   docgen.kardinalitet_og_range:
-    nn: "Kardinalitet og domene"
+    nn: "Kardinalitet og range"
     en: "Cardinality and Range"
   docgen.utgaatt:
     nn: "UTGÅTT"
@@ -658,7 +658,7 @@ strings:
     nn: "Slots viser **eigenskapar** som er definert i eller brukt av lokale klasser i modellen."
     en: "Slots lists the **properties** defined in or used by local classes in the model."
   docgen.slots_forklaring_2:
-    nn: "Eigenskapar grupperes i \"Verdiar\" som inneheld data, \"Refransar\" som refererer til andre klasser, og \"Kodar\" som refererer til kontrollerte verdiområder."
+    nn: "Eigenskapar grupperes i \"Verdiar\" som inneheld data, \"Referansar\" som refererer til andre klasser, og \"Kodar\" som refererer til kontrollerte verdiområder."
     en: "Properties are grouped into \"Values\" holding data, \"References\" pointing to other classes, and \"Codes\" pointing to controlled value domains."
   docgen.definert_i_forklaring_slots:
     nn: "*Definert i* kolonna angir kildeskjemaet for eigenskapen."
@@ -947,7 +947,7 @@ strings:
     en: New domain model
   nav.ny_begrepskatalog:
     nn: Ny begrepskatalog
-    en: New concept catalogue
+    en: New concept catalog
   nav.byggmanifest:
     nn: Byggmanifest
     en: Build manifest
