@@ -33,16 +33,16 @@ generate_description() {
     # Vis seksjonen dersom vi har referanse ELLER description.md
     [ -z "$external_spec" ] && [ -z "$description_file" ] && return 0
 
-    echo "## Om denne modellen"
+    echo "## $(t seksjon.om_modellen.tittel)"
     echo ""
 
     # Vis standard ingress
-    echo "> Denne sida dokumenterer LinkML-modellen $schema, inkludert klasser, eigenskapar, datatypar, valideringsresultat og genererte artefakter. Informasjonen er generert automatisk frå skjemaet og tilhøyrande byggeproses."
+    echo "> $(t seksjon.om_modellen.forklaring skjema="$schema")"
     echo ""
 
     # Vis offisiell referanse etter ingress (dersom den finst)
     if [ -n "$external_spec" ]; then
-        echo "**Offisiell referanse:** [$external_label]($external_spec)"
+        echo "**$(t seksjon.om_modellen.offisiell_referanse):** [$external_label]($external_spec)"
         echo ""
     fi
 

@@ -20,7 +20,7 @@ generate_artifacts_table() {
     local manifest_yaml="$out/${schema}-manifest.yaml"
     if [ -f "$manifest_yaml" ]; then
         has_artifact=true
-        artifact_rows+="| Modellmanifest ihht Modelldcat-ap-no | [${schema}-manifest.yaml](${schema}-manifest.yaml) |"$'\n'
+        artifact_rows+="| $(t artefakt.manifest) | [${schema}-manifest.yaml](${schema}-manifest.yaml) |"$'\n'
     fi
 
     for suffix in $ARTIFACT_ORDER; do
@@ -56,7 +56,7 @@ generate_artifacts_table() {
             [ -n "$puml_links" ] && puml_links+=" · "
             puml_links+="[${schema}.puml](diagrams/${schema}.puml) (full)"
         fi
-        artifact_rows+="| PlantUML-diagram | ${puml_links} |"$'\n'
+        artifact_rows+="| $(t artefakt.plantuml) | ${puml_links} |"$'\n'
     fi
 
     # Java-klasser (ligg i java/-underkatalog, éin fil per klasse/enum)
@@ -71,7 +71,7 @@ generate_artifacts_table() {
         done
         if [ -n "$java_links" ]; then
             has_artifact=true
-            artifact_rows+="| Java-klasser | ${java_links} |"$'\n'
+            artifact_rows+="| $(t artefakt.java) | ${java_links} |"$'\n'
         fi
     fi
 
@@ -84,11 +84,11 @@ generate_artifacts_table() {
         echo ""
         echo "---"
         echo ""
-        echo "## Genererte artefakter ($artifact_count) {#generated-artifacts}"
+        echo "## $(t seksjon.artefakter.tittel) ($artifact_count) {#generated-artifacts}"
         echo ""
-        echo "> Denne seksjonen listar maskinlesbare artefakt som er genererte frå skjemaet. Artefakta blir brukte til validering, integrasjon, dokumentasjon og kodegenerering."
+        echo "> $(t seksjon.artefakter.forklaring)"
         echo ""
-        echo "| Artefakt | Fil |"
+        echo "| $(t seksjon.artefakter.kolonne_artefakt) | $(t seksjon.artefakter.kolonne_fil) |"
         echo "|----------|-----|"
         printf '%s' "$artifact_rows"
         if [ -n "$domain" ]; then
@@ -96,7 +96,7 @@ generate_artifacts_table() {
             # sjå tilsvarande kommentar i datamodell.sh.
             local source_dir="${PARENT_MODEL:-$schema}"
             echo ""
-            echo "*Full byggekonfigurasjon: [build.yaml](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/$domain/$source_dir/build.yaml)*"
+            echo "*$(t seksjon.artefakter.byggekonfigurasjon lenkje="[build.yaml](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/$domain/$source_dir/build.yaml)")*"
         fi
     fi
 }

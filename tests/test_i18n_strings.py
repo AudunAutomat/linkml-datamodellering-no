@@ -102,9 +102,30 @@ class TestUsageScan(TmpCase):
         self.write("src/a.jinja2", "## @@i18n:section.kom_i_gang@@ {#kom-i-gang}\n")
         self.write("src/b.sh", 'heading=$(t section.kom_i_gang)\necho "$(t "table.sitat")"\n')
         self.write("src/c.py", 'catalog.t("table.sitat", lang)\n')
+        self.write("src/d.sh", '    felles) t section.kom_i_gang; echo ;;\n')
         result = run("check", "--catalog", str(catalog), "--scan-root", str(self.tmp / "src"))
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertIn("2 nøklar i bruk, 0 manglar", result.stdout)
+
+    def test_bare_bash_call_with_unknown_key_fails(self):
+        catalog = self.write("s.yaml", VALID)
+        self.write("src/d.sh", '    felles) t domene.finst_ikkje; echo ;;\n')
+        result = run("check", "--catalog", str(catalog), "--scan-root", str(self.tmp / "src"))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("'domene.finst_ikkje' manglar i katalogen", result.stderr)
+
+    def test_placeholders_must_match_across_languages(self):
+        path = self.write("s.yaml", VALID.replace("en: Getting started", "en: Getting started {x}"))
+        result = run("check", "--catalog", str(path), "--scan-root", str(self.tmp))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("ulike plasshaldarar", result.stderr)
+
+    def test_placeholder_substitution(self):
+        catalog = i18n_strings.load_catalog(self.write("s.yaml", VALID.replace(
+            "nn: Kom i gang", "nn: Kom i gang med {x} {#anker}").replace("en: Getting started", "en: Start {x} {#anker}")))
+        self.assertEqual(catalog.t("section.kom_i_gang", "nn", x="LinkML"), "Kom i gang med LinkML {#anker}")
+        with self.assertRaises(i18n_strings.CatalogError):
+            catalog.t("section.kom_i_gang", "nn")
 
     def test_unknown_key_in_use_fails(self):
         catalog = self.write("s.yaml", VALID)

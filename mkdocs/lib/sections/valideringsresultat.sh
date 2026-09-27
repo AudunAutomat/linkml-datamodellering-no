@@ -16,12 +16,12 @@ generate_validation_results() {
     echo ""
 
     if [ -f "$validation_json" ]; then
-        python3 "$REPO_ROOT/mkdocs/lib/scripts/generate-validation-md.py" "$validation_json" "$domain" "$schema"
+        python3 "$REPO_ROOT/mkdocs/lib/scripts/generate-validation-md.py" "$validation_json" "$domain" "$schema" "$I18N_LANG"
     else
-        echo "## Valideringsresultat"
+        echo "## $(t seksjon.validering.tittel)"
         echo ""
-        echo "> Valideringsrapporten viser i kva grad modellen etterlever definerte modelleringsreglar og kvalitetskrav. Resultata kan omfatte både lokale og importerte element avhengig av kva reglar som er evaluerte."
+        echo "> $(t seksjon.validering.forklaring)"
         echo ""
-        echo "*Valideringsresultat ikkje tilgjengeleg — ingen validering enno.*"
+        echo "*$(t seksjon.validering.ikkje_tilgjengeleg)*"
     fi
 }

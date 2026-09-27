@@ -12,13 +12,18 @@ generate_datamodell() {
     # sjølv — PARENT_MODEL er eksportert av publish.sh for slike skjema.
     local source_dir="${PARENT_MODEL:-$schema}"
 
+    local tittel forklaring kjelde
+    tittel=$(t seksjon.datamodell.tittel)
+    forklaring=$(t seksjon.datamodell.forklaring)
+    kjelde=$(t seksjon.datamodell.kjelde lenkje="[\`$schema-schema.yaml\`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/$domain/$source_dir/$schema-schema.yaml)")
+
     cat <<EOF
 
-## Datamodell
+## $tittel
 
-> Dette er den autoritative kjelda for modellen. Alle tabellar, diagram og artefakt på denne sida er genererte frå dette skjemaet.
+> $forklaring
 
-Kjelde-datamodell i LinkML-format: [\`$schema-schema.yaml\`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/linkml/$domain/$source_dir/$schema-schema.yaml)
+$kjelde
 
 EOF
 }

@@ -22,6 +22,7 @@ mkdocs/docs/index.md
 mkdocs/docs/arkitektur/valideringsregler.md
 mkdocs/docs/modellanalyse/
 mkdocs/mkdocs.yml
+mkdocs/overrides/
 tests/testlogs/
 __pycache__/
 *.pyc

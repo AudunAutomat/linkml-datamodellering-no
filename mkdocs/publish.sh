@@ -32,6 +32,15 @@ source "$LIB_DIR/copy_artifacts.sh"
 source "$LIB_DIR/generate_index.sh"
 source "$LIB_DIR/utils/formatters.sh"
 source "$LIB_DIR/utils/metadata_parsers.sh"
+source "$LIB_DIR/utils/i18n.sh"
+
+# Strengkatalog for portaltekst (mkdocs/lib/i18n/strings.yaml): sjekk at alle
+# nøklar som vert brukte finst (t-kall inne i echo svelgjer feilstatus, sjå
+# mkdocs/lib/utils/i18n.sh), og last standardspråket éin gong — tabellen vert
+# arva av dei parallelle skjemajobbane. Fleire språktre: steg 6 i
+# specs/backlog/lokalisering-dokumentasjonsportal.md.
+run_python_container /work/mkdocs/lib/scripts/i18n_strings.py check
+i18n_load
 
 # Rekkjefølgje på artefakter i tabellen (brukt både i artifacts.sh og domain/index.md-generering)
 ARTIFACT_ORDER="shapes.ttl context.jsonld schema.json schema.xsd openapi.yaml asyncapi.yaml ontology.ttl schema.ttl model.py schema.proto schema.graphql erdiagram.md eksempel.ttl"
@@ -103,24 +112,20 @@ generate_cross_domain_modellanalyse_docs() {
             cp "$src_dir/$src_name" "$dest"
         else
             log_info "${CLR_WARN}ÅTVARING: $src_dir/$src_name finst ikkje — hoppar over${CLR_RST}"
-            printf '%s\n' "# Analyse ikkje tilgjengeleg" "" \
-                "Rapporten vart ikkje generert i denne bygginga." > "$dest"
+            printf '%s\n' "# $(t modellanalyse.alle.ikkje_tilgjengeleg_tittel)" "" \
+                "$(t modellanalyse.alle.ikkje_generert)" > "$dest"
         fi
     done
 
-    cat > "$out_dir/index.md" <<'EOF'
-# Modellanalyse på tvers av domene
-
-Desse sidene viser navnelikskaps-analysar køyrde på tvers av **alle**
-domene i repoet — til skilnad frå dei domene-scopa analysane som ligg
-under kvar enkelt modell sin `## Modellanalyse`-seksjon.
-
-Alle modellanalyser blir kjørt automatisk i [Modell-analyse](https://github.com/AudunAutomat/linkml-datamodellering-no/actions/workflows/modell-analyse.yml) workflowen. Klikk deg inn på den siste køyringa av jobben for fulstendig analyseresultat.
-
-- [Liknande klassenavn](liknande-klassenavn-alle-domene.md)
-- [Liknande slotnavn](liknande-slotnavn-alle-domene.md)
-- [Liknande typenavn](liknande-typenavn-alle-domene.md)
-EOF
+    {
+        echo "# $(t modellanalyse.alle.tittel)"
+        echo ""
+        echo "$(t modellanalyse.alle.innleiing lenkje="https://github.com/AudunAutomat/linkml-datamodellering-no/actions/workflows/modell-analyse.yml")"
+        echo ""
+        echo "- [$(t modellanalyse.liknande_klassenavn.tittel)](liknande-klassenavn-alle-domene.md)"
+        echo "- [$(t modellanalyse.liknande_slotnavn.tittel)](liknande-slotnavn-alle-domene.md)"
+        echo "- [$(t modellanalyse.liknande_typenavn.tittel)](liknande-typenavn-alle-domene.md)"
+    } > "$out_dir/index.md"
 }
 
 # ---------------------------------------------------------------------------
@@ -129,11 +134,13 @@ EOF
 write_index_from_readme() {
     cp "$REPO_ROOT/README.md" "$DOCS/index.md"
 
+    local sist_bygd
+    sist_bygd=$(t portal.sist_bygd tid="$BUILD_TIMESTAMP")
     cat >> "$DOCS/index.md" <<EOF
 
 ---
 
-_Portalen vart sist bygd: ${BUILD_TIMESTAMP}_
+_${sist_bygd}_
 EOF
 }
 
@@ -247,6 +254,10 @@ BUILD_TIMESTAMP=$(TZ="Europe/Oslo" date +"%Y-%m-%d %H:%M %Z")
 # write_index_from_readme ein utdatert versjon av tabellane.
 timed_run "Oppdater README.md-tabellar" bash "$REPO_ROOT/src/assets/scripts/makefile/generate-readme-tables.sh" "$REPO_ROOT/README.md"
 timed_run "Generer index.md frå README.md" write_index_from_readme
+# 404-sida (Material-override, theme.custom_dir: overrides) vert generert frå
+# malen med i18n-markørar — mkdocs/overrides/ er generert og ligg i .gitignore.
+mkdir -p "$REPO_ROOT/mkdocs/overrides"
+timed_run "Generer 404-side" i18n_render "$LIB_DIR/templates/404.html" "$REPO_ROOT/mkdocs/overrides/404.html"
 timed_run "Generer valideringsregler.md" generate_validation_docs
 timed_run "Generer modellanalyse-tvers-domene-sider" generate_cross_domain_modellanalyse_docs
 
@@ -498,10 +509,10 @@ for domain in "${ALL_DOMAINS[@]}"; do
         echo ""
         generate_domain_description "$domain"
         if $domain_has_published; then
-            echo "| Modell | Tilgjengelege artefakter | Publisert til |"
+            echo "| $(t domeneoversikt.modell) | $(t domeneoversikt.artefakter) | $(t domeneoversikt.publisert_til) |"
             echo "|--------|--------------------------|---------------|"
         else
-            echo "| Modell | Tilgjengelege artefakter |"
+            echo "| $(t domeneoversikt.modell) | $(t domeneoversikt.artefakter) |"
             echo "|--------|--------------------------|"
         fi
 
@@ -516,7 +527,7 @@ for domain in "${ALL_DOMAINS[@]}"; do
             if [ -f "$GEN/$domain/$schema/diagrams/${schema}-filtered.svg" ] || [ -f "$GEN/$domain/$schema/diagrams/${schema}-filtered.puml" ] || \
                [ -f "$GEN/$domain/$schema/diagrams/${schema}.svg" ] || [ -f "$GEN/$domain/$schema/diagrams/${schema}.puml" ]; then
                 [ -n "$artifacts" ] && artifacts+=" · "
-                artifacts+="PlantUML-diagram"
+                artifacts+="$(t artefakt.plantuml)"
             fi
             if $domain_has_published; then
                 published_col=""
@@ -554,6 +565,7 @@ copyright: >
 
 theme:
   name: material
+  custom_dir: overrides
   language: nn
   features:
     - navigation.indexes

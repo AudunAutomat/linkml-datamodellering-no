@@ -4,35 +4,35 @@ set -euo pipefail
 
 domain_label() {
     case "$1" in
-        felles)  echo "FELLES - Fellesmodellar" ;;
-        referanse) echo "REFERANSE - Referansemodellar" ;;
-        ap-no)   echo "AP-NO - Applikasjonsprofilar" ;;
-        begrepskatalog) echo "Begrepskatalog - Begrepskatalogmodellar" ;;
-        modellkatalog)   echo "Modellkatalog - Informasjonsmodellar" ;;
-        ngr)     echo "NGR - Nasjonale Grunndata" ;;
-        fint)    echo "FINT - Fylkeskommunale integrasjonar" ;;
-        samt)    echo "SAMT - Kommunale integrasjonar" ;;
-        fair)    echo "FAIR - Metadataoverbygning" ;;
-        oreg)    echo "OREG - Offentlege registre" ;;
+        felles)  t domene.felles; echo ;;
+        referanse) t domene.referanse; echo ;;
+        ap-no)   t domene.ap_no; echo ;;
+        begrepskatalog) t domene.begrepskatalog; echo ;;
+        modellkatalog)   t domene.modellkatalog; echo ;;
+        ngr)     t domene.ngr; echo ;;
+        fint)    t domene.fint; echo ;;
+        samt)    t domene.samt; echo ;;
+        fair)    t domene.fair; echo ;;
+        oreg)    t domene.oreg; echo ;;
         *)     echo "$1" | awk '{print toupper($0)}' ;;
     esac
 }
 
 artifact_label() {
     case "$1" in
-        shapes.ttl)     echo "SHACL shapes" ;;
-        ontology.ttl)   echo "OWL ontologi" ;;
-        schema.ttl)     echo "RDF/Turtle skjema" ;;
-        context.jsonld) echo "JSON-LD kontekst" ;;
-        schema.json)    echo "JSON Schema" ;;
-        schema.xsd)     echo "XML Schema (XSD)" ;;
-        openapi.yaml)   echo "OpenAPI 3.1" ;;
-        asyncapi.yaml)  echo "AsyncAPI 3.0" ;;
-        model.py)       echo "Python-klasser" ;;
-        schema.proto)   echo "Protobuf-skjema" ;;
-        schema.graphql) echo "GraphQL-skjema" ;;
-        erdiagram.md)   echo "ER-diagram (Mermaid)" ;;
-        eksempel.ttl)   echo "Eksempeldata (Turtle)" ;;
+        shapes.ttl)     t artefakt.shapes_ttl; echo ;;
+        ontology.ttl)   t artefakt.ontology_ttl; echo ;;
+        schema.ttl)     t artefakt.schema_ttl; echo ;;
+        context.jsonld) t artefakt.context_jsonld; echo ;;
+        schema.json)    t artefakt.schema_json; echo ;;
+        schema.xsd)     t artefakt.schema_xsd; echo ;;
+        openapi.yaml)   t artefakt.openapi_yaml; echo ;;
+        asyncapi.yaml)  t artefakt.asyncapi_yaml; echo ;;
+        model.py)       t artefakt.model_py; echo ;;
+        schema.proto)   t artefakt.schema_proto; echo ;;
+        schema.graphql) t artefakt.schema_graphql; echo ;;
+        erdiagram.md)   t artefakt.erdiagram_md; echo ;;
+        eksempel.ttl)   t artefakt.eksempel_ttl; echo ;;
         *)              echo "$1" ;;
     esac
 }

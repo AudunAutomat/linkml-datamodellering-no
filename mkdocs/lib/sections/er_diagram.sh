@@ -19,34 +19,34 @@ generate_er_diagram() {
 
         echo "---"
         echo ""
-        echo "## Entity-relationship diagram"
+        echo "## $(t seksjon.er_diagram.tittel)"
         echo ""
-        echo "> ER-diagrammet viser struktur og relasjonar mellom dei lokale klassane i modellen. Importerte klasser er som standard filtrerte bort for å gjere diagrammet enklare å lese."
+        echo "> $(t seksjon.er_diagram.forklaring)"
         echo ""
 
         if [ "$filesize" -lt 1000 ]; then
             # Tomt diagram — vis berre full versjon med forklaring
-            echo "[![ER-diagram]($plantuml_full)]($plantuml_full)"
+            echo "[![$(t seksjon.er_diagram.alt)]($plantuml_full)]($plantuml_full)"
             echo ""
-            echo "*Modellen har ingen lokale klasser og ingen diagram med kun lokale klasser. [Vis fullstendig diagram med importerte klasser]($plantuml_full).*"
+            echo "*$(t seksjon.er_diagram.ingen_lokale full="$plantuml_full")*"
         else
             # Normalt filtrert diagram
-            echo "[![ER-diagram]($plantuml_svg)]($plantuml_svg)"
+            echo "[![$(t seksjon.er_diagram.alt)]($plantuml_svg)]($plantuml_svg)"
             echo ""
-            echo "*Diagrammet viser kun lokale klasser. Klikk for å zoome. [Vis fullstendig diagram med importerte klasser]($plantuml_full).*"
+            echo "*$(t seksjon.er_diagram.kun_lokale full="$plantuml_full")*"
         fi
         echo ""
         echo "---"
     elif [ -f "$out/$plantuml_full" ]; then
         echo "---"
         echo ""
-        echo "## Entity-relationship diagram"
+        echo "## $(t seksjon.er_diagram.tittel)"
         echo ""
-        echo "> ER-diagrammet viser struktur og relasjonar mellom dei lokale klassane i modellen. Importerte klasser er som standard filtrerte bort for å gjere diagrammet enklare å lese."
+        echo "> $(t seksjon.er_diagram.forklaring)"
         echo ""
-        echo "[![ER-diagram]($plantuml_full)]($plantuml_full)"
+        echo "[![$(t seksjon.er_diagram.alt)]($plantuml_full)]($plantuml_full)"
         echo ""
-        echo "*Klikk for å zoome.*"
+        echo "*$(t seksjon.er_diagram.klikk_zoom)*"
         echo ""
         echo "---"
     fi

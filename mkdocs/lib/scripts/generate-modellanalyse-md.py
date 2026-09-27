@@ -49,117 +49,46 @@ specs/done/modellanalyse-blockquote-per-underoverskrift.md. Blockquoten
 for dei tre similar-*-analysane nemner ikkje cross-domain-motparten — det
 tek den eksisterande fotnota (cross_domain_relpath/-label) seg av.
 
-Bruk: python3 generate-modellanalyse-md.py <model-analyse-dir> <domain> <schema>
+Bruk: python3 generate-modellanalyse-md.py <model-analyse-dir> <domain> <schema> [lang]
+
+Tekstane kjem frå strengkatalogen (mkdocs/lib/i18n/strings.yaml); lang er
+standard default_language i katalogen.
 """
 
 import sys
 from pathlib import Path
 
-# (rapportfil, ###-overskrift, objekttype brukt i fotnoteteksten,
-#  blockquote-tekst som forklarar kva analysen ser etter og kva konsekvens
-#  eit funn kan ha (statisk, same i alle modellar),
-#  relativ sti til cross-domain-sida frå mkdocs/docs/<domain>/<schema>/index.md
-#  (None = ingen cross-domain-ekvivalent, ingen fotnote), fotnote-lenkjetekst)
+from i18n_strings import load_catalog
+
+# (rapportfil, nøkkelprefiks i strengkatalogen, relativ sti til cross-domain-
+#  sida frå mkdocs/docs/<domain>/<schema>/index.md (None = ingen
+#  cross-domain-ekvivalent, ingen fotnote)).
+# Tekstane ligg i mkdocs/lib/i18n/strings.yaml under <prefiks>.tittel
+# (###-overskrift) og .forklaring (blockquote: kva analysen ser etter og kva
+# konsekvens eit funn kan ha, statisk, same i alle modellar). Berre når
+# relativ sti er sett: .objekttype (brukt i fotnoteteksten) og .kryssdomene
+# (fotnote-lenkjetekst).
 REPORTS = [
-    (
-        "isolerte-klasser-report.md",
-        "Isolerte klasser",
-        "isolerte klasser",
-        "Analysen identifiserer klassar som ikkje har nokon strukturell "
-        "kopling til andre klassar i skjemaet — verken via arv eller ved å "
-        "bli refererte av ein slot. Eit funn kan tyde på ei gløymd eller "
-        "ubrukt klasse, eller ei klasse som manglar ein slot som skal kople "
-        "han til resten av modellen.",
-        None,
-        None,
-    ),
-    (
-        "ikkje-tilkopla-container-report.md",
-        "Klasser ikkje kopla til containerklassen",
-        "klasser ikkje kopla til containerklassen",
-        "Analysen sjekkar om kvar klasse i skjemaet er nåbar frå "
-        "containerklassen (`tree_root`) via slot-referansar. Ei klasse som "
-        "ikkje er nåbar dukkar ikkje opp i instansar eller JSON-Schema "
-        "generert frå containerklassen, og kan vere daud kode i skjemaet.",
-        None,
-        None,
-    ),
-    (
-        "ubrukte-slots-report.md",
-        "Ubrukte slots",
-        "ubrukte slots",
-        "Analysen finn slots definerte lokalt i skjemaet som ingen klasse "
-        "faktisk brukar. Slike slots aukar vedlikehaldsbyrda og kan "
-        "forvirre lesarar om kva som er i aktiv bruk — vurder å fjerne dei "
-        "eller kople dei til rette klassar.",
-        None,
-        None,
-    ),
-    (
-        "ubrukte-types-report.md",
-        "Ubrukte types",
-        "ubrukte types",
-        "Analysen finn types definerte lokalt i skjemaet som ingen slot "
-        "brukar som `range`. Ein ubrukt type er ei daud definisjon som bør "
-        "fjernast eller takast i bruk.",
-        None,
-        None,
-    ),
-    (
-        "ubrukte-enums-report.md",
-        "Ubrukte enumerations",
-        "ubrukte enumerations",
-        "Analysen finn enumerations definerte lokalt i skjemaet som ingen "
-        "slot brukar som `range`. Ein ubrukt enumeration er ei daud "
-        "definisjon som bør fjernast eller takast i bruk.",
-        None,
-        None,
-    ),
-    (
-        "ubrukte-subsets-report.md",
-        "Ubrukte subsets",
-        "ubrukte subsets",
-        "Analysen finn subsets definerte lokalt i skjemaet som ingen klasse "
-        "eller slot er merkt med. Eit ubrukt subset gjev ingen reell "
-        "gruppering og bør fjernast eller takast i bruk.",
-        None,
-        None,
-    ),
+    ("isolerte-klasser-report.md", "modellanalyse.isolerte_klasser", None),
+    ("ikkje-tilkopla-container-report.md", "modellanalyse.ikkje_tilkopla_container", None),
+    ("ubrukte-slots-report.md", "modellanalyse.ubrukte_slots", None),
+    ("ubrukte-types-report.md", "modellanalyse.ubrukte_types", None),
+    ("ubrukte-enums-report.md", "modellanalyse.ubrukte_enums", None),
+    ("ubrukte-subsets-report.md", "modellanalyse.ubrukte_subsets", None),
     (
         "similar-classes-domain-report.md",
-        "Liknande klassenavn",
-        "klassenavn",
-        "Analysen samanliknar klassenamn i dette skjemaet mot klassenamn i "
-        "andre skjema i same domene, og flaggar par med høg navnelikskap. "
-        "Eit funn kan tyde på utilsikta duplisering av same omgrep under "
-        "ulike namn — vurder konsolidering eller import i staden for ny "
-        "lokal definisjon.",
+        "modellanalyse.liknande_klassenavn",
         "../../modellanalyse/liknande-klassenavn-alle-domene.md",
-        "Analyse av klassenavn på tvers av alle domene",
     ),
     (
         "similar-slots-domain-report.md",
-        "Liknande slotnavn",
-        "slotnavn",
-        "Analysen samanliknar slotnamn i dette skjemaet mot slotnamn i "
-        "andre skjema i same domene, og flaggar par med høg navnelikskap. "
-        "Eit funn kan tyde på utilsikta duplisering av same omgrep under "
-        "ulike namn — vurder konsolidering eller import i staden for ny "
-        "lokal definisjon.",
+        "modellanalyse.liknande_slotnavn",
         "../../modellanalyse/liknande-slotnavn-alle-domene.md",
-        "Analyse av slotnavn på tvers av alle domene",
     ),
     (
         "similar-types-domain-report.md",
-        "Liknande typenavn",
-        "typenavn",
-        "Analysen samanliknar typenamn i dette skjemaet mot typenamn i "
-        "andre skjema i same domene, og flaggar par med høg navnelikskap. "
-        "Eit funn kan tyde på utilsikta duplisering av same omgrep under "
-        "ulike namn — vurder konsolidering eller import i staden for ny "
-        "lokal definisjon.",
+        "modellanalyse.liknande_typenavn",
         "../../modellanalyse/liknande-typenavn-alle-domene.md",
-        "Analyse av typenavn på tvers av alle domene",
     ),
 ]
 
@@ -191,7 +120,7 @@ def count_table_rows(body: str) -> int:
 def main() -> None:
     if len(sys.argv) < 4:
         print(
-            "Bruk: generate-modellanalyse-md.py <model-analyse-dir> <domain> <schema>",
+            "Bruk: generate-modellanalyse-md.py <model-analyse-dir> <domain> <schema> [lang]",
             file=sys.stderr,
         )
         sys.exit(1)
@@ -203,30 +132,25 @@ def main() -> None:
     # symmetri med generate-validation-md.py sitt grensesnitt og for
     # framtidig bruk.
 
+    catalog = load_catalog()
+    lang = sys.argv[4] if len(sys.argv) > 4 else catalog.default_language
+
+    def t(key, **values):
+        return catalog.t(key, lang, **values)
+
     lines = [
         "",
-        "## Modellanalyse",
+        f"## {t('seksjon.modellanalyse.tittel')}",
         "",
-        "> Modellanalysen samanliknar dette skjemaet sine lokalt definerte "
-        + "klasse-, slot- og typenavn mot andre skjema i same domene, flaggar "
-        + "par med høg navnelikskap som eit mogleg duplikat- eller "
-        + "konsolideringssignal, og fangar lokalt definerte slots, "
-        + "enumerations, types, subsets og klasser som ikkje er i bruk lokalt "
-        + "i modellen. Analysen er informativ, ikkje ein valideringspolicy.",
+        f"> {t('seksjon.modellanalyse.forklaring')}",
         "",
-        f"*For IRI-dereferering og innhaldsforhandling sjå "
-        + f"[Modell-analyse]({MODELL_ANALYSE_WORKFLOW_URL})-workflowen.*",
+        f"*{t('seksjon.modellanalyse.workflow', lenkje=MODELL_ANALYSE_WORKFLOW_URL)}*",
     ]
 
     any_report_found = False
-    for (
-        filename,
-        heading,
-        objekttype,
-        blockquote_text,
-        cross_domain_relpath,
-        cross_domain_label,
-    ) in REPORTS:
+    for filename, prefix, cross_domain_relpath in REPORTS:
+        heading = t(f"{prefix}.tittel")
+        blockquote_text = t(f"{prefix}.forklaring")
         report_path = analyse_dir / filename
         body = None
         if not report_path.is_file():
@@ -240,17 +164,19 @@ def main() -> None:
 
         if body is None:
             lines += ["", f"### {heading}", "", f"> {blockquote_text}", ""]
-            lines.append("*Rapport ikkje tilgjengeleg for denne bygginga.*")
+            lines.append(f"*{t('seksjon.modellanalyse.rapport_manglar')}*")
         else:
             lines += ["", f"### {heading} ({count_table_rows(body)})", "", f"> {blockquote_text}", ""]
             lines.append(body)
 
         if cross_domain_relpath:
-            lines += [
-                "",
-                f"*For fullstendig analyse av {objekttype} på tvers av domene sjå "
-                f"[{cross_domain_label}]({cross_domain_relpath}).*",
-            ]
+            kryssdomene = t(
+                "seksjon.modellanalyse.kryssdomene",
+                objekttype=t(f"{prefix}.objekttype"),
+                etikett=t(f"{prefix}.kryssdomene"),
+                lenkje=cross_domain_relpath,
+            )
+            lines += ["", f"*{kryssdomene}*"]
 
     if not any_report_found:
         print(f"ÅTVARING: ingen modellanalyse-rapportar funne i {analyse_dir}", file=sys.stderr)

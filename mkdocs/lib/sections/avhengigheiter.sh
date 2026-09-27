@@ -76,7 +76,7 @@ build_imported_models_links() {
     # Output lenkjelinje
     if [ -n "$final_links" ]; then
         echo ""
-        echo "*Importerte modeller: $final_links*"
+        echo "*$(t seksjon.avhengigheiter.importerte_modeller): $final_links*"
     fi
 }
 
@@ -111,18 +111,18 @@ generate_dependencies() {
 
         echo "---"
         echo ""
-        echo "## Avhengigheiter ($import_count) {#avhengigheiter}"
+        echo "## $(t seksjon.avhengigheiter.tittel) ($import_count) {#avhengigheiter}"
         echo ""
-        echo "> Denne modellen importerer og gjenbruker komponentar frå andre skjema. "
-        echo "> Importerte klasser og eigenskapar kan vere synlege i diagram, valideringsrapportar og andre analysar sjølv om dei ikkje blir lista som lokale element i denne modellen."
+        echo "> $(t seksjon.avhengigheiter.forklaring_1)"
+        echo "> $(t seksjon.avhengigheiter.forklaring_2)"
         echo ""
-        echo "Dette skjemaet importerer følgjande skjema (direkte og transitivt):"
+        echo "$(t seksjon.avhengigheiter.innleiing)"
         echo ""
         echo "\`\`\`"
         echo "$dep_tree"
         echo "\`\`\`"
         echo ""
-        echo "*Sjå [Importhierarki](../../arkitektur/importhierarki.md) for oversikt over heile repoet sitt importhierarki.*"
+        echo "*$(t seksjon.avhengigheiter.sjaa_importhierarki)*"
         build_imported_models_links "$domain" "$schema"
         echo ""
         echo ""

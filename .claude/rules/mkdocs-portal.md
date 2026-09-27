@@ -96,6 +96,26 @@ Gjer i staden slik:
    sjå kva som er versjonskontrollert. Sjekk deretter at dei tilsvarande
    `generated/<domain>/<schema>/` inneheld alle artefakter som `build.yaml`
    ber om (`*.ttl`, `diagrams/`, `validation/`).
+
+   **Treng du å vise at portalen er uendra (regresjon), men `generated/` er
+   ufullstendig,** så køyr bygget i ein sandkasse-kopi i scratchpad og ikkje i
+   repoet:
+   1. Kopier `Makefile`, `make/`, `mkdocs/` (utan `site/`, `node_modules/` og
+      `.cache/`), `src/`, `generated/`, `README.md` og `CODEOWNERS.md` til
+      `<scratchpad>/box-before` **før** du endrar noko. Ein `tar`-straum frå
+      `/mnt/c` tek fleire minutt, så vent til kopien er ferdig før første
+      redigering. Køyr `make -C <box> docs-publish` og ta vare på `mkdocs/docs`.
+   2. Gjer endringane i repoet. Kopier på same måte til `box-after` og køyr på nytt.
+   3. `diff -r -I '^_Portalen vart sist bygd: '` på dei to `mkdocs/docs`-trea, og
+      `diff` på `mkdocs.yml`. Byggetidspunktet er einaste venta skilnad.
+   4. **Mål dekninga.** Byte-likskap seier berre noko om kodevegar som
+      referansedataa faktisk køyrer. Sjekk kva endra tekst/logikk som finst i
+      utdataa. Legg **identiske fiksturar** inn i begge boksane for kodevegar som
+      manglar (t.d. valideringsfil med feil, modellanalyse-rapportar,
+      `submodels` i `build.yaml`), og køyr begge på nytt før du samanliknar.
+
+   Heile køyringa tek under eitt minutt i `/tmp`, mot fleire minutt på `/mnt/c`.
+   Repoet vert ikkje rørt.
 3. **Etter køyring:** køyr `git status --short mkdocs/docs` og rapporter til
    brukaren alle endringar du ikkje var ute etter, før du melder arbeidet som
    ferdig. Rull dei tilbake med `git restore <sti>` innanfor unntaket i
@@ -106,7 +126,10 @@ Konkret tilfelle: under steg 1 i
 sletta ein `make docs-publish` mot ufullstendig `generated/` 48
 versjonskontrollerte filer under `mkdocs/docs/felles/` og fjerna
 ER-diagram-seksjonen frå fem skjemasider. Sjå
-`specs/done/rule-docs-publish-ufullstendig-generated.md`.
+`specs/done/rule-docs-publish-ufullstendig-generated.md`. Sandkasse-metoden i
+steg 2 vart brukt i steg 4 i same spec: 8555/8555 filer identiske, men
+referansedataa køyrde berre 112 av 152 katalognøklar, så fiksturar var
+naudsynte for å dekkje resten.
 
 ### PlantUML-diagram
 

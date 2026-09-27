@@ -2,7 +2,10 @@
 """
 Genererer ein ## Valideringsresultat-seksjon frå validation JSON til stdout.
 
-Bruk: python3 generate-validation-md.py <validation-json-path> <domain> <schema>
+Bruk: python3 generate-validation-md.py <validation-json-path> <domain> <schema> [lang]
+
+Tekstane kjem frå strengkatalogen (mkdocs/lib/i18n/strings.yaml); lang er
+standard default_language i katalogen.
 """
 
 import json
@@ -14,6 +17,8 @@ try:
 except ImportError:
     print("FEIL: pyyaml er ikkje installert. Køyr: pip install pyyaml", file=sys.stderr)
     sys.exit(1)
+
+from i18n_strings import load_catalog  # noqa: E402
 
 
 def get_validation_policy_from_manifest(domain: str, schema: str) -> str:
@@ -35,21 +40,27 @@ def get_validation_policy_from_manifest(domain: str, schema: str) -> str:
 
 def main() -> None:
     if len(sys.argv) < 4:
-        print("Bruk: generate-validation-md.py <validation-json> <domain> <schema>", file=sys.stderr)
+        print("Bruk: generate-validation-md.py <validation-json> <domain> <schema> [lang]", file=sys.stderr)
         sys.exit(1)
 
     path = Path(sys.argv[1])
     domain = sys.argv[2]
     schema = sys.argv[3]
 
+    catalog = load_catalog()
+    lang = sys.argv[4] if len(sys.argv) > 4 else catalog.default_language
+
+    def t(key, **values):
+        return catalog.t(key, lang, **values)
+
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except Exception as e:
         # Dersom JSON-fila er ugyldig, skriv ein fallback-seksjon
-        print("\n## Valideringsresultat\n")
-        print("> Valideringsrapporten viser i kva grad modellen etterlever definerte modelleringsreglar og kvalitetskrav. Resultata kan omfatte både lokale og importerte element avhengig av kva reglar som er evaluerte.\n")
-        print(f"*Valideringsfila er ugyldig eller manglar nødvendige felt: {path}*\n")
-        print(f"*Feil: {e}*")
+        print(f"\n## {t('seksjon.validering.tittel')}\n")
+        print(f"> {t('seksjon.validering.forklaring')}\n")
+        print(f"*{t('seksjon.validering.ugyldig_fil', sti=path)}*\n")
+        print(f"*{t('seksjon.validering.feilmelding', feil=e)}*")
         sys.exit(0)  # Exit utan feil for å ikkje stoppe publish-prosessen
 
     version = data.get("version", "")
@@ -70,7 +81,7 @@ def main() -> None:
     errors = [i for i in issues if i.get("severity") == "error"]
     warnings = [i for i in issues if i.get("severity") == "warning"]
 
-    status = "✅ Godkjent" if valid else "❌ Ikkje godkjent"
+    status = f"✅ {t('seksjon.validering.godkjent')}" if valid else f"❌ {t('seksjon.validering.ikkje_godkjent')}"
 
     # Generer lenke til valideringspolicy
     # MkDocs genererer anker frå fullstendig overskriftstekst
@@ -83,13 +94,13 @@ def main() -> None:
 
     lines = [
         "",
-        "## Valideringsresultat",
+        f"## {t('seksjon.validering.tittel')}",
         "",
-        "> Valideringsrapporten viser i kva grad modellen etterlever definerte modelleringsreglar og kvalitetskrav. Resultata kan omfatte både lokale og importerte element avhengig av kva reglar som er evaluerte.",
+        f"> {t('seksjon.validering.forklaring')}",
         "",
-        f"*Siste validering: {validated_at} — v{version} — {policy_link}*",
+        f"*{t('seksjon.validering.siste', tid=validated_at, versjon=version, policy=policy_link)}*",
         "",
-        "| Status | Feil | Åtvaringar |",
+        f"| {t('seksjon.validering.status')} | {t('seksjon.validering.feil')} | {t('seksjon.validering.aatvaringar')} |",
         "|---|---|---|",
         f"| {status} | {error_count} | {warning_count} |",
     ]
@@ -97,7 +108,7 @@ def main() -> None:
     if errors:
         lines += [
             "",
-            f"### Feil ({error_count})",
+            f"### {t('seksjon.validering.feil')} ({error_count})",
             "",
         ]
         for idx, issue in enumerate(errors, start=1):
@@ -111,7 +122,7 @@ def main() -> None:
     if warnings:
         lines += [
             "",
-            f"### Åtvaringar ({warning_count})",
+            f"### {t('seksjon.validering.aatvaringar')} ({warning_count})",
             "",
         ]
         for idx, issue in enumerate(warnings, start=1):

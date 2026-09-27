@@ -26,9 +26,9 @@ generate_example() {
 
     echo "---"
     echo ""
-    echo "## Eksempeldatafil"
+    echo "## $(t seksjon.eksempeldatafil.tittel)"
     echo ""
-    echo "> Eksempel som viser korleis ei gyldig datafil basert på denne modellen kan sjå ut i YAML-format."
+    echo "> $(t seksjon.eksempeldatafil.forklaring)"
     echo ""
     echo "\`\`\`yaml"
     # Ekstraher første 20 liner (eller til første tom linje etter header)
@@ -40,9 +40,9 @@ generate_example() {
     '
     echo "\`\`\`"
     echo ""
-    echo "[📄 Full eksempelfil (YAML)](https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/$relative_path/examples/$schema-eksempel.yaml)"
+    echo "[📄 $(t seksjon.eksempeldatafil.full_fil)](https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/$relative_path/examples/$schema-eksempel.yaml)"
     echo ""
-    echo "*Detaljerte eksempel per klasse finst på kvar klasseside, t.d. [Classes](#classes).*"
+    echo "*$(t seksjon.eksempeldatafil.per_klasse)*"
     echo ""
     echo ""
 }

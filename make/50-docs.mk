@@ -24,13 +24,13 @@ build-docker-mkdocs: ## Bygg MkDocs container-image
 
 docs-serve: ## Køyr lokal MkDocs-server på :8000
 	$(call print_header,docs-serve)
-	@mkdir -p "$(CURDIR)/mkdocs/.cache" "$(CURDIR)/mkdocs/site"
+	@mkdir -p "$(CURDIR)/mkdocs/.cache" "$(CURDIR)/mkdocs/site" "$(CURDIR)/mkdocs/overrides"
 	@$(DOCS_RUN) -it -p 8000:8000 $(DOCS_IMAGE) serve --dev-addr=0.0.0.0:8000
 
 docs-build: ## Bygg statisk MkDocs-site til mkdocs/site/
 	$(call print_header,docs-build)
 	@eval "$$LOG_FUNCTIONS"; \
-	mkdir -p "$(CURDIR)/mkdocs/.cache" "$(CURDIR)/mkdocs/site"; \
+	mkdir -p "$(CURDIR)/mkdocs/.cache" "$(CURDIR)/mkdocs/site" "$(CURDIR)/mkdocs/overrides"; \
 	timed_run "Bygg statisk MkDocs-site" $(DOCS_RUN) $(DOCS_IMAGE) build
 
 docs-publish: ## Publiser generated/ til mkdocs/docs/ og oppdater mkdocs.yml

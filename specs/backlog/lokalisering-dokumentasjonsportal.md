@@ -280,7 +280,7 @@ val vert teke i steg 2 (sjå handlingslista).
   `nn.html`, og søket brukar `lang: no` for både nb og nn, så søket er uendra)
 - [x] 2. Prototype og endeleg val A/B (B stadfesta; O6 = L2 med artefakter på rot-stien)
 - [x] 3. Strengkatalog, renderer, `t`-funksjon, konsistenstest (`make i18n-check`: sjekk + 11 testar + røyktest nn/en, alle grøne)
-- [ ] 4. Uttrekk av hardkoda strengar (byte-identisk nynorsk output)
+- [x] 4. Uttrekk av hardkoda strengar (byte-identisk nynorsk output: 8555/8555 filer, òg med fiksturar)
 - [ ] 5. i18n-markørar og eksplisitte anker-ID-ar (O2-a) i docgen-malane og `sections/*.sh`
 - [ ] 6. To språktre, fallback, artefakter på rot-stien og vidaresendingssider i `publish.sh`
 - [ ] 7. `mkdocs.yml` per språk og `extra.alternate`
@@ -432,6 +432,76 @@ valt å la dette stå ope inntil vidare.
     python-pytest-imaget). Imaget har ikkje bash, så bash-lastaren vert
     røyktesta av `make i18n-check` på verten. Språklista vert henta frå
     katalogen (`languages`) og er ikkje hardkoda.
+- **Uttrekk av strengar (steg 4):**
+  - **Omfang:** `mkdocs/lib/sections/*.sh` (14 filer), `mkdocs/lib/utils/formatters.sh`
+    (`domain_label`/`artifact_label`), `publish.sh` (domeneoversikt,
+    modellanalyse-sidene, byggetidspunkt på framsida) og
+    `generate-validation-md.py`/`generate-modellanalyse-md.py`. Katalogen har no
+    146 nøklar. `generate_index.sh` og `copy_artifacts.sh` har ingen portaltekst.
+  - **Ikkje teke med i steg 4:** `site_name`, `site_description`, `copyright` og
+    nav-etikettane i `mkdocs.yml`-heredocen høyrer til steg 7 (konfig per
+    språk). Kodedøme i «Kom i gang» (YAML/Java/Python, `mine-data.yaml`) er kode,
+    ikkje portaltekst. Eigennavn som «Felles Begrepskatalog», «GitHub Issues» og
+    «LinkML» er ikkje trekte ut.
+  - **`mkdocs/overrides/404.html` var ikkje i bruk:** verken `mkdocs.yml` eller
+    `publish.sh` sette `theme.custom_dir`, så portalen viste Material sin
+    standard-404, sjølv om `DOCS_RUN` alt monterte `mkdocs/overrides`. Etter
+    brukarval (2026-09-27) er sida teken i bruk:
+    - Malen er flytta til `mkdocs/lib/templates/404.html` med `@@i18n:side404.*@@`-markørar.
+    - `publish.sh` genererer `mkdocs/overrides/404.html` med den nye
+      `i18n_render` (`mkdocs/lib/utils/i18n.sh`), som òg skal brukast for
+      gen-doc-markørane i steg 5.
+    - `theme.custom_dir: overrides` er sett, og `mkdocs/overrides/` ligg i
+      `.gitignore`. `docs-build`/`docs-serve` opprettar katalogen, slik at
+      podman-monteringa ikkje feilar i ein fersk klone.
+    - Lenkja «Gå tilbake» peika på `/`, altså domenerota på GitHub Pages og ikkje
+      portalen. Ho brukar no `config.site_url` som Material sin eigen 404.
+    - To teiknsett-rettingar (CLAUDE.md § Teiknsett): en-dash i tittelen er
+      ASCII-bindestrek, og en-dash i A2-setninga er em-dash.
+    - Stadfesta i sandkassa: `site/404.html` viser nynorsk tekst og lenkjer til
+      `https://audunautomat.github.io/linkml-datamodellering-no/`. Resten av
+      `mkdocs/docs` er uendra, og `mkdocs.yml` skil seg berre med `custom_dir`.
+    - Treff på den gamle stien etter flyttinga: `make/01-containers.mk`,
+      `.claude/rules/container-images.md` og cache-nøkkelen i `generate.yml`
+      (`mkdocs/overrides/**`) gjeld framleis, sidan katalogen er monteringspunkt
+      med generert innhald og malen er dekt av `mkdocs/lib/**` i same nøkkel.
+      Referansane i denne specen er historiske.
+  - **Plasshaldarar:** tekst med variablar inni har `{navn}` i katalogen
+    (`t nøkkel navn=verdi` / `t(nøkkel, lang, navn=verdi)`). Utbytinga er
+    eksplisitt, ikkje `str.format`, sidan tekstane inneheld Markdown-anker som
+    `{#classes}`. Manglande plasshaldar vert sjekka i *malen*, ikkje i resultatet,
+    slik at innsette modellverdiar med `{...}` ikkje gjev falsk feil. `check`
+    krev same plasshaldarar i alle språk.
+  - **Statisk sjekk før bygg:** `t` inne i `echo "$(t k)"` svelgjer feilstatus.
+    Difor køyrer `publish.sh` `i18n_strings.py check` før `i18n_load`, og skannaren
+    kjenner att alle `t nøkkel`-kall i `.sh` (også `t k; echo` i `formatters.sh`).
+    Nøklane i `generate-modellanalyse-md.py` vert sette saman av prefiks
+    (`f"{prefix}.tittel"`) og vert ikkje sett av skannaren. Ein manglande nøkkel der
+    gjev `CatalogError` ved køyring, og bygget stoppar med traceback.
+  - **Python-scripta køyrer på verten** (`python3` i `modellanalyse.sh`/
+    `valideringsresultat.sh`) og les katalogen med PyYAML. Det er ikkje ei ny
+    avhengigheit: `generate-validation-md.py` importerte alt `yaml` på verten.
+    Språket vert sendt som valfritt 4. argument (`$I18N_LANG`).
+  - **Engelske verdiar er lagde inn no** fordi katalogen krev alle språk. Dei er
+    utkast og skal gjennomgåast i steg 10.
+  - **Kjende nynorsk-avvik er behaldne** for byte-likskap: «Entity-relationship
+    diagram» (engelsk i den nynorske versjonen) og lenkjeteksten «[Classes]» i
+    `seksjon.eksempeldatafil.per_klasse`. Dei kan rettast i steg 5, saman med
+    overskriftene frå gen-doc (O2-a: lås anker før tekstendring).
+  - **Seks ubrukte nøklar fjerna:** `objekttype` for analysane utan kryssdomene-side
+    var daude verdiar òg i den gamle `REPORTS`-lista, sidan fotnoten berre vert
+    skriven når det finst ei kryssdomene-side.
+  - **Verifisering utan å røre repoet:** `make docs-publish` vart køyrd i ein
+    sandkasse-kopi i scratchpad (Makefile, `make/`, `mkdocs/`, `src/`,
+    `generated/`, `README.md`) før og etter endringane. Grunnen er at
+    `mkdocs/docs/felles/` framleis er versjonskontrollert (jf.
+    `.claude/rules/mkdocs-portal.md`). Resultat: 8555/8555 filer identiske,
+    bortsett frå byggetidspunktet, og `mkdocs.yml` identisk. Referansedataa køyrde
+    berre 112 av 152 nøklar, så begge sandkassane fekk same fiksturar: `CODEOWNERS.md`,
+    8 av 9 modellanalyserapportar, ei validering med feil og åtvaringar, ei ugyldig
+    valideringsfil, ei godkjend validering, `submodels` på `dqv-ap-no` og status
+    Withdrawn. Framleis ingen skilnad utover sandkassestien i meldinga om ugyldig
+    fil. Alle nøklar er no dekte, bortsett frå dei tre `i18n.*` for steg 6.
 - **Prototypen køyrer containerar direkte (steg 2):** `make docs-publish`/`docs-build`
   byggjer alltid heile portalen og skriv til `mkdocs/docs/`. Prototypen køyrde
   difor `squidfunk/mkdocs-material:9.7` (same image som `Dockerfile.mkdocs`)

@@ -33,7 +33,7 @@ generate_badges() {
     local validation_json=$(get_validation_json_path "$domain" "$schema")
     local manifest="$REPO_ROOT/src/linkml/${domain}/${schema}/build.yaml"
     local policy=$(get_validation_policy "$manifest")
-    local val_status="ukjent"
+    local val_status; val_status=$(t badge.ukjent)
     local val_color="lightgrey"
 
     if [ -f "$validation_json" ]; then
@@ -41,10 +41,10 @@ generate_badges() {
         local errors
         if errors=$(python3 -c "import json; d=json.load(open('$validation_json')); r=d.get('result', {}); print(r.get('errorCount', r.get('error_count', 0)))" 2>&1) && [ -n "$errors" ]; then
             if [ "$errors" -eq 0 ]; then
-                val_status="✓_godkjent"
+                val_status=$(t badge.validering.godkjent)
                 val_color="green"
             else
-                val_status="${errors}_feil"
+                val_status=$(t badge.validering.feil antal="$errors")
                 val_color="yellow"
             fi
         else
@@ -56,10 +56,10 @@ generate_badges() {
     local status_label="$status"
     local status_color="blue"
     case "$status" in
-        Completed) status_label="Ferdigstilt"; status_color="green" ;;
-        UnderDevelopment) status_label="Under_utvikling"; status_color="orange" ;;
-        Deprecated) status_label="Foreldet"; status_color="red" ;;
-        Withdrawn) status_label="Trukket_tilbake"; status_color="red" ;;
+        Completed) status_label=$(t badge.status.ferdigstilt); status_color="green" ;;
+        UnderDevelopment) status_label=$(t badge.status.under_utvikling); status_color="orange" ;;
+        Deprecated) status_label=$(t badge.status.foreldet); status_color="red" ;;
+        Withdrawn) status_label=$(t badge.status.trukket_tilbake); status_color="red" ;;
     esac
 
     # URL-encode
@@ -72,18 +72,18 @@ generate_badges() {
      if [ -n "$utgiver_navn" ]; then
         local utgiver_encoded="${utgiver_navn// /_}"
         utgiver_encoded="${utgiver_encoded//-/--}"
-        echo "![Utgiver](https://img.shields.io/badge/utgiver-${utgiver_encoded}-blue)"
+        echo "![$(t badge.utgiver.alt)](https://img.shields.io/badge/$(t badge.utgiver.etikett)-${utgiver_encoded}-blue)"
     fi
-    [ -n "$license" ] && echo "![Lisens](https://img.shields.io/badge/NLOD-${license}-blue)"
+    [ -n "$license" ] && echo "![$(t badge.lisens.alt)](https://img.shields.io/badge/NLOD-${license}-blue)"
     if [ -n "$status" ]; then
-        echo "![Status](https://img.shields.io/badge/status-${status_label}-${status_color})"
+        echo "![$(t badge.status.alt)](https://img.shields.io/badge/$(t badge.status.etikett)-${status_label}-${status_color})"
     else
-        echo "![Status](https://img.shields.io/badge/status-ukjent-lightgrey)"
+        echo "![$(t badge.status.alt)](https://img.shields.io/badge/$(t badge.status.etikett)-$(t badge.ukjent)-lightgrey)"
     fi
-    echo "![Versjon](https://img.shields.io/badge/versjon-${version}-blue)"
-    echo "![Validering](https://img.shields.io/badge/${policy_encoded}-${val_status_encoded}-${val_color})"
+    echo "![$(t badge.versjon.alt)](https://img.shields.io/badge/$(t badge.versjon.etikett)-${version}-blue)"
+    echo "![$(t badge.validering.alt)](https://img.shields.io/badge/${policy_encoded}-${val_status_encoded}-${val_color})"
     local endringsdato_encoded="${endringsdato//-/--}"
-    [ -n "$endringsdato" ] && echo "![Endringsdato](https://img.shields.io/badge/endringsdato-${endringsdato_encoded}-blue)"
+    [ -n "$endringsdato" ] && echo "![$(t badge.endringsdato.alt)](https://img.shields.io/badge/$(t badge.endringsdato.etikett)-${endringsdato_encoded}-blue)"
     echo ""
     echo ""
 }

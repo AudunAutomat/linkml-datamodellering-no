@@ -16,12 +16,12 @@ generate_modell_analyse() {
     echo ""
 
     if [ -n "$analyse_dir" ]; then
-        python3 "$REPO_ROOT/mkdocs/lib/scripts/generate-modellanalyse-md.py" "$analyse_dir" "$domain" "$schema"
+        python3 "$REPO_ROOT/mkdocs/lib/scripts/generate-modellanalyse-md.py" "$analyse_dir" "$domain" "$schema" "$I18N_LANG"
     else
-        echo "## Modellanalyse"
+        echo "## $(t seksjon.modellanalyse.tittel)"
         echo ""
-        echo "> Modellanalysen gjer analyser som kan påpeike moglege avvik for oppfølging. Dette er meir informativ innsikt til hjelp med modelleringa."
+        echo "> $(t seksjon.modellanalyse.forklaring_kort)"
         echo ""
-        echo "*Modellanalyse ikkje tilgjengeleg — krev at generate-workflowen har køyrt.*"
+        echo "*$(t seksjon.modellanalyse.ikkje_tilgjengeleg)*"
     fi
 }

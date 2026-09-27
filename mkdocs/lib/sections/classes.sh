@@ -12,7 +12,7 @@ build_import_links() {
     local domain="$1"
     local schema="$2"
     local section="$3"  # classes, slots, enumerations, types, subsets
-    local label="$4"    # "klasser", "slots", "enums", "typer", "subsets"
+    local label="$4"    # ferdig omsett etikett, t.d. "$(t klasseliste.importerte_klasser)"
 
     # Bruk memoisert resultat frå generate_schema_index() i staden for å
     # kalle get_imported_schemas() på nytt for kvar seksjon (classes.sh vert
@@ -130,7 +130,7 @@ build_import_links() {
     # Output lenkjelinje
     if [ -n "$final_links" ]; then
         echo ""
-        echo "*Importerte $label: $final_links*"
+        echo "*$label: $final_links*"
     fi
 }
 
@@ -149,7 +149,7 @@ generate_classes_section() {
     # Ekstraher Classes-seksjonen (frå "### Classes" til neste "###")
     # Beheld overskrifta med teljing frå gendoc og legg til stabilt anker {#classes}
     awk '/^### Classes/,/^### [^C]/' "$klasse_src" | sed '$d' | sed 's/](\([^)]*\.md\))/](klasser\/\1)/g' | sed 's/^### Classes (\([0-9]*\))$/### Classes (\1) {#classes}/'
-    build_import_links "$domain" "$schema" "classes" "klasser"
+    build_import_links "$domain" "$schema" "classes" "$(t klasseliste.importerte_klasser)"
     echo ""
     echo "---"
     echo ""
@@ -157,7 +157,7 @@ generate_classes_section() {
     # Ekstraher Slots-seksjonen
     if grep -q "^### Slots" "$klasse_src"; then
         awk '/^### Slots/,/^### [^S]/' "$klasse_src" | sed '$d' | sed 's/](\([^)]*\.md\))/](klasser\/\1)/g' | sed 's/^### Slots (\([0-9]*\))$/### Slots (\1) {#slots}/'
-        build_import_links "$domain" "$schema" "slots" "slots"
+        build_import_links "$domain" "$schema" "slots" "$(t klasseliste.importerte_slots)"
         echo ""
         echo "---"
         echo ""
@@ -166,7 +166,7 @@ generate_classes_section() {
     # Ekstraher Enumerations-seksjonen
     if grep -q "^### Enumerations" "$klasse_src"; then
         awk '/^### Enumerations/,/^### [^E]/' "$klasse_src" | sed '$d' | sed 's/](\([^)]*\.md\))/](klasser\/\1)/g' | sed 's/^### Enumerations (\([0-9]*\))$/### Enumerations (\1) {#enumerations}/'
-        build_import_links "$domain" "$schema" "enumerations" "enums"
+        build_import_links "$domain" "$schema" "enumerations" "$(t klasseliste.importerte_enums)"
         echo ""
         echo "---"
         echo ""
@@ -175,7 +175,7 @@ generate_classes_section() {
     # Ekstraher Types-seksjonen
     if grep -q "^### Types" "$klasse_src"; then
         awk '/^### Types/,/^### [^T]/' "$klasse_src" | sed '$d' | sed 's/](\([^)]*\.md\))/](klasser\/\1)/g' | sed 's/^### Types (\([0-9]*\))$/### Types (\1) {#types}/'
-        build_import_links "$domain" "$schema" "types" "typer"
+        build_import_links "$domain" "$schema" "types" "$(t klasseliste.importerte_typer)"
         echo ""
         echo "---"
         echo ""
@@ -184,6 +184,6 @@ generate_classes_section() {
     # Ekstraher Subsets-seksjonen (til slutt av fil, sidan Subsets er siste seksjon)
     if grep -q "^### Subsets" "$klasse_src"; then
         awk '/^### Subsets/,0' "$klasse_src" | sed 's/](\([^)]*\.md\))/](klasser\/\1)/g' | sed 's/^### Subsets (\([0-9]*\))$/### Subsets (\1) {#subsets}/'
-        build_import_links "$domain" "$schema" "subsets" "subsets"
+        build_import_links "$domain" "$schema" "subsets" "$(t klasseliste.importerte_subsets)"
     fi
 }

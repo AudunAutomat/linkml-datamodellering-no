@@ -8,9 +8,10 @@ Bibliotek:
     catalog.t("section.kom_i_gang", "en")
 
 CLI:
-    i18n_strings.py render-sh --lang <lang> [--catalog PATH]
+    i18n_strings.py render-sh [--lang <lang>] [--catalog PATH]
         Skriv bash-kode som definerer den assosiative tabellen I18N og
-        I18N_LANG. Brukt av i18n_load i mkdocs/lib/utils/i18n.sh.
+        I18N_LANG (standard: default_language i katalogen). Brukt av
+        i18n_load i mkdocs/lib/utils/i18n.sh.
     i18n_strings.py check [--catalog PATH] [--scan-root PATH ...]
         Validerer katalogen (gyldige nøklar, alle språk har verdi) og at alle
         nøklar som vert brukte i scan-røtene finst i katalogen.
@@ -38,16 +39,21 @@ DEFAULT_SCAN_ROOTS = [
     REPO_ROOT / "mkdocs" / "lib",
     REPO_ROOT / "src" / "assets" / "templates" / "docgen",
 ]
-SCAN_SUFFIXES = {".sh", ".py", ".jinja2"}
+SCAN_SUFFIXES = {".sh", ".py", ".jinja2", ".html"}
 
 KEY_RE = re.compile(r"^[a-z0-9_]+(\.[a-z0-9_]+)+$")
 LANG_RE = re.compile(r"^[a-z]{2,3}$")
-# Bruksmønster for nøklar: Jinja-markør, bash "$(t key)" og Python .t("key", ...)
-USAGE_RES = [
-    re.compile(r"@@i18n:([a-z0-9_.]+)@@"),
-    re.compile(r"\$\(\s*t\s+[\"']?([a-z0-9_]+(?:\.[a-z0-9_]+)+)"),
-    re.compile(r"\bt\(\s*[\"']([a-z0-9_]+(?:\.[a-z0-9_]+)+)[\"']"),
-]
+PLACEHOLDER_RE = re.compile(r"\{[a-z_]+\}")
+# Bruksmønster for nøklar per filtype: Jinja-/tekstmarkør overalt, bash-kallet
+# `t key` (også inni "$(t key)") i .sh og Python-kallet t("key", ...) i .py.
+_KEY = r"([a-z0-9_]+(?:\.[a-z0-9_]+)+)"
+_MARKER_RE = re.compile(r"@@i18n:([a-z0-9_.]+)@@")
+USAGE_RES = {
+    ".sh": [_MARKER_RE, re.compile(r"(?:^|[\s;|&(])t\s+[\"']?" + _KEY)],
+    ".py": [_MARKER_RE, re.compile(r"\bt\(\s*[\"']" + _KEY + r"[\"']")],
+    ".jinja2": [_MARKER_RE],
+    ".html": [_MARKER_RE],
+}
 
 
 class CatalogError(Exception):
@@ -60,7 +66,7 @@ class Catalog:
         self.default_language = default_language
         self.strings = strings
 
-    def t(self, key, lang):
+    def raw(self, key, lang):
         if lang not in self.languages:
             raise CatalogError(f"ukjent språk '{lang}' (katalogen har: {', '.join(self.languages)})")
         entry = self.strings.get(key)
@@ -70,8 +76,20 @@ class Catalog:
             raise CatalogError(f"i18n-nøkkel '{key}' manglar verdi for språk '{lang}'")
         return entry[lang]
 
+    def t(self, key, lang, **values):
+        """Slå opp og byt ut {navn}-plasshaldarar (ikkje str.format: verdiar
+        kan innehalde Markdown-anker som {#classes})."""
+        text = self.raw(key, lang)
+        # Sjekk malen (ikkje resultatet): innsette verdiar kan sjølve innehalde {...}
+        missing = [p for p in PLACEHOLDER_RE.findall(text) if p[1:-1] not in values]
+        if missing:
+            raise CatalogError(f"i18n-nøkkel '{key}' har plasshaldar utan verdi: {missing[0]} (språk: {lang})")
+        for name, value in values.items():
+            text = text.replace("{" + name + "}", str(value))
+        return text
+
     def for_lang(self, lang):
-        return {key: self.t(key, lang) for key in sorted(self.strings)}
+        return {key: self.raw(key, lang) for key in sorted(self.strings)}
 
 
 def validate(data):
@@ -96,10 +114,16 @@ def validate(data):
         if not isinstance(entry, dict):
             errors.append(f"'{key}': må vere eit objekt med éin verdi per språk")
             continue
+        placeholder_sets = {}
         for lang in languages:
             value = entry.get(lang)
             if not isinstance(value, str) or not value.strip():
                 errors.append(f"'{key}': manglar ikkje-tom verdi for språk '{lang}'")
+            else:
+                placeholder_sets[lang] = set(PLACEHOLDER_RE.findall(value))
+        if len({frozenset(s) for s in placeholder_sets.values()}) > 1:
+            detail = "; ".join(f"{l}: {' '.join(sorted(s)) or '-'}" for l, s in placeholder_sets.items())
+            errors.append(f"'{key}': ulike plasshaldarar mellom språka ({detail})")
         for extra in sorted(set(entry) - set(languages)):
             errors.append(f"'{key}': ukjent språk '{extra}' (ikkje i 'languages')")
     return errors
@@ -131,7 +155,7 @@ def find_usages(roots):
         if path.resolve() == Path(__file__).resolve():
             continue  # docstring-døma her er ikkje reell bruk
         for lineno, line in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
-            for pattern in USAGE_RES:
+            for pattern in USAGE_RES.get(path.suffix, [_MARKER_RE]):
                 for key in pattern.findall(line):
                     usages.setdefault(key, []).append(f"{path}:{lineno}")
     return usages
@@ -147,9 +171,10 @@ def render_sh(catalog, lang):
 
 def cmd_render_sh(args):
     catalog = load_catalog(args.catalog)
-    if args.lang not in catalog.languages:
-        raise CatalogError(f"ukjent språk '{args.lang}' (katalogen har: {', '.join(catalog.languages)})")
-    sys.stdout.write(render_sh(catalog, args.lang))
+    lang = args.lang or catalog.default_language
+    if lang not in catalog.languages:
+        raise CatalogError(f"ukjent språk '{lang}' (katalogen har: {', '.join(catalog.languages)})")
+    sys.stdout.write(render_sh(catalog, lang))
     return 0
 
 
@@ -175,7 +200,7 @@ def main(argv=None):
     p_langs = sub.add_parser("languages", help="skriv språkkodane i katalogen, mellomromsseparerte")
     p_langs.add_argument("--catalog", default=DEFAULT_CATALOG)
     p_render = sub.add_parser("render-sh", help="skriv bash-definisjon av I18N for eitt språk")
-    p_render.add_argument("--lang", required=True)
+    p_render.add_argument("--lang", help="språkkode (standard: default_language i katalogen)")
     p_render.add_argument("--catalog", default=DEFAULT_CATALOG)
     p_check = sub.add_parser("check", help="valider katalogen og nøkkelbruk")
     p_check.add_argument("--catalog", default=DEFAULT_CATALOG)

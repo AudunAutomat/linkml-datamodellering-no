@@ -12,9 +12,9 @@ generate_contact_info() {
     echo ""
     echo "---"
     echo ""
-    echo "## Kontakt"
+    echo "## $(t seksjon.kontakt.tittel)"
     echo ""
-    echo "> Her finn du informasjon om forvaltningsansvarleg, kontaktpunkt og kanal for feilrapportering eller forslag til forbetringar."
+    echo "> $(t seksjon.kontakt.forklaring)"
     echo ""
 
     # CODEOWNERS.md-matchinga (catalog_slug, deretter path_patterns) er
@@ -29,16 +29,16 @@ generate_contact_info() {
     fi
 
     if [ -n "$name" ]; then
-        echo "**Forvaltningsansvarleg:** [$name]($org_uri)"
+        echo "**$(t seksjon.kontakt.forvaltningsansvarleg):** [$name]($org_uri)"
         echo ""
         if [ -n "$contact_uri" ]; then
-            echo "**Kontakt:** [$name - Kontakt]($contact_uri)"
+            echo "**$(t seksjon.kontakt.kontakt):** [$name - $(t seksjon.kontakt.kontakt)]($contact_uri)"
             echo ""
         fi
-        echo "**Support:** [GitHub Issues](https://github.com/AudunAutomat/linkml-datamodellering-no/issues)"
+        echo "**$(t seksjon.kontakt.support):** [GitHub Issues](https://github.com/AudunAutomat/linkml-datamodellering-no/issues)"
     else
         # Fallback — ingen match funne
-        echo "**Support:** [GitHub Issues](https://github.com/AudunAutomat/linkml-datamodellering-no/issues)"
+        echo "**$(t seksjon.kontakt.support):** [GitHub Issues](https://github.com/AudunAutomat/linkml-datamodellering-no/issues)"
     fi
     echo ""
 }

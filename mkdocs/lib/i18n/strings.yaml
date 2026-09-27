@@ -6,21 +6,27 @@
 # IKKJE med her — det vert vist på originalspråket.
 #
 # Format:
-#   <nøkkel>:            # [a-z0-9_] i punktum-separerte ledd, t.d. section.kom_i_gang
+#   <nøkkel>:            # [a-z0-9_] i punktum-separerte ledd, t.d. seksjon.kom_i_gang.tittel
 #     nn: <tekst>        # alle språk i `languages` er påkravde
 #     en: <tekst>
+#
+# Plasshaldarar: {navn} i teksten vert bytte ut ved oppslag (bash: t <nøkkel>
+# navn=verdi, Python: t(<nøkkel>, lang, navn=verdi)). Alle språk må ha same
+# plasshaldarar. Markdown-anker som {#classes} er ikkje plasshaldarar.
 #
 # Bruk:
 #   bash:    i18n_load <lang> (mkdocs/lib/utils/i18n.sh), deretter "$(t <nøkkel>)"
 #   Python:  load_catalog().t("<nøkkel>", lang) (mkdocs/lib/scripts/i18n_strings.py)
 #   Jinja:   @@i18n:<nøkkel>@@ (vert bytt ut av publish.sh)
 #
+# Engelske verdiar er utkast frå steg 4 og vert gjennomgått i steg 10.
 # Sjekk: make i18n-check. Sjå specs/backlog/lokalisering-dokumentasjonsportal.md.
 
 languages: [nn, en]
 default_language: nn
 
 strings:
+  # --- i18n-mekanismen sjølv (steg 6) ---
   i18n.ikkje_omsett.tittel:
     nn: Ikkje omsett
     en: Not yet translated
@@ -30,3 +36,492 @@ strings:
   i18n.modellinnhald_norsk:
     nn: Modellinnhaldet (navn og skildringar av klasser, eigenskapar og kodelister) er på norsk.
     en: Model content (names and descriptions of classes, properties and code lists) is in Norwegian.
+
+  # --- Portal (publish.sh) ---
+  portal.sist_bygd:
+    nn: "Portalen vart sist bygd: {tid}"
+    en: "The portal was last built: {tid}"
+
+  # --- Domene (formatters.sh: domain_label) ---
+  domene.felles:
+    nn: FELLES - Fellesmodellar
+    en: FELLES - Common models
+  domene.referanse:
+    nn: REFERANSE - Referansemodellar
+    en: REFERANSE - Reference models
+  domene.ap_no:
+    nn: AP-NO - Applikasjonsprofilar
+    en: AP-NO - Application profiles
+  domene.begrepskatalog:
+    nn: Begrepskatalog - Begrepskatalogmodellar
+    en: Begrepskatalog - Concept catalogue models
+  domene.modellkatalog:
+    nn: Modellkatalog - Informasjonsmodellar
+    en: Modellkatalog - Information models
+  domene.ngr:
+    nn: NGR - Nasjonale Grunndata
+    en: NGR - National base data
+  domene.fint:
+    nn: FINT - Fylkeskommunale integrasjonar
+    en: FINT - County municipality integrations
+  domene.samt:
+    nn: SAMT - Kommunale integrasjonar
+    en: SAMT - Municipal integrations
+  domene.fair:
+    nn: FAIR - Metadataoverbygning
+    en: FAIR - Metadata superstructure
+  domene.oreg:
+    nn: OREG - Offentlege registre
+    en: OREG - Public registers
+
+  # --- Domeneoversikt (publish.sh) ---
+  domeneoversikt.modell:
+    nn: Modell
+    en: Model
+  domeneoversikt.artefakter:
+    nn: Tilgjengelege artefakter
+    en: Available artifacts
+  domeneoversikt.publisert_til:
+    nn: Publisert til
+    en: Published to
+
+  # --- Artefakter (formatters.sh: artifact_label, generated_artifacts.sh) ---
+  artefakt.shapes_ttl:
+    nn: SHACL shapes
+    en: SHACL shapes
+  artefakt.ontology_ttl:
+    nn: OWL ontologi
+    en: OWL ontology
+  artefakt.schema_ttl:
+    nn: RDF/Turtle skjema
+    en: RDF/Turtle schema
+  artefakt.context_jsonld:
+    nn: JSON-LD kontekst
+    en: JSON-LD context
+  artefakt.schema_json:
+    nn: JSON Schema
+    en: JSON Schema
+  artefakt.schema_xsd:
+    nn: XML Schema (XSD)
+    en: XML Schema (XSD)
+  artefakt.openapi_yaml:
+    nn: OpenAPI 3.1
+    en: OpenAPI 3.1
+  artefakt.asyncapi_yaml:
+    nn: AsyncAPI 3.0
+    en: AsyncAPI 3.0
+  artefakt.model_py:
+    nn: Python-klasser
+    en: Python classes
+  artefakt.schema_proto:
+    nn: Protobuf-skjema
+    en: Protobuf schema
+  artefakt.schema_graphql:
+    nn: GraphQL-skjema
+    en: GraphQL schema
+  artefakt.erdiagram_md:
+    nn: ER-diagram (Mermaid)
+    en: ER diagram (Mermaid)
+  artefakt.eksempel_ttl:
+    nn: Eksempeldata (Turtle)
+    en: Example data (Turtle)
+  artefakt.manifest:
+    nn: Modellmanifest ihht Modelldcat-ap-no
+    en: Model manifest according to Modelldcat-ap-no
+  artefakt.plantuml:
+    nn: PlantUML-diagram
+    en: PlantUML diagram
+  artefakt.java:
+    nn: Java-klasser
+    en: Java classes
+
+  # --- Badges (badges.sh). *.etikett er shields.io-koda: _ = mellomrom, -- = bindestrek ---
+  badge.utgiver.alt:
+    nn: Utgiver
+    en: Publisher
+  badge.utgiver.etikett:
+    nn: utgiver
+    en: publisher
+  badge.lisens.alt:
+    nn: Lisens
+    en: License
+  badge.status.alt:
+    nn: Status
+    en: Status
+  badge.status.etikett:
+    nn: status
+    en: status
+  badge.status.ferdigstilt:
+    nn: Ferdigstilt
+    en: Completed
+  badge.status.under_utvikling:
+    nn: Under_utvikling
+    en: Under_development
+  badge.status.foreldet:
+    nn: Foreldet
+    en: Deprecated
+  badge.status.trukket_tilbake:
+    nn: Trukket_tilbake
+    en: Withdrawn
+  badge.ukjent:
+    nn: ukjent
+    en: unknown
+  badge.versjon.alt:
+    nn: Versjon
+    en: Version
+  badge.versjon.etikett:
+    nn: versjon
+    en: version
+  badge.validering.alt:
+    nn: Validering
+    en: Validation
+  badge.validering.godkjent:
+    nn: ✓_godkjent
+    en: ✓_passed
+  badge.validering.feil:
+    nn: "{antal}_feil"
+    en: "{antal}_errors"
+  badge.endringsdato.alt:
+    nn: Endringsdato
+    en: Last modified
+  badge.endringsdato.etikett:
+    nn: endringsdato
+    en: last_modified
+
+  # --- Seksjonar på skjemasida (mkdocs/lib/sections/*.sh) ---
+  seksjon.om_modellen.tittel:
+    nn: Om denne modellen
+    en: About this model
+  seksjon.om_modellen.forklaring:
+    nn: Denne sida dokumenterer LinkML-modellen {skjema}, inkludert klasser, eigenskapar, datatypar, valideringsresultat og genererte artefakter. Informasjonen er generert automatisk frå skjemaet og tilhøyrande byggeproses.
+    en: This page documents the LinkML model {skjema}, including classes, properties, data types, validation results and generated artifacts. The information is generated automatically from the schema and its build process.
+  seksjon.om_modellen.offisiell_referanse:
+    nn: Offisiell referanse
+    en: Official reference
+
+  seksjon.delmodell.tittel:
+    nn: Delmodell
+    en: Submodel
+  seksjon.delmodell.tekst:
+    nn: Denne modellen er ein delmodell av {forelder}.
+    en: This model is a submodel of {forelder}.
+  seksjon.delmodellar.tittel:
+    nn: Delmodellar
+    en: Submodels
+  seksjon.delmodellar.innleiing:
+    nn: "Denne modellen er delt i fleire delmodellar:"
+    en: "This model is divided into several submodels:"
+
+  seksjon.datamodell.tittel:
+    nn: Datamodell
+    en: Data model
+  seksjon.datamodell.forklaring:
+    nn: Dette er den autoritative kjelda for modellen. Alle tabellar, diagram og artefakt på denne sida er genererte frå dette skjemaet.
+    en: This is the authoritative source of the model. All tables, diagrams and artifacts on this page are generated from this schema.
+  seksjon.datamodell.kjelde:
+    nn: "Kjelde-datamodell i LinkML-format: {lenkje}"
+    en: "Source data model in LinkML format: {lenkje}"
+
+  seksjon.er_diagram.tittel:
+    nn: Entity-relationship diagram
+    en: Entity-relationship diagram
+  seksjon.er_diagram.forklaring:
+    nn: ER-diagrammet viser struktur og relasjonar mellom dei lokale klassane i modellen. Importerte klasser er som standard filtrerte bort for å gjere diagrammet enklare å lese.
+    en: The ER diagram shows the structure and relationships between the local classes of the model. Imported classes are filtered out by default to make the diagram easier to read.
+  seksjon.er_diagram.alt:
+    nn: ER-diagram
+    en: ER diagram
+  seksjon.er_diagram.ingen_lokale:
+    nn: Modellen har ingen lokale klasser og ingen diagram med kun lokale klasser. [Vis fullstendig diagram med importerte klasser]({full}).
+    en: The model has no local classes and no diagram with local classes only. [Show the full diagram with imported classes]({full}).
+  seksjon.er_diagram.kun_lokale:
+    nn: Diagrammet viser kun lokale klasser. Klikk for å zoome. [Vis fullstendig diagram med importerte klasser]({full}).
+    en: The diagram shows local classes only. Click to zoom. [Show the full diagram with imported classes]({full}).
+  seksjon.er_diagram.klikk_zoom:
+    nn: Klikk for å zoome.
+    en: Click to zoom.
+
+  seksjon.avhengigheiter.tittel:
+    nn: Avhengigheiter
+    en: Dependencies
+  seksjon.avhengigheiter.forklaring_1:
+    nn: "Denne modellen importerer og gjenbruker komponentar frå andre skjema. "
+    en: "This model imports and reuses components from other schemas. "
+  seksjon.avhengigheiter.forklaring_2:
+    nn: Importerte klasser og eigenskapar kan vere synlege i diagram, valideringsrapportar og andre analysar sjølv om dei ikkje blir lista som lokale element i denne modellen.
+    en: Imported classes and properties may appear in diagrams, validation reports and other analyses even though they are not listed as local elements of this model.
+  seksjon.avhengigheiter.innleiing:
+    nn: "Dette skjemaet importerer følgjande skjema (direkte og transitivt):"
+    en: "This schema imports the following schemas (directly and transitively):"
+  seksjon.avhengigheiter.sjaa_importhierarki:
+    nn: Sjå [Importhierarki](../../arkitektur/importhierarki.md) for oversikt over heile repoet sitt importhierarki.
+    en: See [Import hierarchy](../../arkitektur/importhierarki.md) for an overview of the import hierarchy of the whole repository.
+  seksjon.avhengigheiter.importerte_modeller:
+    nn: Importerte modeller
+    en: Imported models
+
+  klasseliste.importerte_klasser:
+    nn: Importerte klasser
+    en: Imported classes
+  klasseliste.importerte_slots:
+    nn: Importerte slots
+    en: Imported slots
+  klasseliste.importerte_enums:
+    nn: Importerte enums
+    en: Imported enums
+  klasseliste.importerte_typer:
+    nn: Importerte typer
+    en: Imported types
+  klasseliste.importerte_subsets:
+    nn: Importerte subsets
+    en: Imported subsets
+
+  seksjon.eksempeldatafil.tittel:
+    nn: Eksempeldatafil
+    en: Example data file
+  seksjon.eksempeldatafil.forklaring:
+    nn: Eksempel som viser korleis ei gyldig datafil basert på denne modellen kan sjå ut i YAML-format.
+    en: Example showing what a valid data file based on this model can look like in YAML format.
+  seksjon.eksempeldatafil.full_fil:
+    nn: Full eksempelfil (YAML)
+    en: Full example file (YAML)
+  seksjon.eksempeldatafil.per_klasse:
+    nn: Detaljerte eksempel per klasse finst på kvar klasseside, t.d. [Classes](#classes).
+    en: Detailed examples per class are available on each class page, e.g. [Classes](#classes).
+
+  seksjon.artefakter.tittel:
+    nn: Genererte artefakter
+    en: Generated artifacts
+  seksjon.artefakter.forklaring:
+    nn: Denne seksjonen listar maskinlesbare artefakt som er genererte frå skjemaet. Artefakta blir brukte til validering, integrasjon, dokumentasjon og kodegenerering.
+    en: This section lists machine-readable artifacts generated from the schema. The artifacts are used for validation, integration, documentation and code generation.
+  seksjon.artefakter.kolonne_artefakt:
+    nn: Artefakt
+    en: Artifact
+  seksjon.artefakter.kolonne_fil:
+    nn: Fil
+    en: File
+  seksjon.artefakter.byggekonfigurasjon:
+    nn: "Full byggekonfigurasjon: {lenkje}"
+    en: "Full build configuration: {lenkje}"
+
+  seksjon.kom_i_gang.tittel:
+    nn: Kom i gang
+    en: Getting started
+  seksjon.kom_i_gang.forklaring:
+    nn: Her finn du døme på korleis du importerer, validerer og brukar modellen i eigne prosjekt.
+    en: Here you will find examples of how to import, validate and use the model in your own projects.
+  seksjon.kom_i_gang.importer:
+    nn: Importer i egne LinkML-skjema
+    en: Import into your own LinkML schemas
+  seksjon.kom_i_gang.valider_skjema:
+    nn: Valider skjemaet mot {policy}-policy
+    en: Validate the schema against the {policy} policy
+  seksjon.kom_i_gang.valider_data:
+    nn: Valider datafil mot LinkML-skjemaet
+    en: Validate a data file against the LinkML schema
+  seksjon.kom_i_gang.java:
+    nn: Java-bruk
+    en: Using Java
+  seksjon.kom_i_gang.python:
+    nn: Python-bruk
+    en: Using Python
+
+  seksjon.validering.tittel:
+    nn: Valideringsresultat
+    en: Validation results
+  seksjon.validering.forklaring:
+    nn: Valideringsrapporten viser i kva grad modellen etterlever definerte modelleringsreglar og kvalitetskrav. Resultata kan omfatte både lokale og importerte element avhengig av kva reglar som er evaluerte.
+    en: The validation report shows to what extent the model complies with defined modelling rules and quality requirements. The results may cover both local and imported elements, depending on which rules were evaluated.
+  seksjon.validering.ikkje_tilgjengeleg:
+    nn: Valideringsresultat ikkje tilgjengeleg — ingen validering enno.
+    en: Validation results not available — no validation yet.
+  seksjon.validering.ugyldig_fil:
+    nn: "Valideringsfila er ugyldig eller manglar nødvendige felt: {sti}"
+    en: "The validation file is invalid or lacks required fields: {sti}"
+  seksjon.validering.feilmelding:
+    nn: "Feil: {feil}"
+    en: "Error: {feil}"
+  seksjon.validering.siste:
+    nn: "Siste validering: {tid} — v{versjon} — {policy}"
+    en: "Last validation: {tid} — v{versjon} — {policy}"
+  seksjon.validering.status:
+    nn: Status
+    en: Status
+  seksjon.validering.feil:
+    nn: Feil
+    en: Errors
+  seksjon.validering.aatvaringar:
+    nn: Åtvaringar
+    en: Warnings
+  seksjon.validering.godkjent:
+    nn: Godkjent
+    en: Passed
+  seksjon.validering.ikkje_godkjent:
+    nn: Ikkje godkjent
+    en: Not passed
+
+  seksjon.modellanalyse.tittel:
+    nn: Modellanalyse
+    en: Model analysis
+  seksjon.modellanalyse.forklaring_kort:
+    nn: Modellanalysen gjer analyser som kan påpeike moglege avvik for oppfølging. Dette er meir informativ innsikt til hjelp med modelleringa.
+    en: The model analysis performs analyses that can point out possible deviations for follow-up. This is informative insight to help with the modelling.
+  seksjon.modellanalyse.ikkje_tilgjengeleg:
+    nn: Modellanalyse ikkje tilgjengeleg — krev at generate-workflowen har køyrt.
+    en: Model analysis not available — requires the generate workflow to have run.
+  seksjon.modellanalyse.forklaring:
+    nn: Modellanalysen samanliknar dette skjemaet sine lokalt definerte klasse-, slot- og typenavn mot andre skjema i same domene, flaggar par med høg navnelikskap som eit mogleg duplikat- eller konsolideringssignal, og fangar lokalt definerte slots, enumerations, types, subsets og klasser som ikkje er i bruk lokalt i modellen. Analysen er informativ, ikkje ein valideringspolicy.
+    en: The model analysis compares the locally defined class, slot and type names of this schema with other schemas in the same domain, flags pairs with high name similarity as a possible duplication or consolidation signal, and catches locally defined slots, enumerations, types, subsets and classes that are not used locally in the model. The analysis is informative, not a validation policy.
+  seksjon.modellanalyse.workflow:
+    nn: For IRI-dereferering og innhaldsforhandling sjå [Modell-analyse]({lenkje})-workflowen.
+    en: For IRI dereferencing and content negotiation, see the [Modell-analyse]({lenkje}) workflow.
+  seksjon.modellanalyse.rapport_manglar:
+    nn: Rapport ikkje tilgjengeleg for denne bygginga.
+    en: Report not available for this build.
+  seksjon.modellanalyse.kryssdomene:
+    nn: For fullstendig analyse av {objekttype} på tvers av domene sjå [{etikett}]({lenkje}).
+    en: For a complete analysis of {objekttype} across domains, see [{etikett}]({lenkje}).
+
+  # --- Modellanalyse-rapportar (generate-modellanalyse-md.py) ---
+  modellanalyse.isolerte_klasser.tittel:
+    nn: Isolerte klasser
+    en: Isolated classes
+  modellanalyse.isolerte_klasser.forklaring:
+    nn: Analysen identifiserer klassar som ikkje har nokon strukturell kopling til andre klassar i skjemaet — verken via arv eller ved å bli refererte av ein slot. Eit funn kan tyde på ei gløymd eller ubrukt klasse, eller ei klasse som manglar ein slot som skal kople han til resten av modellen.
+    en: The analysis identifies classes that have no structural connection to other classes in the schema — neither through inheritance nor by being referenced by a slot. A finding may indicate a forgotten or unused class, or a class lacking a slot that should connect it to the rest of the model.
+  modellanalyse.ikkje_tilkopla_container.tittel:
+    nn: Klasser ikkje kopla til containerklassen
+    en: Classes not connected to the container class
+  modellanalyse.ikkje_tilkopla_container.forklaring:
+    nn: Analysen sjekkar om kvar klasse i skjemaet er nåbar frå containerklassen (`tree_root`) via slot-referansar. Ei klasse som ikkje er nåbar dukkar ikkje opp i instansar eller JSON-Schema generert frå containerklassen, og kan vere daud kode i skjemaet.
+    en: The analysis checks whether every class in the schema is reachable from the container class (`tree_root`) through slot references. A class that is not reachable does not appear in instances or JSON Schema generated from the container class, and may be dead code in the schema.
+  modellanalyse.ubrukte_slots.tittel:
+    nn: Ubrukte slots
+    en: Unused slots
+  modellanalyse.ubrukte_slots.forklaring:
+    nn: Analysen finn slots definerte lokalt i skjemaet som ingen klasse faktisk brukar. Slike slots aukar vedlikehaldsbyrda og kan forvirre lesarar om kva som er i aktiv bruk — vurder å fjerne dei eller kople dei til rette klassar.
+    en: The analysis finds slots defined locally in the schema that no class actually uses. Such slots increase the maintenance burden and may confuse readers about what is in active use — consider removing them or connecting them to the right classes.
+  modellanalyse.ubrukte_types.tittel:
+    nn: Ubrukte types
+    en: Unused types
+  modellanalyse.ubrukte_types.forklaring:
+    nn: Analysen finn types definerte lokalt i skjemaet som ingen slot brukar som `range`. Ein ubrukt type er ei daud definisjon som bør fjernast eller takast i bruk.
+    en: The analysis finds types defined locally in the schema that no slot uses as `range`. An unused type is a dead definition that should be removed or put to use.
+  modellanalyse.ubrukte_enums.tittel:
+    nn: Ubrukte enumerations
+    en: Unused enumerations
+  modellanalyse.ubrukte_enums.forklaring:
+    nn: Analysen finn enumerations definerte lokalt i skjemaet som ingen slot brukar som `range`. Ein ubrukt enumeration er ei daud definisjon som bør fjernast eller takast i bruk.
+    en: The analysis finds enumerations defined locally in the schema that no slot uses as `range`. An unused enumeration is a dead definition that should be removed or put to use.
+  modellanalyse.ubrukte_subsets.tittel:
+    nn: Ubrukte subsets
+    en: Unused subsets
+  modellanalyse.ubrukte_subsets.forklaring:
+    nn: Analysen finn subsets definerte lokalt i skjemaet som ingen klasse eller slot er merkt med. Eit ubrukt subset gjev ingen reell gruppering og bør fjernast eller takast i bruk.
+    en: The analysis finds subsets defined locally in the schema that no class or slot is tagged with. An unused subset provides no real grouping and should be removed or put to use.
+  modellanalyse.liknande_klassenavn.tittel:
+    nn: Liknande klassenavn
+    en: Similar class names
+  modellanalyse.liknande_klassenavn.objekttype:
+    nn: klassenavn
+    en: class names
+  modellanalyse.liknande_klassenavn.forklaring:
+    nn: Analysen samanliknar klassenamn i dette skjemaet mot klassenamn i andre skjema i same domene, og flaggar par med høg navnelikskap. Eit funn kan tyde på utilsikta duplisering av same omgrep under ulike namn — vurder konsolidering eller import i staden for ny lokal definisjon.
+    en: The analysis compares class names in this schema with class names in other schemas in the same domain, and flags pairs with high name similarity. A finding may indicate unintended duplication of the same concept under different names — consider consolidation or import instead of a new local definition.
+  modellanalyse.liknande_klassenavn.kryssdomene:
+    nn: Analyse av klassenavn på tvers av alle domene
+    en: Analysis of class names across all domains
+  modellanalyse.liknande_slotnavn.tittel:
+    nn: Liknande slotnavn
+    en: Similar slot names
+  modellanalyse.liknande_slotnavn.objekttype:
+    nn: slotnavn
+    en: slot names
+  modellanalyse.liknande_slotnavn.forklaring:
+    nn: Analysen samanliknar slotnamn i dette skjemaet mot slotnamn i andre skjema i same domene, og flaggar par med høg navnelikskap. Eit funn kan tyde på utilsikta duplisering av same omgrep under ulike namn — vurder konsolidering eller import i staden for ny lokal definisjon.
+    en: The analysis compares slot names in this schema with slot names in other schemas in the same domain, and flags pairs with high name similarity. A finding may indicate unintended duplication of the same concept under different names — consider consolidation or import instead of a new local definition.
+  modellanalyse.liknande_slotnavn.kryssdomene:
+    nn: Analyse av slotnavn på tvers av alle domene
+    en: Analysis of slot names across all domains
+  modellanalyse.liknande_typenavn.tittel:
+    nn: Liknande typenavn
+    en: Similar type names
+  modellanalyse.liknande_typenavn.objekttype:
+    nn: typenavn
+    en: type names
+  modellanalyse.liknande_typenavn.forklaring:
+    nn: Analysen samanliknar typenamn i dette skjemaet mot typenamn i andre skjema i same domene, og flaggar par med høg navnelikskap. Eit funn kan tyde på utilsikta duplisering av same omgrep under ulike namn — vurder konsolidering eller import i staden for ny lokal definisjon.
+    en: The analysis compares type names in this schema with type names in other schemas in the same domain, and flags pairs with high name similarity. A finding may indicate unintended duplication of the same concept under different names — consider consolidation or import instead of a new local definition.
+  modellanalyse.liknande_typenavn.kryssdomene:
+    nn: Analyse av typenavn på tvers av alle domene
+    en: Analysis of type names across all domains
+
+  # --- Modellanalyse på tvers av domene (publish.sh: modellanalyse/index.md) ---
+  modellanalyse.alle.tittel:
+    nn: Modellanalyse på tvers av domene
+    en: Model analysis across domains
+  modellanalyse.alle.innleiing:
+    nn: |-
+      Desse sidene viser navnelikskaps-analysar køyrde på tvers av **alle**
+      domene i repoet — til skilnad frå dei domene-scopa analysane som ligg
+      under kvar enkelt modell sin `## Modellanalyse`-seksjon.
+
+      Alle modellanalyser blir kjørt automatisk i [Modell-analyse]({lenkje}) workflowen. Klikk deg inn på den siste køyringa av jobben for fulstendig analyseresultat.
+    en: |-
+      These pages show name similarity analyses run across **all**
+      domains in the repository — as opposed to the domain-scoped analyses found
+      in the `## Model analysis` section of each individual model.
+
+      All model analyses run automatically in the [Modell-analyse]({lenkje}) workflow. Open the latest run of the job for the complete analysis results.
+  modellanalyse.alle.ikkje_tilgjengeleg_tittel:
+    nn: Analyse ikkje tilgjengeleg
+    en: Analysis not available
+  modellanalyse.alle.ikkje_generert:
+    nn: Rapporten vart ikkje generert i denne bygginga.
+    en: The report was not generated in this build.
+
+  # --- Kontakt (kontakt.sh) ---
+  seksjon.kontakt.tittel:
+    nn: Kontakt
+    en: Contact
+  seksjon.kontakt.forklaring:
+    nn: Her finn du informasjon om forvaltningsansvarleg, kontaktpunkt og kanal for feilrapportering eller forslag til forbetringar.
+    en: Here you will find information about the responsible organisation, the contact point and the channel for reporting errors or suggesting improvements.
+  seksjon.kontakt.forvaltningsansvarleg:
+    nn: Forvaltningsansvarleg
+    en: Responsible organisation
+  seksjon.kontakt.kontakt:
+    nn: Kontakt
+    en: Contact
+  seksjon.kontakt.support:
+    nn: Support
+    en: Support
+
+  # --- Versjonslog (versjonslog.sh) ---
+  seksjon.versjonslog.tittel:
+    nn: Versjonslog
+    en: Version history
+  seksjon.versjonslog.forklaring:
+    nn: Versjonsloggen viser endringar mellom publiserte versjonar av modellen. Innhaldet blir generert frå prosjektets release-historikk.
+    en: The version history shows changes between published versions of the model. The content is generated from the project's release history.
+
+  # --- 404-side (mkdocs/lib/templates/404.html) ---
+  side404.tittel:
+    nn: 404 - FAIR violation detected
+    en: 404 - FAIR violation detected
+  side404.ikkje_findable:
+    nn: Denne ressursen er <strong>ikkje Findable</strong>.
+    en: This resource is <strong>not Findable</strong>.
+  side404.f1:
+    nn: "F1: Ingen global identifikator funne"
+    en: "F1: No global identifier found"
+  side404.f3:
+    nn: "F3: Metadata peikar ikkje på noko"
+    en: "F3: Metadata does not point to anything"
+  side404.a2:
+    nn: Metadata er framleis tilgjengeleg (A2) — men data er borte.
+    en: Metadata is still available (A2) — but the data is gone.
+  side404.tilbake:
+    nn: Gå tilbake til katalogen
+    en: Go back to the catalogue

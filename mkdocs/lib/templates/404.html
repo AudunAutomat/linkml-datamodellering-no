@@ -1,0 +1,34 @@
+{#-
+  Mal for 404-sida (Material-override). Markørane @@i18n:<nøkkel>@@ vert
+  bytte ut med tekst frå mkdocs/lib/i18n/strings.yaml av publish.sh, som
+  skriv resultatet til mkdocs/overrides/404.html (theme.custom_dir).
+  Rediger denne fila, ikkje den genererte.
+-#}
+{% extends "base.html" %}
+
+{% block content %}
+<div class="md-content" data-md-component="content">
+  <article class="md-content__inner md-typeset">
+
+    <h1>@@i18n:side404.tittel@@</h1>
+
+    <p>
+      @@i18n:side404.ikkje_findable@@
+    </p>
+
+    <ul>
+      <li>❌ @@i18n:side404.f1@@</li>
+      <li>❌ @@i18n:side404.f3@@</li>
+    </ul>
+
+    <p>
+      @@i18n:side404.a2@@
+    </p>
+
+    <p>
+      → <a href="{{ config.site_url | d(nav.homepage.url, true) | url }}">@@i18n:side404.tilbake@@</a>
+    </p>
+
+  </article>
+</div>
+{% endblock %}

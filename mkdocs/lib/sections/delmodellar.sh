@@ -19,8 +19,8 @@ generate_submodel_box() {
     # før — same rå-tekst-fallback (utan lenke).
     local line
     if ! line=$(lookup_schema_metadata_line "$CURRENT_DOMAIN/$parent"); then
-        echo "!!! info \"Delmodell\""
-        echo "    Denne modellen er ein delmodell av **${parent}**."
+        echo "!!! info \"$(t seksjon.delmodell.tittel)\""
+        echo "    $(t seksjon.delmodell.tekst forelder="**${parent}**")"
         echo ""
         return 0
     fi
@@ -29,8 +29,8 @@ generate_submodel_box() {
     IFS=$'\x1f' read -r _key _policy _url _label _version parent_title _desc _ec _ev _qp _rest <<< "$line"
     [ -z "$parent_title" ] && parent_title="$parent"
 
-    echo "!!! info \"Delmodell\""
-    echo "    Denne modellen er ein delmodell av [${parent_title}](../${parent}/)."
+    echo "!!! info \"$(t seksjon.delmodell.tittel)\""
+    echo "    $(t seksjon.delmodell.tekst forelder="[${parent_title}](../${parent}/)")"
     echo ""
 }
 
@@ -42,9 +42,9 @@ generate_submodels_section() {
 
     echo "---"
     echo ""
-    echo "## Delmodellar"
+    echo "## $(t seksjon.delmodellar.tittel)"
     echo ""
-    echo "Denne modellen er delt i fleire delmodellar:"
+    echo "$(t seksjon.delmodellar.innleiing)"
     echo ""
 
     for sub in $submodels; do
