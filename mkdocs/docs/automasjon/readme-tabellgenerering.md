@@ -10,6 +10,8 @@ README.md inneheld tre tabellar som gir oversikt over repoets struktur. Desse ta
 
 Tabellane vert genererte av `src/assets/scripts/makefile/generate-readme-tables.sh` og sett inn mellom HTML-kommentarar i README.md. CI køyrer scriptet automatisk ved endringar i `src/linkml/`, men du kan også køyre det manuelt.
 
+Same script fyller tabellane i omsette README-filer (`README.en.md`) på språket til fila. Tabellhovud og faste tekstar kjem frå `readme_tabell.*`-nøklane i strengkatalogen (`mkdocs/lib/i18n/strings.yaml`), og portal-lenkjene peikar på `/<lang>/`. Skildringa kjem frå skjemaet og vert ikkje omsett. Sjå [Fleirspråkleg portal](fleirsprak.md).
+
 ---
 
 ## Tabelloversikt og kjelder
@@ -224,7 +226,7 @@ python3 src/assets/scripts/makefile/extract-schema-metadata.py \
 ### Automatisk køyring
 
 `generate-readme-tables.sh` køyrer automatisk som del av `make docs-publish`
-(steget «Oppdater README.md-tabellar» i `mkdocs/publish.sh`) — ikkje som ein
+(steget «Oppdater README-tabellar» i `mkdocs/publish.sh`, éin gong per README-fil) — ikkje som ein
 eigen frittståande workflow. `make docs-publish` vert kalla frå
 `.github/workflows/generate.yml` (push til `main`) og
 `.github/workflows/lenkje-og-mermaid-sjekk.yml` (natteleg schedule).
@@ -233,6 +235,7 @@ eigen frittståande workflow. `make docs-publish` vert kalla frå
 
 ```bash
 bash src/assets/scripts/makefile/generate-readme-tables.sh README.md
+bash src/assets/scripts/makefile/generate-readme-tables.sh README.en.md en
 ```
 
 (Det finst ikkje eit eige `make readme-tables`-mål — scriptet vert normalt

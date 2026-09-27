@@ -75,10 +75,13 @@ Ei omsett side ligg ved sida av originalen med språkkode i filnavnet:
 og `src/linkml/<domene>/description.en.md`. Portal-lenkjer i omsette sider peikar
 på `/<lang>/`-adressene.
 
-`README.md` har tabellar som vert genererte automatisk mellom
-`<!-- BEGIN/END AUTO-GENERATED -->`-markørar. I `README.en.md` står markørane
-utan innhald. Ved bygging vert tabellane henta frå `README.md` og lenkjene i
-dei skrivne om til `/<lang>/`.
+`README.md` og `README.en.md` har tabellar mellom
+`<!-- BEGIN/END AUTO-GENERATED -->`-markørar. `generate-readme-tables.sh`
+fyller dei på språket til fila, med tabelltekst frå `readme_tabell.*`-nøklane i
+strengkatalogen og portal-lenkjer til `/<lang>/` for andre språk enn
+standardspråket. Skildringa av skjemaa er modellinnhald og står på
+originalspråket. Blokkene er ikkje med i `source_hash`, så nye tabellrader gjer
+ikkje omsetjinga utdatert.
 
 ## Bygging
 
@@ -143,8 +146,6 @@ Material må støtte språkkoden i `theme.language`.
 
 ## Kjende avgrensingar
 
-- Tabellhovuda i dei auto-genererte README-tabellane kjem frå
-  `generate-readme-tables.sh` og er på nynorsk også i den engelske framsida.
 - Portalen byggjer på Material for MkDocs, som får kritisk vedlikehald fram til
   mai 2027. Løysinga brukar ingen plugin, berre `theme.language` og
   `extra.alternate`, som òg er støtta i etterfølgjaren Zensical.

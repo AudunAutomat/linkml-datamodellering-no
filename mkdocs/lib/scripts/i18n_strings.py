@@ -42,6 +42,7 @@ DEFAULT_SCAN_ROOTS = [
     REPO_ROOT / "mkdocs" / "publish.sh",
     REPO_ROOT / "mkdocs" / "lib",
     REPO_ROOT / "src" / "assets" / "templates" / "docgen",
+    REPO_ROOT / "src" / "assets" / "scripts" / "makefile" / "generate-readme-tables.sh",
 ]
 SCAN_SUFFIXES = {".sh", ".py", ".jinja2", ".html"}
 

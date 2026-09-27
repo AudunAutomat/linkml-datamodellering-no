@@ -132,17 +132,8 @@ generate_cross_domain_modellanalyse_docs() {
 write_index_from_readme() {
     local readme
     if readme=$(i18n_source "$REPO_ROOT/README.md"); then
-        if [ "$readme" = "$REPO_ROOT/README.md" ]; then
-            cp "$readme" "$DOCS/index.md"
-        else
-            # README-tabellane vert berre oppdaterte i README.md — hent dei
-            # derifrå og la lenkjene peike på same språk.
-            local stripped
-            stripped=$(mktemp)
-            i18n_strip_front_matter "$readme" > "$stripped"
-            i18n_fill_auto_blocks "$stripped" "$REPO_ROOT/README.md" "$PORTAL_URL" > "$DOCS/index.md"
-            rm -f "$stripped"
-        fi
+        # README-tabellane er alt fylte på språket til fila (update_readme_tables)
+        i18n_strip_front_matter "$readme" > "$DOCS/index.md"
     else
         cp "$readme" "$DOCS/index.md"
         i18n_note_untranslated "$DOCS/index.md"
@@ -266,7 +257,21 @@ BUILD_TIMESTAMP=$(TZ="Europe/Oslo" date +"%Y-%m-%d %H:%M %Z")
 # README-tabellgenereringa må køyrast FØR write_index_from_readme, sidan
 # index.md vert kopiert direkte frå README.md — elles kopierer
 # write_index_from_readme ein utdatert versjon av tabellane.
-timed_run "Oppdater README.md-tabellar" bash "$REPO_ROOT/src/assets/scripts/makefile/generate-readme-tables.sh" "$REPO_ROOT/README.md"
+# Tabellane vert genererte på språket til kvar README (README.md og
+# README.<lang>.md) — sjå specs/done/engelsk-framside-genererte-tabellar.md.
+update_readme_tables() {
+    local lang readme
+    for lang in $I18N_LANGUAGES; do
+        if [ "$lang" = "$I18N_DEFAULT_LANG" ]; then
+            readme="$REPO_ROOT/README.md"
+        else
+            readme="$REPO_ROOT/README.$lang.md"
+            [ -f "$readme" ] || continue
+        fi
+        bash "$REPO_ROOT/src/assets/scripts/makefile/generate-readme-tables.sh" "$readme" "$lang"
+    done
+}
+timed_run "Oppdater README-tabellar" update_readme_tables
 timed_run "Generer index.md frå README.md" write_index_from_readme
 timed_run "Generer valideringsregler.md" generate_validation_docs
 timed_run "Generer modellanalyse-tvers-domene-sider" generate_cross_domain_modellanalyse_docs

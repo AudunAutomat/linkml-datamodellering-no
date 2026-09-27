@@ -1,7 +1,7 @@
 ---
 i18n:
   source: fleirsprak.md
-  source_hash: sha256:2cddbc6a2866107777404c60e934781f72a97f0815b70c3d90d8db2087284c8f
+  source_hash: sha256:1faaba7712bc5ff5161f78d685a81b3be4ff6abb28da736fd75385666f00bc76
 ---
 # Multilingual portal {#fleirsprakleg-portal}
 
@@ -80,10 +80,13 @@ A translated page sits next to the original with the language code in the file n
 and `src/linkml/<domene>/description.en.md`. Portal links in translated pages point
 to the `/<lang>/` addresses.
 
-`README.md` has tables that are generated automatically between
-`<!-- BEGIN/END AUTO-GENERATED -->` markers. In `README.en.md` the markers are
-left empty. At build time the tables are taken from `README.md` and the links in
-them are rewritten to `/<lang>/`.
+`README.md` and `README.en.md` have tables between
+`<!-- BEGIN/END AUTO-GENERATED -->` markers. `generate-readme-tables.sh`
+fills them in the language of the file, with table text from the `readme_tabell.*`
+keys in the string catalog and portal links to `/<lang>/` for languages other than
+the default language. The schema descriptions are model content and stay in the
+original language. The blocks are not part of `source_hash`, so new table rows do
+not make the translation outdated.
 
 ## Building {#bygging}
 
@@ -148,8 +151,6 @@ Material must support the language code in `theme.language`.
 
 ## Known limitations {#kjende-avgrensingar}
 
-- The table headers in the auto-generated README tables come from
-  `generate-readme-tables.sh` and are in Nynorsk also on the English front page.
 - The portal is built on Material for MkDocs, which receives critical maintenance until
   May 2027. The solution uses no plugin, only `theme.language` and
   `extra.alternate`, which are also supported in the successor Zensical.

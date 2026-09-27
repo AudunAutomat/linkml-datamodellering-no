@@ -37,8 +37,10 @@ lenger åtvare.
      (t.d. `../index.md#getting-started`). Policy-overskriftene i
      `policies/README.en.md` (`bronze`, `basis-no` …) skal vere identiske med
      originalen.
-   - `<!-- BEGIN/END AUTO-GENERATED -->`-markørar skal stå att **utan innhald**.
-     Innhaldet vert fylt frå originalen ved bygging.
+   - Innhaldet mellom `<!-- BEGIN/END AUTO-GENERATED -->`-markørane skal
+     **ikkje** omsetjast for hand. `generate-readme-tables.sh` fyller blokkene
+     på språket til fila (`make docs-publish`). Tabelltekst vert omsett i
+     `readme_tabell.*`-nøklane i strengkatalogen.
    - Ikkje skriv front-matter for hand: `make i18n-stamp FILE=<x.en.md>`.
 3. **Katalognøkkel** (`mkdocs/lib/i18n/strings.yaml`): oppdater `en`-verdien,
    behald dei same `{plasshaldarane}`, og køyr deretter `make i18n-stamp KEYS="…"`.

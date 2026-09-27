@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
-# Genererer domene-tabell, skjema-tabell og modellkatalog-tabell for README.md
-# Køyr: ./scripts/generate-readme-tables.sh [README-fil]
+# Genererer skjema-tabell, begrepskatalog-tabell og modellkatalog-tabell for README.md
+# Køyr: src/assets/scripts/makefile/generate-readme-tables.sh [README-fil] [språk]
 # Output: Oppdatert README-fil med auto-genererte tabellar
+#
+# Tabelltekst kjem frå strengkatalogen (mkdocs/lib/i18n/strings.yaml, nøklane
+# readme_tabell.*). Utan språk vert standardspråket brukt. For andre språk
+# (t.d. README.en.md) peikar portal-lenkjene på /<språk>/. Skildringa av
+# skjemaa er modellinnhald og vert ikkje omsett. Sjå
+# specs/done/engelsk-framside-genererte-tabellar.md.
 
 set -euo pipefail
 trap 'echo "ERROR in ${BASH_SOURCE[0]}:${LINENO} — command: ${BASH_COMMAND}" >&2; exit 1' ERR
@@ -10,6 +16,7 @@ trap 'echo "ERROR in ${BASH_SOURCE[0]}:${LINENO} — command: ${BASH_COMMAND}" >
 eval "$LOG_FUNCTIONS"
 
 README="${1:-README.md}"
+LANG_ARG="${2:-}"
 
 if [[ ! -f "$README" ]]; then
   log_error "$README finst ikkje"
@@ -21,6 +28,32 @@ log_info "Genererer auto-genererte tabellar for $README..."
 # Katalog for støttescripts
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
+# Strengkatalogen for tabellteksten
+export REPO_ROOT="${REPO_ROOT:-$(cd "$SCRIPT_DIR/../../../.." && pwd)}"
+source "$REPO_ROOT/mkdocs/lib/utils/i18n.sh"
+i18n_load "$LANG_ARG"
+
+# Portal-base for lenkjene: standardspråket på rota (vidaresending til
+# /<standardspråk>/), andre språk direkte under /<språk>/.
+GHPAGES_BASE="https://audunautomat.github.io/linkml-datamodellering-no"
+if [[ "$I18N_LANG" == "$I18N_DEFAULT_LANG" ]]; then
+  PORTAL_BASE="$GHPAGES_BASE"
+else
+  PORTAL_BASE="$GHPAGES_BASE/$I18N_LANG"
+fi
+
+# Tabelltekst — tilordna til variablar slik at ein manglande nøkkel stoppar
+# scriptet (set -e), i staden for å verte svelgd inne i echo.
+H_DOMENE=$(t readme_tabell.domene)
+H_SKJEMA=$(t readme_tabell.skjema)
+H_SKILDRING=$(t readme_tabell.skildring)
+H_DOKUMENTASJON=$(t readme_tabell.dokumentasjon)
+H_ORGANISASJON=$(t readme_tabell.organisasjon)
+H_GENERATOR=$(t readme_tabell.generator)
+H_BEGREPSKATALOG=$(t readme_tabell.begrepskatalog)
+H_MODELLKATALOG=$(t readme_tabell.modellkatalog)
+UKJEND_ORG=$(t readme_tabell.ukjend_org)
+
 # Opprett temp-fil
 TEMP_README=$(mktemp)
 
@@ -31,7 +64,7 @@ domain_short_label() {
 
 # --- Funksjon: Generer skjema-tabell ---
 generate_schema_table() {
-  echo "| Domene | Skjema | Skildring | Dokumentasjon"
+  echo "| $H_DOMENE | $H_SKJEMA | $H_SKILDRING | $H_DOKUMENTASJON"
   echo "|---|---|---|---|"
 
   # Domene-rekkefølgje (same som i domene-tabellen)
@@ -98,16 +131,15 @@ generate_schema_table() {
       # så berre eit kontekst-uavhengig, absolutt mål er korrekt begge stader.
       # Sjå specs/backlog/lenkjesjekk-runde3-fiks-resterande-feil.md kategori E.
       ghpages_schema_link="${schema_dir#src/linkml/}"
-      local ghpages_base="https://audunautomat.github.io/linkml-datamodellering-no"
 
-      echo "| [$(domain_short_label "$domain")]($ghpages_base/$domain/) | [$schema_name]($ghpages_base/$ghpages_schema_link/) | $description | $doc_link"
+      echo "| [$(domain_short_label "$domain")]($PORTAL_BASE/$domain/) | [$schema_name]($PORTAL_BASE/$ghpages_schema_link/) | $description | $doc_link"
     done <<< "${DOMAIN_SCHEMAS[$domain]}"
   done
 }
 
 # --- Funksjon: Generer begrepskatalog-tabell ---
 generate_begrepskatalog_table() {
-  echo "| Domene | Begrepskatalog | Organisasjon | Skildring | Generator |"
+  echo "| $H_DOMENE | $H_BEGREPSKATALOG | $H_ORGANISASJON | $H_SKILDRING | $H_GENERATOR |"
   echo "|---|---|---|---|---|"
 
   local extractor="$SCRIPT_DIR/extract-schema-metadata.py"
@@ -124,23 +156,25 @@ generate_begrepskatalog_table() {
 
     # Fallback dersom title manglar eller ikkje følgjer mønsteret
     if [[ -z "$org" || "$org" == "$title" ]]; then
-      org="Ukjend"
+      org="$UKJEND_ORG"
     fi
 
     # Lenk begrepskatalog-domenet til dokumentasjonsportalen
-    domain_link="https://audunautomat.github.io/linkml-datamodellering-no/begrepskatalog/"
+    domain_link="$PORTAL_BASE/begrepskatalog/"
 
     # Konverter src/linkml/begrepskatalog/<katalog>/ til begrepskatalog/<katalog>/ for GitHub Pages.
     # Absolutt URL — sjå grunngjeving i generate_schema_table() over.
     ghpages_link="${schema_dir#src/linkml/}"
 
-    echo "| [begrepskatalog]($domain_link) | [$schema_name](https://audunautomat.github.io/linkml-datamodellering-no/$ghpages_link/) | $org | Begrepskatalog for $org sine begrep | [\`gen-begrepskatalog-instance\`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/COMMANDS.md#gen-begrepskatalog-instance) |"
+    skildring=$(t readme_tabell.begrepskatalog_skildring org="$org")
+
+    echo "| [begrepskatalog]($domain_link) | [$schema_name]($PORTAL_BASE/$ghpages_link/) | $org | $skildring | [\`gen-begrepskatalog-instance\`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/COMMANDS.md#gen-begrepskatalog-instance) |"
   done < <(find src/linkml/begrepskatalog -name "*-schema.yaml" -type f | sort)
 }
 
 # --- Funksjon: Generer modellkatalog-tabell ---
 generate_modellkatalog_table() {
-  echo "| Domene | Modellkatalog | Organisasjon | Skildring | Generator |"
+  echo "| $H_DOMENE | $H_MODELLKATALOG | $H_ORGANISASJON | $H_SKILDRING | $H_GENERATOR |"
   echo "|---|---|---|---|---|"
 
   local extractor="$SCRIPT_DIR/extract-schema-metadata.py"
@@ -157,17 +191,19 @@ generate_modellkatalog_table() {
 
     # Fallback dersom title manglar eller ikkje følgjer mønsteret
     if [[ -z "$org" || "$org" == "$title" ]]; then
-      org="Ukjend"
+      org="$UKJEND_ORG"
     fi
 
     # Lenk modellkatalog-domenet til dokumentasjonsportalen
-    domain_link="https://audunautomat.github.io/linkml-datamodellering-no/modellkatalog/"
+    domain_link="$PORTAL_BASE/modellkatalog/"
 
     # Konverter src/linkml/modellkatalog/<katalog>/ til modellkatalog/<katalog>/ for GitHub Pages.
     # Absolutt URL — sjå grunngjeving i generate_schema_table() over.
     ghpages_link="${schema_dir#src/linkml/}"
 
-    echo "| [modellkatalog]($domain_link) | [$schema_name](https://audunautomat.github.io/linkml-datamodellering-no/$ghpages_link/) | $org | Modellkatalog for $org sine informasjonsmodellar | [\`gen-modellkatalog-instance\`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/COMMANDS.md#gen-modellkatalog-instance) |"
+    skildring=$(t readme_tabell.modellkatalog_skildring org="$org")
+
+    echo "| [modellkatalog]($domain_link) | [$schema_name]($PORTAL_BASE/$ghpages_link/) | $org | $skildring | [\`gen-modellkatalog-instance\`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/COMMANDS.md#gen-modellkatalog-instance) |"
   done < <(find src/linkml/modellkatalog -name "*-schema.yaml" -type f | sort)
 }
 

@@ -1011,3 +1011,37 @@ strings:
   nav.fleirsprak:
     nn: Fleirspråkleg portal
     en: Multilingual portal
+  # README-tabellane (src/assets/scripts/makefile/generate-readme-tables.sh)
+  readme_tabell.domene:
+    nn: Domene
+    en: Domain
+  readme_tabell.skjema:
+    nn: Skjema
+    en: Schema
+  readme_tabell.skildring:
+    nn: Skildring
+    en: Description
+  readme_tabell.dokumentasjon:
+    nn: Dokumentasjon
+    en: Documentation
+  readme_tabell.organisasjon:
+    nn: Organisasjon
+    en: Organization
+  readme_tabell.generator:
+    nn: Generator
+    en: Generator
+  readme_tabell.begrepskatalog:
+    nn: Begrepskatalog
+    en: Concept catalog
+  readme_tabell.modellkatalog:
+    nn: Modellkatalog
+    en: Model catalog
+  readme_tabell.begrepskatalog_skildring:
+    nn: Begrepskatalog for {org} sine begrep
+    en: Concept catalog for the concepts of {org}
+  readme_tabell.modellkatalog_skildring:
+    nn: Modellkatalog for {org} sine informasjonsmodellar
+    en: Model catalog for the information models of {org}
+  readme_tabell.ukjend_org:
+    nn: Ukjend
+    en: Unknown

@@ -59,7 +59,7 @@ def sha(data):
 def source_hash(path):
     """Hash av ei kjeldeside utan innhaldet i <!-- BEGIN/END AUTO-GENERATED -->-
     blokker (t.d. README-tabellane frå generate-readme-tables.sh). Blokkene vert
-    fylte frå originalen ved bygging (i18n_fill_auto_blocks i publish.sh), så
+    genererte på språket til kvar README av generate-readme-tables.sh, så
     endringar der skal ikkje gjere omsetjinga utdatert."""
     out, skip = [], False
     for line in Path(path).read_text(encoding="utf-8").splitlines(keepends=True):

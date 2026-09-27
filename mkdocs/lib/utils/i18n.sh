@@ -117,29 +117,3 @@ i18n_strip_front_matter() {
     ' "$1"
 }
 
-# i18n_fill_auto_blocks <variant> <original> [<portal-url>]
-# Skriv variant til stdout med innhaldet i kvar <!-- BEGIN/END AUTO-GENERATED -->-
-# blokk henta frå same blokk i originalen (t.d. README-tabellane, som
-# generate-readme-tables.sh berre oppdaterer i README.md). Med <portal-url>
-# vert lenkjer til portalen i blokkene skrivne om til /<språk>/.
-i18n_fill_auto_blocks() {
-    local variant="$1" original="$2" portal="${3:-}"
-    awk -v portal="$portal" -v lang="$I18N_LANG" '
-        FNR == NR {
-            if ($0 ~ /^<!-- BEGIN AUTO-GENERATED/) { key = $0; blk[key] = ""; next }
-            if ($0 ~ /^<!-- END AUTO-GENERATED/) { key = ""; next }
-            if (key != "") blk[key] = blk[key] $0 "\n"
-            next
-        }
-        /^<!-- BEGIN AUTO-GENERATED/ {
-            print
-            if (!($0 in blk)) { print "i18n_fill_auto_blocks: blokka finst ikkje i originalen: " $0 > "/dev/stderr"; failed = 1; next }
-            body = blk[$0]
-            if (portal != "") gsub(portal "/", portal "/" lang "/", body)
-            printf "%s", body; inblk = 1; next
-        }
-        /^<!-- END AUTO-GENERATED/ { inblk = 0 }
-        !inblk { print }
-        END { exit failed }
-    ' "$original" "$variant"
-}
