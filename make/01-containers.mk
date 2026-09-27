@@ -69,10 +69,10 @@ PYTHON_RUN := podman run -i --rm $(WORK_MOUNT) \
 	$(PYTHON_IMAGE)
 
 # MkDocs container (spesiell mount-konfigurasjon)
-# Mountar berre nødvendige delkatalogar for å unngå unødvendig I/O
+# Mountar berre nødvendige delkatalogar for å unngå unødvendig I/O:
+# mkdocs/build (byggjetre og mkdocs.<lang>.yml frå publish.sh) som /docs, og
+# mkdocs/site som /docs/site (site_dir: site/<lang> i konfigane).
 DOCS_RUN := podman run --rm \
-	-v "$(CURDIR)/mkdocs/docs:/docs/docs" \
-	-v "$(CURDIR)/mkdocs/mkdocs.yml:/docs/mkdocs.yml" \
-	-v "$(CURDIR)/mkdocs/overrides:/docs/overrides" \
+	-v "$(CURDIR)/mkdocs/build:/docs" \
 	-v "$(CURDIR)/mkdocs/.cache:/docs/.cache" \
 	-v "$(CURDIR)/mkdocs/site:/docs/site"

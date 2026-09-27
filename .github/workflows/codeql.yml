@@ -34,6 +34,7 @@ jobs:
             paths-ignore:
               - mkdocs/node_modules/**
               - mkdocs/site/**
+              - mkdocs/build/**
               - generated/**
               - mkdocs/docs/**/*-model.py
 

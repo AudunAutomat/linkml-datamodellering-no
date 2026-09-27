@@ -267,12 +267,13 @@ Nye skjema under `src/linkml/<domain>/<modell>/` vert oppdaga automatisk — ing
 
 | Kommando | Beskriving | Output |
 |---|---|---|
-| `make docs-publish` | Kopier `generated/` → `mkdocs/docs/` og regenerer `mkdocs.yml` | `mkdocs/docs/` |
-| `make docs-serve` | Start lokal dev-server med live reload. Leser `mkdocs/docs/` | `http://localhost:8000` |
-| `make docs-build` | Bygg statisk HTML-site (CI-pipeline for produksjon) | `mkdocs/site/` |
+| `make docs-publish` | Generer portalinnhald frå `generated/` for alle språk: nynorsk arbeidstre i `mkdocs/docs/`, andre språk i `mkdocs/build/src-<lang>/`, byggjetre `mkdocs/build/<lang>/` + `mkdocs/build/rot/` (artefakter, vidaresendingar) og `mkdocs/build/mkdocs.<lang>.yml` | `mkdocs/docs/`, `mkdocs/build/` |
+| `make docs-serve [DOCS_LANG=<lang>]` | Start lokal dev-server med live reload for eitt språk (standard: standardspråket). Artefaktlenkjer og språkveljar fungerer berre i `docs-serve-site` | `http://localhost:8000/linkml-datamodellering-no/<lang>/` |
+| `make docs-serve-site` | Server den bygde portalen (alle språk, artefakter, vidaresendingar) under same base-sti som GitHub Pages. Krev `make docs-build` | `http://localhost:8000/linkml-datamodellering-no/` |
+| `make docs-build` | Bygg statisk portal for alle språk parallelt til `mkdocs/site/<lang>/`, og legg artefakter, vidaresendingar og 404-side på rota (CI-pipeline for produksjon) | `mkdocs/site/` |
 | `make i18n-check` | Valider strengkatalogen for portaltekst (`mkdocs/lib/i18n/strings.yaml`): gyldige nøklar, verdi for alle språk, og at alle nøklar som er brukte i `publish.sh`, `mkdocs/lib/` og docgen-malane finst. Køyrer `tests/test_i18n_strings.py` og røyktestar `i18n_load`/`t` (`mkdocs/lib/utils/i18n.sh`) for kvart språk. | Sjekkrapport til stdout; avsluttar med kode 1 ved feil |
 
-`make docs-publish` køyrer `mkdocs/publish.sh` som kopier artefakter og dokumentasjon frå `generated/` til `mkdocs/docs/`, genererer `index.md` per skjema og domene, og oppdaterer navigasjonsstrukturen i `mkdocs.yml`. Nye domene og skjema dukkar opp automatisk neste gong `publish` vert køyrt.
+`make docs-publish` køyrer `mkdocs/publish.sh` som kopier artefakter og dokumentasjon frå `generated/` til `mkdocs/docs/`, genererer `index.md` per skjema og domene for kvart språk, og skriv navigasjonsstrukturen i `mkdocs/build/mkdocs.<lang>.yml`. Nye domene og skjema dukkar opp automatisk neste gong `publish` vert køyrt.
 
 **WSL2 + podman: `http://localhost:8000` fungerer ikkje i nettlesaren på Windows-verten?**
 Podman sin rootless nettverksbakend (`pasta`) lyttar berre på IPv4, medan WSL2 sin standard NAT-baserte `localhostForwarding` handterer IPv4/IPv6 asymmetrisk — resultatet kan vere at `http://localhost:8000/...` eller `http://127.0.0.1:8000/...` ikkje lastar i ein nettlesar på Windows-verten, sjølv om `docs-serve`-containeren køyrer og svarar korrekt internt i WSL2 (t.d. via `curl` frå WSL2-terminalen). Windows-brannmuren er **ikkje** årsaka — brannmuren filtrerer aldri loopback-trafikk (`127.0.0.1`/`::1`), og trafikk som faktisk passerer brannmuren (t.d. direkte mot WSL2-VM-en sin eigen IP) fungerer heile tida.

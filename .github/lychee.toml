@@ -26,7 +26,12 @@ max_cache_age = "1d"
 # lenkjetekst vert framleis validert korrekt via den bygde
 # mkdocs/docs/**-kopien (ikkje ekskludert). Sjå
 # specs/done/lenkjesjekk-description-md-sysken-lenkjer.md.
-exclude_path = ["generated", "mkdocs/site", "mkdocs/node_modules", "specs", "description.md"]
+# mkdocs/build/<lang>/, rot/ og overrides-*: byggjetre der artefaktlenkjer er
+# skrivne om til rot-stien i den publiserte portalen (/<lang>/ -> /), så dei
+# ser brotne ut frå filsystemet. Arbeidstrea mkdocs/build/src-<lang>/ har
+# same relative lenkjer som mkdocs/docs og vert sjekka (dekkjer /en/). Sjå
+# specs/backlog/lokalisering-dokumentasjonsportal.md (steg 8).
+exclude_path = ["generated", "mkdocs/site", "mkdocs/node_modules", "specs", "description.md", "mkdocs/build/[a-z]{2,3}/", "mkdocs/build/rot/", "mkdocs/build/overrides-"]
 
 # Godta redirect- og informasjonskodar i tillegg til 2xx
 accept = ["100..=103", "200..=299", "300..=399"]

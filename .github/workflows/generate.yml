@@ -533,7 +533,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: mkdocs/site/
-          key: v1-site-${{ hashFiles('generated/**', 'mkdocs/publish.sh', 'mkdocs/lib/**', 'mkdocs/docs/**', 'mkdocs/overrides/**', 'src/assets/containers/Dockerfile.mkdocs', 'README.md', 'src/assets/scripts/makefile/generate-readme-tables.sh', 'src/mcp-linkml-validator/policies/README.md') }}
+          key: v1-site-${{ hashFiles('generated/**', 'mkdocs/publish.sh', 'mkdocs/lib/**', 'mkdocs/docs/**', 'make/50-docs.mk', 'src/assets/containers/Dockerfile.mkdocs', 'README.md', 'src/assets/scripts/makefile/generate-readme-tables.sh', 'src/mcp-linkml-validator/policies/README.md') }}
 
       - name: Set opp podman (crun + GHCR-login + hent mkdocs-local/python-pytest)
         # mkdocs/publish.sh (via mkdocs/lib/utils/python_container.sh) køyrer

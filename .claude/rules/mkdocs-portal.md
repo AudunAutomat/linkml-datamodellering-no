@@ -7,16 +7,18 @@ paths:
 
 ## Dokumentasjonsportal (mkdocs)
 
-`mkdocs/mkdocs.yml` vert **automatisk regenerert** av `mkdocs/publish.sh` (Steg 4)
-kvar gong `make docs-publish` køyrer. Endringar gjort direkte i `mkdocs.yml` vert
-overskrivne ved neste publisering.
+`mkdocs/build/mkdocs.<lang>.yml` vert **automatisk generert** av `mkdocs/publish.sh`
+(Steg 3) kvar gong `make docs-publish` køyrer, éin per språk i
+strengkatalogen. `make docs-build` byggjer alle språka til `mkdocs/site/<lang>/`
+og legg `mkdocs/build/rot/` (artefakter på dagens sti, vidaresendingar frå
+gamle adresser) på rota. Sjå `specs/backlog/lokalisering-dokumentasjonsportal.md`.
 
 **Sannkjelda for nav-menyen er `mkdocs/publish.sh`**, ikkje `mkdocs.yml`.
 
 - Nye rettleiingssider (`mkdocs/docs/*.md`) må leggast til som `echo`-linje i
   `write_mkdocs_config` i `publish.sh` (leit etter `nav.rettleiingar`), med ein
   ny `nav.*`-nøkkel for etiketten i `mkdocs/lib/i18n/strings.yaml` (alle språk).
-  Same funksjon skriv `mkdocs/mkdocs.yml` og `mkdocs/build/mkdocs.<lang>.yml`.
+  Same funksjon skriv `mkdocs/build/mkdocs.<lang>.yml` for kvart språk.
 - Domene og skjema vert lagt til automatisk frå `generated/`-strukturen — ikkje
   rediger desse manuelt
 - Statisk innhald (`mkdocs/docs/` utanom genererte domene-katalogar) vert aldri

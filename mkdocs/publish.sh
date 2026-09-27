@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Kopier genererte artefakter til mkdocs/docs/ og generer index-sider og mkdocs.yml.
+# Kopier genererte artefakter til mkdocs/docs/, generer index-sider per språk og
+# byggjetre + mkdocs-konfig per språk i mkdocs/build/ (sjå Steg 2b, 2c og 3).
 # Køyr etter make <domain> eller make validate.
 set -euo pipefail
 trap 'echo "ERROR in ${BASH_SOURCE[0]}:${LINENO} — command: ${BASH_COMMAND}" >&2; exit 1' ERR
@@ -10,7 +11,6 @@ eval "$LOG_FUNCTIONS"
 export REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 GEN="$REPO_ROOT/generated"
 DOCS="$REPO_ROOT/mkdocs/docs"
-MKDOCS_YML="$REPO_ROOT/mkdocs/mkdocs.yml"
 
 # log_step — banner/deloverskrift, alltid synleg (uavhengig av LOGLVL),
 # same kontrakt som print_header i make/03-output.mk. SEP/CLR_*-variablane
@@ -255,10 +255,6 @@ BUILD_TIMESTAMP=$(TZ="Europe/Oslo" date +"%Y-%m-%d %H:%M %Z")
 # write_index_from_readme ein utdatert versjon av tabellane.
 timed_run "Oppdater README.md-tabellar" bash "$REPO_ROOT/src/assets/scripts/makefile/generate-readme-tables.sh" "$REPO_ROOT/README.md"
 timed_run "Generer index.md frå README.md" write_index_from_readme
-# 404-sida (Material-override, theme.custom_dir: overrides) vert generert frå
-# malen med i18n-markørar — mkdocs/overrides/ er generert og ligg i .gitignore.
-mkdir -p "$REPO_ROOT/mkdocs/overrides"
-timed_run "Generer 404-side" i18n_render "$LIB_DIR/templates/404.html" "$REPO_ROOT/mkdocs/overrides/404.html"
 timed_run "Generer valideringsregler.md" generate_validation_docs
 timed_run "Generer modellanalyse-tvers-domene-sider" generate_cross_domain_modellanalyse_docs
 
@@ -561,11 +557,10 @@ log_info "$(printf "${CLR_OK}✓ Steg 2 ferdig${CLR_RST} (%s)" \
 # ---------------------------------------------------------------------------
 # Steg 2b: Arbeidstre for andre språk (mkdocs/build/src-<lang>)
 # ---------------------------------------------------------------------------
-# Same språkavhengige generering som for standardspråket, med tekst frå
-# strengkatalogen for <lang>. Statiske sider: x.<lang>.md dersom ho finst,
-# elles den nynorske sida med merknaden «ikkje omsett». Sjå steg 6 i
-# specs/backlog/lokalisering-dokumentasjonsportal.md. mkdocs/docs og
-# `make docs-build` er uendra til byggjetrea vert tekne i bruk (steg 7-8).
+# Same språkavhengige generering som for standardspråket (mkdocs/docs), med
+# tekst frå strengkatalogen for <lang>. Statiske sider: x.<lang>.md dersom ho
+# finst, elles den nynorske sida med merknaden «ikkje omsett». Sjå steg 6 i
+# specs/backlog/lokalisering-dokumentasjonsportal.md.
 BUILD_DIR="$REPO_ROOT/mkdocs/build"
 DEFAULT_DOCS="$DOCS"
 GENERATED_DOCS_PATHS=("index.md" "arkitektur/valideringsregler.md" "modellanalyse")
@@ -650,7 +645,7 @@ log_info "$(printf "${CLR_OK}✓ Steg 2c ferdig${CLR_RST} (%s)" "$(fmt_elapsed_m
 # write_mkdocs_config <fil> <docs_dir> <site_url> <custom_dir> <site_dir|-> <alternate:true|false>
 # Skriv ein mkdocs-konfig for gjeldande språk ($I18N_LANG): tittel, copyright
 # og nav-etikettar frå strengkatalogen, og språkveljar (extra.alternate) når
-# <alternate> er true. Sjå steg 7 i specs/backlog/lokalisering-dokumentasjonsportal.md.
+# <alternate> er true. Sjå steg 7-8 i specs/backlog/lokalisering-dokumentasjonsportal.md.
 PORTAL_URL="https://audunautomat.github.io/linkml-datamodellering-no"
 write_mkdocs_config() {
     local out="$1" docs_dir="$2" site_url="$3" custom_dir="$4" site_dir="$5" alternate="$6"
@@ -802,19 +797,19 @@ STATIC
 log_step "Steg 3: Generer mkdocs.yml"
 t4=$(now_ms)
 
-# mkdocs/mkdocs.yml (standardspråket, dagens adresser, utan språkveljar) —
-# brukt av `make docs-build`/`docs-serve` til byggjetrea vert tekne i bruk.
-write_mkdocs_config "$MKDOCS_YML" docs "$PORTAL_URL" overrides - false
-log_info "${CLR_OK}Oppdatert mkdocs/mkdocs.yml${CLR_RST}"
-
 # mkdocs/build/mkdocs.<lang>.yml (L2: /<lang>/, språkveljar) — stiane er
-# relative til mkdocs/build/.
+# relative til mkdocs/build/, som `make docs-build`/`docs-serve` monterer.
 for lang in $I18N_LANGUAGES; do
     i18n_load "$lang"
     write_mkdocs_config "$BUILD_DIR/mkdocs.$lang.yml" "$lang" "$PORTAL_URL/$lang/" "overrides-$lang" "site/$lang" true
     log_info "${CLR_OK}Oppdatert mkdocs/build/mkdocs.$lang.yml${CLR_RST}"
 done
 i18n_load
+
+# Språkliste for make docs-build/docs-serve (sourcast av make/50-docs.mk)
+printf 'DOCS_LANGUAGES=%q\nDOCS_DEFAULT_LANGUAGE=%q\nDOCS_BASE_PATH=%q\n' \
+    "$I18N_LANGUAGES" "$I18N_DEFAULT_LANG" "${PORTAL_URL#https://*/}" > "$BUILD_DIR/languages.env"
+log_info "${CLR_OK}Oppdatert mkdocs/build/languages.env${CLR_RST}"
 
 elapsed4_ms=$(( $(now_ms) - t4 ))
 log_info "$(printf "${CLR_OK}✓ Steg 3 ferdig${CLR_RST} (%s)" \

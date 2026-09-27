@@ -284,7 +284,7 @@ val vert teke i steg 2 (sjå handlingslista).
 - [x] 5. i18n-markørar og eksplisitte anker-ID-ar (O2-a) i docgen-malane og `sections/*.sh` (8068 sider, 1 side med tapte anker = gamal lokal restdata, sjå avgjerder)
 - [x] 6. To språktre, fallback, artefakter på rot-stien og vidaresendingssider i `publish.sh` (513/513 artefaktlenkjer og 8068/8068 vidaresendingar held i sandkassebygg)
 - [x] 7. `mkdocs.yml` per språk og `extra.alternate` (`mkdocs/build/mkdocs.{nn,en}.yml`, begge bygde i sandkassa)
-- [ ] 8. Makefile, CI-deploy og lenkjesjekk for `/en/`
+- [x] 8. Makefile, CI-deploy og lenkjesjekk for `/en/` (sandkasse: `docs-publish` + `docs-build` grøne, 513/513 artefaktlenkjer, 8068/8068 vidaresendingar)
 - [ ] 9. `source_hash` og `make i18n-status`
 - [ ] 10. Første engelske innhald, LLM-omsett (katalog, framside, `om.md`)
 - [ ] 11. Dokumentasjon og rules
@@ -640,6 +640,58 @@ valt å la dette stå ope inntil vidare.
     - Nav-etikettar og `<title>` på rett språk.
     - 404 finst per språk.
     - Ingen byggjeåtvaringar utover Material-banneret om MkDocs 2.0.
+- **Byggjet teke i bruk (steg 8):**
+  - **Gamal konfig fjerna:** `mkdocs/mkdocs.yml` og `mkdocs/overrides/` vert ikkje
+    lenger genererte, fordi ingenting brukar dei. `write_mkdocs_config` skriv
+    berre `mkdocs/build/mkdocs.<lang>.yml`. Greinene for `site_dir -` og
+    `alternate=false` i funksjonen er no ubrukte, men er behaldne for å halde
+    endringa minimal. Lokale restar av `mkdocs/mkdocs.yml` og `mkdocs/overrides/`
+    ligg i `.gitignore` og kan slettast.
+  - **Språkliste til make:** `publish.sh` skriv `mkdocs/build/languages.env`
+    (`DOCS_LANGUAGES`, `DOCS_DEFAULT_LANGUAGE`, `DOCS_BASE_PATH`). Make-targeta
+    les fila (`docs_load_languages`) i staden for å hardkode språk eller base-sti,
+    og feilar med melding dersom fila manglar.
+  - **`DOCS_RUN`** monterer `mkdocs/build` som `/docs` og `mkdocs/site` som
+    `/docs/site`.
+  - **`docs-build`** tømmer `mkdocs/site/`, byggjer alle språk parallelt
+    (`timed_run` per språk, feil i eitt språk stoppar targetet), kopierer
+    `build/rot/` til rota og 404-sida for standardspråket til `site/404.html`.
+    GitHub Pages brukar rot-404, og Material sin 404 har absolutte `/…/nn/`-stiar
+    til ressursane, så han fungerer frå rota. Utkatalogen er framleis
+    `mkdocs/site/`, så `upload-pages-artifact` i `generate.yml` er uendra.
+  - **`docs-serve [DOCS_LANG=<lang>]`** køyrer live-server for eitt språk.
+    Parameteren heiter `DOCS_LANG`, ikkje `LANG`, som ville kollidert med
+    locale-variabelen i miljøet. Artefaktlenkjer og språkveljar krev heile
+    portalen, så det er lagt til **`docs-serve-site`**: `http.server` i
+    python-pytest-imaget, med `mkdocs/site` montert under base-stien.
+  - **CI:**
+    - `generate.yml`: cache-nøkkelen hashar `make/50-docs.mk` i staden for
+      `mkdocs/overrides/**`, som no er generert.
+    - `lenkje-og-mermaid-sjekk.yml`: cachar `mkdocs/build/src-*` i tillegg,
+      slik at lychee sjekkar `/en/` òg ved cache-treff. Mermaid-sjekken les
+      sitemapen på `…/nn`.
+    - `codeql.yml`: ignorerer `mkdocs/build/**`.
+    - `lychee.toml`: utelèt byggjetrea (`mkdocs/build/<lang>/`, `rot/`,
+      `overrides-*`), der artefaktlenkjene er skrivne om til rot-stien og ser
+      brotne ut frå filsystemet. Arbeidstreet `src-<lang>` vert sjekka.
+    - `actionlint`: `generate.yml` og `codeql.yml` er reine. I
+      `lenkje-og-mermaid-sjekk.yml` er det éi SC2034-åtvaring (`blockfile`,
+      linje 170). Ho finst òg i `HEAD` og er ikkje retta her.
+  - **Mermaid-sjekk berre for standardspråket:** `nn` og `en` har same sidesett
+    og same relative click-hrefs (`build_language_trees.py`), så ein gjennomgang
+    per språk ville dobla nettverkskøyringa utan å teste noko nytt.
+  - **Dokumentasjon som elles ville vore feil**, oppdatert i same steg:
+    CLAUDE.md (Dokumentasjonsportal), `.claude/rules/mkdocs-portal.md`,
+    `.claude/rules/container-images.md` (DOCS_RUN) og `COMMANDS.md`
+    (docs-targets).
+  - **Verifisering (sandkasse, dei ekte make-targeta):**
+    - Tid: `docs-publish` 119 s. `docs-build` 341 s, der nn og en tok 325 s
+      kvar parallelt og rot 9 s.
+    - `mkdocs/site/` har `nn/`, `en/`, artefakter, vidaresendingar og `404.html`.
+    - Artefaktlenkjer 513/513 og vidaresendingar 8068/8068.
+    - `docs-serve-site`-oppsettet svarar 200 på `/`, `/nn/`, `/en/...` og
+      artefakter, og 404 på ukjende stiar.
+    - Feilvegane gjev melding: manglande `languages.env`, ukjent `DOCS_LANG`.
 - **Prototypen køyrer containerar direkte (steg 2):** `make docs-publish`/`docs-build`
   byggjer alltid heile portalen og skriv til `mkdocs/docs/`. Prototypen køyrde
   difor `squidfunk/mkdocs-material:9.7` (same image som `Dockerfile.mkdocs`)

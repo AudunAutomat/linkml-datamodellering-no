@@ -16,9 +16,9 @@ paths:
 Alle container-wrapparar i `make/01-containers.mk` mountar repoet som
 `/work` og køyrer med `-w /work` via delt
 `WORK_MOUNT := -v "$(CURDIR):/work" -w /work`. **Unntak:** `DOCS_RUN`
-(mkdocs) bryt mønsteret medvite — mountar berre `mkdocs/docs`,
-`mkdocs/mkdocs.yml`, `mkdocs/overrides`, `mkdocs/.cache` og `mkdocs/site`
-som separate delmonteringar, for å unngå unødvendig I/O av resten av
+(mkdocs) bryt mønsteret medvite — mountar berre `mkdocs/build` (byggjetre og
+konfig per språk), `mkdocs/.cache` og `mkdocs/site` som separate
+delmonteringar, for å unngå unødvendig I/O av resten av
 repoet. Følg same mønster (heile repoet via `WORK_MOUNT`, eller selektive
 delmonteringar dersom containeren berre treng ein avgrensa del) når du legg
 til ein ny container-wrapper.

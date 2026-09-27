@@ -238,11 +238,15 @@ jobs:
       # ser rendra <a href>-element — ikkje rå tekst inni fenced code-blokker.
       # Gjenbrukar den til ei kvar tid publiserte GitHub Pages-portalen
       # (deploya av generate.yml) i staden for å byggje portalen på nytt her
-      # — sjå specs/backlog/mermaid-klikkbare-lenker-404.md.
+      # — sjå specs/backlog/mermaid-klikkbare-lenker-404.md. Portalen har
+      # sider og sitemap per språk under /<lang>/; standardspråket (nn) har
+      # same sidesett og same relative click-hrefs som dei andre språka
+      # (build_language_trees.py), så éin gjennomgang dekkjer strukturen —
+      # sjå specs/backlog/lokalisering-dokumentasjonsportal.md (steg 8).
       - name: Evaluer mermaid click-hrefs i publisert portal
         run: |
           python3 mkdocs/lib/scripts/check-mermaid-click-hrefs.py \
-            https://audunautomat.github.io/linkml-datamodellering-no \
+            https://audunautomat.github.io/linkml-datamodellering-no/nn \
             --concurrency "$CLICK_HREF_SJEKK_CONCURRENCY" \
             --report click-href-sjekk-report.md
 
@@ -296,8 +300,12 @@ jobs:
         id: cache-docs
         uses: actions/cache@v6
         with:
+          # mkdocs/build/src-*: arbeidstre per ekstra språk (same relative
+          # lenkjer som mkdocs/docs), slik at lychee sjekkar /en/ òg ved
+          # cache-treff — sjå specs/backlog/lokalisering-dokumentasjonsportal.md.
           path: |
             mkdocs/docs
+            mkdocs/build/src-*
             mkdocs/site
           # Hashar KJELDA (src/linkml/**), ikkje det genererte outputet
           # (generated/**) — LinkML sin SHACL-generator bakar eit ferskt
@@ -352,7 +360,7 @@ jobs:
       - name: Hopp over bygg (cache-treff)
         if: steps.cache-docs.outputs.cache-hit == 'true'
         run: |
-          echo "Cache-treff for mkdocs/docs + mkdocs/site (uendra generated/ og publish.sh-kjelder) — hoppar over docs-publish/docs-build."
+          echo "Cache-treff for mkdocs/docs + mkdocs/build/src-* + mkdocs/site (uendra generated/ og publish.sh-kjelder) — hoppar over docs-publish/docs-build."
           {
             echo "## MkDocs build-åtvaringar"
             echo "Cache-treff — docs-publish/docs-build hoppa over sidan innhaldet er uendra. Byggjevarsel vart sist sjekka då cachen vart skriven."
