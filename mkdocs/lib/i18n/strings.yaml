@@ -896,3 +896,22 @@ strings:
   docgen.diagram_merknad:
     nn: "Klikk på attributt-radene i klasseboksen ovanfor opnar same side som klassenavnet — Mermaid sin `classDiagram`-syntaks støttar berre éin klikkbar lenkje per klasseboks, ikkje éin per attributt (BUG-14). `## Eigenskapar`-tabellen lenger nede på sida er fasiten for slot-spesifikke lenkjer."
     en: "Clicking the attribute rows in the class box above opens the same page as the class name — the Mermaid `classDiagram` syntax supports only one clickable link per class box, not one per attribute (BUG-14). The `## Properties` table further down the page is the authoritative source for slot-specific links."
+
+  # --- Valideringsreglar-sida (publish.sh: generate_validation_docs) ---
+  valideringsreglar.tittel:
+    nn: Valideringsreglar
+    en: Validation rules
+  valideringsreglar.merknad_tittel:
+    nn: Beskrivelse
+    en: Description
+  valideringsreglar.merknad_1:
+    nn: Valideringsreglar består av policyer som du kan velge å etterleve og maskinelt validere etterlevelsen av. Alle må som minimum etterleve bronze policyen.
+    en: Validation rules consist of policies that you can choose to comply with and validate compliance with automatically. Everyone must at least comply with the bronze policy.
+  valideringsreglar.merknad_2:
+    nn: Denne sida er generert automatisk frå validator-dokumentasjonen i `src/mcp-linkml-validator/policies/`. Sjå [GitHub-repoet]({lenkje}) for siste versjon.
+    en: This page is generated automatically from the validator documentation in `src/mcp-linkml-validator/policies/`. See the [GitHub repository]({lenkje}) for the latest version.
+
+  # --- Merknad på engelske skjemasider (header.sh) ---
+  i18n.modellinnhald_norsk_tittel:
+    nn: Modellinnhald
+    en: Model content

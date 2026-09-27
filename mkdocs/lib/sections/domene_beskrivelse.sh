@@ -9,6 +9,8 @@ generate_domain_description() {
 
     local description_file="$REPO_ROOT/src/linkml/$domain/description.md"
     [ -f "$description_file" ] || return 0
+    # Språkvariant (description.<lang>.md) dersom ho finst — elles originalen.
+    description_file=$(i18n_source "$description_file") || true
 
     cat "$description_file"
     echo ""

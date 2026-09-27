@@ -70,3 +70,36 @@ i18n_render() {
     done
     printf '%s\n' "$content" > "$dst"
 }
+
+# i18n_source <sti>
+# Skriv stien til språkvarianten av ei kjeldefil for gjeldande språk
+# (x.md -> x.<lang>.md) dersom ho finst og språket ikkje er standardspråket,
+# elles originalstien. Returnerer 1 når originalen vert brukt for eit anna
+# språk enn standardspråket (dvs. innhaldet er ikkje omsett).
+i18n_source() {
+    local path="$1" variant
+    if [[ "$I18N_LANG" == "$I18N_DEFAULT_LANG" ]]; then
+        printf '%s' "$path"; return 0
+    fi
+    variant="${path%.md}.$I18N_LANG.md"
+    if [[ -f "$variant" ]]; then
+        printf '%s' "$variant"; return 0
+    fi
+    printf '%s' "$path"; return 1
+}
+
+# i18n_note_untranslated <fil>
+# Set inn merknaden «ikkje omsett» (katalognøklane i18n.ikkje_omsett.*) rett
+# etter første H1 i fila (øvst dersom fila ikkje har H1).
+i18n_note_untranslated() {
+    local file="$1" tittel tekst tmp
+    tittel=$(t i18n.ikkje_omsett.tittel)
+    tekst=$(t i18n.ikkje_omsett.tekst)
+    tmp="$file.i18n.tmp"
+    awk -v tittel="$tittel" -v tekst="$tekst" '
+        function note() { print "!!! info \"" tittel "\""; print "    " tekst; print "" }
+        !done && /^# / { print; print ""; note(); done = 1; next }
+        { lines[++n] = $0; if (!done) next; print }
+        END { if (!done) { note(); for (i = 1; i <= n; i++) print lines[i] } }
+    ' "$file" > "$tmp" && mv "$tmp" "$file"
+}

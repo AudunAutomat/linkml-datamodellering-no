@@ -183,7 +183,8 @@ def render_sh(catalog, lang):
     lines = ["# Generert av mkdocs/lib/scripts/i18n_strings.py render-sh — ikkje rediger", "declare -gA I18N=("]
     for key, value in catalog.for_lang(lang).items():
         lines.append(f"  [{key}]={shlex.quote(value)}")
-    lines += [")", f"I18N_LANG={shlex.quote(lang)}"]
+    lines += [")", f"I18N_LANG={shlex.quote(lang)}", f"I18N_DEFAULT_LANG={shlex.quote(catalog.default_language)}",
+              f"I18N_LANGUAGES={shlex.quote(' '.join(catalog.languages))}"]
     return "\n".join(lines) + "\n"
 
 

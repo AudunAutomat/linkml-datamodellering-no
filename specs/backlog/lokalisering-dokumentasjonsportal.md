@@ -282,7 +282,7 @@ val vert teke i steg 2 (sjå handlingslista).
 - [x] 3. Strengkatalog, renderer, `t`-funksjon, konsistenstest (`make i18n-check`: sjekk + 11 testar + røyktest nn/en, alle grøne)
 - [x] 4. Uttrekk av hardkoda strengar (byte-identisk nynorsk output: 8555/8555 filer, òg med fiksturar)
 - [x] 5. i18n-markørar og eksplisitte anker-ID-ar (O2-a) i docgen-malane og `sections/*.sh` (8068 sider, 1 side med tapte anker = gamal lokal restdata, sjå avgjerder)
-- [ ] 6. To språktre, fallback, artefakter på rot-stien og vidaresendingssider i `publish.sh`
+- [x] 6. To språktre, fallback, artefakter på rot-stien og vidaresendingssider i `publish.sh` (513/513 artefaktlenkjer og 8068/8068 vidaresendingar held i sandkassebygg)
 - [ ] 7. `mkdocs.yml` per språk og `extra.alternate`
 - [ ] 8. Makefile, CI-deploy og lenkjesjekk for `/en/`
 - [ ] 9. `source_hash` og `make i18n-status`
@@ -560,6 +560,54 @@ valt å la dette stå ope inntil vidare.
     «i18n-markørar og faste anker i docgen-malar»: aldri `{#anker}` i Jinja,
     markør og nøkkel for ny tekst, faste anker, parsekontraktar mot
     `classes.sh`/`metadata.sh`/`badges.sh` og ankersamanlikning i sandkasse.
+- **Språktre (steg 6):**
+  - **Engelsk innhald vert generert, ikkje omsett i etterkant.** Dei språkavhengige
+    delane av `publish.sh` køyrer éin gong per språk: framside, valideringsreglar,
+    modellanalyse-sidene og `generate_domain_content`, som er Steg 2 omgjord til
+    funksjon. For andre språk enn standardspråket skjer det i Steg 2b med
+    `i18n_load <lang>`, inn i arbeidstreet `mkdocs/build/src-<lang>`. Det er
+    valt framfor å gjere alle seksjonane om til markørar, fordi seksjonane og
+    Python-scripta alt brukar `t` med plasshaldarar. Kostnad: `docs-publish` gjekk
+    frå om lag 41 s til 105 s i sandkassa (Steg 2b 34 s, Steg 2c 34 s).
+  - **Kjeldefiler per språk:** `i18n_source` vel `x.<lang>.md` dersom ho finst
+    (README, `policies/README.md`, `description.md` og statiske sider under
+    `mkdocs/docs/`). Elles vert originalen brukt, og `i18n_note_untranslated`
+    set inn «Not yet translated» etter første H1. Domeneskildringar får ingen
+    merknad, sidan dei er ein seksjon og ikkje ei heil side. Engelske skjemasider
+    får merknaden `i18n.modellinnhald_norsk` øvst (`header.sh`).
+  - **Tekstar som mangla i steg 4:** tittel og merknad på valideringsreglar-sida
+    (`generate_validation_docs`) låg framleis som nynorsk heredoc. Dei er no i
+    katalogen (`valideringsreglar.*`), med nynorsk output byte-identisk.
+  - **Byggjetre** (`mkdocs/lib/scripts/build_language_trees.py`, stdlib,
+    verts-`python3`):
+    - `mkdocs/build/<lang>/` får sider og felles ressursar, og
+      `mkdocs/build/rot/` får artefakter, vidaresendingar og rot-vidaresending til
+      `nn/`.
+    - Artefakt = ikkje-`.md`-fil under ein domenekatalog.
+    - Relative Markdown-/HTML-lenkjer som peikar på ein artefakt, vert skrivne om
+      til rot-stien. Scriptet kontrollerer sjølv at kvar omskriven lenkje treffer
+      ei fil.
+    - Vidaresendingane har `rel=canonical`, `meta refresh` og
+      `location.replace(... + location.hash)`, slik at `#anker` vert med.
+    - 404-sida vert rendra per språk til `mkdocs/build/overrides-<lang>/404.html`.
+    - `mkdocs/build/` ligg i `.gitignore`.
+  - **Stegvis overgang:** `mkdocs/docs`, `mkdocs/overrides` og `make docs-build`
+    er uendra, så portalen byggjer som før til steg 7/8 tek byggjetrea i bruk.
+    Nynorske sider i `mkdocs/docs` er framleis byte-identiske med steg 5.
+  - **Verifisering (sandkasse):** `docs-publish` + `mkdocs build` av
+    `build/nn` og `build/en` med mellombelse konfigar avleidde av `mkdocs.yml`
+    (`docs_dir`, `site_dir`, `site_url`, `custom_dir` og `language` per språk,
+    grunnlag for steg 7), deretter samanslått `site/` med `rot/`:
+    - Sider: 8068 per språk.
+    - Artefaktlenkjer: 513/513 løyste i både `nn` og `en`.
+    - Vidaresendingar: 8068/8068 treffer ei eksisterande side.
+    - Engelsk 404 er rendra.
+    - `build/nn` skil seg berre frå `mkdocs/docs` i dei 48 sidene med
+      artefaktlenkjer.
+    - Nynorsk tekst i `build/en` finst berre i sider med «Not yet
+      translated»-merknad og i restdata frå eldre malar (`bvrinn`).
+    - Byggjetid: om lag 320 s per språk i sandkassa når begge byggja køyrer
+      parallelt.
 - **Prototypen køyrer containerar direkte (steg 2):** `make docs-publish`/`docs-build`
   byggjer alltid heile portalen og skriv til `mkdocs/docs/`. Prototypen køyrde
   difor `squidfunk/mkdocs-material:9.7` (same image som `Dockerfile.mkdocs`)

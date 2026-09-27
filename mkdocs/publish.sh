@@ -56,7 +56,8 @@ ARTIFACT_ORDER="shapes.ttl context.jsonld schema.json schema.xsd openapi.yaml as
 # Generer valideringsregler.md frå policies/README.md
 # ---------------------------------------------------------------------------
 generate_validation_docs() {
-    local policies_readme="$REPO_ROOT/src/mcp-linkml-validator/policies/README.md"
+    local policies_readme omsett=true
+    policies_readme=$(i18n_source "$REPO_ROOT/src/mcp-linkml-validator/policies/README.md") || omsett=false
     local output="$DOCS/arkitektur/valideringsregler.md"
     local github_base="https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main"
 
@@ -66,23 +67,17 @@ generate_validation_docs() {
     log_debug "→ Genererer $output frå $policies_readme"
 
     {
-        cat <<'EOF'
-# Valideringsreglar
-
-!!! note "Beskrivelse"
-
-     Valideringsreglar består av policyer som du kan velge å etterleve og maskinelt validere etterlevelsen av. Alle må som minimum etterleve bronze policyen.
-     
-     Denne sida er generert automatisk frå validator-dokumentasjonen i `src/mcp-linkml-validator/policies/`. Sjå [GitHub-repoet](https://github.com/AudunAutomat/linkml-datamodellering-no/tree/main/src/mcp-linkml-validator) for siste versjon.
-
----
-
-EOF
+        printf '%s\n' "# $(t valideringsreglar.tittel)" "" \
+            "!!! note \"$(t valideringsreglar.merknad_tittel)\"" "" \
+            "     $(t valideringsreglar.merknad_1)" "     " \
+            "     $(t valideringsreglar.merknad_2 lenkje="https://github.com/AudunAutomat/linkml-datamodellering-no/tree/main/src/mcp-linkml-validator")" \
+            "" "---" ""
         cat "$policies_readme" | \
             sed -E "s|\]\(([^)]+\.yaml)\)|]($github_base/src/mcp-linkml-validator/policies/\1)|g" | \
             sed -E "s|specs/done/([^)]+)|$github_base/specs/done/\1|g" | \
             sed -E "s|\.\./\.\./\.\./([A-Z][A-Za-z-]*\.md)|$github_base/\1|g"
     } > "$output"
+    $omsett || i18n_note_untranslated "$output"
 }
 
 # ---------------------------------------------------------------------------
@@ -132,7 +127,13 @@ generate_cross_domain_modellanalyse_docs() {
 # Generer index.md frå README.md (+ footer med byggetidspunkt)
 # ---------------------------------------------------------------------------
 write_index_from_readme() {
-    cp "$REPO_ROOT/README.md" "$DOCS/index.md"
+    local readme
+    if readme=$(i18n_source "$REPO_ROOT/README.md"); then
+        cp "$readme" "$DOCS/index.md"
+    else
+        cp "$readme" "$DOCS/index.md"
+        i18n_note_untranslated "$DOCS/index.md"
+    fi
 
     local sist_bygd
     sist_bygd=$(t portal.sist_bygd tid="$BUILD_TIMESTAMP")
@@ -461,99 +462,187 @@ log_info "$(printf "${CLR_OK}✓ Steg 1 ferdig${CLR_RST} (%s)" \
 # ---------------------------------------------------------------------------
 # Steg 2: Generer innhald per domene og skjema (parallelt)
 # ---------------------------------------------------------------------------
-log_step "Steg 2: Generer innhald per domene og skjema (parallelt)"
-t2=$(now_ms)
-
-# Start alle skjemajobbar parallelt
-declare -a PIDS=()
-declare -a KEYS=()
-for domain in "${ALL_DOMAINS[@]}"; do
-    for schema in ${DOMAIN_SCHEMA_LIST[$domain]:-}; do
-        process_schema "$domain" "$schema" &
-        PIDS+=($!)
-        KEYS+=("$domain/$schema")
-    done
-done
-
-# Vent på alle jobbar og rapporter feil
-failed_jobs=()
-for i in "${!PIDS[@]}"; do
-    if ! wait "${PIDS[$i]}"; then
-        domain_schema="${KEYS[$i]}"
-        domain="${domain_schema%/*}"
-        schema="${domain_schema#*/}"
-
-        log_error "$domain/$schema (Domain: $domain, Schema: $schema, Output: $DOCS/$domain/$schema/)"
-
-        failed_jobs+=("$domain/$schema")
-    fi
-done
-
-if [ ${#failed_jobs[@]} -gt 0 ]; then
-    failed_list=$(printf '  - %s\n' "${failed_jobs[@]}")
-    log_error "OPPSUMMERING: ${#failed_jobs[@]} skjema feila:
-${failed_list}"
-    exit 1
-fi
-
-# Generer domain/index.md sekvensielt (avheng av at alle skjema er ferdige)
-for domain in "${ALL_DOMAINS[@]}"; do
-    # Sjekk om noko skjema i domenet har eit publisert URI-register
-    domain_has_published=false
-    for schema in ${DOMAIN_SCHEMA_LIST[$domain]:-}; do
-        [ -f "$REPO_ROOT/src/linkml/$domain/$schema/published-uris.lock" ] && domain_has_published=true && break
-    done
-
-    {
-        echo "# $(domain_label "$domain")"
-        echo ""
-        generate_domain_description "$domain"
-        if $domain_has_published; then
-            echo "| $(t domeneoversikt.modell) | $(t domeneoversikt.artefakter) | $(t domeneoversikt.publisert_til) |"
-            echo "|--------|--------------------------|---------------|"
-        else
-            echo "| $(t domeneoversikt.modell) | $(t domeneoversikt.artefakter) |"
-            echo "|--------|--------------------------|"
-        fi
-
+# generate_domain_content — skjemasider, domeneoversikter og utbyting av
+# i18n-markørar for gjeldande språk ($I18N_LANG) inn i $DOCS. Køyrd éin gong
+# per språk (Steg 2 og 2b).
+generate_domain_content() {
+    # Start alle skjemajobbar parallelt
+    local -a PIDS=() KEYS=() failed_jobs=() DOMAIN_DOCS_DIRS=()
+    for domain in "${ALL_DOMAINS[@]}"; do
         for schema in ${DOMAIN_SCHEMA_LIST[$domain]:-}; do
-            artifacts=""
-            for suffix in $ARTIFACT_ORDER; do
-                if [ -f "$GEN/$domain/$schema/${schema}-${suffix}" ]; then
+            process_schema "$domain" "$schema" &
+            PIDS+=($!)
+            KEYS+=("$domain/$schema")
+        done
+    done
+
+    # Vent på alle jobbar og rapporter feil
+    for i in "${!PIDS[@]}"; do
+        if ! wait "${PIDS[$i]}"; then
+            domain_schema="${KEYS[$i]}"
+            domain="${domain_schema%/*}"
+            schema="${domain_schema#*/}"
+
+            log_error "$domain/$schema (Domain: $domain, Schema: $schema, Output: $DOCS/$domain/$schema/)"
+
+            failed_jobs+=("$domain/$schema")
+        fi
+    done
+
+    if [ ${#failed_jobs[@]} -gt 0 ]; then
+        failed_list=$(printf '  - %s\n' "${failed_jobs[@]}")
+        log_error "OPPSUMMERING: ${#failed_jobs[@]} skjema feila:
+    ${failed_list}"
+        exit 1
+    fi
+
+    # Generer domain/index.md sekvensielt (avheng av at alle skjema er ferdige)
+    for domain in "${ALL_DOMAINS[@]}"; do
+        # Sjekk om noko skjema i domenet har eit publisert URI-register
+        domain_has_published=false
+        for schema in ${DOMAIN_SCHEMA_LIST[$domain]:-}; do
+            [ -f "$REPO_ROOT/src/linkml/$domain/$schema/published-uris.lock" ] && domain_has_published=true && break
+        done
+
+        {
+            echo "# $(domain_label "$domain")"
+            echo ""
+            generate_domain_description "$domain"
+            if $domain_has_published; then
+                echo "| $(t domeneoversikt.modell) | $(t domeneoversikt.artefakter) | $(t domeneoversikt.publisert_til) |"
+                echo "|--------|--------------------------|---------------|"
+            else
+                echo "| $(t domeneoversikt.modell) | $(t domeneoversikt.artefakter) |"
+                echo "|--------|--------------------------|"
+            fi
+
+            for schema in ${DOMAIN_SCHEMA_LIST[$domain]:-}; do
+                artifacts=""
+                for suffix in $ARTIFACT_ORDER; do
+                    if [ -f "$GEN/$domain/$schema/${schema}-${suffix}" ]; then
+                        [ -n "$artifacts" ] && artifacts+=" · "
+                        artifacts+="$(artifact_label "$suffix")"
+                    fi
+                done
+                if [ -f "$GEN/$domain/$schema/diagrams/${schema}-filtered.svg" ] || [ -f "$GEN/$domain/$schema/diagrams/${schema}-filtered.puml" ] || \
+                   [ -f "$GEN/$domain/$schema/diagrams/${schema}.svg" ] || [ -f "$GEN/$domain/$schema/diagrams/${schema}.puml" ]; then
                     [ -n "$artifacts" ] && artifacts+=" · "
-                    artifacts+="$(artifact_label "$suffix")"
+                    artifacts+="$(t artefakt.plantuml)"
+                fi
+                if $domain_has_published; then
+                    published_col=""
+                    [ -f "$REPO_ROOT/src/linkml/$domain/$schema/published-uris.lock" ] && \
+                        published_col="[Felles Begrepskatalog](https://data.norge.no/concepts)"
+                    echo "| [${schema}](${schema}/index.md) | ${artifacts:--} | ${published_col} |"
+                else
+                    echo "| [${schema}](${schema}/index.md) | ${artifacts:--} |"
                 fi
             done
-            if [ -f "$GEN/$domain/$schema/diagrams/${schema}-filtered.svg" ] || [ -f "$GEN/$domain/$schema/diagrams/${schema}-filtered.puml" ] || \
-               [ -f "$GEN/$domain/$schema/diagrams/${schema}.svg" ] || [ -f "$GEN/$domain/$schema/diagrams/${schema}.puml" ]; then
-                [ -n "$artifacts" ] && artifacts+=" · "
-                artifacts+="$(t artefakt.plantuml)"
-            fi
-            if $domain_has_published; then
-                published_col=""
-                [ -f "$REPO_ROOT/src/linkml/$domain/$schema/published-uris.lock" ] && \
-                    published_col="[Felles Begrepskatalog](https://data.norge.no/concepts)"
-                echo "| [${schema}](${schema}/index.md) | ${artifacts:--} | ${published_col} |"
-            else
-                echo "| [${schema}](${schema}/index.md) | ${artifacts:--} |"
-            fi
-        done
-    } > "$DOCS/$domain/index.md"
-done
+        } > "$DOCS/$domain/index.md"
+    done
 
-# Byt ut i18n-markørar (@@i18n:<nøkkel>@@) frå gen-doc-malane og seksjonane
-# som siste transformasjon — classes.sh/metadata.sh/badges.sh parsar
-# gen-doc-outputen på markørane, ikkje på omsett tekst. Sjå steg 5 i
-# specs/backlog/lokalisering-dokumentasjonsportal.md.
-DOMAIN_DOCS_DIRS=()
-for domain in "${ALL_DOMAINS[@]}"; do DOMAIN_DOCS_DIRS+=("$DOCS/$domain"); done
-timed_run "Byt ut i18n-markørar" python3 "$LIB_DIR/scripts/i18n_strings.py" render-tree --lang "$I18N_LANG" "${DOMAIN_DOCS_DIRS[@]}"
+    # Byt ut i18n-markørar (@@i18n:<nøkkel>@@) frå gen-doc-malane og seksjonane
+    # som siste transformasjon — classes.sh/metadata.sh/badges.sh parsar
+    # gen-doc-outputen på markørane, ikkje på omsett tekst. Sjå steg 5 i
+    # specs/backlog/lokalisering-dokumentasjonsportal.md.
+    for domain in "${ALL_DOMAINS[@]}"; do DOMAIN_DOCS_DIRS+=("$DOCS/$domain"); done
+    timed_run "Byt ut i18n-markørar" python3 "$LIB_DIR/scripts/i18n_strings.py" render-tree --lang "$I18N_LANG" "${DOMAIN_DOCS_DIRS[@]}"
+}
 
+log_step "Steg 2: Generer innhald per domene og skjema (parallelt)"
+t2=$(now_ms)
+generate_domain_content
 log_info "${CLR_OK}Publisert ${#ALL_DOMAINS[@]} domene(r) til mkdocs/docs/${CLR_RST}"
 
 elapsed2_ms=$(( $(now_ms) - t2 ))
 log_info "$(printf "${CLR_OK}✓ Steg 2 ferdig${CLR_RST} (%s)" \
     "$(fmt_elapsed_ms "$elapsed2_ms")")"
+
+# ---------------------------------------------------------------------------
+# Steg 2b: Arbeidstre for andre språk (mkdocs/build/src-<lang>)
+# ---------------------------------------------------------------------------
+# Same språkavhengige generering som for standardspråket, med tekst frå
+# strengkatalogen for <lang>. Statiske sider: x.<lang>.md dersom ho finst,
+# elles den nynorske sida med merknaden «ikkje omsett». Sjå steg 6 i
+# specs/backlog/lokalisering-dokumentasjonsportal.md. mkdocs/docs og
+# `make docs-build` er uendra til byggjetrea vert tekne i bruk (steg 7-8).
+BUILD_DIR="$REPO_ROOT/mkdocs/build"
+DEFAULT_DOCS="$DOCS"
+GENERATED_DOCS_PATHS=("index.md" "arkitektur/valideringsregler.md" "modellanalyse")
+
+# copy_static_docs_for_language <kjelde-docs> <mål-docs> — kopier statisk
+# innhald (ikkje genererte domene/sider) for $I18N_LANG.
+copy_static_docs_for_language() {
+    local src="$1" dst="$2" rel file variant skip l
+    local -a exclude=("${ALL_DOMAINS[@]}" "${GENERATED_DOCS_PATHS[@]}")
+    while IFS= read -r -d '' file; do
+        rel="${file#"$src"/}"
+        skip=false
+        for l in "${exclude[@]}"; do
+            [[ "$rel" == "$l" || "$rel" == "$l/"* ]] && skip=true && break
+        done
+        $skip && continue
+        # Språkvariantar (x.<lang>.md) vert berre brukte i staden for x.md
+        for l in $I18N_LANGUAGES; do
+            [[ "$rel" == *".$l.md" ]] && skip=true && break
+        done
+        $skip && continue
+        mkdir -p "$dst/$(dirname "$rel")"
+        if [[ "$rel" == *.md ]]; then
+            variant="${file%.md}.$I18N_LANG.md"
+            if [[ -f "$variant" ]]; then
+                cp "$variant" "$dst/$rel"
+            else
+                cp "$file" "$dst/$rel"
+                i18n_note_untranslated "$dst/$rel"
+            fi
+        else
+            cp "$file" "$dst/$rel"
+        fi
+    done < <(find "$src" -type f -print0)
+}
+
+for lang in $I18N_LANGUAGES; do
+    [ "$lang" = "$I18N_DEFAULT_LANG" ] && continue
+    log_step "Steg 2b: Arbeidstre for språk: $lang"
+    t2b=$(now_ms)
+    DOCS="$BUILD_DIR/src-$lang"
+    rm -rf "$DOCS"
+    mkdir -p "$DOCS"
+    i18n_load "$lang"
+    timed_run "[$lang] Kopier statiske sider" copy_static_docs_for_language "$DEFAULT_DOCS" "$DOCS"
+    timed_run "[$lang] Generer index.md frå README.md" write_index_from_readme
+    timed_run "[$lang] Generer valideringsregler.md" generate_validation_docs
+    timed_run "[$lang] Generer modellanalyse-tvers-domene-sider" generate_cross_domain_modellanalyse_docs
+    generate_domain_content
+    log_info "$(printf "${CLR_OK}✓ Steg 2b ferdig for %s${CLR_RST} (%s)" "$lang" \
+        "$(fmt_elapsed_ms "$(( $(now_ms) - t2b ))")")"
+done
+DOCS="$DEFAULT_DOCS"
+
+# ---------------------------------------------------------------------------
+# Steg 2c: Byggjetre per språk (mkdocs/build/<lang>, mkdocs/build/rot)
+# ---------------------------------------------------------------------------
+# Adressestruktur L2 (O6): sider under /<lang>/, artefakter på dagens sti
+# utan språkprefiks (A0), vidaresendingssider for gamle adresser. 404-sida
+# vert rendra per språk til mkdocs/build/overrides-<lang>/.
+log_step "Steg 2c: Byggjetre per språk (L2)"
+t2c=$(now_ms)
+TREE_SOURCES=()
+for lang in $I18N_LANGUAGES; do
+    i18n_load "$lang"
+    mkdir -p "$BUILD_DIR/overrides-$lang"
+    timed_run "[$lang] Generer 404-side" i18n_render "$LIB_DIR/templates/404.html" "$BUILD_DIR/overrides-$lang/404.html"
+    if [ "$lang" = "$I18N_DEFAULT_LANG" ]; then
+        TREE_SOURCES+=(--source "$lang=$DEFAULT_DOCS")
+    else
+        TREE_SOURCES+=(--source "$lang=$BUILD_DIR/src-$lang")
+    fi
+done
+i18n_load
+timed_run "Byggjetre (språk, artefakter, vidaresendingar)" python3 "$LIB_DIR/scripts/build_language_trees.py" \
+    --default "$I18N_DEFAULT_LANG" "${TREE_SOURCES[@]}" --domains "${ALL_DOMAINS[@]}" --out "$BUILD_DIR"
+log_info "$(printf "${CLR_OK}✓ Steg 2c ferdig${CLR_RST} (%s)" "$(fmt_elapsed_ms "$(( $(now_ms) - t2c ))")")"
 
 # ---------------------------------------------------------------------------
 # Steg 3: Generer mkdocs.yml
