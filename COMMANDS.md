@@ -270,6 +270,7 @@ Nye skjema under `src/linkml/<domain>/<modell>/` vert oppdaga automatisk — ing
 | `make docs-publish` | Kopier `generated/` → `mkdocs/docs/` og regenerer `mkdocs.yml` | `mkdocs/docs/` |
 | `make docs-serve` | Start lokal dev-server med live reload. Leser `mkdocs/docs/` | `http://localhost:8000` |
 | `make docs-build` | Bygg statisk HTML-site (CI-pipeline for produksjon) | `mkdocs/site/` |
+| `make i18n-check` | Valider strengkatalogen for portaltekst (`mkdocs/lib/i18n/strings.yaml`): gyldige nøklar, verdi for alle språk, og at alle nøklar som er brukte i `publish.sh`, `mkdocs/lib/` og docgen-malane finst. Køyrer `tests/test_i18n_strings.py` og røyktestar `i18n_load`/`t` (`mkdocs/lib/utils/i18n.sh`) for kvart språk. | Sjekkrapport til stdout; avsluttar med kode 1 ved feil |
 
 `make docs-publish` køyrer `mkdocs/publish.sh` som kopier artefakter og dokumentasjon frå `generated/` til `mkdocs/docs/`, genererer `index.md` per skjema og domene, og oppdaterer navigasjonsstrukturen i `mkdocs.yml`. Nye domene og skjema dukkar opp automatisk neste gong `publish` vert køyrt.
 

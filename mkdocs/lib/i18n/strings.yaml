@@ -1,0 +1,32 @@
+# Strengkatalog for portaltekst i dokumentasjonsportalen (mkdocs).
+#
+# Éi kjelde for all generert portaltekst (overskrifter, etikettar, merknader)
+# som publish.sh, mkdocs/lib/sections/*.sh, mkdocs/lib/scripts/*.py og
+# docgen-malane skriv ut. Modellinnhald frå skjemaa (title/description) er
+# IKKJE med her — det vert vist på originalspråket.
+#
+# Format:
+#   <nøkkel>:            # [a-z0-9_] i punktum-separerte ledd, t.d. section.kom_i_gang
+#     nn: <tekst>        # alle språk i `languages` er påkravde
+#     en: <tekst>
+#
+# Bruk:
+#   bash:    i18n_load <lang> (mkdocs/lib/utils/i18n.sh), deretter "$(t <nøkkel>)"
+#   Python:  load_catalog().t("<nøkkel>", lang) (mkdocs/lib/scripts/i18n_strings.py)
+#   Jinja:   @@i18n:<nøkkel>@@ (vert bytt ut av publish.sh)
+#
+# Sjekk: make i18n-check. Sjå specs/backlog/lokalisering-dokumentasjonsportal.md.
+
+languages: [nn, en]
+default_language: nn
+
+strings:
+  i18n.ikkje_omsett.tittel:
+    nn: Ikkje omsett
+    en: Not yet translated
+  i18n.ikkje_omsett.tekst:
+    nn: Denne sida er ikkje omsett enno. Originalversjonen på nynorsk vert vist.
+    en: This page is not yet available in English. The Norwegian (nynorsk) version is shown.
+  i18n.modellinnhald_norsk:
+    nn: Modellinnhaldet (navn og skildringar av klasser, eigenskapar og kodelister) er på norsk.
+    en: Model content (names and descriptions of classes, properties and code lists) is in Norwegian.

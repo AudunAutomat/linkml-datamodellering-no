@@ -1,6 +1,6 @@
 ---
 name: mkdocs-portal
-description: Korleis mkdocs/publish.sh byggjer dokumentasjonsportalen, heading-slug-fella for æ/ø/å, og relative/absolutte lenkjereglar. Lastast automatisk ved arbeid med mkdocs/publish.sh eller sider under mkdocs/docs/. Jinja2-malkonvensjonar ligg i eiga rule, sjå .claude/rules/jinja2-templates.md.
+description: Korleis mkdocs/publish.sh byggjer dokumentasjonsportalen, heading-slug-fella for æ/ø/å, relative/absolutte lenkjereglar, docs-publish som verifisering, og portal-adresser som identifikatorar/haustingsadresser. Lastast automatisk ved arbeid med mkdocs/publish.sh eller sider under mkdocs/docs/. Jinja2-malkonvensjonar ligg i eiga rule, sjå .claude/rules/jinja2-templates.md.
 paths:
   - "mkdocs/**"
 ---
@@ -71,6 +71,43 @@ Alle skjema-jobbar køyrer parallelt for å redusere byggtid.
 - **Lowercase-transformasjon** av klassefiler skjer for å unngå konflikt på case-insensitive filsystem (Windows/macOS)
 - **Filtrert PlantUML-diagram** vert prioritert over full versjon i ER-diagram-seksjonen
 
+### `make docs-publish` er ikkje ein trygg verifiseringssteg
+
+`publish.sh` (Steg 1) **slettar og regenererer** `mkdocs/docs/<domain>/` for
+kvart domene i `generated/`. Resultatet er aldri betre enn innhaldet i
+`generated/`. Manglar `.ttl`-filer, PlantUML-diagram eller
+valideringsresultat der, forsvinn dei òg frå portalsidene. Det skjer utan feil,
+og bygget går gjennom. Genererte domenekatalogar skal stå i `.gitignore`. Er
+ein katalog likevel versjonskontrollert (som `felles/` var fram til
+`.gitignore` vart retta), vert slettingane synlege som endringar i `git status`.
+Ligg katalogen i `.gitignore`, er dei usynlege, men portalen blir like ufullstendig.
+
+**Aldri** køyr `make docs-publish` berre for å stadfeste ei endring i
+`publish.sh`, `sections/*.sh` eller malar, med mindre du veit at `generated/`
+er fullstendig generert for alle domene som vert publiserte.
+
+Gjer i staden slik:
+
+1. **Verifiser så smalt som mogleg.** Ei endring i heredoc-blokka for
+   `mkdocs.yml` kan stadfestast ved å lese blokka eller køyre berre den delen
+   av scriptet. Ei endring i ein seksjon kan stadfestast ved å køyre
+   seksjonsfunksjonen mot eitt skjema.
+2. **Treng du eit fullt bygg,** så sjekk først `git ls-files mkdocs/docs` for å
+   sjå kva som er versjonskontrollert. Sjekk deretter at dei tilsvarande
+   `generated/<domain>/<schema>/` inneheld alle artefakter som `build.yaml`
+   ber om (`*.ttl`, `diagrams/`, `validation/`).
+3. **Etter køyring:** køyr `git status --short mkdocs/docs` og rapporter til
+   brukaren alle endringar du ikkje var ute etter, før du melder arbeidet som
+   ferdig. Rull dei tilbake med `git restore <sti>` innanfor unntaket i
+   CLAUDE.md («Aldri commit eller push»), og rapporter kva som vart rulla tilbake.
+
+Konkret tilfelle: under steg 1 i
+`specs/backlog/lokalisering-dokumentasjonsportal.md` (`theme.language: nn`)
+sletta ein `make docs-publish` mot ufullstendig `generated/` 48
+versjonskontrollerte filer under `mkdocs/docs/felles/` og fjerna
+ER-diagram-seksjonen frå fem skjemasider. Sjå
+`specs/done/rule-docs-publish-ufullstendig-generated.md`.
+
 ### PlantUML-diagram
 
 `make gen-plantuml` genererer **to versjonar** av PlantUML-diagramma:
@@ -121,3 +158,48 @@ Lenkjer i `.md`-filer skal følgje kor målet faktisk bur:
 - **Mål som ikkje er bygd for portalen** (t.d. `BUGS.md`, `specs/`, kjeldeskjema under `src/linkml/`, andre repo-filer utanfor `mkdocs/docs/`) → bruk **absolutt lenkje** til fila i GitHub-repoet (`https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/<sti>`). Desse måla har ingen portal-relativ sti i det heile, sidan dei aldri vert kopierte inn i `mkdocs/docs/`.
 
 Sjå `specs/done/lenkjesjekk-3817-feil-evaluering.md` for eit konkret eksempel på brotet denne regelen skal hindre: fleire rettleiingssider i `mkdocs/docs/` lenka til `specs/bugs/README.md` (ein sti som ikkje finst, og som uansett aldri ville vore ei gyldig relativ portallenkje sidan `specs/` ikkje er portalinnhald) i staden for korrekt absolutt lenkje til `BUGS.md`.
+
+### Portal-adresser er identifikatorar og haustingsadresser
+
+Adressene på GitHub Pages-portalen er ikkje berre lenkjer for menneske. Dei vert
+brukte maskinelt utanfor repoet:
+
+- **Identifikator:** `generate_mkdocs_url()` i
+  `src/assets/scripts/makefile/generate-informasjonsmodell.py` set `heimeside`
+  i kvar `src/linkml/<domain>/<modell>/metadata/<modell>-manifest.yaml` til
+  `https://audunautomat.github.io/linkml-datamodellering-no/<domain>/<modell>/`.
+  `generate-modellkatalog.py` brukar same verdi som
+  `informasjonsmodellidentifikator` i modellkatalogen som Felles datakatalog haustar.
+- **Haustingsadresse:** Felles datakatalog og Felles begrepskatalog haustar
+  katalog-`.ttl`-filer direkte frå portal-stiar (sjå
+  `mkdocs/docs/publisering/publisering-begrep.md`, `publisering-modell.md` og
+  `publisering-oversikt.md`).
+
+GitHub Pages har ikkje HTTP-vidaresending (301/302), og haustarar følgjer ikkje
+vidaresending i HTML eller JavaScript. Ein flytta sti er difor ein broten
+identifikator eller ei broten hausting, sjølv om portalen ser rett ut i nettlesaren.
+
+**Aldri** endre stien til ein publisert artefakt, eller stistrukturen
+`<domain>/<modell>/` for portalsider (i `publish.sh`, `site_dir`/`docs_dir`,
+`generate_mkdocs_url()` eller liknande), utan å gjere dette først:
+
+1. **Kartlegg maskinelle konsumentar:** grep etter
+   `audunautomat.github.io/linkml-datamodellering-no` i
+   `src/linkml/*/*/metadata/`, `src/assets/scripts/` og
+   `mkdocs/docs/publisering/`.
+2. **La artefakter (`*.ttl`, `*.json`, `*.yaml` ...) bli liggjande på dagens sti.**
+   Dei er språk- og layoutuavhengige. Lenk til dei frå den nye strukturen.
+3. **Gje flytta HTML-sider ei vidaresendingsside på den gamle adressa**, med
+   `<link rel="canonical">`, `<meta http-equiv="refresh">` og
+   `location.replace(... + location.hash)`. Ein identifikator-URI skal svare
+   med 200, så ein felles `404.html` med JS-vidaresending er ikkje nok.
+4. **Ikkje endre `heimeside`/identifikatorverdiar.** Den gamle adressa held fram
+   med å svare via vidaresendingssida.
+5. **Legg fram konsekvensane for brukaren** før arbeidet held fram. Endringar i
+   eksterne katalogregistreringar ligg utanfor repoet (jf. «Pull, ikkje push» i
+   CLAUDE.md).
+
+Konkret tilfelle: ved valet av `/nn/` og `/en/` for fleirspråkleg portal (O6 i
+`specs/backlog/lokalisering-dokumentasjonsportal.md`) ville ei naiv flytting av
+heile portalen ha broten alle `heimeside`-identifikatorar og haustingsadressene
+for katalog-`.ttl`. Sjå `specs/done/rule-portal-adresser-maskinelle-konsumentar.md`.

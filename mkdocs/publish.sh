@@ -554,7 +554,7 @@ copyright: >
 
 theme:
   name: material
-  language: nb
+  language: nn
   features:
     - navigation.indexes
     - navigation.top
