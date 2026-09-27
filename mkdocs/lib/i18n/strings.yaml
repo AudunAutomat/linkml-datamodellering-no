@@ -24,6 +24,10 @@
 
 languages: [nn, en]
 default_language: nn
+# Navn i språkveljaren (extra.alternate) — kvart språk på sitt eige språk.
+language_names:
+  nn: Nynorsk
+  en: English
 
 strings:
   # --- i18n-mekanismen sjølv (steg 6) ---
@@ -915,3 +919,92 @@ strings:
   i18n.modellinnhald_norsk_tittel:
     nn: Modellinnhald
     en: Model content
+
+  # --- mkdocs-konfig (publish.sh: write_mkdocs_config) ---
+  portal.site_name:
+    nn: Norske W3C-profiler og offentlige domenemodellar i LinkML-format
+    en: Norwegian W3C profiles and public domain models in LinkML format
+  portal.site_description:
+    nn: Norske W3C-applikasjonsprofilar og offentlige domenemodellar i LinkML-format
+    en: Norwegian W3C application profiles and public domain models in LinkML format
+  portal.copyright_1:
+    nn: 'Repoet er lisensiert under <a href="{lenkje}">MIT-lisens</a>.'
+    en: 'The repository is licensed under the <a href="{lenkje}">MIT license</a>.'
+  portal.copyright_2:
+    nn: 'Dei enkelte modellane har egne lisensar — sjå <code>license:</code>-feltet i det einskilde skjemaet.'
+    en: 'The individual models have their own licenses — see the <code>license:</code> field in each schema.'
+  nav.rettleiingar:
+    nn: Rettleiingar
+    en: Guides
+  nav.kom_i_gang:
+    nn: Kom i gang
+    en: Getting started
+  nav.bli_modelleigar:
+    nn: Bli modelleigar
+    en: Become a model owner
+  nav.ny_domenemodell:
+    nn: Ny domenemodell
+    en: New domain model
+  nav.ny_begrepskatalog:
+    nn: Ny begrepskatalog
+    en: New concept catalogue
+  nav.byggmanifest:
+    nn: Byggmanifest
+    en: Build manifest
+  nav.kommandooversikt:
+    nn: Kommandooversikt
+    en: Command overview
+  nav.arkitektur:
+    nn: Arkitektur
+    en: Architecture
+  nav.arkitekturoversikt:
+    nn: Arkitekturoversikt
+    en: Architecture overview
+  nav.importhierarki:
+    nn: Importhierarki
+    en: Import hierarchy
+  nav.ap_no_arkitektur:
+    nn: AP-NO arkitektur og avvik
+    en: AP-NO architecture and deviations
+  nav.standardetterleving:
+    nn: Standardetterleving
+    en: Standards compliance
+  nav.ekstern_bruk:
+    nn: Bruk frå eksternt repo
+    en: Use from an external repository
+  nav.publisering:
+    nn: Publisering
+    en: Publishing
+  nav.publiseringsflyt:
+    nn: Publiseringsflyt
+    en: Publishing flow
+  nav.publiser_begrep:
+    nn: Publiser til Felles Begrepskatalog
+    en: Publish to Felles Begrepskatalog
+  nav.publiser_modell:
+    nn: Publiser til Felles Datakatalog
+    en: Publish to Felles Datakatalog
+  nav.automasjon:
+    nn: Automasjon
+    en: Automation
+  nav.artefaktgenerering:
+    nn: Artefaktgenerering — kjelder og pipeline
+    en: Artifact generation — sources and pipeline
+  nav.modelldokumentasjon:
+    nn: Generering av modell-dokumentasjon
+    en: Generating model documentation
+  nav.modellmanifest:
+    nn: Generering av modellmanifest
+    en: Generating model manifests
+  nav.readme_tabellar:
+    nn: README-tabellgenerering
+    en: README table generation
+  nav.monitorering:
+    nn: Monitorering av automasjon
+    en: Monitoring the automation
+  nav.alle_domene:
+    nn: alle domene
+    en: all domains
+  nav.om:
+    nn: Om dette repoet
+    en: About this repository

@@ -647,23 +647,31 @@ log_info "$(printf "${CLR_OK}✓ Steg 2c ferdig${CLR_RST} (%s)" "$(fmt_elapsed_m
 # ---------------------------------------------------------------------------
 # Steg 3: Generer mkdocs.yml
 # ---------------------------------------------------------------------------
-log_step "Steg 3: Generer mkdocs.yml"
-t4=$(now_ms)
-
-{
-cat << 'STATIC'
-site_name:  Norske W3C-profiler og offentlige domenemodellar i LinkML-format
-site_description: Norske W3C-applikasjonsprofilar og offentlige domenemodellar i LinkML-format
-site_url: https://audunautomat.github.io/linkml-datamodellering-no
-docs_dir: docs
-copyright: >
-  Repoet er lisensiert under <a href="https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/LICENSE">MIT-lisens</a>.
-  Dei enkelte modellane har egne lisensar — sjå <code>license:</code>-feltet i det einskilde skjemaet.
-
+# write_mkdocs_config <fil> <docs_dir> <site_url> <custom_dir> <site_dir|-> <alternate:true|false>
+# Skriv ein mkdocs-konfig for gjeldande språk ($I18N_LANG): tittel, copyright
+# og nav-etikettar frå strengkatalogen, og språkveljar (extra.alternate) når
+# <alternate> er true. Sjå steg 7 i specs/backlog/lokalisering-dokumentasjonsportal.md.
+PORTAL_URL="https://audunautomat.github.io/linkml-datamodellering-no"
+write_mkdocs_config() {
+    local out="$1" docs_dir="$2" site_url="$3" custom_dir="$4" site_dir="$5" alternate="$6"
+    local base_path="${PORTAL_URL#https://*/}"
+    local alle_domene
+    alle_domene=$(t nav.alle_domene)
+    {
+        echo "site_name:  $(t portal.site_name)"
+        echo "site_description: $(t portal.site_description)"
+        echo "site_url: ${site_url}"
+        echo "docs_dir: ${docs_dir}"
+        [ "$site_dir" != "-" ] && echo "site_dir: ${site_dir}"
+        echo "copyright: >"
+        echo "  $(t portal.copyright_1 lenkje="https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/LICENSE")"
+        echo "  $(t portal.copyright_2)"
+        echo ""
+        cat << STATIC
 theme:
   name: material
-  custom_dir: overrides
-  language: nn
+  custom_dir: ${custom_dir}
+  language: ${I18N_LANG}
   features:
     - navigation.indexes
     - navigation.top
@@ -717,69 +725,96 @@ validation:
   nav:
     omitted_files: ignore
 
-nav:
-  - Rettleiingar:
-      - index.md
-      - Kom i gang:
-          - kom-i-gang/index.md
-          - Bli modelleigar: kom-i-gang/ny-org.md
-          - Ny domenemodell: kom-i-gang/ny-domenemodell.md
-          - Ny begrepskatalog: kom-i-gang/ny-begrepsmodell.md
-          - Byggmanifest: kom-i-gang/build-config.md
-          - Kommandooversikt: kom-i-gang/kommandoar.md
-      - Arkitektur:
-          - arkitektur/index.md
-          - Arkitekturoversikt: arkitektur/arkitektur-oversikt.md
-          - Importhierarki: arkitektur/importhierarki.md
-          - Valideringsreglar: arkitektur/valideringsregler.md
-          - AP-NO arkitektur og avvik: arkitektur/ap-no-arkitektur.md
-          - Standardetterleving: arkitektur/standardetterleving.md
-          - Bruk frå eksternt repo: arkitektur/ekstern-bruk.md
-      - Publisering:
-          - publisering/index.md
-          - Publiseringsflyt: publisering/publisering-oversikt.md
-          - Publiser til Felles Begrepskatalog: publisering/publisering-begrep.md
-          - Publiser til Felles Datakatalog: publisering/publisering-modell.md
-      - Automasjon:
-          - automasjon/index.md
-          - Artefaktgenerering — kjelder og pipeline: automasjon/artefakt-generering.md
-          - Generering av modell-dokumentasjon: automasjon/index-md-struktur.md
-          - Generering av modellmanifest: automasjon/modellmanifest-generering.md
-          - README-tabellgenerering: automasjon/readme-tabellgenerering.md
-          - Monitorering av automasjon: automasjon/monitorering.md
-      - Modellanalyse:
-          - modellanalyse/index.md
-          - Liknande klassenavn (alle domene): modellanalyse/liknande-klassenavn-alle-domene.md
-          - Liknande slotnavn (alle domene): modellanalyse/liknande-slotnavn-alle-domene.md
-          - Liknande typenavn (alle domene): modellanalyse/liknande-typenavn-alle-domene.md
-      - Om dette repoet: om.md
 STATIC
+        if [ "$alternate" = true ]; then
+            echo "extra:"
+            echo "  alternate:"
+            local l
+            for l in $I18N_LANGUAGES; do
+                echo "    - name: ${I18N_LANGUAGE_NAMES[$l]}"
+                echo "      link: /${base_path}/${l}/"
+                echo "      lang: ${l}"
+            done
+            echo ""
+        fi
+        echo "nav:"
+        echo "  - $(t nav.rettleiingar):"
+        echo "      - index.md"
+        echo "      - $(t nav.kom_i_gang):"
+        echo "          - kom-i-gang/index.md"
+        echo "          - $(t nav.bli_modelleigar): kom-i-gang/ny-org.md"
+        echo "          - $(t nav.ny_domenemodell): kom-i-gang/ny-domenemodell.md"
+        echo "          - $(t nav.ny_begrepskatalog): kom-i-gang/ny-begrepsmodell.md"
+        echo "          - $(t nav.byggmanifest): kom-i-gang/build-config.md"
+        echo "          - $(t nav.kommandooversikt): kom-i-gang/kommandoar.md"
+        echo "      - $(t nav.arkitektur):"
+        echo "          - arkitektur/index.md"
+        echo "          - $(t nav.arkitekturoversikt): arkitektur/arkitektur-oversikt.md"
+        echo "          - $(t nav.importhierarki): arkitektur/importhierarki.md"
+        echo "          - $(t valideringsreglar.tittel): arkitektur/valideringsregler.md"
+        echo "          - $(t nav.ap_no_arkitektur): arkitektur/ap-no-arkitektur.md"
+        echo "          - $(t nav.standardetterleving): arkitektur/standardetterleving.md"
+        echo "          - $(t nav.ekstern_bruk): arkitektur/ekstern-bruk.md"
+        echo "      - $(t nav.publisering):"
+        echo "          - publisering/index.md"
+        echo "          - $(t nav.publiseringsflyt): publisering/publisering-oversikt.md"
+        echo "          - $(t nav.publiser_begrep): publisering/publisering-begrep.md"
+        echo "          - $(t nav.publiser_modell): publisering/publisering-modell.md"
+        echo "      - $(t nav.automasjon):"
+        echo "          - automasjon/index.md"
+        echo "          - $(t nav.artefaktgenerering): automasjon/artefakt-generering.md"
+        echo "          - $(t nav.modelldokumentasjon): automasjon/index-md-struktur.md"
+        echo "          - $(t nav.modellmanifest): automasjon/modellmanifest-generering.md"
+        echo "          - $(t nav.readme_tabellar): automasjon/readme-tabellgenerering.md"
+        echo "          - $(t nav.monitorering): automasjon/monitorering.md"
+        echo "      - $(t seksjon.modellanalyse.tittel):"
+        echo "          - modellanalyse/index.md"
+        echo "          - $(t modellanalyse.liknande_klassenavn.tittel) (${alle_domene}): modellanalyse/liknande-klassenavn-alle-domene.md"
+        echo "          - $(t modellanalyse.liknande_slotnavn.tittel) (${alle_domene}): modellanalyse/liknande-slotnavn-alle-domene.md"
+        echo "          - $(t modellanalyse.liknande_typenavn.tittel) (${alle_domene}): modellanalyse/liknande-typenavn-alle-domene.md"
+        echo "      - $(t nav.om): om.md"
 
-    for domain in "${ALL_DOMAINS[@]}"; do
-        label=$(domain_label "$domain")
-        echo "  - '${label}':"
-        echo "      - ${domain}/index.md"
+        for domain in "${ALL_DOMAINS[@]}"; do
+            label=$(domain_label "$domain")
+            echo "  - '${label}':"
+            echo "      - ${domain}/index.md"
 
-        schemas_str="${DOMAIN_SCHEMA_LIST[$domain]:-}"
-        for schema in $schemas_str; do
-            # Hopp over delmodellar — dei vert lagt til under hovudmodellen
-            [ -n "${SCHEMA_PARENT_MODEL[$schema]:-}" ] && continue
+            schemas_str="${DOMAIN_SCHEMA_LIST[$domain]:-}"
+            for schema in $schemas_str; do
+                # Hopp over delmodellar — dei vert lagt til under hovudmodellen
+                [ -n "${SCHEMA_PARENT_MODEL[$schema]:-}" ] && continue
 
-            echo "      - '${schema}': ${domain}/${schema}/index.md"
+                echo "      - '${schema}': ${domain}/${schema}/index.md"
 
-            # Legg til delmodellar innrykka under hovudmodell (submodels er komma-separert)
-            submodels="${SCHEMA_SUBMODELS[$schema]:-}"
-            if [ -n "$submodels" ]; then
-                IFS=',' read -ra sub_array <<< "$submodels"
-                for sub in "${sub_array[@]}"; do
-                    echo "      - '${sub}': ${domain}/${sub}/index.md"
-                done
-            fi
+                # Legg til delmodellar innrykka under hovudmodell (submodels er komma-separert)
+                submodels="${SCHEMA_SUBMODELS[$schema]:-}"
+                if [ -n "$submodels" ]; then
+                    IFS=',' read -ra sub_array <<< "$submodels"
+                    for sub in "${sub_array[@]}"; do
+                        echo "      - '${sub}': ${domain}/${sub}/index.md"
+                    done
+                fi
+            done
         done
-    done
-} > "$MKDOCS_YML"
+    } > "$out"
+}
 
+log_step "Steg 3: Generer mkdocs.yml"
+t4=$(now_ms)
+
+# mkdocs/mkdocs.yml (standardspråket, dagens adresser, utan språkveljar) —
+# brukt av `make docs-build`/`docs-serve` til byggjetrea vert tekne i bruk.
+write_mkdocs_config "$MKDOCS_YML" docs "$PORTAL_URL" overrides - false
 log_info "${CLR_OK}Oppdatert mkdocs/mkdocs.yml${CLR_RST}"
+
+# mkdocs/build/mkdocs.<lang>.yml (L2: /<lang>/, språkveljar) — stiane er
+# relative til mkdocs/build/.
+for lang in $I18N_LANGUAGES; do
+    i18n_load "$lang"
+    write_mkdocs_config "$BUILD_DIR/mkdocs.$lang.yml" "$lang" "$PORTAL_URL/$lang/" "overrides-$lang" "site/$lang" true
+    log_info "${CLR_OK}Oppdatert mkdocs/build/mkdocs.$lang.yml${CLR_RST}"
+done
+i18n_load
 
 elapsed4_ms=$(( $(now_ms) - t4 ))
 log_info "$(printf "${CLR_OK}✓ Steg 3 ferdig${CLR_RST} (%s)" \

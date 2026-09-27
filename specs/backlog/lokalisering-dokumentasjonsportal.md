@@ -283,7 +283,7 @@ val vert teke i steg 2 (sjå handlingslista).
 - [x] 4. Uttrekk av hardkoda strengar (byte-identisk nynorsk output: 8555/8555 filer, òg med fiksturar)
 - [x] 5. i18n-markørar og eksplisitte anker-ID-ar (O2-a) i docgen-malane og `sections/*.sh` (8068 sider, 1 side med tapte anker = gamal lokal restdata, sjå avgjerder)
 - [x] 6. To språktre, fallback, artefakter på rot-stien og vidaresendingssider i `publish.sh` (513/513 artefaktlenkjer og 8068/8068 vidaresendingar held i sandkassebygg)
-- [ ] 7. `mkdocs.yml` per språk og `extra.alternate`
+- [x] 7. `mkdocs.yml` per språk og `extra.alternate` (`mkdocs/build/mkdocs.{nn,en}.yml`, begge bygde i sandkassa)
 - [ ] 8. Makefile, CI-deploy og lenkjesjekk for `/en/`
 - [ ] 9. `source_hash` og `make i18n-status`
 - [ ] 10. Første engelske innhald, LLM-omsett (katalog, framside, `om.md`)
@@ -608,6 +608,38 @@ valt å la dette stå ope inntil vidare.
       translated»-merknad og i restdata frå eldre malar (`bvrinn`).
     - Byggjetid: om lag 320 s per språk i sandkassa når begge byggja køyrer
       parallelt.
+- **Konfig per språk (steg 7):**
+  - Steg 3 i `publish.sh` er gjord om til `write_mkdocs_config <fil> <docs_dir>
+    <site_url> <custom_dir> <site_dir|-> <alternate>`. Funksjonen skriv både
+    `mkdocs/mkdocs.yml` (standardspråket, dagens adresser, utan språkveljar,
+    byte-identisk med steg 6) og `mkdocs/build/mkdocs.<lang>.yml` (`docs_dir:
+    <lang>`, `site_dir: site/<lang>`, `custom_dir: overrides-<lang>`,
+    `site_url: …/<lang>/`, stiar relative til `mkdocs/build/`).
+  - Tittel, beskriving, copyright og alle nav-etikettar kjem frå katalogen
+    (`portal.*`, `nav.*`). Eksisterande nøklar vert gjenbrukte der teksten er den
+    same (`valideringsreglar.tittel`, `seksjon.modellanalyse.tittel`,
+    `modellanalyse.liknande_*.tittel`). Domeneetikettar kjem som før frå
+    `domain_label`.
+  - Språkveljar: `extra.alternate` med `link: /<base-sti>/<lang>/`, der
+    base-stien er henta frå `PORTAL_URL`. Det er ei sti-absolutt lenkje, slik
+    Material krev. Navna står i ny toppnøkkel `language_names` i katalogen: kvart
+    språk på sitt eige språk, uavhengig av grensesnittspråket. Nøkkelen vert
+    validert (`check`) og eksportert som `I18N_LANGUAGE_NAMES` i `render-sh`.
+  - Søk: ingen eksplisitt `plugins.search.lang`. Material set søkjespråket frå
+    `theme.language` (stadfesta: `"lang":["no"]` for nn, `["en"]` for en).
+  - `.claude/rules/mkdocs-portal.md` seier no at nye rettleiingssider skal ha ei
+    `echo`-linje i `write_mkdocs_config` og ein `nav.*`-nøkkel. Heredoc-blokka for
+    nav finst ikkje lenger.
+  - Verifisering (sandkasse): `mkdocs build` med dei genererte konfigane for `nn`
+    og `en` (om lag 320 s kvar, parallelt), `rot/` slått saman inn i `site/`:
+    - Artefaktlenkjer: 513/513 i begge språk.
+    - Vidaresendingar: 8068/8068.
+    - Språkveljar i HTML: `hreflang` nn/en til `/linkml-datamodellering-no/{nn,en}/`.
+    - Sitemap per språk med rette `/nn/`- og `/en/`-adresser, som Material sin
+      «same side»-logikk krev.
+    - Nav-etikettar og `<title>` på rett språk.
+    - 404 finst per språk.
+    - Ingen byggjeåtvaringar utover Material-banneret om MkDocs 2.0.
 - **Prototypen køyrer containerar direkte (steg 2):** `make docs-publish`/`docs-build`
   byggjer alltid heile portalen og skriv til `mkdocs/docs/`. Prototypen køyrde
   difor `squidfunk/mkdocs-material:9.7` (same image som `Dockerfile.mkdocs`)

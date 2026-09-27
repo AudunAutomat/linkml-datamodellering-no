@@ -65,10 +65,11 @@ class CatalogError(Exception):
 
 
 class Catalog:
-    def __init__(self, languages, default_language, strings):
+    def __init__(self, languages, default_language, strings, language_names=None):
         self.languages = languages
         self.default_language = default_language
         self.strings = strings
+        self.language_names = language_names or {}
 
     def raw(self, key, lang):
         if lang not in self.languages:
@@ -108,6 +109,9 @@ def validate(data):
     default = data.get("default_language")
     if default not in languages:
         errors.append(f"'default_language' ({default!r}) må vere eitt av språka i 'languages'")
+    names = data.get("language_names")
+    if not isinstance(names, dict) or any(not isinstance(names.get(l), str) or not names.get(l).strip() for l in languages):
+        errors.append("'language_names' må ha eit ikkje-tomt navn for kvart språk i 'languages'")
     strings = data.get("strings")
     if not isinstance(strings, dict):
         return errors + ["'strings' må vere eit objekt med nøklar"]
@@ -142,7 +146,7 @@ def load_catalog(path=DEFAULT_CATALOG):
     errors = validate(data)
     if errors:
         raise CatalogError(f"ugyldig katalog {path}:\n  - " + "\n  - ".join(errors))
-    return Catalog(data["languages"], data["default_language"], data["strings"])
+    return Catalog(data["languages"], data["default_language"], data["strings"], data["language_names"])
 
 
 def find_usages(roots):
@@ -184,7 +188,9 @@ def render_sh(catalog, lang):
     for key, value in catalog.for_lang(lang).items():
         lines.append(f"  [{key}]={shlex.quote(value)}")
     lines += [")", f"I18N_LANG={shlex.quote(lang)}", f"I18N_DEFAULT_LANG={shlex.quote(catalog.default_language)}",
-              f"I18N_LANGUAGES={shlex.quote(' '.join(catalog.languages))}"]
+              f"I18N_LANGUAGES={shlex.quote(' '.join(catalog.languages))}",
+              "declare -gA I18N_LANGUAGE_NAMES=(" + " ".join(
+                  f"[{l}]={shlex.quote(catalog.language_names[l])}" for l in catalog.languages) + ")"]
     return "\n".join(lines) + "\n"
 
 

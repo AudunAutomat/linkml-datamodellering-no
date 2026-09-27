@@ -26,6 +26,7 @@ import i18n_strings  # noqa: E402
 VALID = """
 languages: [nn, en]
 default_language: nn
+language_names: {nn: Nynorsk, en: English}
 strings:
   section.kom_i_gang:
     nn: Kom i gang
@@ -89,6 +90,12 @@ class TestValidation(TmpCase):
         path = self.write("s.yaml", VALID.replace("default_language: nn", "default_language: nb"))
         with self.assertRaises(i18n_strings.CatalogError):
             i18n_strings.load_catalog(path)
+
+    def test_language_names_required(self):
+        path = self.write("s.yaml", VALID.replace("language_names: {nn: Nynorsk, en: English}", "language_names: {nn: Nynorsk}"))
+        result = run("check", "--catalog", str(path), "--scan-root", str(self.tmp))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("'language_names'", result.stderr)
 
     def test_missing_key_raises(self):
         catalog = i18n_strings.load_catalog(self.write("s.yaml", VALID))

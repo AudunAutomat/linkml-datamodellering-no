@@ -13,8 +13,10 @@ overskrivne ved neste publisering.
 
 **Sannkjelda for nav-menyen er `mkdocs/publish.sh`**, ikkje `mkdocs.yml`.
 
-- Nye rettleiingssider (`mkdocs/docs/*.md`) må leggast til i heredoc-blokka i
-  `publish.sh` (leit etter `nav:` → `- Rettleiingar:`)
+- Nye rettleiingssider (`mkdocs/docs/*.md`) må leggast til som `echo`-linje i
+  `write_mkdocs_config` i `publish.sh` (leit etter `nav.rettleiingar`), med ein
+  ny `nav.*`-nøkkel for etiketten i `mkdocs/lib/i18n/strings.yaml` (alle språk).
+  Same funksjon skriv `mkdocs/mkdocs.yml` og `mkdocs/build/mkdocs.<lang>.yml`.
 - Domene og skjema vert lagt til automatisk frå `generated/`-strukturen — ikkje
   rediger desse manuelt
 - Statisk innhald (`mkdocs/docs/` utanom genererte domene-katalogar) vert aldri
@@ -57,8 +59,10 @@ Alle skjema-jobbar køyrer parallelt for å redusere byggtid.
 - Hovud-`index.md` genereres frå `README.md` (med filtrering av intern-referansar)
 
 **Steg 4: Generer `mkdocs.yml`**
-- Statisk konfigurasjon (theme, plugins, markdown_extensions) frå heredoc-blokk
-- Dynamisk nav-meny: `- Rettleiingar:` (statisk) + domene-seksjonar (generert frå `generated/`-struktur)
+- `write_mkdocs_config` per språk: tittel, copyright og nav-etikettar frå
+  strengkatalogen, statisk konfigurasjon (theme, plugins, markdown_extensions) frå
+  heredoc-blokk, språkveljar (`extra.alternate`) i `mkdocs/build/mkdocs.<lang>.yml`
+- Dynamisk nav-meny: rettleiingar (statisk) + domene-seksjonar (generert frå `generated/`-struktur)
 
 **Viktige detaljar:**
 
