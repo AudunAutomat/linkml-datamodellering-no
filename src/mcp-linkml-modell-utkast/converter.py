@@ -45,16 +45,14 @@ def load_policy(name: str) -> dict:
 # ---------------------------------------------------------------------------
 
 def _to_plural(name: str, suffix: str = "er") -> str:
-    """Lagar container-slot-navn: lowercase første bokstav + suffiks.
+    """Lagar container-attributtnavn: snake_case + suffiks.
 
-    Bindestrekar vert erstatta med understrek for å gje gyldige attributtnavn.
-    Døme (suffix='er'): 'Person' → 'personers', 'Ting' → 'tinger'.
+    Døme (suffix='er'): 'Ting' → 'tinger', 'KontaktPerson' → 'kontakt_personer'.
     Dette er ein enkel heuristikk som gjev akseptable utkast-navn.
     """
     if not name:
         return name
-    safe = name.replace("-", "_")
-    return safe[0].lower() + safe[1:] + suffix
+    return _to_snake_case(name) + suffix
 
 
 def _transliterate(name: str) -> str:
@@ -67,27 +65,35 @@ def _transliterate(name: str) -> str:
     )
 
 
-def _sanitize_slot_name(name: str) -> str:
-    """Gjer slotnavnet til ein gyldig identifikator: erstatter - med _."""
-    return name.replace("-", "_")
+def _to_snake_case(name: str) -> str:
+    """Slotnavn etter LinkML-konvensjon (snake_case, berre a-z, 0-9 og _).
 
-
-def _sanitize_identifier(name: str) -> str:
-    """Gjer eit $defs-nøkkelnavn til ein gyldig LinkML/Python-identifikator.
-
-    Translittererer særnorske bokstavar og erstattar bindestrek med understrek.
-    Døme: 'E-postadresse' → 'E_postadresse'
+    Einaste sanering av slotnavn — bruk ho på *alle* stader eit slotnavn vert
+    utleidd (jf. .claude/rules/mcp-server-python.md). Translittererer særnorske
+    bokstavar, deler camelCase/PascalCase (inkl. akronym) og erstattar alle
+    andre skiljeteikn med understrek.
+    Døme: 'nedlastingsURL' → 'nedlastings_url', 'e-postadresse' → 'e_postadresse',
+    'mitt-skjema' → 'mitt_skjema', 'HTTPStatus' → 'http_status'.
     """
-    return _transliterate(name).replace("-", "_")
+    s = _transliterate(name)
+    s = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", s)
+    s = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", s)
+    s = re.sub(r"[^A-Za-z0-9]+", "_", s)
+    return s.strip("_").lower()
 
 
 def _to_pascal_case(name: str) -> str:
-    """Konverterer kebab-case/snake_case til PascalCase.
+    """Klasse-, type- og enumnavn etter LinkML-konvensjon (UpperCamelCase).
 
-    t.d. 'bvr-innfelles' → 'BvrInnfelles', 'generated' → 'Generated'
+    Einaste sanering av desse navna — bruk ho på *alle* stader eit slikt navn
+    vert utleidd ($defs-nøklar, $ref, allOf-foreldre, schemaName). Translittererer
+    særnorske bokstavar og slår saman ledd skilde av andre teikn enn bokstav/tal.
+    Store bokstavar inne i eit ledd vert behaldne.
+    Døme: 'bvr-innfelles' → 'BvrInnfelles', 'E-postadresse' → 'EPostadresse',
+    'mitt_skjema' → 'MittSkjema', 'geografiskAdresse' → 'GeografiskAdresse'.
     """
-    parts = name.replace("_", "-").split("-")
-    return "".join(p.capitalize() for p in parts if p)
+    parts = re.split(r"[^A-Za-z0-9]+", _transliterate(name))
+    return "".join(p[0].upper() + p[1:] for p in parts if p)
 
 
 # ---------------------------------------------------------------------------
@@ -167,9 +173,9 @@ def _register_prefix(prefixes: dict, prefix: str, uri: str, warnings: list) -> N
 def _resolve_ref(ref: str) -> str:
     """Hentar klassenavnet frå ein lokal JSON Schema $ref.
 
-    '#/$defs/Foo' → 'Foo', '#/$defs/E-postadresse' → 'E_postadresse'
+    '#/$defs/Foo' → 'Foo', '#/$defs/E-postadresse' → 'EPostadresse'
     """
-    return _sanitize_identifier(ref.split("/")[-1])
+    return _to_pascal_case(ref.split("/")[-1])
 
 
 def _resolve_type(prop: dict, policy: dict, warnings: list) -> dict:
@@ -267,7 +273,7 @@ def _collect_types(json_schema: dict) -> dict:
             if pattern := defn.get("pattern"):
                 type_entry["pattern"] = pattern
 
-            types_out[_sanitize_identifier(name)] = type_entry
+            types_out[_to_pascal_case(name)] = type_entry
 
     return types_out
 
@@ -290,7 +296,7 @@ def _collect_enums(json_schema: dict) -> dict:
             enum_entry["description"] = defn.get("description") or "TODO: beskriv enumet"
             enum_entry["permissible_values"] = {str(v): {} for v in enum_values}
 
-            enums_out[_sanitize_identifier(name)] = enum_entry
+            enums_out[_to_pascal_case(name)] = enum_entry
 
     return enums_out
 
@@ -340,7 +346,7 @@ def _merge_allof_members(
                 raw_name = ref.split("/")[-1]
                 parent_defn = all_defs.get(raw_name)
                 if parent_defn is not None and _is_class_like(parent_defn):
-                    ref_parents.append((raw_name, _sanitize_identifier(raw_name)))
+                    ref_parents.append((raw_name, _to_pascal_case(raw_name)))
                 else:
                     warnings.append(
                         f"$ref '{ref}' i allOf peikar ikkje til ein klasse — eigenskapane vert ignorert"
@@ -408,10 +414,10 @@ def _collect_classes(json_schema: dict, schema_name: str, warnings: list) -> dic
         }
         if is_a:
             entry["is_a"] = is_a
-        classes[_sanitize_identifier(name)] = entry
+        classes[_to_pascal_case(name)] = entry
 
     if not classes and ("properties" in json_schema or json_schema.get("type") == "object"):
-        classes[_sanitize_identifier(schema_name)] = {
+        classes[_to_pascal_case(schema_name)] = {
             "properties": dict(json_schema.get("properties") or {}),
             "required":   set(json_schema.get("required") or []),
             "description": json_schema.get("description") or "",
@@ -483,12 +489,21 @@ def convert(
 
     # ── Globale slots (med kollisjonsdeteksjon) ───────────────────────────────
     global_slots: dict = {}
+    # slotnavn -> originale JSON-property-navn som vart sanerte til det
+    slot_sources: dict[str, set] = {}
 
     for cls_data in classes_data.values():
         for prop_name, prop_def in cls_data["properties"].items():
             if prop_name == "id":
                 continue
-            slot_name = _sanitize_slot_name(prop_name)
+            slot_name = _to_snake_case(prop_name)
+            sources = slot_sources.setdefault(slot_name, set())
+            if sources and prop_name not in sources:
+                warnings.append(
+                    f"Eigenskapane {', '.join(repr(s) for s in sorted(sources))} og '{prop_name}' "
+                    f"vert same slot '{slot_name}' etter snake_case-konvertering — slått saman"
+                )
+            sources.add(prop_name)
             attrs     = _resolve_type(prop_def, policy, warnings)
             new_range = attrs.get("range", "string")
 
@@ -548,6 +563,14 @@ def convert(
                     slot_entry["multivalued"] = True
                 global_slots[slot_name] = slot_entry
 
+    # Originalnavnet frå JSON Schema vert teke vare på som alias når
+    # snake_case-konverteringa endra det, slik at koplinga til kjeldedata
+    # (t.d. property-navnet `nedlastingsURL`) ikkje går tapt.
+    for slot_name, sources in slot_sources.items():
+        aliases = sorted(s for s in sources if s != slot_name)
+        if aliases and slot_name in global_slots:
+            global_slots[slot_name]["aliases"] = aliases
+
     # ── Bygg klasse-oppføringane ──────────────────────────────────────────────
     classes_out: dict = {}
     # klassenamn -> (lokal class_uri-verdi, kommentar-tekst) for klasser med
@@ -590,7 +613,8 @@ def convert(
         # is_a-klasser arvar 'id' (og andre slots) frå forelderen — skal ikkje
         # deklarerast på nytt (sjå CLAUDE.md § "Slots, ikke attributes").
         id_slot = [] if is_a else (["id"] if add_id else [])
-        slot_names = id_slot + [_sanitize_slot_name(n) for n in props if n != "id"]
+        # dict.fromkeys: to property-navn kan falle saman til same slotnavn
+        slot_names = list(dict.fromkeys(id_slot + [_to_snake_case(n) for n in props if n != "id"]))
         if slot_names:
             entry["slots"] = slot_names
 
@@ -598,7 +622,7 @@ def convert(
         for prop_name in props:
             if prop_name == "id":
                 continue
-            slot_name = _sanitize_slot_name(prop_name)
+            slot_name = _to_snake_case(prop_name)
             su: dict = {}
             if prop_name in required:
                 su["required"]   = True
@@ -642,7 +666,7 @@ def convert(
             "range":       "uriorcurie",
         }
     if add_kontaktpunkt:
-        slots_out[f"{schema_name}_kontaktinformasjon"] = {
+        slots_out[f"{_to_snake_case(schema_name)}_kontaktinformasjon"] = {
             "description": "Kontaktinformasjon for ressursen.",
             "slot_uri":    "dcat:contactPoint",
             "range":       "uriorcurie",

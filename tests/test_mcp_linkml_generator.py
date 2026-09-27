@@ -464,6 +464,66 @@ class TestConversion(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
+# TestNavngjeving — genererte navn følgjer LinkML standard_naming
+# (specs/done/modell-utkast-navngjeving.md)
+# ---------------------------------------------------------------------------
+
+class TestNavngjeving(unittest.TestCase):
+
+    _SCHEMA = {
+        "$defs": {
+            "geografisk-adresse": {
+                "type": "object",
+                "properties": {
+                    "nedlastingsURL": {"type": "string"},
+                    "e-postadresse": {"type": "string"},
+                    "gyldigFraDato": {"type": "string", "format": "date"},
+                    "kontakt": {"$ref": "#/$defs/kontakt-person"},
+                },
+            },
+            "kontakt-person": {"type": "object", "properties": {"navn": {"type": "string"}}},
+            "status-kode": {"enum": ["AKTIV", "INAKTIV"]},
+            "org-nr": {"type": "string", "pattern": "^[0-9]{9}$"},
+        }
+    }
+
+    def test_klasse_type_enum_og_ref_vert_uppercamelcase(self):
+        schema, _ = _convert(self._SCHEMA)
+        self.assertIn("GeografiskAdresse", schema["classes"])
+        self.assertIn("KontaktPerson", schema["classes"])
+        self.assertIn("StatusKode", schema["enums"])
+        self.assertIn("OrgNr", schema["types"])
+        self.assertEqual(schema["slots"]["kontakt"]["range"], "KontaktPerson")
+
+    def test_slotnavn_vert_snake_case_med_alias(self):
+        schema, _ = _convert(self._SCHEMA)
+        slots = schema["slots"]
+        self.assertEqual(slots["nedlastings_url"]["aliases"], ["nedlastingsURL"])
+        self.assertEqual(slots["e_postadresse"]["aliases"], ["e-postadresse"])
+        self.assertEqual(slots["gyldig_fra_dato"]["aliases"], ["gyldigFraDato"])
+        self.assertNotIn("aliases", slots["kontakt"])
+        self.assertIn("nedlastings_url", schema["classes"]["GeografiskAdresse"]["slots"])
+
+    def test_kontaktinformasjon_slot_og_containerattributt_er_snake_case(self):
+        schema, _ = _convert(self._SCHEMA, schema_name="mitt-skjema")
+        self.assertIn("mitt_skjema_kontaktinformasjon", schema["slots"])
+        self.assertIn("kontakt_personer", schema["classes"]["Containerklasse"]["attributes"])
+
+    def test_samanfallande_property_navn_gjev_aatvaring(self):
+        schema, warnings = _convert({"$defs": {"Ting": {"type": "object", "properties": {
+            "fooBar": {"type": "string"}, "foo_bar": {"type": "string"}}}}})
+        self.assertEqual(schema["classes"]["Ting"]["slots"].count("foo_bar"), 1)
+        self.assertTrue(any("vert same slot 'foo_bar'" in w for w in warnings), warnings)
+
+    def test_generert_skjema_gjev_ingen_standard_naming_funn(self):
+        yaml_str, _ = convert(self._SCHEMA, _policy(), schema_id="https://example.org/mitt-skjema",
+                              schema_name="mitt-skjema")
+        issues = validate_generated(yaml_str)["lint_issues"]
+        naming = [i for i in issues if i["rule"] == "standard_naming"]
+        self.assertEqual(naming, [])
+
+
+# ---------------------------------------------------------------------------
 # TestGeneratedOutput
 # ---------------------------------------------------------------------------
 

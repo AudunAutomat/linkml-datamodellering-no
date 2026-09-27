@@ -29,7 +29,7 @@ generation:
   # Legg til id-slot med identifier: true og range: uriorcurie på alle klasser
   add_id_slot: true
 
-  # Legg til ein global <schema_name>_kontaktinformasjon-slot (dcat:contactPoint,
+  # Legg til ein global <schema_name i snake_case>_kontaktinformasjon-slot (dcat:contactPoint,
   # range: uriorcurie). Navnet er prefiksa med skjemaet sitt eige, garantert
   # unike schema_name — strukturelt kollisjonsfritt mot alle faste AP-NO-
   # vokabularslot (t.d. det importerte `kontaktpunkt`-slotet frå
@@ -43,7 +43,7 @@ generation:
   # container_class_name: ""   # tom = utleid frå schemaName (t.d. 'bvr-innfelles' → 'BvrInnfellesContainer')
   add_container_class: true
 
-  # Suffiks for fleirtal i container-slots (t.d. "Person" → "Personers")
+  # Suffiks for fleirtal i container-slots (t.d. "Person" → "personer")
   # Overstyrer den enkle vokal/konsonant-heuristikken i converter.py
   container_slot_suffix: "er"
 

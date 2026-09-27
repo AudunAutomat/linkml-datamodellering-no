@@ -56,8 +56,8 @@ JSON Schema (fil)
 | `imports` | `linkml:types` (standard) |
 | `subsets` | Ikkje definert lokalt — `Obligatorisk`/`Anbefalt`/`Valgfri` vert berre *referert* via `in_subset` og må finnast i importgrafen (t.d. via `common-ap-no-schema.yaml`) |
 | `slots.id` | Global `id`-slot med `identifier: true` og `range: uriorcurie` |
-| `slots.<prop>` | Ein global slot per eigeskap i JSON Schema, med `slot_uri: <prefix>:<prop>` |
-| `classes.<Klasse>` | Ein klasse per `$defs`-objekt. Har `class_uri`, `annotations.begrepsidentifikator: TODO` og `slot_usage` med `required`/`in_subset`. Ein `allOf`-komponert def (sjå under) får i tillegg `is_a` |
+| `slots.<prop>` | Ein global slot per eigeskap i JSON Schema, med `slot_uri: <prefix>:<prop>`. Slotnavnet vert snake_case (translitterert, t.d. `nedlastingsURL` → `nedlastings_url`). Originalnavnet vert teke vare på i `aliases:` når det er endra. Fell to eigenskapar saman til same slot, gjev konverteraren ei åtvaring |
+| `classes.<Klasse>` | Ein klasse per `$defs`-objekt, med navnet i UpperCamelCase (t.d. `geografisk-adresse` → `GeografiskAdresse`, same for typar og enum). Har `class_uri`, `annotations.begrepsidentifikator: TODO` og `slot_usage` med `required`/`in_subset`. Ein `allOf`-komponert def (sjå under) får i tillegg `is_a` |
 | `classes.<Klasse>.class_uri` | Slår opp klassenamnet mot ei kjeldeverifisert vokabultabell (EU Core-vokabular, W3C `org:`/`foaf:`/`vcard:`/`time:` m.fl., sjå `_EKSTERN_CLASS_URI_KANDIDATAR` i `converter.py`). **Eksakt treff** vert sett automatisk (t.d. `Virksomhet` → `rov:RegisteredOrganization`), med naudsynt prefiks lagt til i `prefixes`. **Tvetydig treff** (fleire kandidatar, t.d. `Person` → `person:Person`/`foaf:Person`) behelder det lokale placeholder-prefikset og får ein `# TODO: vurder ekstern class_uri-kandidat: ...`-kommentar i YAML-teksten. **Ingen treff** fell tilbake til det lokale placeholder-prefikset, uendra frå før |
 | `classes.<Name>Container` | `tree_root: true`, med `multivalued`/`inlined`/`inlined_as_list`-attributt per klasse |
 
@@ -88,7 +88,7 @@ JSON Schema (fil)
 
 Når `validate: true` (standard) køyrer to steg automatisk etter generering:
 
-**A — Lint:** `linkml.linter.Linter` sjekkar strukturelle feil i det genererte skjemaet.
+**A — Lint:** `linkml.linter.Linter` med regelsettet `recommended` (sjå `_LINTER_CONFIG` i `validator.py`) sjekkar strukturelle feil og navnekonvensjonar i det genererte skjemaet.
 
 **B — Dummy-datasett-validering:** Bygger eit minimalt datasett med plasshaldarverdiar for alle `required`-slots og `identifier`-slots, og validerer det mot containerklassen med `linkml.validator.validate`. Dette fangar opp type- og referansefeil som berre syner seg med faktiske data.
 

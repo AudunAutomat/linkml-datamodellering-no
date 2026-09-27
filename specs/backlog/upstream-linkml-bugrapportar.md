@@ -108,389 +108,215 @@ Ingen treff for U1, U2, U3, U4, U7 og U8 (søk på `rdflib_loader`, `RDFLibLoade
 
 ## Upstream-rapportar
 
-Prioritert rekkjefølgje (størst verknad for oss først): U1, U2, U3, U7, U8, U6, U5, U4.
+Prioritert rekkjefølgje: U1, U2, U3, U7, U8, U6, U5, U4.
 
-Felles miljølinje for alle rapportane:
+Kvar rapport følgjer same mal: tittel, éi setning om problemet, minimal
+reproduksjon, forventa/faktisk, årsak og framlegg til fiks. Alle MRE-ar er
+køyrde på nytt i denne forma (2026-09-27) og reproduserer på både 1.11.1 og
+`main`. Legg til denne linja nedst i kvart issue:
 
-> **Environment:** linkml 1.11.1 / linkml-runtime 1.11.1 (PyPI, `python:3.12-slim`), and re-verified on `linkml/linkml` main @ `5ef7622e` (2026-09-25).
-
----
-
-### U1 — `RDFLibLoader` maps a predicate to the wrong slot when several slots share the same `slot_uri`
-
-*Dekkjer BUG-1 og BUG-2 (roundtrip-ttl-skippa for 7 modellkatalog-/begrepskatalog-skjema og 3 NGR-skjema).*
-
-**Title:** `rdflib_loader`: predicate→slot lookup ignores the subject's class when two slots share a `slot_uri` (TypeError: unexpected keyword argument)
-
-**Description**
-
-When two different slots in a schema have the same `slot_uri` (common when
-reusing vocabulary terms such as `dct:title` or `skos:prefLabel` with
-different ranges on different classes), loading RDF with `RDFLibLoader` fails.
-The loader picks one global slot per predicate, regardless of which slots the
-subject's class actually has, and then passes that slot name to the class
-constructor.
-
-**Schema** (`schema.yaml`)
-
-```yaml
-id: https://example.org/b01
-name: b01
-prefixes:
-  linkml: https://w3id.org/linkml/
-  ex: https://example.org/b01/
-  dct: http://purl.org/dc/terms/
-default_prefix: ex
-imports: [linkml:types]
-slots:
-  id:
-    identifier: true
-    range: uriorcurie
-  title:
-    slot_uri: dct:title
-    range: string
-  title_literal:            # second slot mapped to the same predicate
-    slot_uri: dct:title
-    range: string
-classes:
-  Catalog:
-    tree_root: true
-    slots: [id, title]
-  Dataset:                  # unrelated class that uses the other slot
-    slots: [id, title_literal]
-```
-
-**Data** (`data.yaml`)
-
-```yaml
-id: ex:cat1
-title: My catalog
-```
-
-**Steps**
-
-```sh
-linkml-convert -s schema.yaml -o out.ttl data.yaml     # OK
-linkml-convert -s schema.yaml -o back.yaml out.ttl     # fails
-```
-
-**Expected:** `back.yaml` equals `data.yaml`.
-
-**Actual:**
-
-```
-TypeError: Catalog.__init__() got an unexpected keyword argument 'title_literal'
-```
-
-**Root cause**
-
-`packages/linkml_runtime/src/linkml_runtime/loaders/rdflib_loader.py:99`:
-
-```python
-uri_to_slot = {URIRef(schemaview.get_uri(s, expand=True)): s for s in schemaview.all_slots().values()}
-```
-
-The dict is keyed by URI only, so the last slot with a given URI wins
-globally. The subsequent `schemaview.induced_slot(uri_to_slot[p].name, subject_class)`
-(line ~137) does not check that the slot belongs to `subject_class`.
-
-**Suggested fix:** resolve the predicate per subject class, e.g. build
-`{uri: [slots...]}` and choose the slot among
-`schemaview.class_induced_slots(subject_class)` whose (induced) URI matches
-`p`; fall back to the global map only if the class has no match.
+> **Environment:** linkml 1.11.1 (PyPI); also reproduced on `main` @ `5ef7622e`.
 
 ---
 
-### U2 — `RDFLibLoader` raises `MappingError` when an attribute has the same name as a global slot with a different `slot_uri`
+### U1 — Two slots with the same `slot_uri` break RDF loading
 
-*Dekkjer BUG-3 (`fint-administrasjon`, `fint-okonomi`, `fint-personvern`, `fint-utdanning`, `samt-bu`).*
+*Dekkjer BUG-1/BUG-2 (10 skjema skippa i roundtrip-ttl).*
 
-**Title:** `rdflib_loader`: "No pred for …" when a class attribute shadows a global slot of the same name
+**Title:** `RDFLibLoader`: two slots with the same `slot_uri` → `TypeError: unexpected keyword argument`
 
-**Description**
-
-A class attribute with the same name as a schema-level slot is serialised by
-`RDFLibDumper` using the attribute's own (induced) URI, but `RDFLibLoader`
-builds its predicate map from `SchemaView.all_slots()`, where the global slot
-wins for that name. The attribute's URI is therefore unknown to the loader,
-and a YAML→TTL→YAML round-trip fails.
-
-**Schema** (`schema.yaml`)
+If two slots share a `slot_uri`, the loader uses one of them for **every** class — even a class that doesn't have that slot.
 
 ```yaml
-id: https://example.org/b03
-name: b03
-prefixes:
-  linkml: https://w3id.org/linkml/
-  ex: https://example.org/b03/
-  other: https://example.org/other/
+id: https://example.org/s
+name: s
+prefixes: {linkml: https://w3id.org/linkml/, ex: https://example.org/}
 default_prefix: ex
 default_range: string
 imports: [linkml:types]
 slots:
-  id:
-    identifier: true
-    range: uriorcurie
-  items:
-    slot_uri: other:items     # global slot with explicit slot_uri
-    range: Item
-    multivalued: true
+  id: {identifier: true, range: uriorcurie}
+  title: {slot_uri: ex:title}
+  title_literal: {slot_uri: ex:title}   # same slot_uri as title
 classes:
-  Item:
-    slots: [id]
-  Container:
-    tree_root: true
-    attributes:
-      items:                  # attribute with the SAME name as the global slot
-        range: Item
-        multivalued: true
-        inlined_as_list: true
+  Catalog: {tree_root: true, slots: [id, title]}
+  Dataset: {slots: [id, title_literal]}
 ```
-
-**Data** (`data.yaml`)
-
-```yaml
-items:
-  - id: ex:item1
-```
-
-**Steps**
 
 ```sh
-linkml-convert -s schema.yaml -o out.ttl data.yaml     # emits ex:items
-linkml-convert -s schema.yaml -o back.yaml out.ttl     # fails
+echo '{id: ex:c1, title: My catalog}' > data.yaml
+linkml-convert -s schema.yaml -o out.ttl data.yaml    # OK
+linkml-convert -s schema.yaml -o back.yaml out.ttl    # fails
 ```
 
-**Expected:** round-trip succeeds (the dumper and loader agree on the predicate).
-
-**Actual:**
-
-```
-linkml_runtime.MappingError: No pred for https://example.org/b03/items <class 'rdflib.term.URIRef'>
-```
-
-Diagnostics:
-
-```python
-sv.get_uri(sv.all_slots()['items'], expand=True)          # https://example.org/other/items
-sv.get_uri(sv.induced_slot('items', 'Container'), expand=True)  # https://example.org/b03/items
-```
-
-**Root cause:** same line as U1 (`rdflib_loader.py:99`): `all_slots()` is
-name-keyed, so the attribute definition is not represented in `uri_to_slot`.
-The dumper, by contrast, uses `induced_slot(name, class)`.
-
-**Suggested fix:** build the predicate map from the induced slots of each
-class (or look up per subject class as in U1) so the loader uses the same URI
-resolution as the dumper. U1 and U2 can likely be fixed together.
+- **Expected:** `back.yaml` equals `data.yaml`.
+- **Actual:** `TypeError: Catalog.__init__() got an unexpected keyword argument 'title_literal'`
+- **Cause:** `rdflib_loader.py:99` builds `uri_to_slot` keyed by URI only, so the last slot with that URI wins for all classes.
+- **Suggested fix:** resolve the predicate among the subject class's own slots (`class_induced_slots`).
 
 ---
 
-### U3 — `RDFLibLoader` loses the lexical form of typed literals for custom types with `base: str`
+### U2 — An attribute with the same name as a global slot breaks RDF loading
+
+*Dekkjer BUG-3 (`fint-administrasjon`, `fint-okonomi`, `fint-personvern`, `fint-utdanning`, `samt-bu`).*
+
+**Title:** `RDFLibLoader`: `MappingError: No pred for …` when an attribute has the same name as a global slot
+
+The dumper writes the **attribute's** URI, but the loader only knows the **global slot's** URI.
+
+```yaml
+id: https://example.org/s
+name: s
+prefixes: {linkml: https://w3id.org/linkml/, ex: https://example.org/}
+default_prefix: ex
+default_range: string
+imports: [linkml:types]
+slots:
+  id: {identifier: true, range: uriorcurie}
+  items: {slot_uri: ex:globalItems, range: Item, multivalued: true}
+classes:
+  Item: {slots: [id]}
+  Container:
+    tree_root: true
+    attributes:
+      items: {range: Item, multivalued: true, inlined_as_list: true}   # same name as the global slot
+```
+
+```sh
+echo '{items: [{id: ex:i1}]}' > data.yaml
+linkml-convert -s schema.yaml -o out.ttl data.yaml    # writes ex:items
+linkml-convert -s schema.yaml -o back.yaml out.ttl    # fails
+```
+
+- **Expected:** `back.yaml` equals `data.yaml`.
+- **Actual:** `MappingError: No pred for https://example.org/items`
+- **Cause:** `rdflib_loader.py:99` builds the predicate map from `all_slots()`, which is keyed by name, so the global slot hides the attribute. The dumper uses `induced_slot(name, class)`.
+- **Suggested fix:** use `induced_slot` per class in the loader, like the dumper. Likely the same fix as U1.
+
+---
+
+### U3 — Custom `xsd:dateTime` type loses the `T` on RDF load
 
 *Dekkjer BUG-19 (`enhetsregisteret-bvrinnfelles`, `enhetsregisteret-bvrfriv`).*
 
-**Title:** `rdflib_loader`: `xsd:dateTime` literal becomes `"2024-01-01 10:30:00"` (space instead of `T`) for a custom type with `base: str`
+**Title:** `RDFLibLoader`: custom type `uri: xsd:dateTime, base: str` turns `2024-01-01T10:30:00` into `2024-01-01 10:30:00`
 
-**Description**
-
-For a custom type that maps to `xsd:dateTime` in RDF but is a plain string
-in Python (`base: str`), the loader converts the literal via
-`Literal.value` (a `datetime.datetime`) and the value is later stringified
-with `str()`, producing `2024-01-01 10:30:00` instead of the original lexical
-form `2024-01-01T10:30:00`. The built-in `datetime` type round-trips correctly;
-only custom `str`-based types are affected.
-
-**Schema** (`schema.yaml`)
+The built-in `datetime` type works; only custom `str`-based types are affected.
 
 ```yaml
-id: https://example.org/b19
-name: b19
-prefixes:
-  linkml: https://w3id.org/linkml/
-  ex: https://example.org/b19/
-  xsd: http://www.w3.org/2001/XMLSchema#
+id: https://example.org/s
+name: s
+prefixes: {linkml: https://w3id.org/linkml/, ex: https://example.org/, xsd: "http://www.w3.org/2001/XMLSchema#"}
 default_prefix: ex
+default_range: string
 imports: [linkml:types]
 types:
-  DateTimeString:          # xsd:dateTime in RDF, plain str in Python
-    uri: xsd:dateTime
-    base: str
+  DateTimeString: {uri: xsd:dateTime, base: str}
 classes:
   Event:
     tree_root: true
     attributes:
-      id:
-        identifier: true
-        range: uriorcurie
-      timestamp:
-        range: DateTimeString
+      id: {identifier: true, range: uriorcurie}
+      timestamp: {range: DateTimeString}
 ```
-
-**Data** (`data.yaml`)
-
-```yaml
-id: ex:e1
-timestamp: "2024-01-01T10:30:00"
-```
-
-**Steps**
 
 ```sh
-linkml-convert -s schema.yaml -o out.ttl data.yaml
-# out.ttl: ex:timestamp "2024-01-01T10:30:00"^^xsd:dateTime   (correct)
+echo '{id: ex:e1, timestamp: "2024-01-01T10:30:00"}' > data.yaml
+linkml-convert -s schema.yaml -o out.ttl data.yaml    # TTL is correct
 linkml-convert -s schema.yaml -o back.yaml out.ttl
 ```
 
-**Expected:** `timestamp: '2024-01-01T10:30:00'`
-
-**Actual:** `timestamp: '2024-01-01 10:30:00'`
-
-**Root cause:** `rdflib_loader.py:148` — `v = o.value`. For XSD-typed
-literals rdflib returns a native Python object; when the slot's type has
-`base: str`, the lexical form should be used.
-
-**Suggested fix:** when the induced range type's `base` is `str` (or,
-more generally, when the Python target type is `str`), use `str(o)`
-(the lexical form) instead of `o.value`.
+- **Expected:** `timestamp: '2024-01-01T10:30:00'`
+- **Actual:** `timestamp: '2024-01-01 10:30:00'`
+- **Cause:** `rdflib_loader.py:148` uses `o.value` (a Python `datetime`), which is later turned into a string with `str()`.
+- **Suggested fix:** use the lexical form `str(o)` when the type's base is `str`.
 
 ---
 
-### U4 — (valfri, låg prioritet) Full-URI identifier in the schema's own namespace comes back as a CURIE after TTL round-trip
+### U4 — (valfri) Full URI comes back as a CURIE after RDF round-trip
 
-*Dekkjer BUG-18. Upstream kan rimeleg svare «working as intended», sidan begge formene er gyldige `uriorcurie`. Meld som spørsmål/forbetring, ikkje bug.*
+*Dekkjer BUG-18. Begge formene er gyldige `uriorcurie`, så meld som forbetringsframlegg, ikkje bug.*
 
-**Title:** `rdflib_loader`: `uriorcurie` identifier written as a full URI is returned as a CURIE after YAML→TTL→YAML
-
-**Schema**
+**Title:** `RDFLibLoader`: identifier written as a full URI is returned as a CURIE
 
 ```yaml
-id: https://example.org/b18
-name: b18
-prefixes:
-  linkml: https://w3id.org/linkml/
-  ex: https://example.org/b18/
+id: https://example.org/s
+name: s
+prefixes: {linkml: https://w3id.org/linkml/, ex: https://example.org/}
 default_prefix: ex
+default_range: string
 imports: [linkml:types]
 classes:
   Thing:
     attributes:
-      id:
-        identifier: true
-        range: uriorcurie
+      id: {identifier: true, range: uriorcurie}
   Container:
     tree_root: true
     attributes:
-      things:
-        range: Thing
-        multivalued: true
-        inlined_as_list: true
+      things: {range: Thing, multivalued: true, inlined_as_list: true}
 ```
 
-**Data**
-
-```yaml
-things:
-  - id: https://example.org/b18/thing1
+```sh
+echo '{things: [{id: "https://example.org/thing1"}]}' > data.yaml
+linkml-convert -s schema.yaml -o out.ttl data.yaml
+linkml-convert -s schema.yaml -o back.yaml out.ttl
 ```
 
-**Expected:** `id: https://example.org/b18/thing1`
-**Actual:** `id: ex:thing1`
-
-**Root cause:** `_uri_to_id()` / `namespaces.curie_for()` always contracts
-when a prefix matches. Round-trip tests that compare JSON output therefore
-fail even though the data is semantically identical.
-
-**Suggestion:** an option on the loader (e.g. `contract_uris=False`), or
-documenting that round-trip equality is only guaranteed modulo CURIE
-contraction.
+- **Expected:** `id: https://example.org/thing1`
+- **Actual:** `id: ex:thing1`
+- **Suggestion:** a loader option to keep full URIs, or document that round-trips are only equal up to CURIE contraction.
 
 ---
 
-### U5 — Custom `rdf:langString` type: dumper emits ill-formed literal, loader silently drops the value
+### U5 — `rdf:langString` values are written as invalid RDF and silently lost
 
-*Dekkjer den opphavlege BUG-1-skildringa (LangString-verdiar forsvinn). Relatert til #3548.*
+*Dekkjer BUG-1 (LangString). Relatert til [#3548](https://github.com/linkml/linkml/issues/3548).*
 
-**Title:** Type with `uri: rdf:langString` produces `"x"^^rdf:langString` (ill-formed RDF) and the value is silently dropped on load
+**Title:** Type with `uri: rdf:langString` writes `"x"^^rdf:langString` (invalid RDF) and the loader silently drops it
 
-**Description**
-
-LinkML has no native language-tagged string (see #3548), so schemas
-commonly declare a type with `uri: rdf:langString`. `RDFLibDumper` then
-emits a literal with datatype `rdf:langString` and **no** language tag, which
-is ill-formed in RDF 1.1 (a `rdf:langString` literal must have a language
-tag). On load, the value is silently dropped — no error or warning — so data
-is lost.
-
-**Schema**
+LinkML has no language-tagged strings (#3548), so schemas often declare a `rdf:langString` type. The value survives the dump but disappears on load, with no error.
 
 ```yaml
-id: https://example.org/b01a
-name: b01a
-prefixes:
-  linkml: https://w3id.org/linkml/
-  ex: https://example.org/b01a/
-  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-  dct: http://purl.org/dc/terms/
+id: https://example.org/s
+name: s
+prefixes: {linkml: https://w3id.org/linkml/, ex: https://example.org/, rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#"}
 default_prefix: ex
+default_range: string
 imports: [linkml:types]
 types:
-  LangString:
-    uri: rdf:langString
-    base: str
+  LangString: {uri: rdf:langString, base: str}
 classes:
   Catalog:
     tree_root: true
     attributes:
-      id:
-        identifier: true
-        range: uriorcurie
-      title:
-        slot_uri: dct:title
-        range: LangString
-        multivalued: true
+      id: {identifier: true, range: uriorcurie}
+      title: {range: LangString}
 ```
 
-**Data**
-
-```yaml
-id: ex:cat1
-title:
-  - My catalog
+```sh
+echo '{id: ex:c1, title: My catalog}' > data.yaml
+linkml-convert -s schema.yaml -o out.ttl data.yaml    # ex:title "My catalog"^^rdf:langString
+linkml-convert -s schema.yaml -o back.yaml out.ttl    # title is gone
 ```
 
-**Actual**
-
-```turtle
-ex:cat1 a ex:Catalog ;
-    dct:title "My catalog"^^rdf:langString .
-```
-
-…and loading that TTL returns `id: ex:cat1` with `title` missing.
-
-**Expected (minimum):** the loader should not silently drop data — either
-keep the lexical value or raise/warn. **Ideally:** the dumper should not emit
-`^^rdf:langString` without a language tag (emit a plain literal, or fail
-with a clear error).
-
-**Root cause:** `rdflib_dumper.py:~114` uses `Literal(element, datatype=...)`
-for any type URI; `rdflib_loader.py:148` uses `o.value`, which is `None` for
-the ill-formed literal, and `None` values are later filtered out.
+- **Expected:** at minimum, no silent data loss (keep the value, or raise/warn). Ideally, never write `^^rdf:langString` without a language tag.
+- **Actual:** `back.yaml` is `{id: ex:c1}`.
+- **Cause:** the dumper writes `Literal(value, datatype=rdf:langString)`; the loader's `o.value` is `None` for that literal, and `None` is dropped.
 
 ---
 
-### U6 — Redeclaring an imported class: SchemaLoader-based generators raise, SchemaView-based generators silently replace the class
+### U6 — Re-declaring an imported class: some generators crash, others silently drop slots
 
-*Dekkjer BUG-6. #417 avviste union-semantikk; dette issuet gjeld **inkonsistensen** og den stille dataforringinga.*
+*Dekkjer BUG-6. [#417](https://github.com/linkml/linkml/issues/417) avviste union-semantikk; dette gjeld **inkonsistensen**.*
 
-**Title:** Inconsistent handling of a class redeclared in an importing schema: `gen-python`/`gen-rdf`/`gen-jsonld-context` raise, `gen-json-schema`/`gen-shacl`/`gen-owl` silently drop the imported slots
+**Title:** Class re-declared in an importing schema: `gen-python` raises, `gen-json-schema` silently drops the imported slots
 
-**base.yaml**
+`base.yaml`:
 
 ```yaml
-id: https://example.org/b06/base
+id: https://example.org/base
 name: base
-prefixes: {linkml: https://w3id.org/linkml/, ex: https://example.org/b06/}
+prefixes: {linkml: https://w3id.org/linkml/, ex: https://example.org/}
 default_prefix: ex
 default_range: string
 imports: [linkml:types]
@@ -498,158 +324,108 @@ slots:
   id: {identifier: true, range: uriorcurie}
   title: {}
 classes:
-  Standard:
-    slots: [id, title]
+  Standard: {slots: [id, title]}
 ```
 
-**schema.yaml**
+`schema.yaml`:
 
 ```yaml
-id: https://example.org/b06/main
-name: main
-prefixes: {linkml: https://w3id.org/linkml/, ex: https://example.org/b06/}
+id: https://example.org/s
+name: s
+prefixes: {linkml: https://w3id.org/linkml/, ex: https://example.org/}
 default_prefix: ex
 default_range: string
 imports: [linkml:types, base]
 slots:
   extra: {}
 classes:
-  Standard:            # re-declared to "add" a slot
-    slots: [extra]
+  Standard: {slots: [extra]}   # re-declares the imported class to add a slot
 ```
-
-**Actual**
 
 | Generator | Result |
 |---|---|
-| `gen-python`, `gen-rdf`, `gen-jsonld-context` | `ValueError: Conflicting URIs (https://example.org/b06/base, https://example.org/b06/main) for item: Standard` |
-| `gen-pydantic`, `gen-json-schema`, `gen-shacl`, `gen-owl` | exit 0; `Standard` has only `extra` — `id` and `title` are silently lost (JSON Schema `$defs.Standard.properties == ["extra"]`) |
+| `gen-python`, `gen-rdf`, `gen-jsonld-context` | `ValueError: Conflicting URIs (…/base, …/s) for item: Standard` |
+| `gen-pydantic`, `gen-json-schema`, `gen-shacl`, `gen-owl` | Succeeds, but `Standard` has only `extra` — `id` and `title` are silently lost |
 
-Also reproduced on main @ `5ef7622e` (commit `679eba10` only merges
-*structurally identical* duplicates).
-
-**Expected:** consistent behaviour across generators. Either (a) a clear,
-early error in all generators (and ideally in `linkml lint`), or (b) the same
-documented override semantics everywhere. Silent loss of the identifier slot
-is the worst outcome: downstream validation then rejects valid data and
-references to `Standard` are treated as inlined objects.
+- **Expected:** the same behaviour in all generators — ideally a clear error (also in `linkml lint`).
+- **Note:** `679eba10` on `main` only merges *identical* duplicates; this case still fails.
 
 ---
 
-### U7 — `gen-doc` mermaid class diagrams: `link_mermaid()` prefixes `../` to absolute URLs of imported `linkml:types`
+### U7 — `gen-doc` Mermaid diagrams: broken links `../http://…` for built-in types
 
 *Dekkjer BUG-13.*
 
-**Title:** `DocGenerator.link_mermaid()` produces `click Uri href "../http://www.w3.org/2001/XMLSchema#anyURI/"` with `--no-render-imports`
-
-**Schema**
+**Title:** `gen-doc --no-render-imports`: Mermaid `click` links for `linkml:types` become `"../http://www.w3.org/2001/XMLSchema#anyURI/"`
 
 ```yaml
-id: https://example.org/b13
-name: b13
-prefixes: {linkml: https://w3id.org/linkml/, ex: https://example.org/b13/}
+id: https://example.org/s
+name: s
+prefixes: {linkml: https://w3id.org/linkml/, ex: https://example.org/}
 default_prefix: ex
+default_range: string
 imports: [linkml:types]
 classes:
   Person:
     attributes:
       homepage: {range: uri}
-      name: {range: string}
 ```
-
-**Steps**
 
 ```sh
 gen-doc --no-mergeimports --no-render-imports --diagram-type mermaid_class_diagram -d docs schema.yaml
 grep click docs/Person.md
 ```
 
-**Actual**
-
-```
-click Person href "../Person/"
-click Uri href "../http://www.w3.org/2001/XMLSchema#anyURI/"
-click String href "../http://www.w3.org/2001/XMLSchema#string/"
-```
-
-**Expected:** type ranges are either not drawn as related boxes (as with
-render-imports), or linked with the absolute URL unchanged:
-`click Uri href "http://www.w3.org/2001/XMLSchema#anyURI"`.
-
-**Root cause (two parts)**
-
-1. `class_diagram.md.jinja2` filters type ranges with
-   `s.range not in gen.all_type_object_names()`, but
-   `all_type_objects()` (`docgen.py:~851`) uses `imports=self.render_imports`,
-   so with `--no-render-imports` imported `linkml:types` are not in the list and
-   are drawn as related classes.
-2. `link_mermaid()` (`docgen.py:458-471`) unconditionally returns
-   `f"../{link}/"`, even when `link()` returned an absolute URL for an external
-   type (`_is_external()`).
-
-**Suggested fix:** in `link_mermaid()`, return absolute URLs unchanged
-(`if link.startswith(("http://", "https://")): return link`), and/or use
-`imports=True` when computing the type-name filter.
+- **Expected:** no box for the `uri` type (as without `--no-render-imports`), or the absolute URL unchanged.
+- **Actual:** `click Uri href "../http://www.w3.org/2001/XMLSchema#anyURI/"`
+- **Cause (two parts):**
+  1. The template's type filter uses `all_type_object_names()`, which ignores imported types when `render_imports` is off, so `uri` is drawn as a class.
+  2. `link_mermaid()` (`docgen.py:458-471`) always returns `f"../{link}/"`, even for absolute URLs.
+- **Suggested fix:** return absolute URLs unchanged in `link_mermaid()`, and/or include imported types in the filter.
 
 ---
 
-### U8 — `gen-rdf` fetches `<import>.context.jsonld` over the network for URL imports
+### U8 — `gen-rdf` fails with 404 for schemas that import a schema by URL
 
-*Dekkjer BUG-17 (URL-varianten; lokal-import-varianten er fiksa i #3641).*
+*Dekkjer BUG-17 (URL-varianten; lokale importar er fiksa i [#3641](https://github.com/linkml/linkml/pull/3641)).*
 
-**Title:** `gen-rdf` fails with HTTP 404 for schemas that import another schema by URL (fetches `<import-url>.context.jsonld`)
+**Title:** `gen-rdf` downloads `<import-url>.context.jsonld` and fails with HTTP 404
 
-**Setup:** serve `leaf.yaml` over HTTP (e.g. `python -m http.server 8000` in a directory containing `schemas/leaf.yaml`).
-
-**schemas/leaf.yaml**
+Serve `schemas/leaf.yaml` with `python -m http.server 8000`:
 
 ```yaml
 id: http://localhost:8000/schemas/leaf
 name: leaf
-prefixes:
-  linkml: https://w3id.org/linkml/
-  dqv: http://www.w3.org/ns/dqv#
+prefixes: {linkml: https://w3id.org/linkml/}
 default_prefix: http://localhost:8000/schemas/
+default_range: string
 imports: [linkml:types]
-slots:
-  value: {slot_uri: dqv:value}
 classes:
-  Measurement: {slots: [value]}
+  Measurement:
+    attributes:
+      value: {}
 ```
 
-**main.yaml** (local)
+Local `schema.yaml`:
 
 ```yaml
-id: https://example.org/main
-name: main
+id: https://example.org/s
+name: s
 prefixes: {linkml: https://w3id.org/linkml/, ex: https://example.org/}
 default_prefix: ex
-imports:
-  - linkml:types
-  - http://localhost:8000/schemas/leaf
+imports: [linkml:types, http://localhost:8000/schemas/leaf]
 classes:
   MyMeasurement: {is_a: Measurement}
 ```
 
-**Steps:** `gen-rdf main.yaml`
+```sh
+gen-rdf schema.yaml
+```
 
-**Actual:** HTTP server log shows `GET /schemas/leaf.yaml` (OK) followed by
-`GET /schemas/leaf.context.jsonld` → `urllib.error.HTTPError: HTTP Error 404`.
-
-**Expected:** `gen-rdf` should produce RDF from the schema alone. The
-imported schema has already been loaded; its JSON-LD context can be generated
-in-process instead of being fetched from a URL that the schema publisher may
-never have published.
-
-**Root cause:** `jsonldgen.py:205` —
-`context_list.append(imp[0] + ".context.jsonld")` for every import. #3641
-drops unresolvable *local* references before parsing, but URL-based ones are
-still fetched by rdflib's JSON-LD parser.
-
-**Suggested fix:** in `RDFGenerator`, build a single merged context in memory
-(e.g. `ContextGenerator(..., mergeimports=True)`) rather than referencing
-per-import remote context files; or extend #3641's filtering to URL imports
-whose context cannot be fetched.
+- **Expected:** RDF output. The imported schema is already loaded, so no extra files should be needed.
+- **Actual:** the server log shows `GET /schemas/leaf.context.jsonld`, and `gen-rdf` fails with `HTTP Error 404`.
+- **Cause:** `jsonldgen.py:205` adds `<import> + ".context.jsonld"` to `@context` for every import; rdflib then downloads it. #3641 only filters out local imports.
+- **Suggested fix:** build the context in memory for all imports, or skip remote contexts that can't be fetched.
 
 ## Tilrådingar
 
@@ -684,4 +460,4 @@ whose context cannot be fetched.
 - **Følgjerettingar utanfor `bugs/`/`BUGS.md`:** `tests/README.md` (skip-tabell, inkl. manglande BUG-19-skip for `bvrinnfelles`), `.claude/rules/linkml-schema.md` (setning som grunngav inlining-regelen med gammal BUG-2-diagnose) og ein merknad om forelda premiss i `specs/backlog/fix-roundtrip-ngr-inlined-as-list.md`.
 - **Verifisering av lychee-fjerninga lokalt med `lychee --dump`, ikkje full sjekk:** lenkjesjekken har ingen make-target og køyrer berre i CI. `--dump` viser kva URL-ar lychee ekstraherer, og det var nettopp ekstraheringa som var problemet. Ei full nettverkssjekk av ~98 000 lenkjer er ikkje naudsynt for å stadfeste dette. Negativ kontroll mot dei forelda sidene i `mkdocs/docs/` stadfesta at metoden fangar feilen.
 - **NGR-skippen fjerna etter `TEST_FILTER=convert-instance-rdf make test SCHEMA=...`** for alle tre skjema (OK i fase A og B). Full `make test` er ikkje køyrd; endringa påverkar berre denne testen for dei tre skjemaa.
-
+- **U1-U8 omskrivne til kortare form (2026-09-27, brukarønske):** felles mal (tittel, éi setning, MRE, forventa/faktisk, årsak, fiks), MRE-ar i flow-stil YAML og same `ex`-prefiks overalt. Kvar rapport er framleis sjølvstendig (eige skjema og eigne kommandoar), sidan dei skal meldast som separate issues. Alle kompakte MRE-ar er køyrde på nytt mot 1.11.1 og `main @ 5ef7622e` og reproduserer uendra.

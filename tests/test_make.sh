@@ -1464,7 +1464,23 @@ sys.exit(1)
 
     # Steg 3: Semantisk samanlikning (ekskluder containerklassen)
     python3 - "$json_schema" "$tmp_json_schema" << 'PYEOF'
-import json, sys
+import json, re, sys
+
+# Speglar _to_pascal_case/_to_snake_case i src/mcp-linkml-modell-utkast/converter.py
+# (importerast ikkje, sidan converter.py krev pyyaml, som ikkje er på verten).
+# Sjå specs/done/modell-utkast-navngjeving.md.
+def _translit(name):
+    for a, b in (("æ", "ae"), ("Æ", "Ae"), ("ø", "oe"), ("Ø", "Oe"), ("å", "aa"), ("Å", "Aa")):
+        name = name.replace(a, b)
+    return name
+
+def to_pascal(name):
+    return "".join(p[0].upper() + p[1:] for p in re.split(r"[^A-Za-z0-9]+", _translit(name)) if p)
+
+def to_snake(name):
+    s = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", _translit(name))
+    s = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", s)
+    return re.sub(r"[^A-Za-z0-9]+", "_", s).strip("_").lower()
 
 def extract_semantic_definitions(schema):
     """
@@ -1573,8 +1589,8 @@ def compare_property(orig_prop, gen_prop, prop_name):
 
     # $ref-samanlikning (berre når begge har $ref)
     if '$ref' in orig_prop and '$ref' in gen_prop:
-        orig_ref = orig_prop['$ref'].split('/')[-1]
-        gen_ref = gen_prop['$ref'].split('/')[-1]
+        orig_ref = to_pascal(orig_prop['$ref'].split('/')[-1])
+        gen_ref = to_pascal(gen_prop['$ref'].split('/')[-1])
         if orig_ref != gen_ref:
             return f"Ulik $ref for '{prop_name}': {orig_ref} vs {gen_ref}"
 
@@ -1653,11 +1669,11 @@ def schemas_equivalent(original, generated):
     orig_class_names = set(orig_classes.keys())
     gen_class_names = set(gen_classes.keys())
 
-    # Bygg ein mapping frå normaliserte navn (utan _\d+) til faktiske navn
-    # gen-json-schema kan normalisere Foo_2 → Foo2
-    import re as _re
+    # Bygg ein mapping frå normaliserte navn til faktiske navn. Konverteraren
+    # gjer $defs-nøklar om til UpperCamelCase (E-postadresse → EPostadresse,
+    # Foo_2 → Foo2), så begge sider vert normaliserte med to_pascal.
     def normalize_class_name(name):
-        return _re.sub(r'_(\d+)$', r'\1', name)
+        return to_pascal(name)
 
     gen_class_map = {normalize_class_name(name): name for name in gen_class_names}
 
@@ -1713,9 +1729,9 @@ def schemas_equivalent(original, generated):
         orig_prop_names = set(orig_props.keys())
         gen_prop_names = set(gen_props.keys())
 
-        # Normaliser property-navn (bindestrek → underscore, same som _sanitize_slot_name)
+        # Normaliser property-navn (snake_case, same som _to_snake_case)
         def normalize_prop_name(name):
-            return name.replace('-', '_')
+            return to_snake(name)
 
         gen_prop_map = {normalize_prop_name(name): name for name in gen_prop_names}
 
