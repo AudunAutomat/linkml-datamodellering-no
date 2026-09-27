@@ -337,6 +337,9 @@ dokumentasjonsside, rett etter `## Valideringsresultat`. Denne embedda
 seksjonen er avgrensa til domene-scopa, offline sjekkar (ikkje cross-domain,
 ikkje IRI-/nettverkssjekkar) — sjå
 `specs/done/modellanalyse-per-skjema-index-md.md` for grunngjeving.
+Batch-modusen (`--out-dir`) skriv òg funna som `<rapport>.json` ved sida av
+kvar `.md`-rapport. Portalen lagar rapportteksten per språk frå JSON-fila —
+sjå `specs/done/modellanalyse-rapportar-per-sprak.md`.
 
 | Kommando | Beskriving | Output |
 |---|---|---|

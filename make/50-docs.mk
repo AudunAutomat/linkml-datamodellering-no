@@ -78,7 +78,7 @@ docs-publish: ## Generer språktre, byggjetre og mkdocs-konfig per språk i mkdo
 i18n-check: ## Valider strengkatalogen for portaltekst, køyr testane og røyktest i18n-lastaren
 	$(call print_header,i18n-check)
 	@$(PYTHON_RUN) python3 mkdocs/lib/scripts/i18n_strings.py check
-	@$(PYTHON_RUN) python3 -m pytest -q -p no:cacheprovider tests/test_i18n_strings.py tests/test_i18n_status.py
+	@$(PYTHON_RUN) python3 -m pytest -q -p no:cacheprovider tests/test_i18n_strings.py tests/test_i18n_status.py tests/test_modellanalyse_render.py
 	@langs=$$($(PYTHON_RUN) python3 mkdocs/lib/scripts/i18n_strings.py languages) && \
 	REPO_ROOT="$(CURDIR)" LANGS="$$langs" bash -c 'set -euo pipefail; source mkdocs/lib/utils/i18n.sh; \
 		for lang in $$LANGS; do i18n_load "$$lang"; v=$$(t i18n.ikkje_omsett.tittel); \

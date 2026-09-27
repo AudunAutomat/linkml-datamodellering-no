@@ -49,6 +49,12 @@ specs/done/modellanalyse-blockquote-per-underoverskrift.md. Blockquoten
 for dei tre similar-*-analysane nemner ikkje cross-domain-motparten — det
 tek den eksisterande fotnota (cross_domain_relpath/-label) seg av.
 
+Rapporttekst per språk: når <rapport>.json finst ved sida av <rapport>.md,
+vert brødteksten laga frå JSON-funna og strengkatalogen
+(modellanalyse_render.py). Utan JSON (rapportar frå før JSON-utskrifta)
+vert .md-rapporten brukt som før, med ei åtvaring på stderr — sjå
+specs/done/modellanalyse-rapportar-per-sprak.md.
+
 Bruk: python3 generate-modellanalyse-md.py <model-analyse-dir> <domain> <schema> [lang]
 
 Tekstane kjem frå strengkatalogen (mkdocs/lib/i18n/strings.yaml); lang er
@@ -58,7 +64,8 @@ standard default_language i katalogen.
 import sys
 from pathlib import Path
 
-from i18n_strings import load_catalog, slugify
+from i18n_strings import CatalogError, load_catalog, slugify
+from modellanalyse_render import load_report, render
 
 # (rapportfil, nøkkelprefiks i strengkatalogen, relativ sti til cross-domain-
 #  sida frå mkdocs/docs/<domain>/<schema>/index.md (None = ingen
@@ -155,13 +162,24 @@ def main() -> None:
         anchor = slugify(catalog.t(f"{prefix}.tittel", catalog.default_language))
         blockquote_text = t(f"{prefix}.forklaring")
         report_path = analyse_dir / filename
-        body = None
-        if not report_path.is_file():
-            print(f"ÅTVARING: fann ikkje {report_path}", file=sys.stderr)
-        else:
+        json_path = report_path.with_suffix(".json")
+        body = count = None
+        if json_path.is_file():
             any_report_found = True
             try:
+                _, body, count = render(load_report(json_path), catalog, lang)
+            except (OSError, ValueError, KeyError, CatalogError) as e:
+                print(f"ÅTVARING: klarte ikkje lage rapport frå {json_path}: {e} — brukar {report_path}",
+                      file=sys.stderr)
+        if body is None and not report_path.is_file():
+            print(f"ÅTVARING: fann ikkje {report_path}", file=sys.stderr)
+        elif body is None:
+            any_report_found = True
+            if not json_path.is_file():
+                print(f"ÅTVARING: fann ikkje {json_path} — rapportteksten vert ikkje omsett", file=sys.stderr)
+            try:
                 body = strip_own_heading(report_path.read_text(encoding="utf-8"))
+                count = count_table_rows(body)
             except Exception as e:
                 print(f"ÅTVARING: klarte ikkje lese {report_path}: {e}", file=sys.stderr)
 
@@ -169,7 +187,6 @@ def main() -> None:
             lines += ["", f"### {heading} {{#{anchor}}}", "", f"> {blockquote_text}", ""]
             lines.append(f"*{t('seksjon.modellanalyse.rapport_manglar')}*")
         else:
-            count = count_table_rows(body)
             lines += ["", f"### {heading} ({count}) {{#{anchor}-{count}}}", "", f"> {blockquote_text}", ""]
             lines.append(body)
 

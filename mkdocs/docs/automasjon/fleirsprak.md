@@ -16,6 +16,7 @@
 | Nav-meny, tittel, copyright, 404-side | Ja | Strengkatalogen |
 | Tema-tekst (søk, knappar) | Ja | Material, styrt av `theme.language` |
 | Rettleiingssider, framside, valideringsreglar, domeneskildringar | Når det finst ei omsett side | `x.<lang>.md` ved sida av `x.md` |
+| Modellanalyse-rapportar (skjemasider og tvers av domene) | Ja, utanom navn og skildringar frå skjemaa | Strengkatalogen, frå JSON-funna som analysescripta skriv ved sida av `.md`-rapportane |
 | Modellinnhald (title/description frå skjemaa) | Nei | Vert vist på originalspråket |
 | Versjonslog (`CHANGELOG.md`) og valideringsmeldingar | Nei | Generert av andre verktøy |
 

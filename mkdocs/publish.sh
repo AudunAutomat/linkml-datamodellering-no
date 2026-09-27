@@ -103,10 +103,18 @@ generate_cross_domain_modellanalyse_docs() {
         [similar-types-all-report.md]="liknande-typenavn-alle-domene.md"
     )
 
-    local src_name dest
+    # Sida vert laga frå JSON-funna på gjeldande språk (modellanalyse_render.py).
+    # Utan JSON (eldre rapportar) vert .md-rapporten kopiert som før, med åtvaring.
+    # Sjå specs/done/modellanalyse-rapportar-per-sprak.md.
+    local src_name dest json
     for src_name in "${!files[@]}"; do
         dest="$out_dir/${files[$src_name]}"
-        if [ -f "$src_dir/$src_name" ]; then
+        json="$src_dir/${src_name%.md}.json"
+        if [ -f "$json" ]; then
+            python3 "$REPO_ROOT/mkdocs/lib/scripts/modellanalyse_render.py" page "$json" "$I18N_LANG" > "$dest" \
+                || { log_error "Klarte ikkje lage $dest frå $json"; return 1; }
+        elif [ -f "$src_dir/$src_name" ]; then
+            log_info "${CLR_WARN}ÅTVARING: $json finst ikkje — rapportteksten vert ikkje omsett${CLR_RST}"
             cp "$src_dir/$src_name" "$dest"
         else
             log_info "${CLR_WARN}ÅTVARING: $src_dir/$src_name finst ikkje — hoppar over${CLR_RST}"

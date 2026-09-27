@@ -35,6 +35,21 @@ konsekvensane ved endringar:
   `mkdocs/lib/sections/*.sh` eller `mkdocs/lib/scripts/*.py` skal ha ein
   katalognøkkel med verdi for alle språk og hentast med `t`. Skriv ikkje tekst
   direkte. `make i18n-check` fangar nøklar som manglar.
+- **Berre fulle nøklar i `t`-kall.** `make i18n-check` finn nøklar ved å lese
+  kvar `t("x.y")` (`.py`) og `t x.y` (`.sh`) i dei skanna filene
+  (`DEFAULT_SCAN_ROOTS` i `mkdocs/lib/scripts/i18n_strings.py`) som ein
+  fullstendig katalognøkkel. **Aldri** kall ein lokal hjelpefunksjon som tek
+  forkorta nøklar (utan prefiks) for `t`. Då vert kvar forkorta nøkkel
+  rapportert som manglande, og bygget stoppar. Gje hjelpefunksjonen eit anna
+  navn (t.d. `tr`), og kall `catalog.t(f"{PREFIX}.{key}", …)` inne i han. Bruk
+  fulle nøklar der det går, slik at skanninga faktisk fangar skrivefeil.
+  Konkret tilfelle: `mkdocs/lib/scripts/modellanalyse_render.py` i
+  `specs/done/modellanalyse-rapportar-per-sprak.md` (Avgjerder).
+- **Nye filer utanfor `mkdocs/`** som hentar tekst frå katalogen (t.d.
+  `src/assets/scripts/makefile/generate-readme-tables.sh`), skal leggjast til i
+  `DEFAULT_SCAN_ROOTS`. Elles fangar ikkje `make i18n-check` nøklar som manglar
+  der. I bash vert ein feil i `$(t …)` inne i `echo` svelgd, så tilordn
+  teksten til ein variabel først (`x=$(t …)`).
 - **Nye overskrifter** som vert omsette, skal ha fast anker (`{#slug}`) lik
   slug-en av den nynorske teksten, slik at ankeret er likt i alle språk.
 - **Språkavhengig generering** skjer éin gong per språk (Steg 2/2b i

@@ -461,6 +461,119 @@ strings:
     nn: Analyse av typenavn på tvers av alle domene
     en: Analysis of type names across all domains
 
+  # --- Rapporttekst frå find-similar-names.py/find-unused-local-definitions.py (modellanalyse_render.py) ---
+  modellanalyse.rapport.liknande.tittel:
+    nn: "Liknande {navnetype} ({detaljar}, terskel {terskel})"
+    en: "Similar {navnetype} ({detaljar}, threshold {terskel})"
+  modellanalyse.rapport.liknande.mal:
+    nn: "modell {domene}/{skjema}"
+    en: "model {domene}/{skjema}"
+  modellanalyse.rapport.liknande.domene:
+    nn: "domene {domene}"
+    en: "domain {domene}"
+  modellanalyse.rapport.liknande.omfang_domain:
+    nn: "same domene"
+    en: "same domain"
+  modellanalyse.rapport.liknande.omfang_all:
+    nn: "alle domene"
+    en: "all domains"
+  modellanalyse.rapport.liknande.navnetype_class:
+    nn: "klassenavn"
+    en: "class names"
+  modellanalyse.rapport.liknande.navnetype_slot:
+    nn: "slotnavn"
+    en: "slot names"
+  modellanalyse.rapport.liknande.navnetype_types:
+    nn: "typenavn"
+    en: "type names"
+  modellanalyse.rapport.liknande.etikett_class:
+    nn: "klasser"
+    en: "classes"
+  modellanalyse.rapport.liknande.etikett_slot:
+    nn: "slots"
+    en: "slots"
+  modellanalyse.rapport.liknande.etikett_types:
+    nn: "typer"
+    en: "types"
+  modellanalyse.rapport.liknande.ingen:
+    nn: "Ingen liknande {navnetype} funne ({tal} {etikett} sjekka)."
+    en: "No similar {navnetype} found ({tal} {etikett} checked)."
+  modellanalyse.rapport.liknande.totalt:
+    nn: "**Totalt: {tal} par funne av {sjekka} {etikett}.**"
+    en: "**Total: {tal} pairs found among {sjekka} {etikett}.**"
+  modellanalyse.rapport.liknande.likskap:
+    nn: "Likskap"
+    en: "Similarity"
+  modellanalyse.rapport.liknande.grunntype:
+    nn: "Grunntype"
+    en: "Base type"
+  modellanalyse.rapport.liknande.ingen_slots:
+    nn: "(ingen)"
+    en: "(none)"
+  modellanalyse.rapport.liknande.fleire_slots:
+    nn: "(+{tal} til)"
+    en: "(+{tal} more)"
+  modellanalyse.rapport.kolonne.klasse:
+    nn: "Klasse"
+    en: "Class"
+  modellanalyse.rapport.kolonne.skjema:
+    nn: "Skjema"
+    en: "Schema"
+  modellanalyse.rapport.kolonne.grunn:
+    nn: "Grunn"
+    en: "Reason"
+  modellanalyse.rapport.kolonne.skildring:
+    nn: "Skildring"
+    en: "Description"
+  modellanalyse.rapport.lokal.inga_skildring:
+    nn: "(inga skildring)"
+    en: "(no description)"
+  modellanalyse.rapport.lokal.etikett_slot:
+    nn: "slots"
+    en: "slots"
+  modellanalyse.rapport.lokal.etikett_enum:
+    nn: "enums"
+    en: "enums"
+  modellanalyse.rapport.lokal.etikett_type:
+    nn: "typar"
+    en: "types"
+  modellanalyse.rapport.lokal.etikett_subset:
+    nn: "subsets"
+    en: "subsets"
+  modellanalyse.rapport.lokal.ubrukte_tittel:
+    nn: "Ubrukte lokale {etikett} ({sti})"
+    en: "Unused local {etikett} ({sti})"
+  modellanalyse.rapport.lokal.ubrukte_ingen:
+    nn: "Ingen ubrukte lokale {etikett} funne ({total} {etikett} sjekka)."
+    en: "No unused local {etikett} found ({total} {etikett} checked)."
+  modellanalyse.rapport.lokal.ubrukte_totalt:
+    nn: "**Totalt: {tal} ubrukte lokale {etikett} av {total} sjekka.**"
+    en: "**Total: {tal} unused local {etikett} of {total} checked.**"
+  modellanalyse.rapport.lokal.isolerte_tittel:
+    nn: "Isolerte lokale klasser ({sti})"
+    en: "Isolated local classes ({sti})"
+  modellanalyse.rapport.lokal.isolerte_ingen:
+    nn: "Ingen isolerte lokale klasser funne ({total} klasser sjekka)."
+    en: "No isolated local classes found ({total} classes checked)."
+  modellanalyse.rapport.lokal.isolerte_totalt:
+    nn: "**Totalt: {tal} isolerte/underintegrerte klasser av {total} lokale klasser** ({isolerte} heilt isolert, {container} kun tilkopla via containerklassen)."
+    en: "**Total: {tal} isolated/under-integrated classes of {total} local classes** ({isolerte} completely isolated, {container} connected only via the container class)."
+  modellanalyse.rapport.lokal.grunn_isolated:
+    nn: "Heilt isolert"
+    en: "Completely isolated"
+  modellanalyse.rapport.lokal.grunn_container_only:
+    nn: "Kun tilkopla via containerklassen"
+    en: "Connected only via the container class"
+  modellanalyse.rapport.lokal.ikkje_tilkopla_tittel:
+    nn: "Klasser ikkje kopla til containerklassen ({sti})"
+    en: "Classes not connected to the container class ({sti})"
+  modellanalyse.rapport.lokal.ikkje_tilkopla_ingen:
+    nn: "Ingen klasser utan tilkopling til containerklassen funne ({total} klasser sjekka)."
+    en: "No classes without a connection to the container class found ({total} classes checked)."
+  modellanalyse.rapport.lokal.ikkje_tilkopla_totalt:
+    nn: "**Totalt: {tal} klasser ikkje kopla til containerklassen, av {total} lokale klasser (containeren sjølv ikkje medrekna).** Merk: heilt isolerte klasser (sjå isolerte-klasser-report.md) dukkar òg opp her, sidan dei per definisjon ikkje kan nåast frå containeren."
+    en: "**Total: {tal} classes not connected to the container class, of {total} local classes (not counting the container itself).** Note: completely isolated classes (see isolerte-klasser-report.md) also show up here, since by definition they cannot be reached from the container."
+
   # --- Modellanalyse på tvers av domene (publish.sh: modellanalyse/index.md) ---
   modellanalyse.alle.tittel:
     nn: Modellanalyse på tvers av domene

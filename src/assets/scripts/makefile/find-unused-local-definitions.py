@@ -83,6 +83,10 @@ To bruksmåtar:
    (`::warning::`) og løkka held fram, same prinsipp som
    `check-import-duplicates.py`/`batch-lint.py`.
 
+   Ved sida av kvar `<rapportnavn>.md` vert funna òg skrivne som
+   `<rapportnavn>.json`, som portalen byggjer rapportteksten frå per språk
+   (sjå specs/done/modellanalyse-rapportar-per-sprak.md).
+
 Exit-kode: alltid 0 — informativ rapport, ikkje ein valideringspolicy
 (same prinsipp som find-similar-names.py).
 """
@@ -90,6 +94,7 @@ Exit-kode: alltid 0 — informativ rapport, ikkje ein valideringspolicy
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -405,6 +410,28 @@ def format_report(kind: str, schema_path: str, items: list[tuple], total: int) -
     return "\n".join(lines)
 
 
+REASON_CODES = {REASON_ISOLATED: "isolated", REASON_CONTAINER_ONLY: "container_only"}
+
+
+def report_data(kind: str, schema_path: str, items: list[tuple], total: int) -> dict:
+    """Same funn som format_report(), som data. Portalen byggjer rapportteksten
+    per språk frå denne (mkdocs/lib/scripts/modellanalyse_render.py) — sjå
+    specs/done/modellanalyse-rapportar-per-sprak.md."""
+    rows = []
+    for item in items:
+        name, description = item[0], item[1]
+        reason = REASON_CODES[item[2]] if kind == "class" else None
+        rows.append({"name": name, "description": description, "reason": reason})
+    return {
+        "format": 1,
+        "analyse": "lokal",
+        "kind": kind,
+        "schema_path": schema_path,
+        "total": total,
+        "items": rows,
+    }
+
+
 def process_schema_all_kinds(schema_path: Path, out_dir: Path) -> bool:
     """Byggjer eitt SchemaView for schema_path og skriv alle seks
     kind-rapportane til out_dir. Returnerer False (loggar sjølv) viss
@@ -422,7 +449,12 @@ def process_schema_all_kinds(schema_path: Path, out_dir: Path) -> bool:
     for kind in ALL_KINDS:
         items, total = compute_items_and_total(sv, kind)
         report = format_report(kind, str(schema_path), items, total)
-        (out_dir / KIND_TO_REPORT_FILENAME[kind]).write_text(report + "\n", encoding="utf-8")
+        md_path = out_dir / KIND_TO_REPORT_FILENAME[kind]
+        md_path.write_text(report + "\n", encoding="utf-8")
+        data = report_data(kind, str(schema_path), items, total)
+        md_path.with_suffix(".json").write_text(
+            json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
     return True
 
 

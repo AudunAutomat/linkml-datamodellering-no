@@ -52,9 +52,14 @@ To bruksmåtar:
    similar-<kind>-domain-report.md` for domene-modus,
    `<out-dir>/similar-<kind>-all-report.md` for scope all-modus), slik at
    `generate-modellanalyse-md.py`/`mkdocs/publish.sh` ikkje treng endrast.
+
+   Ved sida av kvar `.md`-rapport vert funna òg skrivne som `.json`, som
+   portalen byggjer rapportteksten frå per språk (sjå
+   specs/done/modellanalyse-rapportar-per-sprak.md).
 """
 
 import argparse
+import json
 import sys
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -209,6 +214,46 @@ def build_report(
     return "\n".join(lines)
 
 
+def build_report_data(
+    kind: str,
+    scope: str,
+    threshold: float,
+    entries: list[tuple[str, str | list[str] | None, Path]],
+    matches: list[tuple],
+    target: tuple[str, str] | None = None,
+    domain: str | None = None,
+) -> dict:
+    """Same funn som build_report(), som data. Portalen byggjer rapportteksten
+    per språk frå denne (mkdocs/lib/scripts/modellanalyse_render.py) — sjå
+    specs/done/modellanalyse-rapportar-per-sprak.md."""
+
+    def side(name, extra, schema):
+        return {"name": name, "extra": extra, "schema": _fmt_schema(schema)}
+
+    return {
+        "format": 1,
+        "analyse": "liknande",
+        "kind": kind,
+        "scope": scope,
+        "threshold": threshold,
+        "target": {"domain": target[0], "schema": target[1]} if target else None,
+        "domain": domain,
+        "checked": len(entries),
+        "matches": [
+            {"ratio": ratio, "a": side(name_a, extra_a, schema_a), "b": side(name_b, extra_b, schema_b)}
+            for ratio, name_a, extra_a, schema_a, name_b, extra_b, schema_b in matches
+        ],
+    }
+
+
+def write_report_files(md_path: Path, report: str, data: dict) -> None:
+    """Skriv <rapport>.md og <rapport>.json side om side."""
+    md_path.write_text(report + "\n", encoding="utf-8")
+    md_path.with_suffix(".json").write_text(
+        json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+
+
 def write_domain_reports(domain: str, base_dir: Path, threshold: float) -> None:
     """Batch-modus: skriv similar-<kind>-domain-report.md for alle skjema
     i domenet, éin YAML-innlasting per skjema per kind (ikkje éin per
@@ -226,10 +271,13 @@ def write_domain_reports(domain: str, base_dir: Path, threshold: float) -> None:
             target_label = f"modell {domain}/{schema_name}, "
             domain_label = f", domene {domain}"
             report = build_report(kind, "domain", threshold, entries, matches, target_label, domain_label)
+            data = build_report_data(
+                kind, "domain", threshold, entries, matches, target=(domain, schema_name), domain=domain
+            )
             out_dir = base_dir / domain / schema_name / "model-analyse"
             out_dir.mkdir(parents=True, exist_ok=True)
             filename = f"similar-{KIND_TO_FILE_STEM[kind]}-domain-report.md"
-            (out_dir / filename).write_text(report + "\n", encoding="utf-8")
+            write_report_files(out_dir / filename, report, data)
         print(f"  ✓ {domain}: similar-{KIND_TO_FILE_STEM[kind]}-domain-report.md skrive for {len(schemas)} skjema")
 
 
@@ -243,8 +291,9 @@ def write_all_reports(base_dir: Path, threshold: float) -> None:
         entries = [(name, extra, schema) for schema in schemas for name, extra in load_entries(schema, kind)]
         matches = compute_matches(entries, "all", threshold)
         report = build_report(kind, "all", threshold, entries, matches)
+        data = build_report_data(kind, "all", threshold, entries, matches)
         filename = f"similar-{KIND_TO_FILE_STEM[kind]}-all-report.md"
-        (base_dir / filename).write_text(report + "\n", encoding="utf-8")
+        write_report_files(base_dir / filename, report, data)
         print(f"  ✓ similar-{KIND_TO_FILE_STEM[kind]}-all-report.md skrive ({len(schemas)} skjema)")
 
 
