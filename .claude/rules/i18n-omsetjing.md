@@ -26,7 +26,17 @@ lenger åtvare.
      (`domene`, `modell`, `begrepssamling`, skjemanavn) urørte.
    - Portal-lenkjer: `https://audunautomat.github.io/linkml-datamodellering-no/<sti>`
      vert `…/en/<sti>`. Artefaktlenkjer (`.ttl`, `.json` …) står utan språkprefiks.
-   - Interne anker (`#…`) må peike på slug-en av den **engelske** overskrifta.
+   - **Anker på portalsider (`mkdocs/docs/**`):** behald overskriftsstrukturen
+     (same tal og nivå som originalen). `make i18n-stamp` set då fast anker
+     (`{#slug}`) lik den nynorske sluggen på kvar overskrift, og feilar om
+     strukturen avvik. Interne `#…`-lenkjer til slike sider står difor
+     **uendra** frå originalen. Skriv ikkje `{#…}` for hand.
+   - **Sider som òg vert viste på GitHub** (`README.en.md`,
+     `policies/README.en.md`, `description.en.md`) får ikkje faste anker. Lenkjer
+     til overskrifter der må peike på slug-en av den **engelske** overskrifta
+     (t.d. `../index.md#getting-started`). Policy-overskriftene i
+     `policies/README.en.md` (`bronze`, `basis-no` …) skal vere identiske med
+     originalen.
    - `<!-- BEGIN/END AUTO-GENERATED -->`-markørar skal stå att **utan innhald**.
      Innhaldet vert fylt frå originalen ved bygging.
    - Ikkje skriv front-matter for hand: `make i18n-stamp FILE=<x.en.md>`.

@@ -78,7 +78,7 @@ class StatusCase(unittest.TestCase):
         i18n_status.stamp_page(self.root, var)
         meta, body = i18n_status.split_front_matter(var.read_text(encoding="utf-8"))
         self.assertEqual(meta["i18n"]["source"], "side.md")
-        self.assertEqual(body, "# Page\n\nText\n")
+        self.assertEqual(body, "# Page {#side}\n\nText\n")
         rc, out = self.status(strict=True)
         self.assertEqual(rc, 0, out)
         self.assertIn("1 omsette og oppdaterte", out)
@@ -86,6 +86,26 @@ class StatusCase(unittest.TestCase):
         rc, out = self.status(strict=True)
         self.assertEqual(rc, 1)
         self.assertIn("utdatert side: mkdocs/docs/kom-i-gang/side.en.md", out)
+
+    def test_stamp_page_pins_anchors_from_source(self):
+        src = self.root / "mkdocs/docs/kom-i-gang/side.md"
+        src.write_text("# Side\n\n## Føresetnader\n\n```bash\n# ikkje overskrift\n```\n\n## Steg `x`\n\n### Detaljar\n\n## Steg `x`\n\n## Fast {#fast-anker}\n", encoding="utf-8")
+        var = self.root / "mkdocs/docs/kom-i-gang/side.en.md"
+        var.write_text("# Page\n\n## Prerequisites\n\n## Step `x`\n\n### Details\n\n## Step `x`\n\n## Fixed\n", encoding="utf-8")
+        i18n_status.stamp_page(self.root, var)
+        body = i18n_status.split_front_matter(var.read_text(encoding="utf-8"))[1]
+        self.assertIn("## Prerequisites {#fresetnader}", body)  # ø forsvinn i mkdocs-slug
+        self.assertIn("## Step `x` {#steg-x}", body)
+        self.assertIn("### Details {#detaljar}", body)
+        self.assertIn("## Step `x` {#steg-x_1}", body)
+        self.assertIn("## Fixed {#fast-anker}", body)
+        self.assertIn("# Page {#side}", body)
+
+    def test_stamp_page_rejects_structure_mismatch(self):
+        var = self.root / "mkdocs/docs/kom-i-gang/side.en.md"
+        var.write_text("# Page\n\n## Extra\n\nText\n", encoding="utf-8")
+        with self.assertRaises(i18n_status.CatalogError):
+            i18n_status.stamp_page(self.root, var)
 
     def test_non_strict_always_zero(self):
         self.assertEqual(self.status(strict=False)[0], 0)

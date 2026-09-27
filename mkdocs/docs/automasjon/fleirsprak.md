@@ -114,6 +114,12 @@ frå:
 | `make i18n-stamp KEYS="k1 k2"` | Stemplar katalognøklar etter at den engelske verdien er oppdatert |
 | `make i18n-stamp` | Stemplar berre nøklar som manglar hash, t.d. nye nøklar |
 
+Stemplar du ei side under `mkdocs/docs/`, får kvar overskrift i omsetjinga eit
+fast anker (`{#slug}`) lik sluggen av den tilsvarande nynorske overskrifta.
+Stemplinga feilar dersom overskriftene ikkje har same tal og nivå som i
+originalen. Sider som òg vert viste på GitHub (`README.en.md`,
+`policies/README.en.md`, `description.en.md`), får ikkje faste anker.
+
 Arbeidsflyt når den nynorske teksten er endra:
 
 1. `make i18n-status` — sjå kva omsetjingar som er utdaterte.

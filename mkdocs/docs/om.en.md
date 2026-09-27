@@ -3,7 +3,7 @@ i18n:
   source: om.md
   source_hash: sha256:9d0d7e9b4cb138d3d6042cf25e956a70b6be172a2b34bdd6dcc569244162f9fd
 ---
-# About this repository
+# About this repository {#om-dette-repoet}
 
 !!! note "Background"
 
@@ -16,11 +16,11 @@ This repository encourages collaboration and sharing through standardized format
 
 Not least, it makes it possible to export models and data in W3C semantic formats, which — together with the use of public ontologies and shared concepts — makes the data inherently linkable across datasets.
 
-## Contact
+## Contact {#kontakt}
 
 **Repository administrator:** Audun Vindenes Egge ([ave@brreg.no](mailto:ave@brreg.no))
 
-## Contribute and give feedback
+## Contribute and give feedback {#bidra-og-gje-tilbakemelding}
 
 - [GOVERNANCE.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/GOVERNANCE.md) —
   roles, authority and how decisions are made
@@ -31,12 +31,12 @@ Not least, it makes it possible to export models and data in W3C semantic format
 - [SECURITY.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/SECURITY.md) —
   how to report security vulnerabilities
 
-## License
+## License {#lisens}
 
 This repository is licensed under the [MIT license](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/LICENSE).
 The individual models have their own licenses for use — see the `license` field in each schema.
 
-## Attributions
+## Attributions {#attribusjoner}
 
 This repository builds and publishes container images
 (`ghcr.io/audunautomat/linkml-local`, `mcp-linkml-validator`, `mcp-linkml-modell-utkast`,

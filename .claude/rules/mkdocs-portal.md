@@ -140,6 +140,20 @@ Gjer i staden slik:
 
    Heile køyringa tek under eitt minutt i `/tmp`, mot fleire minutt på `/mnt/c`.
    Repoet vert ikkje rørt.
+
+   **Sjekk at gen-doc-outputen i `generated/` er laga med dei gjeldande malane**
+   før du byggjer i sandkassa. Er han eldre enn i18n-markørane, manglar han
+   `@@i18n:`-markørane. `publish.sh` utelèt då Klasser/Modellmetadata, og
+   `docs-publish` feilar for alle skjema. Sjekk med
+   `grep -L '@@i18n' generated/*/*/docs/index.md`. Kjem det treff, regenerer du
+   gen-doc (`make gen-schema-docs SCHEMA=...`) i sandkassa, eller brukar
+   `generated/` frå ein tidlegare sandkasse der markørane er på plass. Skriv
+   aldri over `generated/` i repoet.
+
+   Konkret tilfelle: under steg 10 i
+   `specs/done/omset-statiske-sider-engelsk.md` hadde `generated/` i repoet
+   gen-doc-output utan markørar (0 av 48 skjema). Første sandkassebygg feila for
+   alle skjema. Sjå `specs/done/rule-sandkasse-gendoc-i18n-markorar.md`.
 3. **Etter køyring:** køyr `git status --short mkdocs/docs` og rapporter til
    brukaren alle endringar du ikkje var ute etter, før du melder arbeidet som
    ferdig. Rull dei tilbake med `git restore <sti>` innanfor unntaket i

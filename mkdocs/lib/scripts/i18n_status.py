@@ -29,12 +29,13 @@ CLI:
 import argparse
 import hashlib
 import os
+import re
 import sys
 from pathlib import Path
 
 import yaml
 
-from i18n_strings import CatalogError, load_catalog
+from i18n_strings import CatalogError, load_catalog, slugify
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src" / "assets" / "scripts"))
 from utils.error_handler import log_error  # noqa: E402
@@ -171,6 +172,71 @@ def status(root, strict=False, out=sys.stdout):
     return 1 if strict and problems else 0
 
 
+HEADING_RE = re.compile(r"^(#{1,6})\s+(.*?)\s*$")
+EXPLICIT_ID_RE = re.compile(r"\s*\{:?\s*#([^}\s]+)\s*\}\s*$")
+
+
+def headings(text):
+    """(linjenummer, nivå, tekst) for Markdown-overskrifter utanfor kodeblokker."""
+    out, fence = [], None
+    for i, line in enumerate(text.split("\n")):
+        stripped = line.lstrip()
+        if stripped.startswith(("```", "~~~")):
+            marker = stripped[:3]
+            fence = None if fence == marker else (fence or marker)
+            continue
+        if fence or line.startswith("    "):
+            continue
+        m = HEADING_RE.match(line)
+        if m:
+            out.append((i, len(m.group(1)), m.group(2)))
+    return out
+
+
+def heading_plain(text):
+    """Omtrent det Python-Markdown sin toc slugifiserer: rendra tekst utan markup."""
+    text = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", text)
+    text = re.sub(r"<[^>]+>", "", text)
+    return re.sub(r"[`*_]", "", text)
+
+
+def source_anchors(text):
+    """Anker per overskrift i originalen, som mkdocs lagar dei (eksplisitte
+    {#id} vert brukte, elles slug med _1, _2 … ved duplikat)."""
+    used, out = set(), []
+    for _, level, title in headings(text):
+        m = EXPLICIT_ID_RE.search(title)
+        if m:
+            anchor = m.group(1)
+        else:
+            base = slugify(heading_plain(title))
+            anchor, n = base, 0
+            while anchor in used:
+                n += 1
+                anchor = f"{base}_{n}"
+        used.add(anchor)
+        out.append((level, anchor))
+    return out
+
+
+def pin_anchors(source_text, variant_body, label):
+    """Set fast anker (lik originalen) på kvar overskrift i omsetjinga som ikkje
+    har eitt. Krev same tal overskrifter på same nivå i same rekkjefølgje."""
+    src = source_anchors(source_text)
+    lines = variant_body.split("\n")
+    var = headings(variant_body)
+    if [l for l, _ in src] != [l for _, l, _ in var]:
+        raise CatalogError(
+            f"{label}: overskriftsstrukturen skil seg frå originalen "
+            f"(original {len(src)} overskrifter, nivå {[l for l, _ in src]}; "
+            f"omsetjing {len(var)}, nivå {[l for _, l, _ in var]})")
+    for (lineno, level, title), (_, anchor) in zip(var, src):
+        if EXPLICIT_ID_RE.search(title):
+            continue
+        lines[lineno] = f"{'#' * level} {title} {{#{anchor}}}"
+    return "\n".join(lines)
+
+
 def stamp_page(root, variant):
     root = Path(root)
     variant = Path(variant)
@@ -191,6 +257,12 @@ def stamp_page(root, variant):
         raise CatalogError(f"{variant}: originalen {source} finst ikkje")
     i18n["source"] = Path(os.path.relpath(source, variant.parent)).as_posix()
     i18n["source_hash"] = source_hash(source)
+    # Portalsider (berre rendra av mkdocs) får faste anker lik originalen, slik
+    # at #anker-lenkjer og språkveljaren held i alle språk. Sider som òg vert
+    # viste på GitHub (README, policies, description.md) får det ikkje, sidan
+    # attr_list-syntaksen {#…} då ville synt som tekst.
+    if (root / "mkdocs/docs") in variant.parents:
+        body = pin_anchors(source.read_text(encoding="utf-8"), body, str(variant.relative_to(root)))
     meta["i18n"] = i18n
     fm = yaml.safe_dump(meta, allow_unicode=True, sort_keys=False, default_flow_style=False)
     variant.write_text(f"---\n{fm}---\n{body}", encoding="utf-8")
