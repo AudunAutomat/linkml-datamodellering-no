@@ -72,7 +72,7 @@ generate_validation_docs() {
             "     $(t valideringsreglar.merknad_1)" "     " \
             "     $(t valideringsreglar.merknad_2 lenkje="https://github.com/AudunAutomat/linkml-datamodellering-no/tree/main/src/mcp-linkml-validator")" \
             "" "---" ""
-        cat "$policies_readme" | \
+        i18n_strip_front_matter "$policies_readme" | \
             sed -E "s|\]\(([^)]+\.yaml)\)|]($github_base/src/mcp-linkml-validator/policies/\1)|g" | \
             sed -E "s|specs/done/([^)]+)|$github_base/specs/done/\1|g" | \
             sed -E "s|\.\./\.\./\.\./([A-Z][A-Za-z-]*\.md)|$github_base/\1|g"
@@ -129,7 +129,7 @@ generate_cross_domain_modellanalyse_docs() {
 write_index_from_readme() {
     local readme
     if readme=$(i18n_source "$REPO_ROOT/README.md"); then
-        cp "$readme" "$DOCS/index.md"
+        i18n_strip_front_matter "$readme" > "$DOCS/index.md"
     else
         cp "$readme" "$DOCS/index.md"
         i18n_note_untranslated "$DOCS/index.md"
@@ -563,6 +563,8 @@ log_info "$(printf "${CLR_OK}✓ Steg 2 ferdig${CLR_RST} (%s)" \
 # specs/backlog/lokalisering-dokumentasjonsportal.md.
 BUILD_DIR="$REPO_ROOT/mkdocs/build"
 DEFAULT_DOCS="$DOCS"
+# Sider publish.sh genererer i docs-treet (ikkje omsetjingskjelder) — same
+# liste som GENERATED_DOCS_PATHS i mkdocs/lib/scripts/i18n_status.py.
 GENERATED_DOCS_PATHS=("index.md" "arkitektur/valideringsregler.md" "modellanalyse")
 
 # copy_static_docs_for_language <kjelde-docs> <mål-docs> — kopier statisk
@@ -586,7 +588,7 @@ copy_static_docs_for_language() {
         if [[ "$rel" == *.md ]]; then
             variant="${file%.md}.$I18N_LANG.md"
             if [[ -f "$variant" ]]; then
-                cp "$variant" "$dst/$rel"
+                i18n_strip_front_matter "$variant" > "$dst/$rel"
             else
                 cp "$file" "$dst/$rel"
                 i18n_note_untranslated "$dst/$rel"

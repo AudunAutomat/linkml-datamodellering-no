@@ -12,6 +12,6 @@ generate_domain_description() {
     # Språkvariant (description.<lang>.md) dersom ho finst — elles originalen.
     description_file=$(i18n_source "$description_file") || true
 
-    cat "$description_file"
+    i18n_strip_front_matter "$description_file"
     echo ""
 }

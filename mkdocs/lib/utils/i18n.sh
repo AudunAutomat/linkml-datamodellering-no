@@ -103,3 +103,16 @@ i18n_note_untranslated() {
         END { if (!done) { note(); for (i = 1; i <= n; i++) print lines[i] } }
     ' "$file" > "$tmp" && mv "$tmp" "$file"
 }
+
+# i18n_strip_front_matter <fil>
+# Skriv fila til stdout utan i18n-front-matter (---/i18n:/---) frå
+# omsette sider (x.<lang>.md, jf. mkdocs/lib/scripts/i18n_status.py). Anna
+# front-matter vert behalde.
+i18n_strip_front_matter() {
+    awk '
+        NR == 1 && $0 == "---" { fm = 1; buf = $0 "\n"; next }
+        fm == 1 { buf = buf $0 "\n"; if ($0 ~ /^i18n:/) has = 1; if ($0 == "---") { fm = 2; if (!has) printf "%s", buf } ; next }
+        { print }
+        END { if (fm == 1) printf "%s", buf }
+    ' "$1"
+}
