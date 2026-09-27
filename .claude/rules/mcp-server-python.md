@@ -1,6 +1,6 @@
 ---
 name: mcp-server-python
-description: Kodepraksis for Python-kjeldekoden i dei tre MCP-serverane (JSON-RPC-feilhandtering, identifikatorsanering, namnekonvensjon, kjend DRY-gjeld i dispatch-boilerplate). Lastast automatisk ved arbeid med filer under src/mcp-*/.
+description: Kodepraksis for Python-kjeldekoden i dei tre MCP-serverane (JSON-RPC-feilhandtering, identifikatorsanering, namnekonvensjon, kjend DRY-gjeld i dispatch-boilerplate, eksplisitt LinkML-linterkonfig). Lastast automatisk ved arbeid med filer under src/mcp-*/.
 paths:
   - "src/mcp-*/**"
 ---
@@ -48,10 +48,24 @@ akkurat der ho manglar.
 slot-namn) dekker alle dei andre (type-namn, enum-namn, klassenamn,
 referanseoppløysing).
 
-Framgangsmåte: bruk **éi** delt saneringsfunksjon, og grep gjennom heile
-fila etter alle stader eit namn hentast direkte frå kjeldedata (nøklar i
-eit `dict`, `$ref`-oppløysing, fallback-namn) — kall funksjonen på kvar
+Framgangsmåte: bruk **éi** delt saneringsfunksjon per navnetype (i
+`converter.py`: `_to_pascal_case` for klasse-/type-/enumnavn og
+`_to_snake_case` for slotnavn), og grep gjennom heile fila etter alle stader
+eit namn hentast direkte frå kjeldedata (nøklar i eit `dict`,
+`$ref`-oppløysing, fallback-namn, `schemaName`). Kall funksjonen på kvar
 einaste ein, ikkje berre den mest opplagde.
+
+**Saneringslogikken har ein kopi utanfor `src/mcp-*`.** JSON Schema-roundtrip-testen
+(`test_roundtrip_json_schema()` i `tests/test_make.sh`) samanliknar originale og
+genererte klasse-, property- og `$ref`-navn. Han normaliserer dei med funksjonane
+`to_pascal`/`to_snake`, som speglar saneringa i `converter.py`. Testen importerer
+ikkje `converter.py`, sidan han køyrer med python3 på verten utan pyyaml.
+Endrar du saneringa, må du oppdatere kopien i same endring og køyre
+`make roundtrip-json-schema JSONSCHEMA=<fil>` for alle filene i `src/tmp/`. Elles
+feilar roundtrip-testen med «manglar properties»/«Manglar klasser» for navn som
+berre er sanerte ulikt. Døme: overgangen til UpperCamelCase/snake_case i
+`specs/done/modell-utkast-navngjeving.md`, der den gamle normaliseringa i testen
+berre gjorde om bindestrek til understrek.
 
 Konkret hending: `converter.py` i `mcp-linkml-modell-utkast` saniterte
 slot-namn, men ikkje type-/enum-/klassenamn (fire separate stader:
@@ -93,3 +107,40 @@ dispatch-logikken til éin av dei tre eksisterande, konsolider
 kallestader) — spør brukaren om godkjenning først, jf. CLAUDE.md sitt
 DRY-avsnitt ("Omskriv aldri eksisterande kode... med DRY som einaste
 grunngjeving utan å spørje brukaren om løyve først").
+
+## Kall aldri LinkML-`Linter()` utan eksplisitt konfig
+
+`linkml.linter.linter.Linter()` utan argument slår saman eit tomt konfig
+med `default.yaml`. I LinkML 1.11.1 har *kvar* regel der `level: disabled`,
+så `linter.lint(...)` returnerer då ingen lint-funn i det heile. Om
+`validate_schema=True` er sett, køyrer berre metamodell-valideringa. Kallet
+feilar ikkje og gjev ikkje noka åtvaring. Eit tomt resultat ser ut som
+«skjemaet er reint», og feilen er difor stille. Standardverdiane er upstream sitt
+val og kan endre seg mellom versjonar. `make lint` (CLI med
+`--config src/assets/containers/.linkmllint.yaml`) er ikkje ramma. Difor kan same
+skjema gje funn i `make lint` og ingen funn i MCP-serveren.
+
+**Fell aldri tilbake til** `Linter()` eller `Linter({})`, heller ikkje
+«berre for å få metamodell-validering».
+
+Framgangsmåte:
+
+1. Send alltid eit eksplisitt konfig med `extends: recommended` (eller eit
+   anna namngjeve regelsett), og overstyr einskildreglar under `rules:`.
+2. Hald konfigen éin stad per komponent. I `mcp-linkml-validator` er det
+   `linter:`-seksjonen i policy-YAML-ane (arva og merga per regel av
+   `_merge_policies()`, bygd av `_linter_config()` i `server.py`). I andre
+   komponentar er det ein modulkonstant med kommentar om kvifor kvar regel er
+   overstyrt.
+3. Verifiser at konfigen faktisk slår inn. Køyr linteren på eit skjema med
+   ein kjend regelbrot (t.d. eit camelCase-slotnavn for `standard_naming`, eller
+   eit attributt med `range: string` utan `imports: linkml:types` for
+   `no_undeclared_ranges`), og sjekk at funnet kjem.
+
+Konkret hending: både `mcp-linkml-validator/server.py` og
+`mcp-linkml-modell-utkast/validator.py` kalla `Linter()` utan konfig.
+Validatoren sitt lint-steg gav difor aldri lint-funn. Då konfigen vart sett,
+viste det seg at testfixturane mangla `imports: linkml:types` og hadde
+udefinerte range-klassar, utan at nokon hadde merka det. Sjå
+`specs/done/gjennomgang-bronze-policy-generisk.md` (B23) og
+`specs/done/linter-rule-og-bronze-oppfolging.md`.

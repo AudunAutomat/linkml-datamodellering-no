@@ -1,6 +1,6 @@
 ##
 ## Referansemodell — bronsjenivå
-## Viser minstekrava for å bestå bronsepolicyen.
+## Viser krava i bronsepolicyen (generisk LinkML-baseline).
 ## Run: make mcp-linkml-valider-modell SCHEMA=src/linkml/referanse/referansemodell-bronze/referansemodell-bronze-schema.yaml POLICY=bronze
 ##
 
@@ -8,9 +8,10 @@ id: https://data.norge.no/linkml/referansemodell-bronze
 name: referansemodell-bronze
 title: Referansemodell - bronsjenivå
 description: >-
-  Viser minstekrava for å bestå bronsepolicyen: HTTP(S)-id, schema-metadata
-  (title, version), class_uri, identifier-slot, slot_uri og begrepsidentifikator
-  på riktig format.
+  Viser krava i bronsepolicyen (generisk LinkML-baseline): HTTP(S)-id,
+  schema-metadata (title, version, license), default_prefix som absolutt URI og
+  LinkML-navnekonvensjonar. Inneheld i tillegg class_uri, identifier-slot,
+  slot_uri og begrepsidentifikator, som er krav frå basis-no.
 version: "1.2.2"
 license: https://data.norge.no/nlod/no/2.0
 annotations:

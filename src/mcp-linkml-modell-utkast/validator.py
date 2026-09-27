@@ -26,6 +26,24 @@ from pathlib import Path
 
 
 # ---------------------------------------------------------------------------
+# LinkML-linterkonfig
+# ---------------------------------------------------------------------------
+
+# Linter() utan konfig slår av alle reglar (sjå .claude/rules/mcp-server-python.md).
+# Speglar bronze-policyen sin linter:-seksjon i mcp-linkml-validator, bortsett
+# frå at `recommended` er på: for eit utkast er manglande description nyttig
+# informasjon, og her finst ingen required:/recommended:-mekanisme som dublerer han.
+_LINTER_CONFIG: dict = {
+    "extends": "recommended",
+    "rules": {
+        # Repoet mandaterer dct:/foaf:/… (ikkje dcterms: o.l.).
+        "canonical_prefixes": {"level": "disabled"},
+        # Permissible values speglar ofte eksterne kodelister.
+        "standard_naming": {"level": "warning", "exclude_type": ["permissible_value"]},
+    },
+}
+
+# ---------------------------------------------------------------------------
 # Placeholder-verdiar per range
 # ---------------------------------------------------------------------------
 
@@ -258,7 +276,7 @@ def validate_generated(linkml_yaml: str) -> dict:
         # ── Steg A: lint ─────────────────────────────────────────────────────
         try:
             from linkml.linter.linter import Linter
-            linter = Linter()
+            linter = Linter(_LINTER_CONFIG)
             for problem in linter.lint(schema_path):
                 level = getattr(problem.level, "value", str(problem.level)).lower()
                 lint_issues.append({
