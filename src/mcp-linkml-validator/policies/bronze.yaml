@@ -1,5 +1,11 @@
 version: 1
 
+description: >
+  Generisk LinkML-baseline. Grunnleggjande metadata- og modelleringskrav som
+  gjeld alle som modellerer i LinkML, utan norske eller repo-spesifikke
+  føresetnader. Norsk offentleg / Digdir-spesifikke krav ligg i basis-no.
+  Sjå specs/done/gjennomgang-bronze-policy-generisk.md.
+
 # NB: required:/recommended: har FAST alvorsgrad (error/warning) og støttar
 # IKKJE progresjon mellom policy-nivå (t.d. warning på bronse -> error på
 # gull) — i motsetnad til checks:-mekanismen, som overstyrer per nøkkelnavn
@@ -36,6 +42,31 @@ recommended:
 common_classes:
   must_use: []
 
+# LinkML sin innebygde linter — regelsettet `recommended`, med overstyringar.
+# Arva og merga per regel av policyar som extends bronze (sjå
+# _merge_policies i server.py), slik at t.d. gold kan heve level utan å
+# gjenta resten av regelkonfigen.
+linter:
+  extends: recommended
+  rules:
+    # Same krav vert alt handheva av required:/recommended: over — linterens
+    # variant ville gjeve eit dobbeltsignal for same manglande description.
+    recommended:
+      level: disabled
+    # Vil ha t.d. "dcterms" i staden for "dct" — for strengt for ein generisk
+    # baseline der prefiksval er opp til modelleraren.
+    canonical_prefixes:
+      level: disabled
+    # Klasser/enum: UpperCamelCase, slots/attributt: snake_case. Importerte
+    # element vert ekskluderte automatisk, og build.yaml `slot_naming: camel`
+    # overstyrer slotmønsteret for skjema som arvar camelCase frå kjelda.
+    # Permissible values er unntekne: dei speglar ofte eksterne kodelister
+    # (t.d. CC0, NLOD_2_0) der kjeldeforma skal takast vare på.
+    standard_naming:
+      level: warning
+      exclude_type:
+        - permissible_value
+
 # Generelle modelleringskvalitets-sjekkar
 checks:
 
@@ -57,13 +88,14 @@ checks:
     field: default_prefix
     digdir_rule: 4
 
-  default_prefix_is_https_uri:
+  default_prefix_is_absolute_uri:
     severity: error
     description: >
-      schema.default_prefix skal vere ein absolutt HTTPS-URI som sluttar med '/'.
-      Sikrar at genererte element-URI-ar er globalt unike og persistente
-      (Digdir-regel 4: Identifiserbarhet).
-    check: default_prefix_is_https_uri
+      schema.default_prefix skal ekspandere til ein absolutt HTTP(S)-URI som
+      endar på '/' eller '#' — anten som eit prefiksnavn deklarert i prefixes:
+      (idiomatisk LinkML) eller som ein literal URI. Sikrar at genererte
+      element-URI-ar er gyldige (Digdir-regel 4: Identifiserbarhet).
+    check: default_prefix_is_absolute_uri
     digdir_rule: 4
 
   schema_has_license:
@@ -77,72 +109,6 @@ checks:
     digdir_rule: 7
     fair_principle: R1.1
 
-  class_names_pascal_case:
-    severity: warning
-    description: >
-      Klassenavn skal starte med stor forbokstav (PascalCase). Følgjer
-      Digdir-regel 3 (Navne- og skrivekonvensjoner) og gjer klasser
-      skiljbare frå slot- og attributtnavn.
-    check: class_names_pascal_case
-    digdir_rule: 3
-
-  slot_names_snake_case:
-    severity: warning
-    description: >
-      Slotnavn skal bruke liten forbokstav og understrek (snake_case): berre a-z,
-      0-9 og _ er tillate. Bindestreker er ikkje tillate — bruk samansette ord
-      (t.d. epost, epostadresse) eller understrek. Følgjer Digdir-regel 3
-      (Navne- og skrivekonvensjoner).
-    check: slot_names_snake_case
-    exclude_schemas:
-      - fint-administrasjon
-      - fint-arkiv
-      - fint-common
-      - fint-okonomi
-      - fint-personvern
-      - fint-ressurs
-      - fint-utdanning
-    digdir_rule: 3
-
-  all_classes_have_class_uri:
-    severity: warning
-    description: >
-      Alle klasser (unntatt tree_root) bør ha class_uri som mappar klassen til
-      eit standard RDF-vokabular. Gjer klassane formelt beskriven og søkbare via URI.
-    check: all_classes_have_class_uri
-    digdir_rule: 4, 8
-    fair_principle: F3, I1
-
-  all_slots_have_slot_uri:
-    severity: warning
-    description: >
-      Alle globale slots bør ha slot_uri som mappar eigenskapen til
-      eit standard RDF-vokabular (dct:, dcat:, foaf: o.l.).
-      Sikrar formal semantisk interoperabilitet.
-    check: all_slots_have_slot_uri
-    digdir_rule: 4, 8
-    fair_principle: I1
-
-  all_classes_have_identifier:
-    severity: warning
-    description: >
-      Alle klasser (unntatt tree_root) bør ha ein global identifikator — ein slot
-      med identifier: true (eigen eller arva). Sikrar at instansar kan adresserast
-      med URI i koblede data.
-    check: all_classes_have_identifier
-    digdir_rule: 4
-    fair_principle: F1
-
-  class_count_limit:
-    severity: warning
-    description: >
-      Skjema med fleire enn 50 klasser (unntatt tree_root) bør delast opp i
-      undermoduler for å halde modellen handterleg. Støttar Digdir-regel 6
-      (Modularitet) om handterleg mengd modellelement per modul.
-    check: class_count
-    max_classes: 50
-    digdir_rule: 6
-
   no_inlined_on_primitive_range:
     severity: warning
     description: >
@@ -154,48 +120,14 @@ checks:
     digdir_rule: 8
     fair_principle: I1
 
-  all_classes_have_concept_ref:
-    severity: warning
-    description: >
-      Alle klasser (unntatt tree_root) bør ha annotations.begrepsidentifikator
-      som peikar på eit begrep i Felles begrepskatalog på forma
-      https://concept-catalog.fellesdatakatalog.digdir.no/collections/<collection-id>/concepts/<concept-id>.
-      Sikrar omgrepsforankring og semantisk interoperabilitet.
-    check: all_classes_have_concept_ref
-    concept_catalog_uri: https://concept-catalog.fellesdatakatalog.digdir.no/collections
-    digdir_rule: 13
-    fair_principle: A2
-
-  controlled_vocabulary_annotations:
-    severity: warning
-    description: >
-      Slots som refererer til kontrollerte vokabular (annotations.gyldige_verdier)
-      skal ha annotations.vokabular_krav (skal|bør|kan), og description skal innehalde
-      SKAL/BØR/KAN-formulering som matcher vokabular_krav. Sikrar konsistent og
-      maskinlesbar dokumentasjon av vokabularkrav.
-    check: controlled_vocabulary_annotations
-    digdir_rule: 8
-    fair_principle: I1
-
-  schema_har_erdiagram_aktivert:
-    severity: warning
-    description: >
-      build.yaml bør ha generators.erdiagram: true, slik at eit ER-diagram vert
-      generert for skjemaet (make gen-erdiagram-mermaid). Digdir-regel 5:
-      Visualisering. Sjølve diagrammet sin Mermaid-syntaks vert validert
-      nattleg av mermaid-render-jobben i lenkje-og-mermaid-sjekk.yml — denne
-      sjekken dekkjer berre at generering faktisk er slått på.
-    check: build_yaml_generator_flag
-    generator: erdiagram
-    digdir_rule: 5
-
   local_types_have_standard_uri:
     severity: warning
     description: >
-      Lokalt definerte typar (schemaets eige types:-felt) bør oppgje ein uri:
-      mot eit standardisert namnerom (xsd/rdf/rdfs/owl). Digdir-regel 15:
-      Standardiserte datatyper. Typar arva frå linkml:types er alt garantert
-      XSD-mappa av LinkML-modellen sjølv og treng ingen eigen sjekk.
+      Lokalt definerte typar (schemaets eige types:-felt) bør ha ein uri: mot
+      eit standardisert namnerom (xsd/rdf/rdfs/owl), eigen eller arva via
+      typeof. Digdir-regel 15: Standardiserte datatyper. Typar arva frå
+      linkml:types er alt garantert XSD-mappa av LinkML-modellen sjølv og
+      treng ingen eigen sjekk.
     check: local_types_have_standard_uri
     digdir_rule: 15
     fair_principle: I1

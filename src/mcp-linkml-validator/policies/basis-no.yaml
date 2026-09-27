@@ -1,0 +1,118 @@
+version: 1
+extends: bronze
+
+description: >
+  Norsk basislag over den generiske bronze-policyen. Legg til krav frå
+  Digdir sine Felles modelleringsreglar (regel 4, 5, 6, 8, 13) og repoet sine
+  eigne konvensjonar (literal default_prefix, begrepsidentifikator mot Felles
+  begrepskatalog, gyldige_verdier/vokabular_krav, build.yaml). Arva av silver
+  og felles-*-policyane. Sjå specs/done/gjennomgang-bronze-policy-generisk.md.
+
+checks:
+
+  # ── Repokonvensjon for URI-ar (Digdir-regel 4) ─────────────────────────────
+
+  default_prefix_is_https_uri:
+    severity: error
+    description: >
+      schema.default_prefix skal vere ein absolutt HTTPS-URI som sluttar med '/'
+      (repokonvensjon: same som id med avsluttande '/', jf. CONVENTIONS.md).
+      Sikrar at genererte element-URI-ar er globalt unike og persistente
+      (Digdir-regel 4: Identifiserbarhet).
+    check: default_prefix_is_https_uri
+    digdir_rule: 4
+
+  all_classes_have_class_uri:
+    severity: warning
+    description: >
+      Alle klasser (unntatt tree_root) bør ha class_uri som mappar klassen til
+      eit standard RDF-vokabular. Gjer klassane formelt beskriven og søkbare via URI.
+    check: all_classes_have_class_uri
+    digdir_rule: 4, 8
+    fair_principle: F3, I1
+
+  all_slots_have_slot_uri:
+    severity: warning
+    description: >
+      Alle globale slots (unntatt identifikator-slots, som vert subjekt-URI
+      og ikkje gjev nokon trippel) bør ha slot_uri som mappar eigenskapen til
+      eit standard RDF-vokabular (dct:, dcat:, foaf: o.l.).
+      Sikrar formal semantisk interoperabilitet.
+    check: all_slots_have_slot_uri
+    digdir_rule: 4, 8
+    fair_principle: I1
+
+  all_classes_have_identifier:
+    severity: warning
+    description: >
+      Alle klasser (unntatt tree_root, mixin og abstract) bør ha ein global
+      identifikator — ein slot med identifier: true (eigen eller arva). Sikrar
+      at instansar kan adresserast med URI i koblede data.
+    check: all_classes_have_identifier
+    digdir_rule: 4
+    fair_principle: F1
+
+  # ── Modularitet og visualisering (Digdir-regel 5, 6) ───────────────────────
+
+  class_count_limit:
+    severity: warning
+    description: >
+      Skjema med fleire enn 50 klasser (unntatt tree_root) bør delast opp i
+      undermoduler for å halde modellen handterleg. Støttar Digdir-regel 6
+      (Modularitet) om handterleg mengd modellelement per modul.
+    check: class_count
+    max_classes: 50
+    digdir_rule: 6
+
+  schema_har_erdiagram_aktivert:
+    severity: warning
+    description: >
+      build.yaml bør ha generators.erdiagram: true, slik at eit ER-diagram vert
+      generert for skjemaet (make gen-erdiagram-mermaid). Digdir-regel 5:
+      Visualisering. Sjølve diagrammet sin Mermaid-syntaks vert validert
+      nattleg av mermaid-render-jobben i lenkje-og-mermaid-sjekk.yml — denne
+      sjekken dekkjer berre at generering faktisk er slått på.
+    check: build_yaml_generator_flag
+    generator: erdiagram
+    digdir_rule: 5
+
+  # ── Begrep og kontrollerte vokabular (Digdir-regel 8, 13) ──────────────────
+
+  all_classes_have_concept_ref:
+    severity: warning
+    description: >
+      Alle klasser (unntatt tree_root) bør ha annotations.begrepsidentifikator
+      som peikar på eit begrep i Felles begrepskatalog på forma
+      https://concept-catalog.fellesdatakatalog.digdir.no/collections/<collection-id>/concepts/<concept-id>.
+      Sikrar omgrepsforankring og semantisk interoperabilitet. AP-NO-profilar
+      er unntekne — klassane der er definerte av W3C/EU-standardar, ikkje av
+      norske omgrep (jf. .claude/rules/linkml-schema.md).
+    check: all_classes_have_concept_ref
+    concept_catalog_uri: https://concept-catalog.fellesdatakatalog.digdir.no/collections
+    # Same liste står i gold.yaml sin redeklarasjon — MÅ haldast i synk
+    # manuelt (YAML-anker verkar ikkje på tvers av filer).
+    exclude_schemas:
+      - common-ap-no
+      - cpsv-ap-no
+      - dcat-ap-no
+      - dqv-ap-no
+      - dqv-core
+      - modelldcat-ap-no
+      - modelldcat-katalog
+      - modelldcat-modell
+      - skos-ap-no
+      - xkos-ap-no
+    digdir_rule: 13
+    fair_principle: A2
+
+  controlled_vocabulary_annotations:
+    severity: warning
+    description: >
+      Slots som refererer til kontrollerte vokabular (annotations.gyldige_verdier)
+      skal ha annotations.vokabular_krav (skal|bør|kan), og description skal innehalde
+      SKAL/BØR/KAN-formulering som matcher vokabular_krav. Sikrar konsistent og
+      maskinlesbar dokumentasjon av vokabularkrav. Berre skjemaet sine eigne
+      slots vert sjekka.
+    check: controlled_vocabulary_annotations
+    digdir_rule: 8
+    fair_principle: I1

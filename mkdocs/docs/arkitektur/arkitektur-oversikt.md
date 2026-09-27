@@ -47,7 +47,7 @@ flowchart TB
         AI["KI-assistent<br/>(Claude m.fl.)"]
         MCPMOD["mcp-linkml-modell-utkast"]
         MCPBEGREP["mcp-linkml-begrep-utkast"]
-        MCPVAL["mcp-linkml-validator<br/>bronze/silver/gold/<br/>felles-datakatalog/felles-begrepskatalog"]
+        MCPVAL["mcp-linkml-validator<br/>bronze/basis-no/silver/gold/<br/>felles-datakatalog/felles-begrepskatalog"]
 
         PADMCP ~~~ AI
         AI --> MCPMOD

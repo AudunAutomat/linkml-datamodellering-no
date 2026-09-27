@@ -22,7 +22,7 @@ flowchart LR
     SRC["src/linkml/&lt;domain&gt;/&lt;modell&gt;/<br/>*-schema.yaml + build.yaml"]
     GEN["make domain-&lt;domain&gt;<br/>(make/10-generator-macros.mk,<br/>make/11-generator-targets.mk)"]
     ARTEFAKT["generated/&lt;domain&gt;/&lt;modell&gt;/<br/>TTL · JSON Schema · SHACL · OWL ·<br/>protobuf · GraphQL · OpenAPI · AsyncAPI ·<br/>PlantUML · gen-doc · ER-diagram"]
-    VALID["make/40-validation.mk<br/>mcp-linkml-validator<br/>(bronze/silver/gold/felles-*)"]
+    VALID["make/40-validation.mk<br/>mcp-linkml-validator<br/>(bronze/basis-no/silver/gold/felles-*)"]
     PORTAL["mkdocs/publish.sh<br/>→ mkdocs/docs/&lt;domain&gt;/&lt;modell&gt;/"]
     PAGES["GitHub Pages"]
 

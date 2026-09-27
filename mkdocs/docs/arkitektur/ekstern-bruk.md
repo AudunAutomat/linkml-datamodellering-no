@@ -112,7 +112,7 @@ jobs:
 | Input | Type | Standard | Skildring |
 |---|---|---|---|
 | `schema` | string | — (påkravd) | Sti til skjemafil, relativ til repo-rota |
-| `policy` | string | `bronze` | Valideringspolicy: `bronze` / `silver` / `gold` / `felles-datakatalog` / `felles-begrepskatalog` |
+| `policy` | string | `bronze` | Valideringspolicy: `bronze` (generisk LinkML) / `basis-no` / `silver` / `gold` / `felles-datakatalog` / `felles-begrepskatalog` |
 | `instance` | string | (automatisk) | Sti til datafil — funnen automatisk i `examples/` om han ikkje er oppgitt |
 | `version` | string | (frå `linkml-datamodellering.yaml`) | Overstyrer versjonen som vert lesen frå konfigurasjonsfila |
 
@@ -284,7 +284,7 @@ Tilgjengelege image-taggar: `latest`, `main`, skjema-spesifikke taggar (`dcat-ap
     identisk åtferd med CI, hent configen og legg til `--config
     .linkmllint.yaml` i kallet over.
 
-!!! warning "Policy-validering (bronze/silver/gold) krev meir enn éin podman-kommando lokalt"
+!!! warning "Policy-validering (bronze/basis-no/silver/gold) krev meir enn éin podman-kommando lokalt"
     `make mcp-linkml-valider-modell` (sjå [Rettleiing: ny domenemodell](../kom-i-gang/ny-domenemodell.md#3-valider-undervegs))
     brukar `ghcr.io/audunautomat/mcp-linkml-validator` — biletet **er** offentleg
     tilgjengeleg, men i motsetnad til `gen-linkml`/`linkml lint` over held
@@ -293,7 +293,7 @@ Tilgjengelege image-taggar: `latest`, `main`, skjema-spesifikke taggar (`dcat-ap
     hentast frå dette repoet og monterast inn saman med biletet (sjå
     `src/mcp-linkml-validator/flatten-and-validate.bash`). `gen-linkml`/
     `linkml lint` over dekkjer strukturvalidering og stilsjekk direkte;
-    for full bronze/silver/gold-policy (`begrepsidentifikator`,
+    for full basis-no/silver/gold-policy (`begrepsidentifikator`,
     `annotations.utgiver` osv.) er GitHub Actions-workflowen frå
     [Bootstrap](#bootstrap-ein-kommando) den enklaste vegen — han hentar
     desse støttefilene og køyrer full policy-validering automatisk via

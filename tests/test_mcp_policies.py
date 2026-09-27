@@ -41,6 +41,8 @@ description: Testmodell
 prefixes:
   ex: https://example.org/
 default_prefix: https://example.org/
+imports:
+  - linkml:types
 classes:
   Ting:
     description: Ei ting
@@ -66,6 +68,8 @@ prefixes:
   dqv: http://www.w3.org/ns/dqv#
   ex: https://example.org/
 default_prefix: https://example.org/
+imports:
+  - linkml:types
 classes:
   Container:
     tree_root: true
@@ -162,6 +166,8 @@ prefixes:
   foaf: http://xmlns.com/foaf/0.1/
   ex: https://example.org/
 default_prefix: https://example.org/
+imports:
+  - linkml:types
 classes:
   Container:
     tree_root: true
@@ -232,6 +238,40 @@ classes:
       begrepsidentifikator: https://concept-catalog.fellesdatakatalog.digdir.no/collections/1/concepts/kvalitetsmaaling
     slots:
       - id
+  Distribusjon:
+    class_uri: dcat:Distribution
+    description: Ein DCAT-distribusjon
+    annotations:
+      begrepsidentifikator: https://concept-catalog.fellesdatakatalog.digdir.no/collections/1/concepts/distribusjon
+    slots:
+      - id
+      - tilgangsurl
+      - lisens
+  Datatjeneste:
+    class_uri: dcat:DataService
+    description: Ei DCAT-datateneste
+    annotations:
+      begrepsidentifikator: https://concept-catalog.fellesdatakatalog.digdir.no/collections/1/concepts/datatjeneste
+    slots:
+      - id
+      - endepunktsurl
+      - kontaktpunkt
+      - tittel
+      - utgiver
+  Kvalitetsdimensjon:
+    class_uri: dqv:Dimension
+    description: Ein kvalitetsdimensjon
+    annotations:
+      begrepsidentifikator: https://concept-catalog.fellesdatakatalog.digdir.no/collections/1/concepts/kvalitetsdimensjon
+    slots:
+      - id
+  Kvalitetsmerknad:
+    class_uri: dqv:QualityAnnotation
+    description: Ein kvalitetsmerknad
+    annotations:
+      begrepsidentifikator: https://concept-catalog.fellesdatakatalog.digdir.no/collections/1/concepts/kvalitetsmerknad
+    slots:
+      - id
 slots:
   id:
     description: Identifikator
@@ -274,6 +314,14 @@ slots:
     description: Gjeldande lovgjeving
     slot_uri: dcatap:applicableLegislation
     range: uriorcurie
+  tilgangsurl:
+    description: Tilgangsadresse
+    slot_uri: dcat:accessURL
+    range: uri
+  endepunktsurl:
+    description: Endepunktsadresse
+    slot_uri: dcat:endpointURL
+    range: uri
 """
 
 
@@ -328,7 +376,7 @@ classes:
   Ting:
     description: Ei ting
 """
-        self.assertTrue(has_warning(validate_schema(schema, "bronze"), "all_classes_have_identifier"))
+        self.assertTrue(has_warning(validate_schema(schema, "basis-no"), "all_classes_have_identifier"))
 
     def test_klasse_med_arva_identifikator_passerer(self):
         schema = """\
@@ -354,7 +402,7 @@ slots:
     identifier: true
     range: uriorcurie
 """
-        r = validate_schema(schema, "bronze")
+        r = validate_schema(schema, "basis-no")
         self.assertFalse(issues_for(r, "all_classes_have_identifier", "class:Ting"))
 
     def test_klasse_utan_omgrepstilvisning_gir_advarsel(self):
@@ -376,7 +424,7 @@ slots:
     identifier: true
     range: uriorcurie
 """
-        self.assertTrue(has_warning(validate_schema(schema, "bronze"), "all_classes_have_concept_ref"))
+        self.assertTrue(has_warning(validate_schema(schema, "basis-no"), "all_classes_have_concept_ref"))
 
     def test_begrepsidentifikator_annotation_godtatt(self):
         schema = """\
@@ -399,7 +447,7 @@ slots:
     identifier: true
     range: uriorcurie
 """
-        r = validate_schema(schema, "bronze")
+        r = validate_schema(schema, "basis-no")
         self.assertFalse(issues_for(r, "all_classes_have_concept_ref", "class:Ting"))
 
     def test_tree_root_klasse_er_unntatt_frå_sjekkar(self):
@@ -428,7 +476,7 @@ slots:
     identifier: true
     range: uriorcurie
 """
-        r = validate_schema(schema, "bronze")
+        r = validate_schema(schema, "basis-no")
         self.assertFalse(issues_for(r, "all_classes_have_identifier", "class:Container"))
         self.assertFalse(issues_for(r, "all_classes_have_concept_ref", "class:Container"))
 
@@ -471,7 +519,7 @@ slots:
             schema_path = Path(tmp) / "schema.yaml"
             schema_path.write_text(_BRONZE_PASS, encoding="utf-8")
             (Path(tmp) / "build.yaml").write_text("generators:\n  erdiagram: false\n", encoding="utf-8")
-            r = validate_schema(policy_name="bronze", schema_path=str(schema_path))
+            r = validate_schema(policy_name="basis-no", schema_path=str(schema_path))
         self.assertTrue(has_warning(r, "build_yaml_generator_disabled"))
 
     def test_erdiagram_aktivert_gir_ingen_advarsel(self):
@@ -479,14 +527,143 @@ slots:
             schema_path = Path(tmp) / "schema.yaml"
             schema_path.write_text(_BRONZE_PASS, encoding="utf-8")
             (Path(tmp) / "build.yaml").write_text("generators:\n  erdiagram: true\n", encoding="utf-8")
-            r = validate_schema(policy_name="bronze", schema_path=str(schema_path))
+            r = validate_schema(policy_name="basis-no", schema_path=str(schema_path))
         self.assertFalse(has_warning(r, "build_yaml_generator_disabled"))
 
     def test_ingen_build_yaml_gir_ingen_advarsel(self):
         # Ephemeralt schemaText-kall (ingen sysken-build.yaml å lese) skal
         # ikkje utløyse sjekken.
-        r = validate_schema(_BRONZE_PASS, "bronze")
+        r = validate_schema(_BRONZE_PASS, "basis-no")
         self.assertFalse(has_warning(r, "build_yaml_generator_disabled"))
+
+
+# ── Bronze: generisk LinkML-baseline ──────────────────────────────────────────
+
+_FIXTURES = Path(__file__).parent / "fixtures"
+
+
+def _minimal(extra: str = "", default_prefix: str = "ex", prefixes: str = "  ex: https://example.org/\n") -> str:
+    return (
+        "id: https://example.org/schema\nname: TestSchema\ntitle: T\ndescription: D\n"
+        f"prefixes:\n{prefixes}default_prefix: {default_prefix}\n"
+        "imports:\n  - linkml:types\n" + extra
+    )
+
+
+class TestBronzeGenerisk(unittest.TestCase):
+    """Bronze skal vere generisk nok for alle som modellerer i LinkML."""
+
+    def test_idiomatisk_linkml_skjema_passerer_utan_feil(self):
+        r = validate_schema(policy_name="bronze",
+                            schema_path=str(_FIXTURES / "bronze-generisk-personinfo-fixture.yaml"))
+        self.assertEqual(r["errorCount"], 0, r["issues"])
+        codes = {i["code"] for i in r["issues"]}
+        for norsk in ("all_classes_have_concept_ref", "all_slots_have_slot_uri",
+                      "default_prefix_is_https_uri", "all_classes_have_identifier"):
+            self.assertNotIn(norsk, codes)
+
+    def test_default_prefix_som_prefiksnavn_godtatt(self):
+        r = validate_schema(_minimal(), "bronze")
+        self.assertFalse(has_error(r, "default_prefix_is_absolute_uri"))
+
+    def test_default_prefix_som_udeklarert_prefiks_gir_feil(self):
+        r = validate_schema(_minimal(default_prefix="ukjend"), "bronze")
+        self.assertTrue(has_error(r, "default_prefix_is_absolute_uri"))
+
+    def test_default_prefix_utan_avsluttande_skiljeteikn_gir_feil(self):
+        r = validate_schema(_minimal(prefixes="  ex: https://example.org/x\n"), "bronze")
+        self.assertTrue(has_error(r, "default_prefix_is_absolute_uri"))
+
+    def test_default_prefix_http_og_hash_godtatt(self):
+        r = validate_schema(_minimal(prefixes="  ex: http://example.org/vocab#\n"), "bronze")
+        self.assertFalse(has_error(r, "default_prefix_is_absolute_uri"))
+
+    def test_basis_no_krev_literal_https_default_prefix(self):
+        r = validate_schema(_minimal(), "basis-no")
+        self.assertTrue(has_error(r, "default_prefix_is_https_uri"))
+
+    def test_lokal_typeof_type_arvar_standard_uri(self):
+        r = validate_schema(_minimal("types:\n  Orgnr:\n    typeof: string\n    description: O\n"), "bronze")
+        self.assertFalse(has_warning(r, "local_type_missing_uri"))
+
+    def test_attributt_utan_description_gir_advarsel(self):
+        r = validate_schema(_minimal(
+            "classes:\n  Ting:\n    description: T\n    attributes:\n      navn:\n        range: string\n"), "bronze")
+        self.assertTrue(issues_for(r, "missing_recommended_metadata", "class:Ting → attribute:navn"))
+
+    def test_tree_root_attributt_utan_description_er_unnteke(self):
+        r = validate_schema(_minimal(
+            "classes:\n  Container:\n    tree_root: true\n    attributes:\n      ting:\n        range: string\n"),
+            "bronze")
+        self.assertFalse(issues_for(r, "missing_recommended_metadata", "class:Container → attribute:ting"))
+
+    # ── LinkML-linter (standard_naming) ─────────────────────────────────────
+
+    _CAMEL = ("classes:\n  Ting:\n    description: T\n    slots:\n      - fulltNavn\n"
+              "slots:\n  fulltNavn:\n    description: F\n")
+
+    def test_camelcase_slot_gir_advarsel_i_bronze(self):
+        self.assertTrue(has_warning(validate_schema(_minimal(self._CAMEL), "bronze"), "standard_naming"))
+
+    def test_camelcase_attributt_gir_advarsel_i_bronze(self):
+        r = validate_schema(_minimal(
+            "classes:\n  Ting:\n    description: T\n    attributes:\n      fulltNavn:\n        description: F\n"),
+            "bronze")
+        self.assertTrue(has_warning(r, "standard_naming"))
+
+    def test_klassenavn_med_understrek_gir_advarsel(self):
+        r = validate_schema(_minimal("classes:\n  Min_Ting:\n    description: T\n"), "bronze")
+        self.assertTrue(has_warning(r, "standard_naming"))
+
+    def test_camelcase_slot_gir_feil_i_gull(self):
+        self.assertTrue(has_error(validate_schema(_minimal(self._CAMEL), "gold"), "standard_naming"))
+
+    def test_slot_naming_camel_i_build_yaml_gjev_unntak(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            schema_path = Path(tmp) / "schema.yaml"
+            schema_path.write_text(_minimal(self._CAMEL), encoding="utf-8")
+            (Path(tmp) / "build.yaml").write_text("slot_naming: camel\n", encoding="utf-8")
+            r = validate_schema(policy_name="bronze", schema_path=str(schema_path))
+        self.assertFalse(has_warning(r, "standard_naming"), r["issues"])
+
+    def test_importerte_element_vert_ikkje_navnesjekka(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "base.yaml").write_text(
+                "id: https://example.org/base\nname: base\nprefixes:\n  ex: https://example.org/\n"
+                "default_prefix: ex\nimports:\n  - linkml:types\n" + self._CAMEL, encoding="utf-8")
+            schema_path = Path(tmp) / "schema.yaml"
+            schema_path.write_text(_minimal("").replace("  - linkml:types\n", "  - linkml:types\n  - base\n"),
+                                   encoding="utf-8")
+            r = validate_schema(policy_name="bronze", schema_path=str(schema_path))
+        self.assertFalse(has_warning(r, "standard_naming"), r["issues"])
+
+
+# ── basis-no: unntak i flytta sjekkar ─────────────────────────────────────────
+
+class TestBasisNo(unittest.TestCase):
+
+    def test_identifikator_slot_treng_ikkje_slot_uri(self):
+        r = validate_schema(_BRONZE_PASS, "basis-no")
+        self.assertFalse(issues_for(r, "all_slots_have_slot_uri", "slot:id"))
+
+    def test_mixin_og_abstract_treng_ikkje_identifikator(self):
+        r = validate_schema(_minimal(
+            "classes:\n  Adresse:\n    mixin: true\n    description: A\n"
+            "  Ting:\n    abstract: true\n    description: T\n"), "basis-no")
+        self.assertFalse(has_warning(r, "all_classes_have_identifier"))
+
+    def test_ap_no_profil_er_unnteken_omgrepstilvisning(self):
+        schema = _minimal("classes:\n  Datasett:\n    description: D\n").replace(
+            "name: TestSchema", "name: dcat-ap-no")
+        self.assertFalse(has_warning(validate_schema(schema, "basis-no"), "all_classes_have_concept_ref"))
+        self.assertFalse(has_error(validate_schema(schema, "gold"), "all_classes_have_concept_ref"))
+
+    def test_bronze_har_ingen_norske_sjekkar(self):
+        bronze_checks = set((load_policy("bronze").get("checks") or {}))
+        for norsk in ("all_classes_have_concept_ref", "controlled_vocabulary_annotations",
+                      "schema_har_erdiagram_aktivert", "default_prefix_is_https_uri"):
+            self.assertNotIn(norsk, bronze_checks)
+            self.assertIn(norsk, load_policy("basis-no")["checks"])
 
 
 # ── Silver ───────────────────────────────────────────────────────────────────
@@ -823,11 +1000,14 @@ classes:
       begrepsidentifikator: https://data.norge.no/concepts/1
     slots:
       - id
+      - navn
 slots:
   id:
     description: Identifikator
     identifier: true
     range: uriorcurie
+  navn:
+    description: Navn
 """
         self.assertTrue(has_error(validate_schema(schema, "gold"), "all_slots_have_slot_uri"))
 
@@ -1185,6 +1365,15 @@ class TestPolicyKoherens(unittest.TestCase):
             "Følgjande warning-sjekkar i bronse/sølv manglar ei tilsvarande "
             f"error-oppføring i gold.yaml sin checks: {ikkje_oppgraderte}",
         )
+
+    def test_linter_warning_reglar_er_oppgraderte_til_error_i_gull(self):
+        silver_rules = (load_policy("silver").get("linter") or {}).get("rules") or {}
+        gold_rules = (load_policy("gold").get("linter") or {}).get("rules") or {}
+        ikkje_oppgraderte = [
+            name for name, cfg in silver_rules.items()
+            if cfg.get("level") == "warning" and gold_rules[name].get("level") != "error"
+        ]
+        self.assertEqual(ikkje_oppgraderte, [])
 
 
 if __name__ == "__main__":

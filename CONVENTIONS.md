@@ -145,7 +145,7 @@ kommunalkatalog # ikkje PascalCase
 
 ## Slotnavn
 
-**`snake_case`**, norsk bokmål. Unntak: FINT-skjema brukar `camelCase` (arva frå FINT-spec).
+**`snake_case`**, norsk bokmål. Unntak: FINT-skjema og oreg-skjema frå XSD brukar `camelCase` (arva frå kjelda), sett med `slot_naming: camel` i `build.yaml`.
 
 **Format:** `snake_case` tillét berre små bokstavar (`a-z`), tal (`0-9`) og understrek (`_`). 
 **Bindestreker er ikkje tillate** — bruk samansette ord utan separasjon (t.d. `epost`, `epostadresse`) 
@@ -257,7 +257,8 @@ fix(docgen): fiks linjeskift i slot-tabellar
 
 ```yaml
 publish_external: false   # true for å publisere til ekstern katalog
-validation_policy: silver # bronze / silver / gold / felles-datakatalog / felles-begrepskatalog
+validation_policy: silver # bronze / basis-no / silver / gold / felles-datakatalog / felles-begrepskatalog
+slot_naming: camel        # valfri — overstyrer linterens snake_case-krav for slots (sjå under)
 
 generators:
   # Artefaktgeneratorer
@@ -278,6 +279,11 @@ generators:
   docs: true
   plantuml: true
 ```
+
+`slot_naming` er valfri og berre for skjema som arvar ein annan navnekonvensjon
+frå kjelda (FINT API-spesifikasjonen, oreg-XSD-ar). Verdien vert sendt vidare
+som `slot_pattern` til LinkML-linterens `standard_naming`-regel (t.d. `camel`).
+Utan feltet gjeld `snake_case`.
 
 ### Per datafil (manglar `generators:`-seksjon)
 
@@ -301,7 +307,7 @@ utan `build.yaml` vert validerte automatisk med `bronze`-policy.
 
 ```yaml
 publish_external: false         # berre begrepskatalogen publiserer
-validation_policy: bronze       # bronze / silver / gold
+validation_policy: basis-no     # bronze / basis-no / silver / gold
 
 # Metadata for aggregering til begrepskatalog
 # aggregation-metadata vert auto-detektert frå CODEOWNERS.md basert på path-matching

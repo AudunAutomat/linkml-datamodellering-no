@@ -16,7 +16,7 @@ src/linkml/<domain>/<modell>/build.yaml
 
 ```yaml
 publish_external: false          # true for å utløyse publisering til ekstern katalog
-validation_policy: silver        # bronze / silver / gold / felles-datakatalog / felles-begrepskatalog
+validation_policy: silver        # bronze / basis-no / silver / gold / felles-datakatalog / felles-begrepskatalog
 external_spec_url: https://informasjonsforvaltning.github.io/cpsv-ap-no/  # lenke til offisiell spesifikasjon
 
 
@@ -133,7 +133,8 @@ under `data/`. Gyldige verdiar:
 
 | Verdi | Brukstilfelle |
 |---|---|
-| [`bronze`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#bronse) | Minimumskrav — strukturelt korrekt LinkML |
+| [`bronze`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#bronse) | Minimumskrav — generisk, strukturelt korrekt LinkML |
+| [`basis-no`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/README.md#basis-no) | Bronze + Digdir-/repo-krav (URI-mapping, identifikator, begrepsreferanse) |
 | [`silver`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#s%C3%B8lv) | Tilrådde felt er fylt ut |
 | [`gold`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#gull) | Alle felt utfylt, med kvalitetskontrollar |
 | [`felles-datakatalog`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/README.md#felles-datakatalog-felles-datakatalog) | ModelDCAT-AP-NO — publisering til Felles Datakatalog |
@@ -212,7 +213,7 @@ ikkje konverterast til RDF av `linkml-convert`):
 
 ```yaml
 publish_external: false
-validation_policy: bronze
+validation_policy: basis-no
 
 generators:
   jsonld_context: true

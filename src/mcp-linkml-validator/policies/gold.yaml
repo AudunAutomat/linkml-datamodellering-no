@@ -4,7 +4,7 @@ extends: silver
 description: >
   FAIR-policy for LinkML-skjema. Sjekkar at skjemaet følgjer FAIR-prinsippa
   (Findable, Accessible, Interoperable, Reusable) for opne offentlege data.
-  Arvar sølvlaget (ap-no) og bronselaget (default).
+  Arvar sølvlaget (ap-no), basis-no (norske basiskrav) og bronze (generisk LinkML-baseline).
   Alle brot gir feil — gullstatus er krevjande å oppnå.
 
 # Standard felt-sjekkar (lik default). version og schema-scope description
@@ -55,6 +55,14 @@ container_exclude_schemas: &container_exclude_schemas
   - brreg-felles-geografisk-adresse
   - brreg-felles-tid
 
+# Oppgrader linterens navnekonvensjonar (standard_naming, Digdir-regel 3)
+# frå warning (bronze) til error. Berre level vert overstyrt — resten av
+# regelkonfigen vert arva frå bronze via _merge_policies.
+linter:
+  rules:
+    standard_naming:
+      level: error
+
 # Oppgrader bronze-åtvarslane til feil på gullnivå.
 # _merge_policies slår saman checks frå parent og child med {**parent, **child},
 # slik at child-nøklar overstyrer parent-nøklar med same navn.
@@ -63,7 +71,7 @@ checks:
     severity: error
     description: >
       Alle klasser (unntatt tree_root) skal ha class_uri som mappar klassen til
-      eit standard RDF-vokabular. Krev: ikkje berre anbefalt (bronze-nivå).
+      eit standard RDF-vokabular. Krev: ikkje berre anbefalt (basis-no-nivå).
     check: all_classes_have_class_uri
     digdir_rule: 4, 8
     fair_principle: F3
@@ -72,7 +80,7 @@ checks:
     severity: error
     description: >
       Alle globale slots skal ha slot_uri som mappar eigenskapen til
-      eit standard RDF-vokabular. Krev: ikkje berre anbefalt (bronze-nivå).
+      eit standard RDF-vokabular. Krev: ikkje berre anbefalt (basis-no-nivå).
     check: all_slots_have_slot_uri
     digdir_rule: 4, 8
     fair_principle: I1
@@ -88,39 +96,12 @@ checks:
     digdir_rule: 7
     fair_principle: R1.1
 
-  class_names_pascal_case:
-    severity: error
-    description: >
-      Klassenavn skal starte med stor forbokstav (PascalCase). Følgjer
-      Digdir-regel 3 (Navne- og skrivekonvensjoner) og gjer klasser
-      skiljbare frå slot- og attributtnavn. Krev: ikkje berre anbefalt (bronze-nivå).
-    check: class_names_pascal_case
-    digdir_rule: 3
-
-  slot_names_snake_case:
-    severity: error
-    description: >
-      Slotnavn skal bruke liten forbokstav og understrek (snake_case): berre a-z,
-      0-9 og _ er tillate. Bindestreker er ikkje tillate — bruk samansette ord
-      (t.d. epost, epostadresse) eller understrek. Følgjer Digdir-regel 3
-      (Navne- og skrivekonvensjoner). Krev: ikkje berre anbefalt (bronze-nivå).
-    check: slot_names_snake_case
-    exclude_schemas:
-      - fint-administrasjon
-      - fint-arkiv
-      - fint-common
-      - fint-okonomi
-      - fint-personvern
-      - fint-ressurs
-      - fint-utdanning
-    digdir_rule: 3
-
   all_classes_have_identifier:
     severity: error
     description: >
       Alle klasser (unntatt tree_root) skal ha ein global identifikator — ein slot
       med identifier: true (eigen eller arva). Sikrar at instansar kan adresserast
-      med URI i koblede data. Krev: ikkje berre anbefalt (bronze-nivå).
+      med URI i koblede data. Krev: ikkje berre anbefalt (basis-no-nivå).
     check: all_classes_have_identifier
     digdir_rule: 4
     fair_principle: F1
@@ -131,7 +112,7 @@ checks:
       Skjema med fleire enn 50 klasser (unntatt tree_root) skal delast opp i
       undermoduler for å halde modellen handterleg. Støttar Digdir-regel 6
       (Modularitet) om handterleg mengd modellelement per modul. Krev: ikkje
-      berre anbefalt (bronze-nivå).
+      berre anbefalt (basis-no-nivå).
     check: class_count
     max_classes: 50
     digdir_rule: 6
@@ -143,9 +124,21 @@ checks:
       som peikar på eit begrep i Felles begrepskatalog på forma
       https://concept-catalog.fellesdatakatalog.digdir.no/collections/<collection-id>/concepts/<concept-id>.
       Sikrar omgrepsforankring og semantisk interoperabilitet. Krev: ikkje berre
-      anbefalt (bronze-nivå).
+      anbefalt (basis-no-nivå).
     check: all_classes_have_concept_ref
     concept_catalog_uri: https://concept-catalog.fellesdatakatalog.digdir.no/collections
+    # Same liste som i basis-no.yaml — MÅ haldast i synk manuelt.
+    exclude_schemas:
+      - common-ap-no
+      - cpsv-ap-no
+      - dcat-ap-no
+      - dqv-ap-no
+      - dqv-core
+      - modelldcat-ap-no
+      - modelldcat-katalog
+      - modelldcat-modell
+      - skos-ap-no
+      - xkos-ap-no
     digdir_rule: 13
     fair_principle: A2
 
@@ -168,7 +161,7 @@ checks:
       skal ha annotations.vokabular_krav (skal|bør|kan), og description skal innehalde
       SKAL/BØR/KAN-formulering som matcher vokabular_krav. Sikrar konsistent og
       maskinlesbar dokumentasjon av vokabularkrav. Krev: ikkje berre anbefalt
-      (bronze-nivå).
+      (basis-no-nivå).
     check: controlled_vocabulary_annotations
     digdir_rule: 8
     fair_principle: I1
@@ -312,7 +305,7 @@ checks:
     description: >
       build.yaml skal ha generators.erdiagram: true, slik at eit ER-diagram
       vert generert for skjemaet. Digdir-regel 5: Visualisering. Krev: ikkje
-      berre anbefalt (bronze-nivå).
+      berre anbefalt (basis-no-nivå).
     check: build_yaml_generator_flag
     generator: erdiagram
     digdir_rule: 5

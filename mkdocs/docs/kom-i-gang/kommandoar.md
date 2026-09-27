@@ -58,8 +58,9 @@ Berre nødvendig ved første bruk eller etter endringar i Dockerfile.
 
 | Policy | Beskriving |
 |---|---|
-| `bronze` | Obligatoriske metadata (`id`, `name`), anbefalt `description`, alle klasser har identifikator og begrepsreferanse |
-| `silver` | Bronze + skjemaet importerer DCAT-AP-NO og DQV-AP-NO |
+| `bronze` | Generisk LinkML-baseline: obligatoriske metadata (`id`, `name`, `title`), `default_prefix`, anbefalt `description`/`version`/`license`, LinkML-linter (inkl. navnekonvensjonar) |
+| `basis-no` | Bronze + Digdir-/repo-krav: `class_uri`/`slot_uri`, identifikator, begrepsreferanse, kontrollerte vokabular, ER-diagram |
+| `silver` | Basis-no + skjemaet importerer DCAT-AP-NO og DQV-AP-NO |
 | `gold` | Silver + FAIR-sjekkar F1-R1.3 (class_uri, lisens, proveniens m.m.) |
 
 `mcp-linkml-valider-modell` flattar automatisk ut relative importar med LinkML sitt `gen-linkml --mergeimports` før validering, slik at domenemodellar med fleire schema-lag fungerer utan tilpassing.
@@ -67,7 +68,7 @@ Berre nødvendig ved første bruk eller etter endringar i Dockerfile.
 ### Publiserings-Policyar
 
 Brukt for skjema der `publish_external: true` i `build.yaml`. Sjekkar at skjemaet
-er i samsvar med krava til ei bestemt ekstern katalog. Arvær `bronze`-laget.
+er i samsvar med krava til ei bestemt ekstern katalog. Arvar `basis-no`-laget.
 
 | Policy | Beskriving |
 |---|---|

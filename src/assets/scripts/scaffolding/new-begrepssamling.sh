@@ -41,7 +41,7 @@ mkdir -p "$BEGREP_DIR"
 
 cat > "$MANIFEST_FILE" << 'EOF'
 publish_external: false
-validation_policy: bronze
+validation_policy: basis-no
 
 # Metadata for aggregering til begrepskatalog
 # aggregation-metadata vert auto-detektert frå CODEOWNERS.md basert på path-matching

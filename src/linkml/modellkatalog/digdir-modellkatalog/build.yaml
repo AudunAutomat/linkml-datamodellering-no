@@ -1,5 +1,5 @@
 publish_external: true
-validation_policy: bronze
+validation_policy: basis-no
 
 generators:
   jsonld_context: false

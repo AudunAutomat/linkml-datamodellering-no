@@ -218,14 +218,16 @@ gjenteke automatisk ved seinare manuell redigering:
 Lint + validering mot medaljongnivå:
 ```bash
 make mcp-linkml-valider-modell SCHEMA=src/linkml/<domain>/<modell>/<modell>-schema.yaml POLICY=bronze
+make mcp-linkml-valider-modell SCHEMA=src/linkml/<domain>/<modell>/<modell>-schema.yaml POLICY=basis-no
 make mcp-linkml-valider-modell SCHEMA=src/linkml/<domain>/<modell>/<modell>-schema.yaml POLICY=silver
 make mcp-linkml-valider-modell SCHEMA=src/linkml/<domain>/<modell>/<modell>-schema.yaml POLICY=gold
 ```
 
 | Policy | Sjekkar |
 |---|---|
-| [`bronze`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/README.md) | `id`, `name`, `title` (error); `default_prefix` (https-URI, error); `description`, `version`, `license` (warning); PascalCase-klasser, snake_case-slots, `class_uri`, `slot_uri`, `begrepsidentifikator` (warning) |
-| [`silver`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/README.md) | Bronze + `annotations.utgiver`, `annotations.endringsdato`, `annotations.status` (warning) + DCAT-AP-NO/DQV-AP-NO strukturkrav (error) |
+| [`bronze`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/README.md) | Generisk LinkML: `id`, `name`, `title` (error); `default_prefix` (absolutt URI, error); `description`, `version`, `license` (warning); LinkML-linter inkl. PascalCase-klasser og snake_case-slots (warning) |
+| [`basis-no`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/README.md#basis-no) | Bronze + literal HTTPS-`default_prefix` (error); `class_uri`, `slot_uri`, identifikator, `begrepsidentifikator`, kontrollerte vokabular, ER-diagram (warning) |
+| [`silver`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/README.md) | Basis-no + `annotations.utgiver`, `annotations.endringsdato`, `annotations.status` (warning) + DCAT-AP-NO/DQV-AP-NO strukturkrav (error) |
 | [`gold`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/src/mcp-linkml-validator/policies/README.md) | Silver + FAIR F1-R1.3: full semantisk interoperabilitet |
 
 Sjå [Valideringsreglar](../arkitektur/valideringsregler.md) for fullstendig oversikt over kva som vert sjekka på kvart nivå.
@@ -436,7 +438,7 @@ Følgjande avgrensingar gjeld i PoC-fasen:
 ### Validering
 
 - **BUG-1**: `rdflib_loader` rekonstruerer ikkje `LangString`-verdiar korrekt frå TTL ved roundtrip-testing ([bugs/langstring-rdflib-roundtrip.md](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/bugs/langstring-rdflib-roundtrip.md))
-- MCP-validator kjører berre bronze/silver/gold-policy — ingen automatisk validering mot eksterne API-ar enno
+- MCP-validator kjører berre bronze/basis-no/silver/gold-policy — ingen automatisk validering mot eksterne API-ar enno
 
 ### Generatorar
 

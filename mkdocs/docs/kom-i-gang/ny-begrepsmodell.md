@@ -23,7 +23,7 @@
 ```bash
 make check-prereqs
 make mcp-begrep-build    # byggjer mcp-linkml-begrep-utkast
-make mcp-val-build       # byggjer mcp-linkml-validator (for bronze-validering)
+make mcp-val-build       # byggjer mcp-linkml-validator (for policy-validering)
 ```
 
 ---
@@ -205,12 +205,12 @@ for kvart kall. Sjå `profiles/brreg.yaml` som døme.
 # Full policy-validering — tilrådast før kvar commit:
 make mcp-linkml-valider-modell \
   SCHEMA=src/linkml/begrepskatalog/<katalog>/<katalog>-schema.yaml \
-  POLICY=bronze
+  POLICY=basis-no
 ```
 
 | Policy | Sjekkar |
 |---|---|
-| `bronze` | `id`, `name`, `description`; alle klasser har identifikator |
+| `basis-no` | `id`, `name`, `title`, `description`; alle klasser har identifikator og begrepsreferanse (arvar generisk `bronze`) |
 
 ---
 

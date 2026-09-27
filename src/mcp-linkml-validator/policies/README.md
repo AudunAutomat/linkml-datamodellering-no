@@ -1,6 +1,6 @@
 # Policyer for mcp-linkml-validator
 
-Sjekkane i bronze-, silver- og gold-policyane realiserer både
+Sjekkane i bronze-, basis-no-, silver- og gold-policyane realiserer både
 [Felles modelleringsregler for offentlig forvaltning](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029)
 (Digitaliseringsdirektoratet, v1.0, juni 2022) og
 [FAIR-prinsippa](https://www.go-fair.org/fair-principles/) (Findable, Accessible, Interoperable, Reusable).
@@ -13,17 +13,17 @@ Sjekkane i bronze-, silver- og gold-policyane realiserer både
 |---|---|---|---|---|
 | 1 | [**Forståelighet**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#forstelighet) | Navn og skildringar er forståelege for målgruppa | Bronze: `title` (error), `description` (warning) | [F2](https://www.go-fair.org/fair-principles/) |
 | 2 | [**Meiningsfullheit**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#meningsfullhet) | Navn speglar innhald og formål | Bronze: `title` (error) | [F2](https://www.go-fair.org/fair-principles/) |
-| 3 | [**Navne- og skrivekonvensjoner**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#navne_og_skrivekonvensjoner) | PascalCase for klasser, snake_case/camelCase for eigenskapar | Bronze: `class_names_pascal_case`, `slot_names_snake_case` (warning) | — |
-| 4 | [**Identifiserbarheit**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | Persistente URI-ar for modell, element og eigenskapar | Bronze: `id`, `default_prefix` (HTTPS-URI) (error); `class_uri`, `slot_uri`, identifikator-slot (warning) | [F1, F3](https://www.go-fair.org/fair-principles/) |
-| 5 | [**Visualisering**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#visualisering) | Modell tilgjengeleg med god visuell representasjon | Bronze/Gull: `schema_har_erdiagram_aktivert` (build.yaml har `generators.erdiagram: true`) — sjølve Mermaid-syntaksen i det genererte ER-diagrammet vert i tillegg validert nattleg av `mermaid-render`-jobben i `lenkje-og-mermaid-sjekk.yml` | — |
-| 6 | [**Modularitet**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#modularitet) | Handterleg mengde modellelement per modul | Bronze: `class_count_limit` — warning om skjemaet har fleire enn 50 klasser | — |
+| 3 | [**Navne- og skrivekonvensjoner**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#navne_og_skrivekonvensjoner) | PascalCase for klasser, snake_case/camelCase for eigenskapar | Bronze: LinkML-linter `standard_naming` (warning) | — |
+| 4 | [**Identifiserbarheit**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | Persistente URI-ar for modell, element og eigenskapar | Bronze: `id`, `default_prefix` (absolutt URI) (error); basis-no: literal HTTPS-`default_prefix` (error), `class_uri`, `slot_uri`, identifikator-slot (warning) | [F1, F3](https://www.go-fair.org/fair-principles/) |
+| 5 | [**Visualisering**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#visualisering) | Modell tilgjengeleg med god visuell representasjon | Basis-no/Gull: `schema_har_erdiagram_aktivert` (build.yaml har `generators.erdiagram: true`) — sjølve Mermaid-syntaksen i det genererte ER-diagrammet vert i tillegg validert nattleg av `mermaid-render`-jobben i `lenkje-og-mermaid-sjekk.yml` | — |
+| 6 | [**Modularitet**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#modularitet) | Handterleg mengde modellelement per modul | Basis-no: `class_count_limit` — warning om skjemaet har fleire enn 50 klasser | — |
 | 7 | [**Tilgjengeleggjering**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#tilgjengeliggjring) | Modell fritt tilgjengeleg på nett med open lisens | Bronze: `license` (warning) | [R1.1](https://www.go-fair.org/fair-principles/) |
-| 8 | [**Maskinprosserbarheit**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | Modell tilgjengeleg i opne, maskinlesbare format | Bronze: `class_uri`, `slot_uri` (indirekte, via regel 4-sjekken); `no_inlined_on_primitive_range` (warning) | [I1, I2](https://www.go-fair.org/fair-principles/) |
+| 8 | [**Maskinprosserbarheit**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | Modell tilgjengeleg i opne, maskinlesbare format | Bronze: `no_inlined_on_primitive_range` (warning), LinkML-linter (`recommended`); basis-no: `class_uri`, `slot_uri` (indirekte, via regel 4-sjekken) | [I1, I2](https://www.go-fair.org/fair-principles/) |
 | 9 | [**Datering**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#datering) | Modell er datert med publiserings-, endrings- og gyldigheitsdato | Bronze: `version` (warning); Silver: `annotations.endringsdato` (warning) | [F4, R1.3](https://www.go-fair.org/fair-principles/) |
 | 10 | [**Ansvar**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#ansvar) | Eigarskap og innhaldsansvar for modellen er tydeleg | Silver: `annotations.utgiver` (warning) | [R1.2](https://www.go-fair.org/fair-principles/) |
 | 11 | [**Modellstatus**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#modellstatus) | Modellen har ein eksplisitt status (under utarbeiding, ferdig, forelda …) | Silver: `annotations.status` (warning) | [R1.3](https://www.go-fair.org/fair-principles/) |
 | 12 | [**Sammenhenger mellom modeller**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#sammenhenger_mellom_modeller) | Samanhengar med andre modellar er skildra | *Delvis evaluert* — `make analyse-modell-sammenhenger` kryssreferer LinkML sin importgraf mot `har_del`/`er_i_samsvar_med`/`er_profil_av`/`erstatter`/`er_erstattet_av` i modellkatalogen (informativ, ikkje CI-blokkerande) | [F3](https://www.go-fair.org/fair-principles/) |
-| 13 | [**Begreper**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#begreper) | Modellelement og -eigenskapar er knytte til omgrep | Bronze: `annotations.begrepsidentifikator` på alle klasser (warning) | [A2](https://www.go-fair.org/fair-principles/) |
+| 13 | [**Begreper**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#begreper) | Modellelement og -eigenskapar er knytte til omgrep | Basis-no: `annotations.begrepsidentifikator` på alle klasser utanom AP-NO-profilar (warning) | [A2](https://www.go-fair.org/fair-principles/) |
 | 14 | [**Gjenbruk**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#gjenbruk) | Eksisterande modellelement vert gjenbrukt framfor nydefinisjoner | Sølv/Gull: `schema_importerer_dqv_ap_no` (import av dqv-ap-no-schema, warning/error). *Delvis evaluert* — `make analyse-ap-no-gjenbruk` sjekkar i tillegg gjenbruk av `common-ap-no-schema` innanfor `ap-no/*` (informativ) | [I3](https://www.go-fair.org/fair-principles/) |
 | 15 | [**Standardiserte datatyper**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#standardiserte_datatyper) | Primitive datatypar er standardiserte (XSD, RDFS) | Bronze/Gull: `local_types_have_standard_uri` — lokalt definerte typar (`types:`) skal ha `uri:` mot xsd/rdf/rdfs/owl. Typar arva frå `linkml:types` er alt garantert XSD-mappa | [I1](https://www.go-fair.org/fair-principles/) |
 
@@ -41,7 +41,7 @@ Sjekkane i bronze-, silver- og gold-policyane realiserer både
 
 Policyfilene her er brukte til to ulike føremål:
 
-**Skjemakvalitet (bronze / silver / gold)**  
+**Skjemakvalitet (bronze / basis-no / silver / gold)**  
 Sjekkar at eit LinkML-skjema (`.yaml`-fila i `src/linkml/`) held eit visst
 kvalitetsnivå: metadata, navngjeving, URI-ar, begrepsreferansar osv.  
 Køyrast med `make mcp-linkml-valider-modell SCHEMA=... POLICY=bronze`.
@@ -56,11 +56,12 @@ Brukt for skjema der `publish_external: true` i manifest.
 
 | Nivå | Krav | Digdir-reglar | FAIR-prinsipp |
 |---|---|---|---|
-| [`bronze`](#bronze) | Grunnleggande LinkML metadata og modelleringskvalitet (dette repoets baseline) | 1, 2, 3, 4, 5, 6, 7, 8, 13, 15 | F1, F2, F3 (warning), I1 (warning), R1.1 (warning), A2 (warning) |
-| [`silver`](#silver) | Bronze + AP-NO-konformitet og livssyklusmetadata | 1-11, 13-15 | Bronze + R1.2, R1.3, I3 |
+| [`bronze`](#bronze) | Generisk LinkML-baseline: metadata, URI-ar, navngjeving (linter) og modelleringskvalitet — utan norske føresetnader | 1, 2, 3, 4, 7, 8, 15 | F1, F2, I1 (warning), R1.1 (warning) |
+| [`basis-no`](#basis-no) | Bronze + Digdir-/repo-krav: `class_uri`/`slot_uri`, identifikator, begrepsidentifikator, modularitet, ER-diagram, kontrollerte vokabular | 1-8, 13, 15 | Bronze + F3 (warning), A2 (warning) |
+| [`silver`](#silver) | Basis-no + AP-NO-konformitet og livssyklusmetadata | 1-11, 13-15 | Basis-no + R1.2, R1.3, I3 |
 | [`gold`](#gold) | Silver + FAIR F1-R1.3: full semantisk interoperabilitet | 1-11, 13-15 | F1-F4, I1-I3, R1.1-R1.3, A2 (alle error) |
 
-Kvart nivå arvar krava frå nivåa under (`silver` arvar `bronze` osv., via `extends:`).
+Kvart nivå arvar krava frå nivåa under (`bronze` → `basis-no` → `silver` → `gold`, via `extends:`).
 
 > **Merk — ikkje forveksle med data.norge.no sin kvalitetsskala:** Bronze/silver/gold
 > validerer **skjemakvaliteten** (strukturen i sjølve `.yaml`-skjemaet), ikkje dei hausta
@@ -76,7 +77,11 @@ Kvart nivå arvar krava frå nivåa under (`silver` arvar `bronze` osv., via `ex
 
 ### bronze
 
-Grunnleggjande strukturkrav. Eit skjema som passerer bronse er syntaktisk korrekt og har nødvendig metadata.
+Generisk LinkML-baseline. Krava gjeld alle som modellerer i LinkML, utan norske eller
+repo-spesifikke føresetnader — eit idiomatisk LinkML-skjema (t.d. etter mønster frå
+LinkML sin `personinfo`-tutorial) skal passere utan error. Regresjonsvern:
+`tests/fixtures/bronze-generisk-personinfo-fixture.yaml`. Norske/Digdir-spesifikke krav ligg
+i [`basis-no`](#basis-no). Sjå `specs/done/gjennomgang-bronze-policy-generisk.md`.
 
 | Sjekk | Alvor | Oppgraderer til | Digdir-regel | FAIR | Skildring |
 |---|---|---|---|---|---|
@@ -85,38 +90,57 @@ Grunnleggjande strukturkrav. Eit skjema som passerer bronse er syntaktisk korrek
 | `schema.name` til stades | error | — (alt error) | [1 — Forståelighet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#forstelighet) | — | Maskinlesbart navn for skjemaet |
 | `schema.title` til stades | error | — (alt error) | [1 — Forståelighet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#forstelighet), [2 — Meiningsfullheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#meningsfullhet) | [F2](https://www.go-fair.org/fair-principles/) | Menneskelesbar tittel |
 | `schema.default_prefix` til stades | error | — (alt error) | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | — | Standardnavnerom for lokale identifikatorar |
-| `schema.default_prefix` er absolutt HTTPS-URI med avsluttande `/` | error | — (alt error) | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | — | Sikrar korrekt URI-konstruksjon for lokale ressursar |
+| `schema.default_prefix` ekspanderer (via `prefixes:` eller direkte) til absolutt HTTP(S)-URI som endar på `/` eller `#` | error | — (alt error) | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | — | Idiomatisk LinkML (`default_prefix: personinfo`) og literal URI er begge gyldige |
 | `schema.description` til stades | warning | error (gull) | [1 — Forståelighet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#forstelighet) | [F2](https://www.go-fair.org/fair-principles/) | Fritekstskildring av skjemaet sitt føremål |
 | `schema.version` til stades | warning | error (gull) | [9 — Datering](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#datering) | [F4](https://www.go-fair.org/fair-principles/) | Versjonsnummer for sporbarheit |
 | `schema.license` til stades | warning | error (gull) | [7 — Tilgjengeleggjering](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#tilgjengeliggjring) | [R1.1](https://www.go-fair.org/fair-principles/) | Lisens for gjenbruk av skjemaet |
-| Skjema har ikkje fleire enn 50 klasser (unntatt `tree_root`) | warning | error (gull) | [6 — Modularitet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#modularitet) | — | Handterleg mengde modellelement per modul |
-| Alle klassenavn startar med stor bokstav (PascalCase) | warning | error (gull) | [3 — Navne- og skrivekonvensjoner](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#navne_og_skrivekonvensjoner) | — | Konsistent navngjevingskonvensjon for klasser |
-| Alle slotnavn er snake_case (berre `a-z`, `0-9`, `_` — **ikkje bindestreker**) | warning | error (gull) | [3 — Navne- og skrivekonvensjoner](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#navne_og_skrivekonvensjoner) | — | Konsistent navngjevingskonvensjon for eigenskapar |
-| Alle klasser (unntatt `tree_root`) har `class_uri` | warning | error (gull) | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet), [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [F3, I1](https://www.go-fair.org/fair-principles/) | Mappar klassen til RDF-vokabular |
-| Alle globale slots har `slot_uri` | warning | error (gull) | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet), [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [I1](https://www.go-fair.org/fair-principles/) | Mappar eigenskapen til RDF-vokabular |
-| Alle klasser (unntatt `tree_root`) har identifikator-slot | warning | error (gull) | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | [F1](https://www.go-fair.org/fair-principles/) | Sikrar at instansar av klassen kan identifiserast unikt |
-| Alle klasser (unntatt `tree_root`) har `annotations.begrepsidentifikator` | warning | error (gull) | [13 — Begreper](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#begreper) | [A2](https://www.go-fair.org/fair-principles/) | Koplar modellelement til fagomgrep i begrepskatalog |
-| Slots med kontrollerte vokabular har korrekte annotations | warning | error (gull) | [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [I1](https://www.go-fair.org/fair-principles/) | Sikrar maskinlesbar dokumentasjon av vokabularkrav |
+| Slot-/attributt-`description` til stades | warning | — | [1 — Forståelighet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#forstelighet) | [F2](https://www.go-fair.org/fair-principles/) | Gjeld både globale `slots:` og `attributes:` (unntatt attributt på `tree_root`-klassen) |
+| LinkML-linter, regelsettet `recommended` (utan `recommended`- og `canonical_prefixes`-regelen) | error/warning per regel | — | [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | — | Metamodell-validering og upstream-reglar som `no_undeclared_slots`, `no_undeclared_ranges`, `one_identifier_per_class`, `no_invalid_slot_usage` |
+| Linter `standard_naming`: klasser/enum `UpperCamelCase`, slots/attributt `snake_case` (berre lokale element, ikkje permissible values) | warning | error (gull) | [3 — Navne- og skrivekonvensjoner](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#navne_og_skrivekonvensjoner) | — | Konsistent navngjeving. `build.yaml: slot_naming: camel` gjev unntak for skjema som arvar camelCase frå kjelda |
 | `inlined`/`inlined_as_list` er berre sett der range er ein klasse | warning | error (gull) | [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [I1](https://www.go-fair.org/fair-principles/) | Fangar daud konfigurasjon — nøkkelen har ingen effekt på ein primitiv range |
-| `build.yaml` har `generators.erdiagram: true` | warning | error (gull) | [5 — Visualisering](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#visualisering) | — | Sikrar at eit ER-diagram vert generert for skjemaet. Hoppar over dersom det ikkje finst noka `build.yaml` å lese |
 | Lokalt definerte typar (`types:`) har `uri:` mot standardnamnerom (xsd/rdf/rdfs/owl) | warning | error (gull) | [15 — Standardiserte datatyper](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#standardiserte_datatyper) | [I1](https://www.go-fair.org/fair-principles/) | Typar arva frå `linkml:types` er alt garantert XSD-mappa og treng ingen eigen sjekk |
 
-> **Alle bronse-åtvaringar vert i dag oppgraderte til `error` på gullnivå** (verifisert ved denne gjennomgangen — sjå
+> **LinkML-linteren** køyrer for alle policyar, med regelsettet frå policyen sin `linter:`-seksjon.
+> Seksjonen vert arva og merga per regel (`_merge_policies` i `server.py`), slik at `gold.yaml` kan
+> heve `standard_naming` til `error` utan å gjenta resten av regelkonfigen. `make lint` brukar ein
+> eigen konfig (`src/assets/containers/.linkmllint.yaml`) med `standard_naming` avslått.
+
+> **`snake_case`-format:** Slotnavn kan berre innehalde små bokstavar (`a-z`), tal (`0-9`) og understrek (`_`). **Bindestreker er ikkje tillate** — bruk samansette ord utan separasjon (t.d. `epost`, `epostadresse`) eller understrek (`mobilnummer_utgaar`).
+>
+> FINT-skjema og oreg-skjema frå XSD har `slot_naming: camel` i `build.yaml` — dei arvar camelCase frå kjelda.
+
+---
+
+### basis-no
+
+Arvar bronze. Legg til krav frå Digdir sine Felles modelleringsreglar og repoet sine eigne
+konvensjonar. Arva av [`silver`](#silver), [`felles-begrepskatalog`](#felles-begrepskatalog) og
+[`felles-datakatalog`](#felles-datakatalog). Standardpolicy for norske skjema i repoet som ikkje
+er på sølv eller høgare.
+
+| Sjekk | Alvor | Oppgraderer til | Digdir-regel | FAIR | Skildring |
+|---|---|---|---|---|---|
+| `schema.default_prefix` er absolutt HTTPS-URI med avsluttande `/` | error | — (alt error) | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | — | Repokonvensjon: literal URI lik `id` + `/` (jf. `CONVENTIONS.md`) |
+| Skjema har ikkje fleire enn 50 klasser (unntatt `tree_root`) | warning | error (gull) | [6 — Modularitet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#modularitet) | — | Handterleg mengde modellelement per modul |
+| Alle klasser (unntatt `tree_root`) har `class_uri` | warning | error (gull) | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet), [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [F3, I1](https://www.go-fair.org/fair-principles/) | Mappar klassen til RDF-vokabular |
+| Alle globale slots (unntatt identifikator-slots) har `slot_uri` | warning | error (gull) | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet), [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [I1](https://www.go-fair.org/fair-principles/) | Mappar eigenskapen til RDF-vokabular |
+| Alle klasser (unntatt `tree_root`, `mixin`, `abstract`) har identifikator-slot | warning | error (gull) | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | [F1](https://www.go-fair.org/fair-principles/) | Sikrar at instansar av klassen kan identifiserast unikt |
+| Alle klasser (unntatt `tree_root`; AP-NO-profilar unntekne) har `annotations.begrepsidentifikator` | warning | error (gull) | [13 — Begreper](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#begreper) | [A2](https://www.go-fair.org/fair-principles/) | Koplar modellelement til fagomgrep i begrepskatalog |
+| Eigne slots med kontrollerte vokabular har korrekte annotations | warning | error (gull) | [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [I1](https://www.go-fair.org/fair-principles/) | Sikrar maskinlesbar dokumentasjon av vokabularkrav |
+| `build.yaml` har `generators.erdiagram: true` | warning | error (gull) | [5 — Visualisering](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#visualisering) | — | Sikrar at eit ER-diagram vert generert for skjemaet. Hoppar over dersom det ikkje finst noka `build.yaml` å lese |
+
+> **Alle bronse- og basis-no-åtvaringar vert i dag oppgraderte til `error` på gullnivå** (verifisert ved denne gjennomgangen — sjå
 > `specs/done/full-gjennomgang-policy-alvorsgrad-og-overlapp.md`). Dersom ein framtidig ny `warning`-sjekk **ikkje**
 > skal oppgraderast, skal det grunngjevast eksplisitt her og i sjølve YAML-fila, ikkje berre stillteiande utelatast
 > frå `gold.yaml` — sjå koherenstesten nemnd under § gold.
 
-> **`snake_case`-format:** Slotnavn kan berre innehalde små bokstavar (`a-z`), tal (`0-9`) og understrek (`_`). **Bindestreker er ikkje tillate** — bruk samansette ord utan separasjon (t.d. `epost`, `epostadresse`) eller understrek (`mobilnummer_utgaar`).
->
-> FINT-skjema er unntekne frå snake_case-sjekken — dei arvar camelCase frå FINT API-spesifikasjonen.
-
-> **Kontrollerte vokabular:** Slots med `annotations.gyldige_verdier` skal ha `annotations.vokabular_krav` (`skal`|`bør`|`kan`) og `description` skal innehalde matchande SKAL/BØR/BØR-formulering. Sikrar konsistent og maskinlesbar dokumentasjon av vokabularkrav. Sjå [CONVENTIONS.md § Kontrollerte vokabular](../../../CONVENTIONS.md#kontrollerte-vokabular--annotation-konvensjon).
+> **Kontrollerte vokabular:** Slots med `annotations.gyldige_verdier` skal ha `annotations.vokabular_krav` (`skal`|`bør`|`kan`) og `description` skal innehalde matchande SKAL/BØR/KAN-formulering. Sikrar konsistent og maskinlesbar dokumentasjon av vokabularkrav. Sjå [CONVENTIONS.md § Kontrollerte vokabular](../../../CONVENTIONS.md#kontrollerte-vokabular--annotation-konvensjon).
 
 ---
 
 ### silver
 
-Arvar bronse. Legg til livssyklusmetadata og krav frå DCAT-AP-NO og DQV-AP-NO
+Arvar basis-no (og dermed bronze). Legg til livssyklusmetadata og krav frå DCAT-AP-NO og DQV-AP-NO
 for domenemodellar i norsk offentleg sektor, samt instanssjekkar for
 kontrollerte vokabular.
 
@@ -171,7 +195,7 @@ Annotasjonsnøklane svarar til `Informasjonsmodell`-slots i `modelldcat-ap-no-sc
 
 ### gold
 
-Arvar sølv og bronse. Implementerer gap til FAIR-prinsippa (Findable, Accessible, Interoperable, Reusable). Alle brot gir `error` — også dei som er åtvarslane på bronse.
+Arvar sølv, basis-no og bronze. Implementerer gap til FAIR-prinsippa (Findable, Accessible, Interoperable, Reusable). Alle brot gir `error` — også dei som er åtvarslane på bronse.
 
 | Sjekk | Alvor | Opphav | Digdir-regel | FAIR | Skildring |
 |---|---|---|---|---|---|
@@ -180,20 +204,19 @@ Arvar sølv og bronse. Implementerer gap til FAIR-prinsippa (Findable, Accessibl
 | `schema.name` til stades | error | Bronse (alt error) | [1 — Forståelighet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#forstelighet) | — | Maskinlesbart navn for skjemaet |
 | `schema.title` til stades | error | Bronse (alt error) | [1 — Forståelighet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#forstelighet), [2 — Meiningsfullheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#meningsfullhet) | [F2](https://www.go-fair.org/fair-principles/) | Tittel er del av rike metadata som gjer ressursen søkbar |
 | `schema.default_prefix` til stades | error | Bronse (alt error) | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | — | Standardnavnerom for lokale identifikatorar |
-| `schema.default_prefix` er absolutt HTTPS-URI med avsluttande `/` | error | Bronse (alt error) | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | — | Sikrar korrekt URI-konstruksjon |
+| `schema.default_prefix` er absolutt HTTPS-URI med avsluttande `/` | error | Basis-no (alt error) | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | — | Sikrar korrekt URI-konstruksjon |
 | `schema.description` til stades | error | Bronse → gull | [1 — Forståelighet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#forstelighet) | [F2](https://www.go-fair.org/fair-principles/) | Fritekstskildring av skjemaet sitt føremål |
 | `schema.version` til stades | error | Bronse → gull | [9 — Datering](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#datering) | [F4](https://www.go-fair.org/fair-principles/) | Versjonering støttar katalogregistrering og sporbarheit |
 | `schema.license` til stades | error | Bronse → gull | [7 — Tilgjengeleggjering](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#tilgjengeliggjring) | [R1.1](https://www.go-fair.org/fair-principles/) | Lisens for gjenbruk av skjemaet |
-| Skjema har ikkje fleire enn 50 klasser (unntatt `tree_root`) | error | Bronse → gull | [6 — Modularitet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#modularitet) | — | Handterleg mengde modellelement per modul |
-| Alle klassenavn startar med stor bokstav (PascalCase) | error | Bronse → gull | [3 — Navne- og skrivekonvensjoner](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#navne_og_skrivekonvensjoner) | — | Konsistent navngjevingskonvensjon for klasser |
-| Alle slotnavn er snake_case | error | Bronse → gull | [3 — Navne- og skrivekonvensjoner](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#navne_og_skrivekonvensjoner) | — | Konsistent navngjevingskonvensjon for eigenskapar |
-| Alle klasser (unntatt `tree_root`) har `class_uri` | error | Bronse → gull | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet), [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [F3, I1](https://www.go-fair.org/fair-principles/) | Mappar klassen til RDF-vokabular |
-| Alle globale slots har `slot_uri` | error | Bronse → gull | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet), [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [I1](https://www.go-fair.org/fair-principles/) | Mappar eigenskapen til RDF-vokabular |
-| Alle klasser (unntatt `tree_root`) har identifikator-slot | error | Bronse → gull | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | [F1](https://www.go-fair.org/fair-principles/) | Sikrar at instansar av klassen kan identifiserast unikt |
-| Alle klasser (unntatt `tree_root`) har `annotations.begrepsidentifikator` | error | Bronse → gull | [13 — Begreper](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#begreper) | [A2](https://www.go-fair.org/fair-principles/) | Koplar modellelement til fagomgrep i begrepskatalog |
-| Slots med kontrollerte vokabular har korrekte annotations | error | Bronse → gull | [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [I1](https://www.go-fair.org/fair-principles/) | Sikrar maskinlesbar dokumentasjon av vokabularkrav |
+| Skjema har ikkje fleire enn 50 klasser (unntatt `tree_root`) | error | Basis-no → gull | [6 — Modularitet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#modularitet) | — | Handterleg mengde modellelement per modul |
+| Linter `standard_naming` (klasser `UpperCamelCase`, slots/attributt `snake_case`) | error | Bronse → gull | [3 — Navne- og skrivekonvensjoner](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#navne_og_skrivekonvensjoner) | — | Overstyrt via `linter.rules.standard_naming.level` i `gold.yaml` |
+| Alle klasser (unntatt `tree_root`) har `class_uri` | error | Basis-no → gull | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet), [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [F3, I1](https://www.go-fair.org/fair-principles/) | Mappar klassen til RDF-vokabular |
+| Alle globale slots har `slot_uri` | error | Basis-no → gull | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet), [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [I1](https://www.go-fair.org/fair-principles/) | Mappar eigenskapen til RDF-vokabular |
+| Alle klasser (unntatt `tree_root`) har identifikator-slot | error | Basis-no → gull | [4 — Identifiserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | [F1](https://www.go-fair.org/fair-principles/) | Sikrar at instansar av klassen kan identifiserast unikt |
+| Alle klasser (unntatt `tree_root`) har `annotations.begrepsidentifikator` | error | Basis-no → gull | [13 — Begreper](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#begreper) | [A2](https://www.go-fair.org/fair-principles/) | Koplar modellelement til fagomgrep i begrepskatalog |
+| Slots med kontrollerte vokabular har korrekte annotations | error | Basis-no → gull | [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [I1](https://www.go-fair.org/fair-principles/) | Sikrar maskinlesbar dokumentasjon av vokabularkrav |
 | `inlined`/`inlined_as_list` er berre sett der range er ein klasse | error | Bronse → gull | [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [I1](https://www.go-fair.org/fair-principles/) | Fangar daud konfigurasjon — nøkkelen har ingen effekt på ein primitiv range |
-| `build.yaml` har `generators.erdiagram: true` | error | Bronse → gull | [5 — Visualisering](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#visualisering) | — | Sikrar at eit ER-diagram vert generert for skjemaet |
+| `build.yaml` har `generators.erdiagram: true` | error | Basis-no → gull | [5 — Visualisering](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#visualisering) | — | Sikrar at eit ER-diagram vert generert for skjemaet |
 | Skjemaet importerer `dqv-ap-no-schema` | error | Sølv → gull | [14 — Gjenbruk](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#gjenbruk) | [I3](https://www.go-fair.org/fair-principles/) | Gjenbruk av kvalitetsvokabularet i staden for eigne tilsvarande klassar/slots |
 | Lokalt definerte typar (`types:`) har `uri:` mot standardnamnerom | error | Bronse → gull | [15 — Standardiserte datatyper](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#standardiserte_datatyper) | [I1](https://www.go-fair.org/fair-principles/) | Typar arva frå `linkml:types` er alt garantert XSD-mappa |
 | Skjemaet deklarerer minst eitt standard vokabularprefiks (`dct`, `dcat`, `skos`, `prov`, `rdf`, `rdfs`, `owl`, `foaf`, `xsd`) | error | Ny på gull | [8 — Maskinprosserbarheit](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | [I2](https://www.go-fair.org/fair-principles/) | Standardvokabular sikrar interoperabilitet på tvers av system |
@@ -212,11 +235,13 @@ Arvar sølv og bronse. Implementerer gap til FAIR-prinsippa (Findable, Accessibl
 | Containerklassen har attributt med range `Kvalitetsmerknad` | error | Sølv → gull | — | — | — |
 
 > **Oppgraderingsstatus (verifisert programmatisk, sjå
-> `specs/done/full-gjennomgang-policy-alvorsgrad-og-overlapp.md`):** bronse har **14** `warning`-sjekkar
-> (12 i `checks:` + `schema.description`/`schema.version` via `required`/`recommended`-mekanismen), og
-> **alle 14** er oppgraderte til `error` på gullnivå. Sølv legg til **12** eigne nye `warning`-sjekkar, og
-> **alle 12** er også oppgraderte. Ein tilsvarande automatisk test finst i `tests/test_mcp_policies.py`
-> (`TestPolicyKoherens`), som feilar dersom dette nokon gong sluttar å stemme.
+> `specs/done/full-gjennomgang-policy-alvorsgrad-og-overlapp.md` og
+> `specs/done/gjennomgang-bronze-policy-generisk.md`):** bronse har **5** `warning`-sjekkar
+> (3 i `checks:` + `schema.description`/`schema.version` via `required`/`recommended`-mekanismen) og
+> linter-regelen `standard_naming`; basis-no legg til **7** `warning`-sjekkar. Alle er oppgraderte til
+> `error` på gullnivå. Sølv legg til **12** eigne nye `warning`-sjekkar, og **alle 12** er også
+> oppgraderte. Automatiske testar finst i `tests/test_mcp_policies.py` (`TestPolicyKoherens`, både for
+> `checks:` og `linter:`), og dei feilar dersom dette nokon gong sluttar å stemme.
 
 > **Tre ulike «lisens»-sjekkar — ikkje duplikat, men ulikt sikte:** tabellen har tre rader som nemner
 > `dct:license`/lisens, og desse kan ved første augekast sjå ut som duplikat:
@@ -234,14 +259,14 @@ Arvar sølv og bronse. Implementerer gap til FAIR-prinsippa (Findable, Accessibl
 
 ## Publiseringspolicyer
 
-Domene-spesifikke policyer for publisering til nasjonale katalogar. Dei arvar `bronze`
+Domene-spesifikke policyer for publisering til nasjonale katalogar. Dei arvar `basis-no`
 og er meinte brukt i tillegg til medaljongnivåa — typisk i CI-pipelinen for skjema
 som har ein tilhøyrande datafil.
 
 | Policy | Krav | Målkatalog |
 |---|---|---|
-| [`felles-begrepskatalog`](#felles-begrepskatalog) | Bronse + SKOS-AP-NO-Begrep-konformitet for begrepskatalogskjema | [data.norge.no/concepts](https://data.norge.no/concepts) |
-| [`felles-datakatalog`](#felles-datakatalog) | Bronse + ModelDCAT-AP-NO-konformitet for modellkatalogskjema | [data.norge.no/models](https://data.norge.no/models) |
+| [`felles-begrepskatalog`](#felles-begrepskatalog) | Basis-no + SKOS-AP-NO-Begrep-konformitet for begrepskatalogskjema | [data.norge.no/concepts](https://data.norge.no/concepts) |
+| [`felles-datakatalog`](#felles-datakatalog) | Basis-no + ModelDCAT-AP-NO-konformitet for modellkatalogskjema | [data.norge.no/models](https://data.norge.no/models) |
 
 ---
 
@@ -350,7 +375,7 @@ frå spesifikasjonen.
 
 | Kva | Verktøy | Policy |
 |---|---|---|
-| Skjemakvalitet | `make mcp-linkml-valider-modell POLICY=bronze/silver/gold` | Policyfilene her |
+| Skjemakvalitet | `make mcp-linkml-valider-modell POLICY=bronze/basis-no/silver/gold` | Policyfilene her |
 | Datakvalitet (instansar) | `make validate-instance` | — |
 | Publiseringskonformitet | `make mcp-linkml-valider-modell POLICY=felles-datakatalog` | `felles-datakatalog.yaml` |
 

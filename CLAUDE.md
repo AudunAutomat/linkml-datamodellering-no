@@ -68,14 +68,14 @@ make validate-instance SCHEMA=src/linkml/samt/samt-bu/samt-bu-schema.yaml INSTAN
 make roundtrip SCHEMA=src/linkml/samt/samt-bu/samt-bu-schema.yaml
 
 # MCP-validator dersom dette er angitt av bruker:
-# POLICY vert auto-detektert frå build.yaml — overstyr ved behov med POLICY=<bronze|silver|gold>
+# POLICY vert auto-detektert frå build.yaml — overstyr ved behov med POLICY=<bronze|basis-no|silver|gold>
 make mcp-linkml-valider-modell SCHEMA=src/linkml/<domain>/<modell>/<modell>-schema.yaml
 ```
 
 ## Policy-hierarki
 
-Bronze/silver/gold validerer **skjemakvalitet** (modellens metadata og struktur),
-ikkje instansdata. Instansdata vert validert med `make validate-instance`.
+Bronze/basis-no/silver/gold validerer **skjemakvalitet** (modellens metadata og struktur),
+ikkje instansdata. `bronze` er ein generisk LinkML-baseline; norske/Digdir-krav startar på `basis-no`. Instansdata vert validert med `make validate-instance`.
 
 `felles-datakatalog` og `felles-begrepskatalog` er separate policyer for
 skjema som publiserer til eksterne katalogar (`publish_external: true`).

@@ -64,7 +64,7 @@ make mcp-linkml-valider-modell SCHEMA=src/linkml/<domain>/<modell>/<modell>-sche
 ```
 
 `mcp-linkml-valider-modell` autodetekterer `validation_policy` frå
-`build.yaml` (overstyr med `POLICY=<bronze|silver|gold>` ved behov). Rett
+`build.yaml` (overstyr med `POLICY=<bronze|basis-no|silver|gold>` ved behov). Rett
 eventuelle feil og gjenta til alt er grønt.
 
 ### 6. Avslutt

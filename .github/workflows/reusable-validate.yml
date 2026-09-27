@@ -8,7 +8,7 @@ on:
         type: string
         required: true
       policy:
-        description: 'Valideringspolicy: bronze / silver / gold / felles-datakatalog / felles-begrepskatalog'
+        description: 'Valideringspolicy: bronze / basis-no / silver / gold / felles-datakatalog / felles-begrepskatalog'
         type: string
         default: 'bronze'
       instance:

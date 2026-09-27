@@ -115,7 +115,7 @@ Containerklasse:
 - Attributtnavna skrives alltid i **fleirtal** (t.d. `datasett`, `katalogar`, `aktørar`)
 - `range` må peike på ein klasse definert i skjemaet eller importerte skjema
 - Ingen `slot_uri` — containerattributtar er strukturelle, ikkje semantiske
-- Containerklassen treng ikkje `class_uri` (unntatt frå kravet per bronze-policy)
+- Containerklassen treng ikkje `class_uri` (unntatt frå kravet per basis-no-policy)
 - AP-NO-modellar og fair-modellar skal ikkje ha eigen containerklasse
 - **Containerattributt skal alltid bruke `inlined`/`inlined_as_list`** — dette er ein ufravikeleg regel, også når `range`-klassen har `identifier: true`. Containerklassen sitt føremål er å vere eit sjølvstendig, komplett eksportdokument; dette gjeld ubunde av om target-klassen elles ville vore lenka (via URI) etter prinsippet "Lenking fremfor inlining" utanfor containeren. Sjå `specs/done/inlining-konvensjon.md` (R5) for grunngjeving. (BUG-2, som tidlegare vart rekna som ein konsekvens av denne regelen, skuldast delt `slot_uri` og har ikkje noko med inlining å gjere — sjå `bugs/inlined-as-list-rdflib-roundtrip.md`.)
 - **`range` på eit `inlined`/`inlined_as_list`-containerattributt skal alltid vere ein konkret klasse** — aldri ei abstrakt eller mixin-klasse med fleire konkrete subklasser delt i same liste. Bruk eige containerattributt per konkret subklasse i staden for éi delt, polymorf liste. Sjå `bugs/polymorphic-inlined-list-yaml-loader.md` (BUG-8) for konsekvensen av å bryte denne regelen (krasj i `linkml-convert`/`gen-rdf`, sjølv om `make validate-instance` godkjenner instansen).
@@ -190,7 +190,7 @@ tests/
 
 ```yaml
 publish_external: false   # true for å publisere til ekstern katalog
-validation_policy: silver        # bronze / silver / gold / felles-datakatalog / felles-begrepskatalog
+validation_policy: silver        # bronze / basis-no / silver / gold / felles-datakatalog / felles-begrepskatalog
 
 generators:
   jsonld_context: true
@@ -271,10 +271,12 @@ classes:
 
 Hovudregel: **`snake_case`**, norsk bokmål (t.d. `kommunenummer_ref`, `adressenavn_tekst`).
 
-**Format:** `snake_case` tillét berre små bokstavar (`a-z`), tal (`0-9`) og understrek (`_`). **Bindestreker er ikkje tillate** — bruk samansette ord utan separasjon (t.d. `epost`, `epostadresse`) eller understrek (`mobilnummer_utgaar`). Dette vert håndheva av bronze-policy-sjekken `slot_names_snake_case`.
+**Format:** `snake_case` tillét berre små bokstavar (`a-z`), tal (`0-9`) og understrek (`_`). **Bindestreker er ikkje tillate** — bruk samansette ord utan separasjon (t.d. `epost`, `epostadresse`) eller understrek (`mobilnummer_utgaar`). Dette vert handheva av LinkML-linterens `standard_naming`-regel i validatoren (warning frå bronze, error på gold), for både slots og attributt.
 
-**Unntak — FINT-skjema:** arvar namgjeving frå FINT API-spesifikasjonen og brukar `camelCase`
-(t.d. `kildesystemId`, `rolleNavn`). Dette er eit bevisst val, ikkje ein feil.
+**Unntak — FINT- og oreg-skjema frå XSD:** arvar namgjeving frå kjelda (FINT API-spesifikasjonen,
+Enhetsregisteret sine XSD-ar) og brukar `camelCase` (t.d. `kildesystemId`, `rolleNavn`). Dette er eit
+bevisst val, ikkje ein feil. Unntaket vert sett per skjema med `slot_naming: camel` i `build.yaml`
+(sjå `CONVENTIONS.md` § Manifestformat) — ikkje med hardkoda schemanavn i policyfilene.
 
 **`_ref`-suffiks i NGR:** referanse-slots som held ein URI til ein annan ressurs nyttar `_ref`-suffiks
 (t.d. `kommune_ref`, `adressenavn_ref`).

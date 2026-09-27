@@ -1,11 +1,11 @@
 version: 1
-extends: bronze
+extends: basis-no
 
 description: >
   Policy for begrepskatalogskjema som skal publiserast til Felles Begrepskatalog.
   Validerer at skjemaet importerer SKOS-AP-NO-Begrep og eksponerer dei nødvendige
   klassane og slotsa via containerklassen (tree_root).
-  Arvar bronselaget: grunnleggande metadata- og modelleringskrav.
+  Arvar basis-no (norske basiskrav) og bronze (generisk LinkML-baseline).
 
 required:
   schema: [id, name]

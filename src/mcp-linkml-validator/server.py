@@ -75,6 +75,19 @@ def _merge_policies(parent: dict, child: dict) -> dict:
         if p_checks or c_checks:
             merged[key] = {**p_checks, **c_checks}
 
+    # linter: — LinkML-linterkonfig. `extends` vert arva; `rules` vert
+    # merga per regel og per nøkkel, slik at t.d. gold kan heve berre
+    # `level` på ein regel utan å gjenta resten av regelkonfigen.
+    p_lint = parent.get("linter") or {}
+    c_lint = child.get("linter") or {}
+    if p_lint or c_lint:
+        rules = {}
+        for rule in list(p_lint.get("rules") or {}) + list(c_lint.get("rules") or {}):
+            rules[rule] = {**((p_lint.get("rules") or {}).get(rule) or {}),
+                           **((c_lint.get("rules") or {}).get(rule) or {})}
+        merged["linter"] = {k: v for k, v in {**p_lint, **c_lint}.items() if k != "rules"}
+        merged["linter"]["rules"] = rules
+
     return merged
 
 
@@ -90,16 +103,6 @@ def load_policy(name: str = "bronze") -> dict:
         policy = _merge_policies(load_policy(parent_name), policy)
 
     return policy
-
-
-def _is_base_policy(name: str) -> bool:
-    """Returnerer True om policyen ikkje arvar frå ein annan (dvs. er rotpolicyen)."""
-    try:
-        with open(_POLICY_DIR / f"{name}.yaml", encoding="utf-8") as f:
-            raw = yaml.safe_load(f) or {}
-        return not bool(raw.get("extends"))
-    except FileNotFoundError:
-        return True
 
 
 # ---------------------------------------------------------------------------
@@ -184,32 +187,31 @@ def _check_default_prefix_is_https_uri(sv, schema, config, issues):
         ))
 
 
-def _check_class_names_pascal_case(sv, schema, config, issues):
-    exclude = set(config.get("exclude_schemas", []))
-    if (schema.name or "") in exclude:
-        return
-    for cname, cls in (schema.classes or {}).items():
-        if cls.tree_root:
-            continue
-        if not cname[0].isupper():
+def _check_default_prefix_is_absolute_uri(sv, schema, config, issues):
+    """Generisk variant: default_prefix kan vere eit prefiksnavn (idiomatisk
+    LinkML, t.d. `default_prefix: personinfo` + `prefixes:`) eller ein literal
+    URI. Uansett skal han ekspandere til ein absolutt HTTP(S)-URI som endar
+    på '/' eller '#', slik at genererte element-URI-ar vert gyldige."""
+    dp = str(schema.default_prefix or "")
+    if not dp:
+        return  # manglande felt vert fanga av schema_has_default_prefix
+    if "://" in dp:
+        expanded = dp
+    else:
+        prefix = (schema.prefixes or {}).get(dp)
+        expanded = str(getattr(prefix, "prefix_reference", prefix) or "")
+        if not expanded:
             issues.append(issue(
-                config["severity"], "class_names_pascal_case", f"class:{cname}",
-                f"Klassenavn '{cname}' skal starte med stor forbokstav (PascalCase)",
+                config["severity"], "default_prefix_is_absolute_uri", "schema",
+                f"schema.default_prefix '{dp}' er verken ein URI eller eit prefiks deklarert i prefixes:",
             ))
-
-
-def _check_slot_names_snake_case(sv, schema, config, issues):
-    import re as _re
-    exclude = set(config.get("exclude_schemas", []))
-    if (schema.name or "") in exclude:
-        return
-    pattern = _re.compile(r'^[a-z][a-z0-9_]*$')
-    for sname in (schema.slots or {}):
-        if not pattern.match(sname):
-            issues.append(issue(
-                config["severity"], "slot_names_snake_case", f"slot:{sname}",
-                f"Slotnavn '{sname}' er ikkje snake_case (berre a-z, 0-9, _)",
-            ))
+            return
+    if not (expanded.startswith(("http://", "https://")) and expanded.endswith(("/", "#"))):
+        issues.append(issue(
+            config["severity"], "default_prefix_is_absolute_uri", "schema",
+            f"schema.default_prefix '{dp}' ekspanderer til '{expanded}', som ikkje er ein "
+            "absolutt HTTP(S)-URI som endar på '/' eller '#'",
+        ))
 
 
 def _check_all_classes_have_class_uri(sv, schema, config, issues):
@@ -225,6 +227,10 @@ def _check_all_classes_have_class_uri(sv, schema, config, issues):
 
 def _check_all_slots_have_slot_uri(sv, schema, config, issues):
     for sname, slot in (schema.slots or {}).items():
+        # Ein identifikator-slot vert subjekt-URI i RDF og gjev ingen
+        # trippel — slot_uri er difor meiningslaus der.
+        if slot.identifier:
+            continue
         if not slot.slot_uri:
             issues.append(issue(
                 config["severity"], _fair_code(config), f"slot:{sname}",
@@ -291,7 +297,8 @@ def _has_identifier_slot(sv, class_name: str) -> bool:
 def _check_all_classes_have_identifier(sv, schema, config, issues):
     code = "all_classes_have_identifier"
     for cname, cls in (schema.classes or {}).items():
-        if cls.tree_root:
+        # mixin- og abstrakte klasser vert aldri instansierte sjølvstendig.
+        if cls.tree_root or cls.mixin or cls.abstract:
             continue
         if not _has_identifier_slot(sv, cname):
             issues.append(issue(
@@ -336,6 +343,8 @@ def _check_all_classes_have_concept_ref(sv, schema, config, issues):
     catalog_uri = config.get("concept_catalog_uri",
                              "https://concept-catalog.fellesdatakatalog.digdir.no/collections")
     code = "all_classes_have_concept_ref"
+    if (schema.name or "") in set(config.get("exclude_schemas", [])):
+        return
     accepted_prefix = catalog_uri.rstrip("/") + "/"
     for cname, cls in (schema.classes or {}).items():
         if cls.tree_root:
@@ -567,7 +576,9 @@ def _check_controlled_vocabulary_annotations(sv, schema, config, issues):
             return None
         return str(raw.value if hasattr(raw, "value") else raw)
 
-    for slot_name, slot in sv.all_slots().items():
+    # Berre skjemaet sine eigne slots/attributt — importerte slots vert
+    # rapporterte i skjemaet dei er definerte i, ikkje på nytt nedstraums.
+    for slot_name, slot in sv.all_slots(imports=False).items():
         annot = slot.annotations or {}
         gyldige_verdier = get_annotation_value(annot, "gyldige_verdier")
 
@@ -672,7 +683,13 @@ def _check_local_types_have_standard_uri(sv, schema, config, issues):
     Sjekkar berre lokalt definerte typar (schema sitt eige types:-felt) — typar
     arva frå linkml:types er alt garantert XSD-mappa av LinkML-modellen sjølv."""
     for tname, tdef in (schema.types or {}).items():
-        type_uri = str(tdef.uri or "")
+        # Ein type med typeof arvar uri frå foreldertypen (t.d. string →
+        # xsd:string) — bruk induced type i staden for berre det lokale feltet.
+        try:
+            type_uri = str(sv.induced_type(tname).uri or "")
+        except (ValueError, KeyError) as exc:
+            sys.stderr.write(f"ÅTVARING: kunne ikkje indusere type '{tname}' ({exc}) — brukar lokal uri\n")
+            type_uri = str(tdef.uri or "")
         if not type_uri:
             issues.append(issue(
                 config["severity"], "local_type_missing_uri", f"type:{tname}",
@@ -686,22 +703,29 @@ def _check_local_types_have_standard_uri(sv, schema, config, issues):
             ))
 
 
-def _check_build_yaml_generator_flag(schema_path, config, issues):
-    """Digdir-regel 5: modellen skal vere tilgjengeleg med god visuell
-    representasjon. Les sysken-fila build.yaml (om ho finst) og krev at ein
-    gitt generator-flagg er slått på. Hoppar stille over når det ikkje finst
-    nokon build.yaml å lese — t.d. eit ephemeralt schemaText-kall utan
-    schema_path, eller eit skjema utanfor det manifest-baserte byggjesystemet.
-    Dette er ikkje eit avvik i seg sjølv, difor ingen issue i det tilfellet."""
+def _read_build_yaml(schema_path) -> dict:
+    """Les sysken-fila build.yaml til skjemaet. Returnerer {} når det ikkje
+    finst nokon build.yaml å lese — t.d. eit ephemeralt schemaText-kall, eller
+    eit skjema utanfor det manifest-baserte byggjesystemet. Det er ikkje eit
+    avvik i seg sjølv."""
     if not schema_path:
-        return
+        return {}
     build_yaml_path = Path(schema_path).parent / "build.yaml"
     if not build_yaml_path.is_file():
-        return
+        return {}
     try:
-        build_config = yaml.safe_load(build_yaml_path.read_text(encoding="utf-8")) or {}
-    except Exception as exc:
+        return yaml.safe_load(build_yaml_path.read_text(encoding="utf-8")) or {}
+    except (OSError, yaml.YAMLError) as exc:
         sys.stderr.write(f"ÅTVARING: kunne ikkje lese/parse {build_yaml_path}: {exc}\n")
+        return {}
+
+
+def _check_build_yaml_generator_flag(schema_path, config, issues):
+    """Digdir-regel 5: modellen skal vere tilgjengeleg med god visuell
+    representasjon. Krev at ein gitt generator-flagg er slått på i
+    build.yaml. Hoppar over når det ikkje finst nokon build.yaml å lese."""
+    build_config = _read_build_yaml(schema_path)
+    if not build_config:
         return
     generator = config["generator"]
     if not (build_config.get("generators") or {}).get(generator):
@@ -711,13 +735,49 @@ def _check_build_yaml_generator_flag(schema_path, config, issues):
         ))
 
 
+def _imported_element_names(sv) -> set:
+    """Navn på klasser, slots/attributt og enum som kjem frå importerte skjema
+    (ikkje definerte lokalt). Brukt til å avgrense linterens standard_naming
+    til skjemaet sine eigne element — namngjevinga i eit importert skjema er
+    det skjemaet sitt ansvar, og skal ikkje gje åtvaringar nedstraums."""
+    schema = sv.schema
+    local = set(schema.classes or {}) | set(schema.slots or {}) | set(schema.enums or {})
+    for cls in (schema.classes or {}).values():
+        local |= set(cls.attributes or {})
+    try:
+        all_names = set(sv.all_classes()) | set(sv.all_slots()) | set(sv.all_enums())
+    except (ValueError, OSError, KeyError) as exc:
+        sys.stderr.write(
+            f"ÅTVARING: kunne ikkje løyse importar for standard_naming-avgrensing ({exc}) "
+            "— linteren sjekkar då òg importerte element\n"
+        )
+        return set()
+    return all_names - local
+
+
+def _linter_config(sv, policy: dict, schema_path) -> dict:
+    """Byggjer LinkML-linterkonfig frå policyen sin `linter:`-seksjon.
+    For standard_naming vert importerte element ekskluderte, og
+    `slot_naming` i build.yaml (t.d. `camel`) overstyrer slotmønsteret for
+    skjema som arvar ein annan navnekonvensjon frå kjelda (FINT, oreg)."""
+    config = dict(policy.get("linter") or {})
+    rules = {name: dict(cfg or {}) for name, cfg in (config.get("rules") or {}).items()}
+    naming = rules.get("standard_naming")
+    if naming and naming.get("level") != "disabled":
+        slot_naming = _read_build_yaml(schema_path).get("slot_naming")
+        if slot_naming:
+            naming["slot_pattern"] = slot_naming
+        naming["exclude"] = sorted(set(naming.get("exclude") or []) | _imported_element_names(sv))
+    config["rules"] = rules
+    return config
+
+
 _CHECK_HANDLERS = {
     "schema_id_is_http_uri":           _check_schema_id_is_http_uri,
     "schema_field_present":            _check_schema_field_present,
     "schema_has_annotation":           _check_schema_has_annotation,
     "default_prefix_is_https_uri":     _check_default_prefix_is_https_uri,
-    "class_names_pascal_case":         _check_class_names_pascal_case,
-    "slot_names_snake_case":           _check_slot_names_snake_case,
+    "default_prefix_is_absolute_uri":  _check_default_prefix_is_absolute_uri,
     "all_classes_have_class_uri":      _check_all_classes_have_class_uri,
     "all_slots_have_slot_uri":         _check_all_slots_have_slot_uri,
     "schema_declares_standard_prefix": _check_schema_declares_standard_prefix,
@@ -962,7 +1022,6 @@ def validate_schema(schema_text: str | None = None, policy_name: str = "bronze",
         }
 
     policy = load_policy(policy_name)
-    base = _is_base_policy(policy_name)
     issues = []
 
     tmp_dir_ctx = None
@@ -984,19 +1043,19 @@ def validate_schema(schema_text: str | None = None, policy_name: str = "bronze",
                 "issues": [issue("error", "parse_error", "schema", str(exc))],
             }
 
-        # 2) LinkML linter — berre for basispolicyen (ingen extends).
-        # Silver og gold arvar bronse; lint er allereie køyrt på bronsenivå.
-        if base:
-            try:
-                from linkml.linter.linter import Linter
-                linter = Linter()
-                for problem in linter.lint(schema_path, validate_schema=True):
-                    level = getattr(problem.level, "value", str(problem.level)).lower()
-                    rule = getattr(problem, "rule_name", None) or "linkml_lint"
-                    target = str(getattr(problem, "source", None) or "schema")
-                    issues.append(issue(level, rule, target, str(problem.message)))
-            except Exception as exc:
-                issues.append(issue("error", "linter_error", "schema", str(exc)))
+        # 2) LinkML linter — køyrer for alle policyar, med regelsett frå
+        # policyen sin (arva og merga) `linter:`-seksjon. Sjå
+        # specs/done/gjennomgang-bronze-policy-generisk.md (B23).
+        try:
+            from linkml.linter.linter import Linter
+            linter = Linter(_linter_config(sv, policy, schema_path))
+            for problem in linter.lint(schema_path, validate_schema=True):
+                level = getattr(problem.level, "value", str(problem.level)).lower()
+                rule = getattr(problem, "rule_name", None) or "linkml_lint"
+                target = str(getattr(problem, "source", None) or "schema")
+                issues.append(issue(level, rule, target, str(problem.message)))
+        except Exception as exc:
+            issues.append(issue("error", "linter_error", "schema", str(exc)))
 
         schema = sv.schema
 
@@ -1056,6 +1115,18 @@ def validate_schema(schema_text: str | None = None, policy_name: str = "bronze",
                 policy.get("required", {}).get("slot", []),
                 policy.get("recommended", {}).get("slot", []),
             )
+        # Attributt er slots definerte inne i klassen — same slot-krav gjeld.
+        # tree_root-containerklassen sine attributt er reine listehaldarar
+        # og er unntekne, som i dei andre sjekkane.
+        for cname, cls in (schema.classes or {}).items():
+            if cls.tree_root:
+                continue
+            for aname, attr in (cls.attributes or {}).items():
+                _check(
+                    attr, f"class:{cname} → attribute:{aname}",
+                    policy.get("required", {}).get("slot", []),
+                    policy.get("recommended", {}).get("slot", []),
+                )
 
         # Påkravde fellesklasser
         must_use = policy.get("common_classes", {}).get("must_use", [])
@@ -1202,7 +1273,7 @@ TOOL_DEF = {
         "Validerer eit LinkML-skjema i rekkjefølgja: (1) lint skjema, "
         "(2) valider instans mot skjema (om instanceText er gjeven), "
         "(3) valider mot policy-reglar. "
-        "Medaljongnivå: 'bronze' (basis), 'silver' (bronze + AP-NO), 'gold' (silver + FAIR)."
+        "Medaljongnivå: 'bronze' (generisk LinkML), 'basis-no' (bronze + Digdir-/repo-krav), 'silver' (basis-no + AP-NO), 'gold' (silver + FAIR)."
     ),
     "inputSchema": {
         "type": "object",
@@ -1226,7 +1297,7 @@ TOOL_DEF = {
             },
             "policy": {
                 "type": "string",
-                "description": "Policy-navn (default: 'bronze'). Tilgjengelege: 'bronze', 'silver', 'gold'.",
+                "description": "Policy-navn (default: 'bronze'). Tilgjengelege: 'bronze', 'basis-no', 'silver', 'gold', 'felles-datakatalog', 'felles-begrepskatalog'.",
                 "default": "bronze",
             },
             "instanceText": {

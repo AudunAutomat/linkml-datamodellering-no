@@ -1,11 +1,11 @@
 version: 1
-extends: bronze
+extends: basis-no
 
 description: >
   Policy for modellkatalogskjema som skal publiserast til Felles Datakatalog.
   Validerer at skjemaet importerer ModelDCAT-AP-NO og eksponerer dei nødvendige
   klassane og slotsa via containerklassen (tree_root).
-  Arvar bronselaget: grunnleggande metadata- og modelleringskrav.
+  Arvar basis-no (norske basiskrav) og bronze (generisk LinkML-baseline).
 
 required:
   schema: [id, name]

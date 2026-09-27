@@ -45,7 +45,7 @@ validate-instance: ## Valider instansfil mot skjema (SCHEMA=<sti> INSTANCE=<sti>
 	$(LINKML_RUN) linkml validate --schema "$(SCHEMA)" "$(INSTANCE)"
 
 # ---------------------------------------------------------------------------
-# Policy-validering (bronze/silver/gold/felles-*)
+# Policy-validering (bronze/basis-no/silver/gold/felles-*)
 # ---------------------------------------------------------------------------
 
 validate-data: ## Valider datafiler (data/*/*.yaml) med MCP-validator (DOMAIN=<domene>)
