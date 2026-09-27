@@ -33,7 +33,7 @@ generate_description() {
     # Vis seksjonen dersom vi har referanse ELLER description.md
     [ -z "$external_spec" ] && [ -z "$description_file" ] && return 0
 
-    echo "## $(t seksjon.om_modellen.tittel)"
+    echo "## $(t seksjon.om_modellen.tittel) {#om-denne-modellen}"
     echo ""
 
     # Vis standard ingress

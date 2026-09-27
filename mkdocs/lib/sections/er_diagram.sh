@@ -19,7 +19,7 @@ generate_er_diagram() {
 
         echo "---"
         echo ""
-        echo "## $(t seksjon.er_diagram.tittel)"
+        echo "## $(t seksjon.er_diagram.tittel) {#entity-relationship-diagram}"
         echo ""
         echo "> $(t seksjon.er_diagram.forklaring)"
         echo ""
@@ -40,7 +40,7 @@ generate_er_diagram() {
     elif [ -f "$out/$plantuml_full" ]; then
         echo "---"
         echo ""
-        echo "## $(t seksjon.er_diagram.tittel)"
+        echo "## $(t seksjon.er_diagram.tittel) {#entity-relationship-diagram}"
         echo ""
         echo "> $(t seksjon.er_diagram.forklaring)"
         echo ""

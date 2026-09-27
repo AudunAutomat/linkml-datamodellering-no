@@ -24,7 +24,7 @@ generate_changelog() {
     echo ""
     echo "---"
     echo ""
-    echo "## $(t seksjon.versjonslog.tittel)"
+    echo "## $(t seksjon.versjonslog.tittel) {#versjonslog}"
     echo ""
     echo "> $(t seksjon.versjonslog.forklaring)"
     echo ""

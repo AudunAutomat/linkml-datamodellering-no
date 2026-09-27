@@ -13,7 +13,7 @@
         {%- for subslot_range in schemaview.slot_range_as_union(slot) -%}
             {{ gen.link(subslot_range) }}
             {%- if not loop.last -%}
-                &nbsp;or&nbsp;<br />
+                &nbsp;@@i18n:docgen.eller@@&nbsp;<br />
             {%- endif -%}
         {%- endfor -%}
     {%- else -%}
@@ -21,7 +21,7 @@
     {%- endif -%}
 {% endmacro %}
 
-# Slot: {{ title }} {% if element.deprecated %} <span style="color: red;"><strong> (DEPRECATED) </strong></span> {% endif %}
+# Slot: {{ title }} {% if element.deprecated %} <span style="color: red;"><strong> (@@i18n:docgen.utgaatt@@) </strong></span> {% endif %}
 
 {%- if header -%}
 {{ header }}
@@ -35,7 +35,7 @@ _{{ element_description_line }}_
 {% endif %}
 
 {% if element.abstract %}
-* __NOTE__: this is an abstract slot and should not be populated directly
+* __@@i18n:docgen.merk@@__: @@i18n:docgen.abstrakt_slot@@
 {% endif %}
 
 URI: {{ gen.uri_link(element) }}
@@ -46,7 +46,7 @@ Alias: {{ element.alias }}
 
 {% if schemaview.slot_parents(element.name) or schemaview.slot_children(element.name, mixins=False) %}
 
-## Inheritance
+## @@i18n:docgen.arv@@ {: #inheritance }
 
 {{ gen.inheritance_tree(element, mixins=True) }}
 {% else %}
@@ -56,9 +56,9 @@ Alias: {{ element.alias }}
 {% set classes_by_slot = schemaview.get_classes_by_slot(element, include_induced=True) %}
 {% if classes_by_slot %}
 
-## Applicable Classes
+## @@i18n:docgen.aktuelle_klasser@@ {: #applicable-classes }
 
-| Name | Description | Modifies Slot |
+| @@i18n:docgen.navn@@ | @@i18n:docgen.beskriving@@ | @@i18n:docgen.endrar_slot@@ |
 | --- | --- | --- |
 {% for c in classes_by_slot -%}
 | {{ gen.link(c) }} | {{ schemaview.get_class(c).description|enshorten }} | {% if c in schemaview.get_classes_modifying_slot(element) %} yes {% else %} no {% endif %} |
@@ -67,20 +67,20 @@ Alias: {{ element.alias }}
 {% endif %}
 
 {% if schemaview.is_mixin(element.name) %}
-## Mixin Usage
+## @@i18n:docgen.mixin_bruk@@ {: #mixin-usage }
 
-| mixed into | description | range | domain |
+| @@i18n:docgen.blanda_inn_i@@ | @@i18n:docgen.beskriving@@ | range | domain |
 | --- | --- | --- | --- |
 {% for s in schemaview.slot_children(element.name, is_a=False) -%}
 | {{ gen.link(s) }} | {{ schemaview.get_slot(s).description|enshorten }} | {{ schemaview.get_slot(s).range }} | {{ schemaview.get_classes_by_slot(schemaview.get_slot(s))|join(', ') }} |
 {% endfor %}
 {% endif %}
 
-## Properties
+## @@i18n:docgen.slot_eigenskapar_tittel@@ {: #properties }
 
-### Type and Range
+### @@i18n:docgen.type_og_range@@ {: #type-and-range }
 
-| Property | Value |
+| @@i18n:docgen.eigenskap@@ | @@i18n:docgen.verdi@@ |
 | --- | --- |
 | Range | {{ compute_range(element) }} |
 {%- if element.domain %}
@@ -96,20 +96,20 @@ Alias: {{ element.alias }}
 | Slot Group | {{ gen.link(element.slot_group) }} |
 {%- endif %}
 {%- if element.is_grouping_slot %}
-| Is Grouping Slot | Yes |
+| Is Grouping Slot | @@i18n:docgen.ja@@ |
 {%- endif %}
 
-### Cardinality and Requirements
+### @@i18n:docgen.kardinalitet_og_krav@@ {: #cardinality-and-requirements }
 
-| Property | Value |
+| @@i18n:docgen.eigenskap@@ | @@i18n:docgen.verdi@@ |
 | --- | --- |
 {%- if element.required %}
-| Required | Yes |
+| Required | @@i18n:docgen.ja@@ |
 {%- elif element.recommended %}
-| Recommended | Yes |
+| Recommended | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.multivalued %}
-| Multivalued | Yes |
+| Multivalued | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.minimum_cardinality is not none %}
 | Minimum Cardinality | {{ element.minimum_cardinality }} |
@@ -122,15 +122,15 @@ Alias: {{ element.alias }}
 {%- endif %}
 
 {%- if element.multivalued and (element.list_elements_unique is not none or element.list_elements_ordered is not none) %}
-### List/Collection Properties
+### @@i18n:docgen.liste_eigenskapar@@ {: #listcollection-properties }
 
-| Property | Value |
+| @@i18n:docgen.eigenskap@@ | @@i18n:docgen.verdi@@ |
 | --- | --- |
 {%- if element.list_elements_unique is not none %}
-| Elements Must Be Unique | {% if element.list_elements_unique %}Yes{% else %}No{% endif %} |
+| Elements Must Be Unique | {% if element.list_elements_unique %}@@i18n:docgen.ja@@{% else %}@@i18n:docgen.nei@@{% endif %} |
 {%- endif %}
 {%- if element.list_elements_ordered is not none %}
-| Elements Are Ordered | {% if element.list_elements_ordered %}Yes{% else %}No{% endif %} |
+| Elements Are Ordered | {% if element.list_elements_ordered %}@@i18n:docgen.ja@@{% else %}@@i18n:docgen.nei@@{% endif %} |
 {%- endif %}
 
 {% endif %}
@@ -140,27 +140,27 @@ Alias: {{ element.alias }}
     or element.usage_slot_name or element.singular_name or schemaview.is_mixin(element.name) %}
 
 {%- if has_slot_chars %}
-### Slot Characteristics
+### @@i18n:docgen.slot_kjenneteikn@@ {: #slot-characteristics }
 
-| Property | Value |
+| @@i18n:docgen.eigenskap@@ | @@i18n:docgen.verdi@@ |
 | --- | --- |
 {%- if element.singular_name %}
 | Singular Name | {{ element.singular_name }} |
 {%- endif %}
 {%- if element.key %}
-| Key | Yes |
+| Key | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.identifier %}
-| Identifier | Yes |
+| Identifier | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.designates_type %}
-| Designates Type | Yes |
+| Designates Type | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.inherited %}
-| Inherited | Yes |
+| Inherited | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.readonly %}
-| Readonly | Yes |
+| Readonly | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.ifabsent %}
 | If Absent | `{{ element.ifabsent }}` |
@@ -169,28 +169,28 @@ Alias: {{ element.alias }}
 | Owner | {{ gen.link(element.owner) }} |
 {%- endif %}
 {%- if element.shared %}
-| Shared | Yes |
+| Shared | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.is_class_field %}
-| Is Class Field | Yes |
+| Is Class Field | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.is_usage_slot %}
-| Is Usage Slot | Yes |
+| Is Usage Slot | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.usage_slot_name %}
 | Usage Slot Name | {{ element.usage_slot_name }} |
 {%- endif %}
 {%- if schemaview.is_mixin(element.name) %}
-| Mixin | Yes |
+| Mixin | @@i18n:docgen.ja@@ |
 {%- endif %}
 
 {% endif %}
 {%- set has_basic_constraints = element.minimum_value is not none or element.maximum_value is not none or element.pattern %}
 
 {%- if has_basic_constraints %}
-### Value Constraints
+### @@i18n:docgen.verdiavgrensingar@@ {: #value-constraints }
 
-| Property | Value |
+| @@i18n:docgen.eigenskap@@ | @@i18n:docgen.verdi@@ |
 | --- | --- |
 {%- if element.minimum_value is not none %}
 | Minimum Value | {{ element.minimum_value|int }} |
@@ -209,7 +209,7 @@ Alias: {{ element.alias }}
 
 {%- if has_advanced_constraints %}
 <details>
-<summary>Additional Constraints</summary>
+<summary>@@i18n:docgen.fleire_avgrensingar@@</summary>
 
 {%- if element.structured_pattern %}
 **Structured Pattern:**
@@ -217,7 +217,7 @@ Alias: {{ element.alias }}
 - **Syntax:** `{{ element.structured_pattern.syntax }}`
 - **Interpolated:** {{ element.structured_pattern.interpolated }}
 {%- if element.structured_pattern.partial_match %}
-- **Partial Match:** Yes
+- **Partial Match:** @@i18n:docgen.ja@@
 {%- endif %}
 {%- endif %}
 
@@ -255,27 +255,27 @@ Alias: {{ element.alias }}
 
 {%- if has_rel_props %}
 <details>
-<summary>Relationship Properties</summary>
+<summary>@@i18n:docgen.relasjonseigenskapar@@</summary>
 
-| Property | Value |
+| @@i18n:docgen.eigenskap@@ | @@i18n:docgen.verdi@@ |
 | --- | --- |
 {%- if element.symmetric %}
-| Symmetric | Yes |
+| Symmetric | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.asymmetric %}
-| Asymmetric | Yes |
+| Asymmetric | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.reflexive %}
-| Reflexive | Yes |
+| Reflexive | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.locally_reflexive %}
-| Locally Reflexive | Yes |
+| Locally Reflexive | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.irreflexive %}
-| Irreflexive | Yes |
+| Irreflexive | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.transitive %}
-| Transitive | Yes |
+| Transitive | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.inverse %}
 | Inverse | {{ gen.link(element.inverse) }} |
@@ -303,7 +303,7 @@ Alias: {{ element.alias }}
 
 {%- if has_advanced %}
 <details>
-<summary>Advanced Properties</summary>
+<summary>@@i18n:docgen.avanserte_eigenskapar@@</summary>
 
 {%- if element.subproperty_of %}
 **Subproperty Of:** {{ gen.link(element.subproperty_of) }}
@@ -322,7 +322,7 @@ Alias: {{ element.alias }}
 {%- endif %}
 
 {%- if element.children_are_mutually_disjoint %}
-**Children Are Mutually Disjoint:** Yes
+**Children Are Mutually Disjoint:** @@i18n:docgen.ja@@
 {%- endif %}
 
 {%- if element.array %}
@@ -330,7 +330,7 @@ Alias: {{ element.alias }}
 
 - **Dimensions:** {{ element.array.dimensions | join(' x ') }}
 {%- if element.array.exact_number_dimensions %}
-- **Exact Dimensions Required:** Yes
+- **Exact Dimensions Required:** @@i18n:docgen.ja@@
 {%- endif %}
 {%- endif %}
 
@@ -366,12 +366,12 @@ Alias: {{ element.alias }}
 
 {%- if has_expressions %}
 <details>
-<summary>Expressions & Logic</summary>
+<summary>@@i18n:docgen.uttrykk_og_logikk@@</summary>
 
 {%- if element.any_of %}
 #### Any Of
 
-Value must satisfy at least one of:
+@@i18n:docgen.verdi_minst_eitt@@
 
 {%- for expr in element.any_of %}
 - {{ expr }}
@@ -381,7 +381,7 @@ Value must satisfy at least one of:
 {%- if element.all_of %}
 #### All Of
 
-Value must satisfy all of:
+@@i18n:docgen.verdi_alle@@
 
 {%- for expr in element.all_of %}
 - {{ expr }}
@@ -391,7 +391,7 @@ Value must satisfy all of:
 {%- if element.exactly_one_of %}
 #### Exactly One Of
 
-Value must satisfy exactly one of:
+@@i18n:docgen.verdi_eksakt_eitt@@
 
 {%- for expr in element.exactly_one_of %}
 - {{ expr }}
@@ -401,7 +401,7 @@ Value must satisfy exactly one of:
 {%- if element.none_of %}
 #### None Of
 
-Value must not satisfy any of:
+@@i18n:docgen.verdi_ingen@@
 
 {%- for expr in element.none_of %}
 - {{ expr }}
@@ -430,9 +430,9 @@ Value must not satisfy any of:
 {% endif %}
 
 {% if schemaview.usage_index().get(element.name) %}
-## Usages
+## @@i18n:docgen.bruk@@ {: #usages }
 
-| used by | used in | type | used |
+| @@i18n:docgen.brukt_av@@ | @@i18n:docgen.brukt_i@@ | @@i18n:docgen.type@@ | @@i18n:docgen.brukt@@ |
 | ---  | --- | --- | --- |
 {% for usage in schemaview.usage_index().get(element.name) -%}
 | {{ gen.link(usage.used_by) }} | {{ gen.link(usage.slot) }} | {{ usage.metaslot }} | {{ gen.link(usage.used) }} |
@@ -441,7 +441,7 @@ Value must not satisfy any of:
 
 {% include "common_metadata.md.jinja2" %}
 
-## LinkML Source
+## @@i18n:docgen.linkml_kjelde@@ {: #linkml-source }
 
 <details>
 ```yaml

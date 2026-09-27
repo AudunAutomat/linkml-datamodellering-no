@@ -13,7 +13,7 @@
         {%- for subslot_range in schemaview.slot_range_as_union(slot) -%}
             {{ gen.link(subslot_range) }}
             {%- if not loop.last -%}
-                &nbsp;or&nbsp;<br />
+                &nbsp;@@i18n:docgen.eller@@&nbsp;<br />
             {%- endif -%}
         {%- endfor -%}
     {%- else -%}
@@ -21,7 +21,7 @@
     {%- endif -%}
 {% endmacro %}
 
-# Class: {{ title }} {% if element.deprecated %} <span style="color: red;"><strong> (DEPRECATED) </strong></span> {% endif %}
+# @@i18n:docgen.klasse@@: {{ title }} {% if element.deprecated %} <span style="color: red;"><strong> (@@i18n:docgen.utgaatt@@) </strong></span> {% endif %}
 
 {%- if header -%}
 {{ header }}
@@ -35,7 +35,7 @@ _{{ element_description_line }}_
 {% endif %}
 
 {% if element.abstract %}
-* __NOTE__: this is an abstract class and should not be instantiated directly
+* __@@i18n:docgen.merk@@__: @@i18n:docgen.abstrakt_klasse@@
 {% endif %}
 
 URI: {{ gen.uri_link(element) }}
@@ -54,7 +54,7 @@ URI: {{ gen.uri_link(element) }}
 
 {% if schemaview.class_parents(element.name) or schemaview.class_children(element.name, mixins=False) %}
 
-## Inheritance
+## @@i18n:docgen.arv@@ {: #inheritance }
 {{ gen.inheritance_tree(element, mixins=True) }}
 {% else %}
 <!-- no inheritance hierarchy -->
@@ -66,24 +66,24 @@ URI: {{ gen.uri_link(element) }}
     or element.children_are_mutually_disjoint %}
 
 {%- if has_class_props %}
-## Class Properties
+## @@i18n:docgen.klasseeigenskapar@@ {: #class-properties }
 
-| Property | Value |
+| @@i18n:docgen.eigenskap@@ | @@i18n:docgen.verdi@@ |
 | --- | --- |
 {%- if element.class_uri %}
 | Class URI | {{ gen.uri_link(element.class_uri) }} |
 {%- endif %}
 {%- if element.mixin %}
-| Mixin | Yes |
+| Mixin | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.tree_root %}
-| Tree Root | Yes |
+| Tree Root | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.slot_names_unique %}
-| Slot Names Unique | Yes |
+| Slot Names Unique | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.represents_relationship %}
-| Represents Relationship | Yes |
+| Represents Relationship | @@i18n:docgen.ja@@ |
 {%- endif %}
 {%- if element.subclass_of %}
 | Subclass Of | {{ gen.links(element.subclass_of) | join(', ') }} |
@@ -95,11 +95,11 @@ URI: {{ gen.uri_link(element) }}
 | Disjoint With | {{ gen.links(element.disjoint_with) | join(', ') }} |
 {%- endif %}
 {%- if element.children_are_mutually_disjoint %}
-| Children Are Mutually Disjoint | Yes |
+| Children Are Mutually Disjoint | @@i18n:docgen.ja@@ |
 {%- endif %}
 
 {% endif -%}
-## Eigenskapar
+## @@i18n:docgen.eigenskapar@@ {: #eigenskapar }
 {% set subsets = ['Obligatorisk', 'Anbefalt', 'Valgfri'] -%}
 {% set direct_slots = gen.get_direct_slots(element) -%}
 
@@ -114,7 +114,7 @@ URI: {{ gen.uri_link(element) }}
 {% if ns.slots %}
 ### {{ subset_name }}
 
-| Navn | Kardinalitet og domene | Beskriving |
+| @@i18n:docgen.navn@@ | @@i18n:docgen.kardinalitet_og_range@@ | @@i18n:docgen.beskriving@@ |
 | --- | --- | --- |
 {% for slot in ns.slots -%}
 | {{ gen.link(slot) }} | {{ gen.cardinality(slot) }} <br/> {{ compute_range(slot) }} | {{ slot.description|enshorten }} |
@@ -136,9 +136,9 @@ URI: {{ gen.uri_link(element) }}
   {% endif -%}
 {% endfor -%}
 {% if ns.usortert %}
-### Andre
+### @@i18n:docgen.andre@@ {: #andre }
 
-| Navn | Kardinalitet og domene | Beskriving |
+| @@i18n:docgen.navn@@ | @@i18n:docgen.kardinalitet_og_range@@ | @@i18n:docgen.beskriving@@ |
 | --- | --- | --- |
 {% for slot in ns.usortert -%}
 | {{ gen.link(slot) }} | {{ gen.cardinality(slot) }} <br/> {{ compute_range(slot) }} | {{ slot.description|enshorten }} |
@@ -146,9 +146,9 @@ URI: {{ gen.uri_link(element) }}
 {% endif -%}
 
 {% if gen.get_indirect_slots(element)|length > 0 %}
-### Arva
+### @@i18n:docgen.arva@@ {: #arva }
 
-| Navn | Kardinalitet og domene | Beskriving | Frå |
+| @@i18n:docgen.navn@@ | @@i18n:docgen.kardinalitet_og_range@@ | @@i18n:docgen.beskriving@@ | @@i18n:docgen.fraa@@ |
 | --- | --- | --- | --- |
 {% for slot in gen.get_indirect_slots(element) -%}
 | {{ gen.link(slot) }} | {{ gen.cardinality(slot) }} <br/> {{ compute_range(slot) }} | {{ slot.description|enshorten }} | {{ gen.links(gen.get_slot_inherited_from(element.name, slot.name))|join(', ') }} |
@@ -164,7 +164,7 @@ URI: {{ gen.uri_link(element) }}
 **Unique key slots:** {{ uk.unique_key_slots | join(', ') }}
 {%- if uk.consider_nulls_inequal %}
 
-Considers null values as inequal
+@@i18n:docgen.null_ulike@@
 {%- endif %}
 {% endfor %}
 {% endif %}
@@ -172,7 +172,7 @@ Considers null values as inequal
 {%- if element.defining_slots %}
 ## Defining Slots
 
-This class is defined by the following slots:
+@@i18n:docgen.definert_av_slots@@
 
 {% for slot_name in element.defining_slots %}
 * {{ gen.link(slot_name) }}
@@ -184,12 +184,12 @@ This class is defined by the following slots:
 
 {%- if has_expressions %}
 <details>
-<summary>Expressions & Logic</summary>
+<summary>@@i18n:docgen.uttrykk_og_logikk@@</summary>
 
 {%- if element.any_of %}
 #### Any Of
 
-The class must satisfy at least one of:
+@@i18n:docgen.klasse_minst_eitt@@
 
 {%- for expr in element.any_of %}
 - {{ expr }}
@@ -199,7 +199,7 @@ The class must satisfy at least one of:
 {%- if element.all_of %}
 #### All Of
 
-The class must satisfy all of:
+@@i18n:docgen.klasse_alle@@
 
 {%- for expr in element.all_of %}
 - {{ expr }}
@@ -209,7 +209,7 @@ The class must satisfy all of:
 {%- if element.exactly_one_of %}
 #### Exactly One Of
 
-The class must satisfy exactly one of:
+@@i18n:docgen.klasse_eksakt_eitt@@
 
 {%- for expr in element.exactly_one_of %}
 - {{ expr }}
@@ -219,7 +219,7 @@ The class must satisfy exactly one of:
 {%- if element.none_of %}
 #### None Of
 
-The class must not satisfy any of:
+@@i18n:docgen.klasse_ingen@@
 
 {%- for expr in element.none_of %}
 - {{ expr }}
@@ -238,9 +238,9 @@ The class must not satisfy any of:
 {% endif %}
 
 {% if schemaview.is_mixin(element.name) %}
-## Mixin Usage
+## @@i18n:docgen.mixin_bruk@@ {: #mixin-usage }
 
-| mixed into | description |
+| @@i18n:docgen.blanda_inn_i@@ | @@i18n:docgen.beskriving@@ |
 | --- | --- |
 {% for c in schemaview.class_children(element.name, is_a=False) -%}
 | {{ gen.link(c) }} | {{ schemaview.get_class(c).description|enshorten }} |
@@ -248,9 +248,9 @@ The class must not satisfy any of:
 {% endif %}
 
 {% if schemaview.usage_index().get(element.name) %}
-## Usages
+## @@i18n:docgen.bruk@@ {: #usages }
 
-| used by | used in | type | used |
+| @@i18n:docgen.brukt_av@@ | @@i18n:docgen.brukt_i@@ | @@i18n:docgen.type@@ | @@i18n:docgen.brukt@@ |
 | ---  | --- | --- | --- |
 {% for usage in schemaview.usage_index().get(element.name) -%}
 | {{ gen.link(usage.used_by) }} | {{ gen.link(usage.slot) }} | {{ usage.metaslot }} | {{ gen.link(usage.used) }} |
@@ -258,12 +258,12 @@ The class must not satisfy any of:
 {% endif %}
 
 {% if element.rules %}
-## Rules
+## @@i18n:docgen.reglar@@ {: #rules }
 
 {% for rule in gen.classrule_to_dict_view(element) %}
 ### {{ rule.title }}
 
-| Rule Applied | Preconditions | Postconditions | Elseconditions |
+| @@i18n:docgen.regel_brukt@@ | Preconditions | Postconditions | Elseconditions |
 |--------------|---------------|----------------|----------------|
 {% for key in rule.preconditions -%}
 | {{ key }} |
@@ -287,9 +287,9 @@ The class must not satisfy any of:
 {% include "common_metadata.md.jinja2" %}
 
 {% if gen.example_object_blobs(element.name) -%}
-## Examples
+## @@i18n:docgen.doeme@@ {: #examples{% if element.examples %}_1{% endif %} }
 {% for name, blob in gen.example_object_blobs(element.name) -%}
-### Example: {{ name }}
+### @@i18n:docgen.doeme_eintal@@: {{ name }} {: #example-{{ name|lower }} }
 
 ```yaml
 {{ blob }}
@@ -297,11 +297,11 @@ The class must not satisfy any of:
 {% endfor %}
 {% endif %}
 
-## LinkML Source
+## @@i18n:docgen.linkml_kjelde@@ {: #linkml-source }
 
 <!-- TODO: investigate https://stackoverflow.com/questions/37606292/how-to-create-tabbed-code-blocks-in-mkdocs-or-sphinx -->
 
-### Direct
+### @@i18n:docgen.direkte@@ {: #direct }
 
 <details>
 ```yaml

@@ -26,7 +26,7 @@ generate_example() {
 
     echo "---"
     echo ""
-    echo "## $(t seksjon.eksempeldatafil.tittel)"
+    echo "## $(t seksjon.eksempeldatafil.tittel) {#eksempeldatafil}"
     echo ""
     echo "> $(t seksjon.eksempeldatafil.forklaring)"
     echo ""

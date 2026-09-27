@@ -248,7 +248,7 @@ val vert teke i steg 2 (sjå handlingslista).
    engelsk tekst. Dette rettar samstundes dei engelske overskriftene i den
    nynorske versjonen, som «Classes» og «Description». Alle statiske
    overskrifter i malane og `sections/*.sh` får eksplisitt, språknøytral ID
-   lik dagens slug (O2-a), t.d. `## @@i18n:class.inheritance@@ {#inheritance}`.
+   lik dagens slug (O2-a), t.d. `## @@i18n:docgen.arv@@ {: #inheritance }` (i Jinja-malar `{: #id }`, sidan `{#` startar ein Jinja-kommentar).
    Verifiser med diff av genererte `id`-attributt før og etter at ingen anker
    har endra seg.
 6. **To språktre i `publish.sh`:** byggjer nynorsk og engelsk tre, med fallback
@@ -281,7 +281,7 @@ val vert teke i steg 2 (sjå handlingslista).
 - [x] 2. Prototype og endeleg val A/B (B stadfesta; O6 = L2 med artefakter på rot-stien)
 - [x] 3. Strengkatalog, renderer, `t`-funksjon, konsistenstest (`make i18n-check`: sjekk + 11 testar + røyktest nn/en, alle grøne)
 - [x] 4. Uttrekk av hardkoda strengar (byte-identisk nynorsk output: 8555/8555 filer, òg med fiksturar)
-- [ ] 5. i18n-markørar og eksplisitte anker-ID-ar (O2-a) i docgen-malane og `sections/*.sh`
+- [x] 5. i18n-markørar og eksplisitte anker-ID-ar (O2-a) i docgen-malane og `sections/*.sh` (8068 sider, 1 side med tapte anker = gamal lokal restdata, sjå avgjerder)
 - [ ] 6. To språktre, fallback, artefakter på rot-stien og vidaresendingssider i `publish.sh`
 - [ ] 7. `mkdocs.yml` per språk og `extra.alternate`
 - [ ] 8. Makefile, CI-deploy og lenkjesjekk for `/en/`
@@ -502,6 +502,64 @@ valt å la dette stå ope inntil vidare.
     valideringsfil, ei godkjend validering, `submodels` på `dqv-ap-no` og status
     Withdrawn. Framleis ingen skilnad utover sandkassestien i meldinga om ugyldig
     fil. Alle nøklar er no dekte, bortsett frå dei tre `i18n.*` for steg 6.
+- **Gen-doc-malar (steg 5):**
+  - **Terminologi (brukarval, 2026-09-27):** overskrifter, tabellhovud,
+    `Yes`/`No`, `<summary>`-tekstar og setningar vert omsette. LinkML-termar som
+    svarar til nøklar i skjema-YAML-en står urørte i alle språk: Slot(s),
+    Enumeration(s), Type(s), Subset(s), Mixin, range, domain, Induced, Tree Root,
+    Status, eigenskapsetikettane i Eigenskap/Verdi-tabellane (Slot URI, Required,
+    Multivalued ...), `**Label:**`-etikettar i enum/slot/type (Code Set, Structured
+    Pattern ...) og konstruksjonsoverskrifter (Permissible Values, Unique Keys,
+    Defining Slots, Any Of/All Of/Exactly One Of/None Of, Slot Conditions,
+    Preconditions ...). Uendra tekst treng verken markør eller fast anker.
+  - **Omfang:** 123 nye `docgen.*`-nøklar i 9 malar (148 utbytingar), gjort
+    med eit eingongs-konverteringsscript der kvar utbyting må treffe eksakt
+    forventa tal gonger. Felles etikettar (Beskriving, Navn, Eigenskap/Verdi,
+    Ja/Nei, Arv, Bruk, LinkML-kjelde ...) har éin nøkkel for alle malane.
+  - **Anker-syntaks i Jinja:** `{#anker}` kan ikkje brukast i malane, fordi `{#`
+    startar ein Jinja-kommentar som gøymer resten av malen fram til neste `#}`.
+    Malane brukar difor attr_list-forma `{: #anker }`. Bash og Python brukar
+    framleis `{#anker}`.
+  - **Faste anker lik dagens slug (O2-a):** 53 overskrifter i malane, med teljing
+    der dagens slug har teljing (`{: #classes-{{ n }} }`, `{: #verdiar-{{ n }} }`,
+    `{: #{{ subset_name|lower }}-{{ n }} }`). Seksjonane på skjemasida og i
+    Python-scripta har òg fått faste anker (`{#kom-i-gang}`, `{#feil-N}`,
+    `{#<slug av nynorsk overskrift>-N}` for modellanalyse). Til det er
+    `i18n_strings.slugify` lagd til, med same algoritme som mkdocs-toc.
+    - Faste anker vert ikkje gjorde unike av mkdocs. «Døme» (eksempelobjekt) i
+      `class.md.jinja2` kjem etter «Døme» i `common_metadata`. Han får difor
+      `{: #examples{% if element.examples %}_1{% endif %} }`, slik mkdocs gjev i dag.
+    - Unntak utan fast anker: `### Slots frå <lenkje> som òg er i _<subset>_`
+      (subset-sider). Dagens slug inneheld lenkjeteksten og kan ikkje reknast
+      trygt ut i Jinja, og ingen lenkjer peikar dit.
+  - **Parsekontraktar:** `classes.sh` (Classes-seksjonen og teljinga frå
+    importerte skjema), `metadata.sh` (Modellmetadata) og `badges.sh` (Versjon,
+    Lisens, Endringsdato, Utgiver) les no markørane. Slots/Enumerations/Types/
+    Subsets er uendra. Markørane vert bytte ut som **siste** steg i Steg 2 av
+    `publish.sh` med `i18n_strings.py render-tree` (host-`python3`, same
+    presedens som i steg 4). Kommandoen feilar ved ukjend nøkkel eller ved
+    misdanna markør som står att. `inject-validation-policy.py` les òg
+    «## Metadata», men vert ikkje kalla nokon stad og er ikkje endra.
+  - **Rest-output frå eldre malar:** `generate_index.sh` åtvarar på stderr når
+    gen-doc-utdata manglar markørar, i staden for å droppe Klasser/Modellmetadata
+    stille. Lokal `generated/oreg/enhetsregisteret-bvrinn/` er slik rest: skjemaet
+    er omdøypt til `…-bvrinnfelles`, og katalogen er ikkje versjonskontrollert.
+  - **Nynorsk-avvik frå steg 4 retta:** `seksjon.er_diagram.tittel` er no
+    «ER-diagram» (anker låst til `#entity-relationship-diagram`), og lenkjeteksten
+    i `seksjon.eksempeldatafil.per_klasse` er «[Klasser]».
+  - **Verifisering (sandkasse, jf. `.claude/rules/mkdocs-portal.md`):**
+    `gen-schema-docs` + `docs-publish` + `docs-build` i to kopiar med same
+    fiksturar, med gamle og nye malar. Overskrift-anker (h2-h6 `id`) vart
+    samanlikna per side: 8068/8068 sider, 0 sider med doble anker etter. Éi side
+    hadde tapte anker (`oreg/enhetsregisteret-bvrinn`, restdata frå eldre malar,
+    sjå over). 7439 filer fekk markørane bytte ut, og ingen markørar står att i
+    `docs/` eller `site/`. Badge-radene er identiske på alle andre sider. Merk:
+    byte-likskap er ikkje lenger målet, fordi den nynorske teksten endrar seg frå
+    engelsk til nynorsk.
+  - **Rule (brukarval):** `.claude/rules/jinja2-templates.md` har fått seksjonen
+    «i18n-markørar og faste anker i docgen-malar»: aldri `{#anker}` i Jinja,
+    markør og nøkkel for ny tekst, faste anker, parsekontraktar mot
+    `classes.sh`/`metadata.sh`/`badges.sh` og ankersamanlikning i sandkasse.
 - **Prototypen køyrer containerar direkte (steg 2):** `make docs-publish`/`docs-build`
   byggjer alltid heile portalen og skriv til `mkdocs/docs/`. Prototypen køyrde
   difor `squidfunk/mkdocs-material:9.7` (same image som `Dockerfile.mkdocs`)

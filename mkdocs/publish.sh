@@ -541,6 +541,14 @@ for domain in "${ALL_DOMAINS[@]}"; do
     } > "$DOCS/$domain/index.md"
 done
 
+# Byt ut i18n-markørar (@@i18n:<nøkkel>@@) frå gen-doc-malane og seksjonane
+# som siste transformasjon — classes.sh/metadata.sh/badges.sh parsar
+# gen-doc-outputen på markørane, ikkje på omsett tekst. Sjå steg 5 i
+# specs/backlog/lokalisering-dokumentasjonsportal.md.
+DOMAIN_DOCS_DIRS=()
+for domain in "${ALL_DOMAINS[@]}"; do DOMAIN_DOCS_DIRS+=("$DOCS/$domain"); done
+timed_run "Byt ut i18n-markørar" python3 "$LIB_DIR/scripts/i18n_strings.py" render-tree --lang "$I18N_LANG" "${DOMAIN_DOCS_DIRS[@]}"
+
 log_info "${CLR_OK}Publisert ${#ALL_DOMAINS[@]} domene(r) til mkdocs/docs/${CLR_RST}"
 
 elapsed2_ms=$(( $(now_ms) - t2 ))

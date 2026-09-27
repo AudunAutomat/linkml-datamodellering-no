@@ -17,6 +17,15 @@ generate_schema_index() {
 
     local gendoc_index="$schema_dir/docs/index.md"
 
+    # classes.sh/metadata.sh/badges.sh parsar gen-doc-outputen på
+    # i18n-markørar (steg 5 i specs/backlog/lokalisering-dokumentasjonsportal.md).
+    # Output frå eldre malar (t.d. att-verande lokal generated/ for eit
+    # omdøypt skjema) manglar markørane, og Klasser-/Modellmetadata-seksjonane
+    # vert då ikkje med — åtvar i staden for å droppe dei stille.
+    if [ -f "$gendoc_index" ] && ! grep -q "@@i18n:docgen\.modellmetadata@@" "$gendoc_index"; then
+        echo "ÅTVARING: $domain/$schema: gen-doc-output manglar i18n-markørar (laga med eldre malar?) — Klasser/Modellmetadata vert utelatne. Køyr make gen-schema-docs SCHEMA=... eller fjern generated/$domain/$schema." >&2
+    fi
+
     # Finn klasse-kjelde (index.md eller ${schema}.md)
     local klasse_src=""
     [ -f "$out/klasser/index.md" ] && klasse_src="$out/klasser/index.md"

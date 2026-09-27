@@ -223,7 +223,7 @@ strings:
     en: "Source data model in LinkML format: {lenkje}"
 
   seksjon.er_diagram.tittel:
-    nn: Entity-relationship diagram
+    nn: ER-diagram
     en: Entity-relationship diagram
   seksjon.er_diagram.forklaring:
     nn: ER-diagrammet viser struktur og relasjonar mellom dei lokale klassane i modellen. Importerte klasser er som standard filtrerte bort for å gjere diagrammet enklare å lese.
@@ -286,7 +286,7 @@ strings:
     nn: Full eksempelfil (YAML)
     en: Full example file (YAML)
   seksjon.eksempeldatafil.per_klasse:
-    nn: Detaljerte eksempel per klasse finst på kvar klasseside, t.d. [Classes](#classes).
+    nn: Detaljerte eksempel per klasse finst på kvar klasseside, t.d. [Klasser](#classes).
     en: Detailed examples per class are available on each class page, e.g. [Classes](#classes).
 
   seksjon.artefakter.tittel:
@@ -525,3 +525,374 @@ strings:
   side404.tilbake:
     nn: Gå tilbake til katalogen
     en: Go back to the catalogue
+
+  # --- gen-doc-malar (src/assets/templates/docgen/*.jinja2) — steg 5 ---
+  docgen.ja:
+    nn: "Ja"
+    en: "Yes"
+  docgen.nei:
+    nn: "Nei"
+    en: "No"
+  docgen.eigenskap:
+    nn: "Eigenskap"
+    en: "Property"
+  docgen.verdi:
+    nn: "Verdi"
+    en: "Value"
+  docgen.navn:
+    nn: "Navn"
+    en: "Name"
+  docgen.beskriving:
+    nn: "Beskriving"
+    en: "Description"
+  docgen.definert_i:
+    nn: "Definert i"
+    en: "Defined in"
+  docgen.klasse:
+    nn: "Klasse"
+    en: "Class"
+  docgen.kardinalitet_og_range:
+    nn: "Kardinalitet og domene"
+    en: "Cardinality and Range"
+  docgen.utgaatt:
+    nn: "UTGÅTT"
+    en: "DEPRECATED"
+  docgen.linkml_kjelde:
+    nn: "LinkML-kjelde"
+    en: "LinkML Source"
+  docgen.arv:
+    nn: "Arv"
+    en: "Inheritance"
+  docgen.mixin_bruk:
+    nn: "Mixin-bruk"
+    en: "Mixin Usage"
+  docgen.bruk:
+    nn: "Bruk"
+    en: "Usages"
+  docgen.blanda_inn_i:
+    nn: "Blanda inn i"
+    en: "Mixed into"
+  docgen.brukt_av:
+    nn: "Brukt av"
+    en: "Used by"
+  docgen.brukt_i:
+    nn: "Brukt i"
+    en: "Used in"
+  docgen.type:
+    nn: "Type"
+    en: "Type"
+  docgen.brukt:
+    nn: "Brukt"
+    en: "Used"
+  docgen.doeme:
+    nn: "Døme"
+    en: "Examples"
+  docgen.fleire_avgrensingar:
+    nn: "Fleire avgrensingar"
+    en: "Additional Constraints"
+  docgen.uttrykk_og_logikk:
+    nn: "Uttrykk og logikk"
+    en: "Expressions & Logic"
+  docgen.verdiavgrensingar:
+    nn: "Verdiavgrensingar"
+    en: "Value Constraints"
+  docgen.eller:
+    nn: "eller"
+    en: "or"
+  docgen.modellmetadata:
+    nn: "Modellmetadata"
+    en: "Model metadata"
+  docgen.modellmetadata_forklaring:
+    nn: "Modellmetadata viser sentrale metadata for modellen, inkludert versjon, status, lisens, identifikatorar og avhengigheiter. Verdiane er henta direkte frå skjemaet."
+    en: "Model metadata shows key metadata for the model, including version, status, license, identifiers and dependencies. The values are taken directly from the schema."
+  docgen.felt:
+    nn: "Felt"
+    en: "Field"
+  docgen.tittel:
+    nn: "Tittel"
+    en: "Title"
+  docgen.versjon:
+    nn: "Versjon"
+    en: "Version"
+  docgen.lisens:
+    nn: "Lisens"
+    en: "License"
+  docgen.utgiver:
+    nn: "Utgiver"
+    en: "Publisher"
+  docgen.endringsdato:
+    nn: "Endringsdato"
+    en: "Last modified"
+  docgen.utgivelsesdato:
+    nn: "Utgivelsesdato"
+    en: "Release date"
+  docgen.importar:
+    nn: "Importar"
+    en: "Imports"
+  docgen.skjemadiagram:
+    nn: "Skjemadiagram"
+    en: "Schema Diagram"
+  docgen.klasser:
+    nn: "Klasser"
+    en: "Classes"
+  docgen.klasser_forklaring_1a:
+    nn: "Classes viser klasser som er definerte lokalt i"
+    en: "Classes lists the classes defined locally in the"
+  docgen.klasser_forklaring_1b:
+    nn: "modellen."
+    en: "model."
+  docgen.klasser_forklaring_2:
+    nn: "Klasser frå importerte modellar er ikkje inkluderte i teljinga, men kan vere refererte frå lokale klasser og kan inngå i valideringsresultat og diagram."
+    en: "Classes from imported models are not included in the count, but may be referenced from local classes and may appear in validation results and diagrams."
+  docgen.klasser_forklaring_3:
+    nn: "Klasser grupperes i Obligatorisk, Anbefalt, Valgfri og Andre (uklassifisert)."
+    en: "Classes are grouped into Obligatorisk (mandatory), Anbefalt (recommended), Valgfri (optional) and Other (unclassified)."
+  docgen.andre:
+    nn: "Andre"
+    en: "Other"
+  docgen.slots_forklaring_1:
+    nn: "Slots viser **eigenskapar** som er definert i eller brukt av lokale klasser i modellen."
+    en: "Slots lists the **properties** defined in or used by local classes in the model."
+  docgen.slots_forklaring_2:
+    nn: "Eigenskapar grupperes i \"Verdiar\" som inneheld data, \"Refransar\" som refererer til andre klasser, og \"Kodar\" som refererer til kontrollerte verdiområder."
+    en: "Properties are grouped into \"Values\" holding data, \"References\" pointing to other classes, and \"Codes\" pointing to controlled value domains."
+  docgen.definert_i_forklaring_slots:
+    nn: "*Definert i* kolonna angir kildeskjemaet for eigenskapen."
+    en: "The *Defined in* column shows the source schema of the property."
+  docgen.definert_i_forklaring_enums:
+    nn: "*Definert i* kolonna angir kildeskjemaet for verdiområdet."
+    en: "The *Defined in* column shows the source schema of the value domain."
+  docgen.definert_i_forklaring_types:
+    nn: "*Definert i* kolonna angir kildeskjemaet for verdiformatet."
+    en: "The *Defined in* column shows the source schema of the value format."
+  docgen.definert_i_forklaring_subsets:
+    nn: "*Definert i* kolonna angir kildeskjemaet for klassifiseringa."
+    en: "The *Defined in* column shows the source schema of the classification."
+  docgen.verdiar:
+    nn: "Verdiar"
+    en: "Values"
+  docgen.referansar:
+    nn: "Referansar"
+    en: "References"
+  docgen.kodar:
+    nn: "Kodar"
+    en: "Codes"
+  docgen.enums_forklaring:
+    nn: "Enumerations viser kontrollerte **verdiområder** som er definert i eller brukt lokalt i modellen."
+    en: "Enumerations lists controlled **value domains** defined in or used locally in the model."
+  docgen.ingen_enums:
+    nn: "Ingen enumerations definert lokalt eller brukt i denne modellen."
+    en: "No enumerations defined locally or used in this model."
+  docgen.types_forklaring:
+    nn: "Types viser primitive **verdiformat** som datoar, URI-ar, språkstrengar og andre grunnleggjande datatypar som er definert i eller brukt i modellen."
+    en: "Types lists primitive **value formats** such as dates, URIs, language strings and other basic data types defined in or used in the model."
+  docgen.ingen_types:
+    nn: "Ingen typar definert lokalt eller brukt i denne modellen."
+    en: "No types defined locally or used in this model."
+  docgen.subsets_forklaring:
+    nn: "Subsets viser **klassifiseringar** av klasser og slots som blir brukt i modellen. For AP-NO-modellar vil dette typisk vere Obligatorisk, Anbefalt og Valgfri."
+    en: "Subsets lists **classifications** of classes and slots used in the model. For AP-NO models these are typically Obligatorisk (mandatory), Anbefalt (recommended) and Valgfri (optional)."
+  docgen.ingen_subsets:
+    nn: "Ingen subsets definert lokalt eller brukt i denne modellen."
+    en: "No subsets defined locally or used in this model."
+  docgen.merk:
+    nn: "MERK"
+    en: "NOTE"
+  docgen.abstrakt_klasse:
+    nn: "dette er ei abstrakt klasse og skal ikkje instansierast direkte"
+    en: "this is an abstract class and should not be instantiated directly"
+  docgen.klasseeigenskapar:
+    nn: "Klasseeigenskapar"
+    en: "Class Properties"
+  docgen.eigenskapar:
+    nn: "Eigenskapar"
+    en: "Properties"
+  docgen.fraa:
+    nn: "Frå"
+    en: "From"
+  docgen.arva:
+    nn: "Arva"
+    en: "Inherited"
+  docgen.null_ulike:
+    nn: "Reknar null-verdiar som ulike"
+    en: "Considers null values as inequal"
+  docgen.definert_av_slots:
+    nn: "Denne klassa er definert av desse slotane:"
+    en: "This class is defined by the following slots:"
+  docgen.klasse_minst_eitt:
+    nn: "Klassa må oppfylle minst eitt av:"
+    en: "The class must satisfy at least one of:"
+  docgen.klasse_alle:
+    nn: "Klassa må oppfylle alle:"
+    en: "The class must satisfy all of:"
+  docgen.klasse_eksakt_eitt:
+    nn: "Klassa må oppfylle nøyaktig eitt av:"
+    en: "The class must satisfy exactly one of:"
+  docgen.klasse_ingen:
+    nn: "Klassa kan ikkje oppfylle nokon av:"
+    en: "The class must not satisfy any of:"
+  docgen.reglar:
+    nn: "Reglar"
+    en: "Rules"
+  docgen.regel_brukt:
+    nn: "Regel brukt"
+    en: "Rule Applied"
+  docgen.doeme_eintal:
+    nn: "Døme"
+    en: "Example"
+  docgen.direkte:
+    nn: "Direkte"
+    en: "Direct"
+  docgen.abstrakt_slot:
+    nn: "dette er ein abstrakt slot og skal ikkje fyllast ut direkte"
+    en: "this is an abstract slot and should not be populated directly"
+  docgen.aktuelle_klasser:
+    nn: "Aktuelle klasser"
+    en: "Applicable Classes"
+  docgen.endrar_slot:
+    nn: "Endrar sloten"
+    en: "Modifies Slot"
+  docgen.slot_eigenskapar_tittel:
+    nn: "Eigenskapar"
+    en: "Properties"
+  docgen.type_og_range:
+    nn: "Type og range"
+    en: "Type and Range"
+  docgen.kardinalitet_og_krav:
+    nn: "Kardinalitet og krav"
+    en: "Cardinality and Requirements"
+  docgen.liste_eigenskapar:
+    nn: "Liste- og samlingseigenskapar"
+    en: "List/Collection Properties"
+  docgen.slot_kjenneteikn:
+    nn: "Slot-kjenneteikn"
+    en: "Slot Characteristics"
+  docgen.relasjonseigenskapar:
+    nn: "Relasjonseigenskapar"
+    en: "Relationship Properties"
+  docgen.avanserte_eigenskapar:
+    nn: "Avanserte eigenskapar"
+    en: "Advanced Properties"
+  docgen.verdi_minst_eitt:
+    nn: "Verdien må oppfylle minst eitt av:"
+    en: "Value must satisfy at least one of:"
+  docgen.verdi_alle:
+    nn: "Verdien må oppfylle alle:"
+    en: "Value must satisfy all of:"
+  docgen.verdi_eksakt_eitt:
+    nn: "Verdien må oppfylle nøyaktig eitt av:"
+    en: "Value must satisfy exactly one of:"
+  docgen.verdi_ingen:
+    nn: "Verdien kan ikkje oppfylle nokon av:"
+    en: "Value must not satisfy any of:"
+  docgen.enum_kjelde:
+    nn: "Enumeration-kjelde"
+    en: "Enumeration Source"
+  docgen.tyding:
+    nn: "Tyding"
+    en: "Meaning"
+  docgen.tilleggsinfo:
+    nn: "Tilleggsinformasjon"
+    en: "Additional Info"
+  docgen.dynamisk_enum:
+    nn: "Dette er ein dynamisk enum"
+    en: "This is a dynamic enum"
+  docgen.enum_operasjonar:
+    nn: "Enumeration-operasjonar"
+    en: "Enumeration Operations"
+  docgen.type_eigenskapar:
+    nn: "Type-eigenskapar"
+    en: "Type Properties"
+  docgen.typeuttrykk:
+    nn: "Typeuttrykk"
+    en: "Type Expressions"
+  docgen.verdi_minst_eitt_uttrykk:
+    nn: "Verdien må oppfylle minst eitt av desse uttrykka"
+    en: "Value must satisfy at least one of these expressions"
+  docgen.verdi_alle_uttrykk:
+    nn: "Verdien må oppfylle alle desse uttrykka"
+    en: "Value must satisfy all of these expressions"
+  docgen.verdi_eksakt_eitt_uttrykk:
+    nn: "Verdien må oppfylle nøyaktig eitt av desse uttrykka"
+    en: "Value must satisfy exactly one of these expressions"
+  docgen.verdi_ingen_uttrykk:
+    nn: "Verdien kan ikkje oppfylle nokon av desse uttrykka"
+    en: "Value must not satisfy any of these expressions"
+  docgen.klasser_i_subset:
+    nn: "Klasser i subsetet"
+    en: "Classes in subset"
+  docgen.slots_fraa:
+    nn: "Slots frå"
+    en: "Slots from"
+  docgen.ogsaa_i:
+    nn: "som òg er i"
+    en: "also in"
+  docgen.slots_i_subset:
+    nn: "Slots i subsetet"
+    en: "Slots in subset"
+  docgen.enums_i_subset:
+    nn: "Enumerations i subsetet"
+    en: "Enumerations in subset"
+  docgen.kategoriar:
+    nn: "Kategoriar"
+    en: "Categories"
+  docgen.noekkelord:
+    nn: "Nøkkelord"
+    en: "Keywords"
+  docgen.i_subset:
+    nn: "I subset"
+    en: "In Subsets"
+  docgen.alias:
+    nn: "Alias"
+    en: "Aliases"
+  docgen.kommentarar:
+    nn: "Kommentarar"
+    en: "Comments"
+  docgen.sjaa_ogsaa:
+    nn: "Sjå òg"
+    en: "See Also"
+  docgen.merknader:
+    nn: "Merknader"
+    en: "Notes"
+  docgen.alternative_beskrivingar:
+    nn: "Alternative beskrivingar"
+    en: "Alternative Descriptions"
+  docgen.identifikator_og_mapping:
+    nn: "Identifikator- og mappinginformasjon"
+    en: "Identifier and Mapping Information"
+  docgen.administrative_metadata:
+    nn: "Administrative metadata"
+    en: "Administrative Metadata"
+  docgen.gyldige_id_prefiks:
+    nn: "Gyldige ID-prefiks"
+    en: "Valid ID Prefixes"
+  docgen.annotasjonar:
+    nn: "Annotasjonar"
+    en: "Annotations"
+  docgen.skjemakjelde:
+    nn: "Skjemakjelde"
+    en: "Schema Source"
+  docgen.mappingar:
+    nn: "Mappingar"
+    en: "Mappings"
+  docgen.id_prefiks_forklaring:
+    nn: "Instansar av denne klassa *bør* ha identifikatorar med eitt av desse prefiksa:"
+    en: "Instances of this class *should* have identifiers with one of the following prefixes:"
+  docgen.fraa_skjema:
+    nn: "frå skjema"
+    en: "from schema"
+  docgen.importert_fraa:
+    nn: "importert frå"
+    en: "imported from"
+  docgen.mappingtype:
+    nn: "Mappingtype"
+    en: "Mapping Type"
+  docgen.mappa_verdi:
+    nn: "Mappa verdi"
+    en: "Mapped Value"
+  docgen.diagram_merknad_tittel:
+    nn: "Om diagrammet"
+    en: "About the diagram"
+  docgen.diagram_merknad:
+    nn: "Klikk på attributt-radene i klasseboksen ovanfor opnar same side som klassenavnet — Mermaid sin `classDiagram`-syntaks støttar berre éin klikkbar lenkje per klasseboks, ikkje éin per attributt (BUG-14). `## Eigenskapar`-tabellen lenger nede på sida er fasiten for slot-spesifikke lenkjer."
+    en: "Clicking the attribute rows in the class box above opens the same page as the class name — the Mermaid `classDiagram` syntax supports only one clickable link per class box, not one per attribute (BUG-14). The `## Properties` table further down the page is the authoritative source for slot-specific links."

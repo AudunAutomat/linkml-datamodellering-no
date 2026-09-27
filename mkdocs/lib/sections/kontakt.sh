@@ -12,7 +12,7 @@ generate_contact_info() {
     echo ""
     echo "---"
     echo ""
-    echo "## $(t seksjon.kontakt.tittel)"
+    echo "## $(t seksjon.kontakt.tittel) {#kontakt}"
     echo ""
     echo "> $(t seksjon.kontakt.forklaring)"
     echo ""

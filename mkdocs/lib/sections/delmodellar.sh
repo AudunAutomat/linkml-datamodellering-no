@@ -42,7 +42,7 @@ generate_submodels_section() {
 
     echo "---"
     echo ""
-    echo "## $(t seksjon.delmodellar.tittel)"
+    echo "## $(t seksjon.delmodellar.tittel) {#delmodellar}"
     echo ""
     echo "$(t seksjon.delmodellar.innleiing)"
     echo ""

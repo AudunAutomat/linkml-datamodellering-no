@@ -4,7 +4,7 @@
     {%- set title = gen.name(element) -%}
 {%- endif -%}
 
-# Type: {{ title }} {% if element.deprecated %} <span style="color: red;"><strong> (DEPRECATED) </strong></span> {% endif %}
+# Type: {{ title }} {% if element.deprecated %} <span style="color: red;"><strong> (@@i18n:docgen.utgaatt@@) </strong></span> {% endif %}
 
 {% if element.description %}
 {% set element_description_lines = element.description.split('\n') %}
@@ -15,9 +15,9 @@ _{{ element_description_line }}_
 
 URI: {{ gen.uri_link(element) }}
 
-## Type Properties
+## @@i18n:docgen.type_eigenskapar@@ {: #type-properties }
 
-| Property | Value |
+| @@i18n:docgen.eigenskap@@ | @@i18n:docgen.verdi@@ |
 | --- | --- |
 {%- if element.typeof %}
 | Type Of | {{ gen.link(element.typeof) }} |
@@ -38,9 +38,9 @@ URI: {{ gen.uri_link(element) }}
 {%- set has_basic_constraints = element.minimum_value is not none or element.maximum_value is not none or element.pattern %}
 
 {%- if has_basic_constraints %}
-## Value Constraints
+## @@i18n:docgen.verdiavgrensingar@@ {: #value-constraints }
 
-| Property | Value |
+| @@i18n:docgen.eigenskap@@ | @@i18n:docgen.verdi@@ |
 | --- | --- |
 {%- if element.minimum_value is not none or element.maximum_value is not none %}
 | Numeric Range | {{ gen.number_value_range(element) }} |
@@ -55,7 +55,7 @@ URI: {{ gen.uri_link(element) }}
 
 {%- if has_advanced_constraints %}
 <details>
-<summary>Additional Constraints</summary>
+<summary>@@i18n:docgen.fleire_avgrensingar@@</summary>
 
 {%- if element.structured_pattern %}
 **Structured Pattern:**
@@ -63,7 +63,7 @@ URI: {{ gen.uri_link(element) }}
 - **Syntax:** `{{ element.structured_pattern.syntax }}`
 - **Interpolated:** {{ element.structured_pattern.interpolated }}
 {%- if element.structured_pattern.partial_match %}
-- **Partial Match:** Yes
+- **Partial Match:** @@i18n:docgen.ja@@
 {%- endif %}
 {%- endif %}
 
@@ -94,10 +94,10 @@ URI: {{ gen.uri_link(element) }}
 
 {%- if has_expressions %}
 <details>
-<summary>Type Expressions</summary>
+<summary>@@i18n:docgen.typeuttrykk@@</summary>
 
 {%- if element.any_of %}
-**Any Of:** Value must satisfy at least one of these expressions
+**Any Of:** @@i18n:docgen.verdi_minst_eitt_uttrykk@@
 
 {%- for expr in element.any_of %}
 - {{ expr }}
@@ -105,7 +105,7 @@ URI: {{ gen.uri_link(element) }}
 {%- endif %}
 
 {%- if element.all_of %}
-**All Of:** Value must satisfy all of these expressions
+**All Of:** @@i18n:docgen.verdi_alle_uttrykk@@
 
 {%- for expr in element.all_of %}
 - {{ expr }}
@@ -113,7 +113,7 @@ URI: {{ gen.uri_link(element) }}
 {%- endif %}
 
 {%- if element.exactly_one_of %}
-**Exactly One Of:** Value must satisfy exactly one of these expressions
+**Exactly One Of:** @@i18n:docgen.verdi_eksakt_eitt_uttrykk@@
 
 {%- for expr in element.exactly_one_of %}
 - {{ expr }}
@@ -121,7 +121,7 @@ URI: {{ gen.uri_link(element) }}
 {%- endif %}
 
 {%- if element.none_of %}
-**None Of:** Value must not satisfy any of these expressions
+**None Of:** @@i18n:docgen.verdi_ingen_uttrykk@@
 
 {%- for expr in element.none_of %}
 - {{ expr }}

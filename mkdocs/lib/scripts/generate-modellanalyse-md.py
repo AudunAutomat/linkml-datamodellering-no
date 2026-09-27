@@ -58,7 +58,7 @@ standard default_language i katalogen.
 import sys
 from pathlib import Path
 
-from i18n_strings import load_catalog
+from i18n_strings import load_catalog, slugify
 
 # (rapportfil, nøkkelprefiks i strengkatalogen, relativ sti til cross-domain-
 #  sida frå mkdocs/docs/<domain>/<schema>/index.md (None = ingen
@@ -140,7 +140,7 @@ def main() -> None:
 
     lines = [
         "",
-        f"## {t('seksjon.modellanalyse.tittel')}",
+        f"## {t('seksjon.modellanalyse.tittel')} {{#modellanalyse}}",
         "",
         f"> {t('seksjon.modellanalyse.forklaring')}",
         "",
@@ -150,6 +150,9 @@ def main() -> None:
     any_report_found = False
     for filename, prefix, cross_domain_relpath in REPORTS:
         heading = t(f"{prefix}.tittel")
+        # Fast anker lik slug-en av den nynorske overskrifta (O2-a), slik at
+        # ankeret er likt i alle språk.
+        anchor = slugify(catalog.t(f"{prefix}.tittel", catalog.default_language))
         blockquote_text = t(f"{prefix}.forklaring")
         report_path = analyse_dir / filename
         body = None
@@ -163,10 +166,11 @@ def main() -> None:
                 print(f"ÅTVARING: klarte ikkje lese {report_path}: {e}", file=sys.stderr)
 
         if body is None:
-            lines += ["", f"### {heading}", "", f"> {blockquote_text}", ""]
+            lines += ["", f"### {heading} {{#{anchor}}}", "", f"> {blockquote_text}", ""]
             lines.append(f"*{t('seksjon.modellanalyse.rapport_manglar')}*")
         else:
-            lines += ["", f"### {heading} ({count_table_rows(body)})", "", f"> {blockquote_text}", ""]
+            count = count_table_rows(body)
+            lines += ["", f"### {heading} ({count}) {{#{anchor}-{count}}}", "", f"> {blockquote_text}", ""]
             lines.append(body)
 
         if cross_domain_relpath:

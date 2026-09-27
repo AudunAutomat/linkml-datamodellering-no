@@ -4,7 +4,7 @@
     {%- set title = gen.name(element) -%}
 {%- endif -%}
 
-# Enum: {{ title }} {% if element.deprecated %} <span style="color: red;"><strong> (DEPRECATED) </strong></span> {% endif %}
+# Enum: {{ title }} {% if element.deprecated %} <span style="color: red;"><strong> (@@i18n:docgen.utgaatt@@) </strong></span> {% endif %}
 
 {% if element.description %}
 {% set element_description_lines = element.description.split('\n') %}
@@ -24,7 +24,7 @@ URI: {{ gen.uri_link(element) }}
     or element.matches or element.concepts %}
 
 {%- if has_enum_source %}
-## Enumeration Source
+## @@i18n:docgen.enum_kjelde@@ {: #enumeration-source }
 
 {%- if element.code_set %}
 **Code Set:** {{ gen.uri_link(element.code_set) }}
@@ -77,7 +77,7 @@ URI: {{ gen.uri_link(element) }}
 ## Permissible Values
 
 {%- if has_pv_extras.found %}
-| Value | Meaning | Description | Additional Info |
+| @@i18n:docgen.verdi@@ | @@i18n:docgen.tyding@@ | @@i18n:docgen.beskriving@@ | @@i18n:docgen.tilleggsinfo@@ |
 | --- | --- | --- | --- |
 {% for pv in element.permissible_values.values() -%}
 | {{ pv.text }} | {{ pv.meaning }} | {{ pv.description|enshorten }} |
@@ -88,20 +88,20 @@ URI: {{ gen.uri_link(element) }}
  |
 {% endfor %}
 {%- else %}
-| Value | Meaning | Description |
+| @@i18n:docgen.verdi@@ | @@i18n:docgen.tyding@@ | @@i18n:docgen.beskriving@@ |
 | --- | --- | --- |
 {% for pv in element.permissible_values.values() -%}
 | {{ pv.text }} | {{ pv.meaning }} | {{ pv.description|enshorten }} |
 {% endfor %}
 {%- endif %}
 {% else %}
-_This is a dynamic enum_
+_@@i18n:docgen.dynamisk_enum@@_
 {% endif %}
 
 {%- set has_enum_ops = element.inherits or element.include or element.minus %}
 
 {%- if has_enum_ops %}
-## Enumeration Operations
+## @@i18n:docgen.enum_operasjonar@@ {: #enumeration-operations }
 
 {%- if element.inherits %}
 **Inherits From:** {{ gen.links(element.inherits) | join(', ') }}
@@ -121,7 +121,7 @@ _This is a dynamic enum_
 {% if slots_for_enum is defined and slots_for_enum|length > 0 -%}
 ## Slots
 
-| Name | Description |
+| @@i18n:docgen.navn@@ | @@i18n:docgen.beskriving@@ |
 | ---  | --- |
 {% for s in schemaview.get_slots_by_enum(element.name) -%}
 | {{ gen.link(s) }} | {{ s.description|enshorten }} |
@@ -130,7 +130,7 @@ _This is a dynamic enum_
 
 {% include "common_metadata.md.jinja2" %}
 
-## LinkML Source
+## @@i18n:docgen.linkml_kjelde@@ {: #linkml-source }
 
 <details>
 ```yaml

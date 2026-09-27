@@ -18,7 +18,7 @@ generate_validation_results() {
     if [ -f "$validation_json" ]; then
         python3 "$REPO_ROOT/mkdocs/lib/scripts/generate-validation-md.py" "$validation_json" "$domain" "$schema" "$I18N_LANG"
     else
-        echo "## $(t seksjon.validering.tittel)"
+        echo "## $(t seksjon.validering.tittel) {#valideringsresultat}"
         echo ""
         echo "> $(t seksjon.validering.forklaring)"
         echo ""

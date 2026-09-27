@@ -18,7 +18,7 @@ generate_modell_analyse() {
     if [ -n "$analyse_dir" ]; then
         python3 "$REPO_ROOT/mkdocs/lib/scripts/generate-modellanalyse-md.py" "$analyse_dir" "$domain" "$schema" "$I18N_LANG"
     else
-        echo "## $(t seksjon.modellanalyse.tittel)"
+        echo "## $(t seksjon.modellanalyse.tittel) {#modellanalyse}"
         echo ""
         echo "> $(t seksjon.modellanalyse.forklaring_kort)"
         echo ""

@@ -1,4 +1,4 @@
-# Subset: {{ gen.name(element) }} {% if element.deprecated %} <span style="color: red;"><strong> (DEPRECATED) </strong></span> {% endif %}
+# Subset: {{ gen.name(element) }} {% if element.deprecated %} <span style="color: red;"><strong> (@@i18n:docgen.utgaatt@@) </strong></span> {% endif %}
 
 {%- if header -%}
 {{ header }}
@@ -39,9 +39,9 @@ URI: {{ gen.link(element) }}
 {% endfor %}
 
 {% if classes_in_subset %}
-## Classes in subset
+## @@i18n:docgen.klasser_i_subset@@ {: #classes-in-subset }
 
-| Class | Description |
+| @@i18n:docgen.klasse@@ | @@i18n:docgen.beskriving@@ |
 | --- | --- |
 {% for c in classes_in_subset -%}
 {%- if element.name in c.in_subset -%}
@@ -62,9 +62,9 @@ URI: {{ gen.link(element) }}
 {%- endfor %}
 
 {%- if filtered_slots|length > 0 -%}
-### Slots from {{ gen.link(c) }} also in _{{ element.name }}_
+### @@i18n:docgen.slots_fraa@@ {{ gen.link(c) }} @@i18n:docgen.ogsaa_i@@ _{{ element.name }}_
 
-| Name | Cardinality and Range | Description |
+| @@i18n:docgen.navn@@ | @@i18n:docgen.kardinalitet_og_range@@ | @@i18n:docgen.beskriving@@ |
 | ---  | ---  | --- |
 {% for s in filtered_slots -%}
 | {{ gen.link(s) }} | {{ gen.cardinality(s) }} <br/> {{ gen.link(s.range) }} | {{ s.description|enshorten }} {% if s.identifier %}**identifier**{% endif %} |
@@ -77,9 +77,9 @@ URI: {{ gen.link(element) }}
 {%- endif %}
 
 {% if slots_in_subset %}
-## Slots in subset
+## @@i18n:docgen.slots_i_subset@@ {: #slots-in-subset }
 
-| Slot | Description |
+| Slot | @@i18n:docgen.beskriving@@ |
 | --- | --- |
 {% for s in slots_in_subset|sort(attribute=sort_by) -%}
 {%- if element.name in s.in_subset -%}
@@ -90,9 +90,9 @@ URI: {{ gen.link(element) }}
 {%- endif %}
 
 {% if enums_in_subset %}
-## Enumerations in subset
+## @@i18n:docgen.enums_i_subset@@ {: #enumerations-in-subset }
 
-| Enumeration | Description |
+| Enumeration | @@i18n:docgen.beskriving@@ |
 | --- | --- |
 {% for e in enums_in_subset|sort(attribute='name') -%}
 {% if element.name in e.in_subset -%}

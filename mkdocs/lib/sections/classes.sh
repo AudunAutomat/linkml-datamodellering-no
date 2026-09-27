@@ -33,7 +33,7 @@ build_import_links() {
     # Map section til overskrift-format (Classes, Slots, Enumerations, Types, Subsets)
     local section_header
     case "$section" in
-        classes) section_header="Classes" ;;
+        classes) section_header="@@i18n:docgen.klasser@@" ;;  # gen-doc skriv i18n-markør (steg 5)
         slots) section_header="Slots" ;;
         enumerations) section_header="Enumerations" ;;
         types) section_header="Types" ;;
@@ -146,9 +146,12 @@ generate_classes_section() {
     echo "---"
     echo ""
 
-    # Ekstraher Classes-seksjonen (frå "### Classes" til neste "###")
-    # Beheld overskrifta med teljing frå gendoc og legg til stabilt anker {#classes}
-    awk '/^### Classes/,/^### [^C]/' "$klasse_src" | sed '$d' | sed 's/](\([^)]*\.md\))/](klasser\/\1)/g' | sed 's/^### Classes (\([0-9]*\))$/### Classes (\1) {#classes}/'
+    # Ekstraher Classes-seksjonen (frå "### <klasser-markør>" til neste "###"
+    # som ikkje er ein i18n-markør — dei andre seksjonsoverskriftene (Slots,
+    # Enumerations, Types, Subsets) er LinkML-termar utan markør). Gen-doc set
+    # anker lik slug-en med teljing ({: #classes-17 }); skjemasida brukar det
+    # stabile {#classes}. Markøren vert bytt ut av publish.sh til slutt.
+    awk '/^### @@i18n:docgen\.klasser@@ /,/^### [^@]/' "$klasse_src" | sed '$d' | sed 's/](\([^)]*\.md\))/](klasser\/\1)/g' | sed 's/^\(### @@i18n:docgen\.klasser@@ ([0-9]*)\) {: #classes-[0-9]* }$/\1 {#classes}/'
     build_import_links "$domain" "$schema" "classes" "$(t klasseliste.importerte_klasser)"
     echo ""
     echo "---"

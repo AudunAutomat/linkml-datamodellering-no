@@ -10,7 +10,9 @@ generate_metadata() {
 
     echo "---"
     echo ""
-    # Ekstraher frå "## Modellmetadata" til neste "##" eller "###"-seksjon (ikkje inkludert)
-    # Legg til {#metadata}-anker i overskrifta
-    awk '/^## Modellmetadata( \{#metadata\})?$/{ p=1; print "## Modellmetadata {#metadata}"; next } p{ if(/^###? / && !/^## Modellmetadata( \{#metadata\})?$/){ exit } print }' "$gendoc_index"
+    # Ekstraher frå "## <modellmetadata-markør>" til neste "##" eller "###"-seksjon
+    # (ikkje inkludert). Gen-doc skriv i18n-markør og ankeret {: #modellmetadata }
+    # (steg 5); skjemasida brukar det stabile {#metadata}. Markøren vert bytt ut
+    # av publish.sh til slutt.
+    awk '/^## @@i18n:docgen\.modellmetadata@@( \{: #modellmetadata \})?$/{ p=1; print "## @@i18n:docgen.modellmetadata@@ {#metadata}"; next } p{ if(/^###? /){ exit } print }' "$gendoc_index"
 }

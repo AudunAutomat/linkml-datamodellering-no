@@ -13,12 +13,13 @@ generate_badges() {
 
     [ ! -f "$gendoc_index" ] && return 0
 
-    # Parse metadata frå gen-doc
-    local version=$(grep "^| Versjon" "$gendoc_index" | sed 's/.*| \([^ ]*\) |/\1/' | head -1)
+    # Parse metadata frå gen-doc. Radetikettane er i18n-markørar (steg 5) som
+    # publish.sh byter ut til slutt — Status er ein LinkML-term utan markør.
+    local version=$(grep "^| @@i18n:docgen\.versjon@@ |" "$gendoc_index" | sed 's/.*| \([^ ]*\) |/\1/' | head -1)
     local status=$(grep "^| Status" "$gendoc_index" | sed 's|.*status/\([^)]*\).*|\1|' | head -1)
-    local license=$(grep "^| Lisens" "$gendoc_index" | sed 's|.*/nlod/no/\([0-9.]*\).*|\1|' | head -1)
-    local endringsdato=$(grep "^| Endringsdato" "$gendoc_index" | sed 's/^| Endringsdato | \(.*\) |$/\1/' | head -1)
-    local utgiver_uri=$(grep "^| Utgiver" "$gendoc_index" | sed -n 's/^| Utgiver | \[\(https:[^]]*\)\].*/\1/p' | head -1)
+    local license=$(grep "^| @@i18n:docgen\.lisens@@ |" "$gendoc_index" | sed 's|.*/nlod/no/\([0-9.]*\).*|\1|' | head -1)
+    local endringsdato=$(grep "^| @@i18n:docgen\.endringsdato@@ |" "$gendoc_index" | sed 's/^| @@i18n:docgen\.endringsdato@@ | \(.*\) |$/\1/' | head -1)
+    local utgiver_uri=$(grep "^| @@i18n:docgen\.utgiver@@ |" "$gendoc_index" | sed -n 's/^| @@i18n:docgen\.utgiver@@ | \[\(https:[^]]*\)\].*/\1/p' | head -1)
 
     # Slå opp organisasjonsnavn frå det pre-berekna
     # ORG_URI_TO_NAME_SERIALIZED-registeret (CODEOWNERS.md parsa éin gong i

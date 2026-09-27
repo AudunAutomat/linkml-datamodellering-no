@@ -1,5 +1,5 @@
 {% if element.categories %}
-## Categories
+## @@i18n:docgen.kategoriar@@ {: #categories }
 
 {% for cat in element.categories %}
 * {{ cat }}
@@ -7,7 +7,7 @@
 
 {% endif %}
 {% if element.keywords %}
-## Keywords
+## @@i18n:docgen.noekkelord@@ {: #keywords }
 
 {% for kw in element.keywords %}
 * {{ kw }}
@@ -15,7 +15,7 @@
 
 {% endif %}
 {% if element.in_subset %}
-## In Subsets
+## @@i18n:docgen.i_subset@@ {: #in-subsets }
 
 {% for subset in element.in_subset %}
 * {{ gen.link(subset) }}
@@ -23,7 +23,7 @@
 
 {% endif %}
 {% if element.aliases %}
-## Aliases
+## @@i18n:docgen.alias@@ {: #aliases }
 
 {% for alias in element.aliases %}
 * {{ alias }}
@@ -31,9 +31,9 @@
 {% endif %}
 
 {% if element.examples %}
-## Examples
+## @@i18n:docgen.doeme@@ {: #examples }
 
-| Value |
+| @@i18n:docgen.verdi@@ |
 | --- |
 {% for x in element.examples -%}
 | {{ x.value }} |
@@ -41,7 +41,7 @@
 {% endif -%}
 
 {% if element.comments -%}
-## Comments
+## @@i18n:docgen.kommentarar@@ {: #comments }
 
 {% for x in element.comments -%}
 * {{ x }}
@@ -57,7 +57,7 @@
 {% endif -%}
 
 {% if element.see_also -%}
-## See Also
+## @@i18n:docgen.sjaa_ogsaa@@ {: #see-also }
 
 {% for x in element.see_also -%}
 * {{ gen.uri_link(x) }}
@@ -65,7 +65,7 @@
 {% endif -%}
 
 {% if element.notes -%}
-## Notes
+## @@i18n:docgen.merknader@@ {: #notes }
 
 {% for note in element.notes -%}
 * {{ note }}
@@ -73,19 +73,19 @@
 {% endif -%}
 
 {% if element.alt_descriptions %}
-## Alternative Descriptions
+## @@i18n:docgen.alternative_beskrivingar@@ {: #alternative-descriptions }
 
 {% for source, alt_desc in element.alt_descriptions.items() %}
 * **{{ source }}**: {{ alt_desc.description }}
 {%- endfor %}
 {% endif %}
 
-## Identifier and Mapping Information
+## @@i18n:docgen.identifikator_og_mapping@@ {: #identifier-and-mapping-information }
 
 {%- set has_admin_metadata = element.status or (element.rank is not none and element.rank != 1000) %}
 
 {%- if has_admin_metadata %}
-### Administrative Metadata
+### @@i18n:docgen.administrative_metadata@@ {: #administrative-metadata }
 
 {% if element.status -%}
 **Status:** {{ element.status }}
@@ -96,9 +96,9 @@
 
 {% endif %}
 {% if element.id_prefixes %}
-### Valid ID Prefixes
+### @@i18n:docgen.gyldige_id_prefiks@@ {: #valid-id-prefixes }
 
-Instances of this class *should* have identifiers with one of the following prefixes:
+@@i18n:docgen.id_prefiks_forklaring@@
 {% for p in element.id_prefixes %}
 * {{ p }}
 {% endfor %}
@@ -106,9 +106,9 @@ Instances of this class *should* have identifiers with one of the following pref
 {% endif %}
 
 {% if element.annotations %}
-### Annotations
+### @@i18n:docgen.annotasjonar@@ {: #annotations }
 
-| property | value |
+| @@i18n:docgen.eigenskap@@ | @@i18n:docgen.verdi@@ |
 | --- | --- |
 {% for a in element.annotations -%}
 {%- if a|string|first != '_' -%}
@@ -118,20 +118,20 @@ Instances of this class *should* have identifiers with one of the following pref
 {% endif %}
 
 {% if element.from_schema or element.imported_from %}
-### Schema Source
+### @@i18n:docgen.skjemakjelde@@ {: #schema-source }
 
 {% if element.from_schema %}
-* from schema: {{ element.from_schema }}
+* @@i18n:docgen.fraa_skjema@@: {{ element.from_schema }}
 {% endif %}
 {% if element.imported_from %}
-* imported from: {{ element.imported_from }}
+* @@i18n:docgen.importert_fraa@@: {{ element.imported_from }}
 {% endif %}
 {% endif %}
 
 {% if schemaview.get_mappings(element.name).items() -%}
-## Mappings
+## @@i18n:docgen.mappingar@@ {: #mappings }
 
-| Mapping Type | Mapped Value |
+| @@i18n:docgen.mappingtype@@ | @@i18n:docgen.mappa_verdi@@ |
 | ---  | ---  |
 {% for m, mt in schemaview.get_mappings(element.name).items() -%}
 {% if mt|length > 0 -%}

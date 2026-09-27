@@ -1,6 +1,6 @@
 ---
 name: jinja2-templates
-description: Whitespace-kontroll for Jinja2-malar (docgen) — ingen indentasjon av Jinja-blokker, {%- -%}-mønster for tabellar/variablar/if-blokkar, feilsøkingsliste. Lastast automatisk ved arbeid med filer under src/assets/templates/docgen/.
+description: Whitespace-kontroll for Jinja2-malar (docgen) — ingen indentasjon av Jinja-blokker, {%- -%}-mønster for tabellar/variablar/if-blokkar, feilsøkingsliste — og i18n-markørar, faste anker ({: #id }, aldri {#id}) og parsekontraktar mot seksjonsscripta. Lastast automatisk ved arbeid med filer under src/assets/templates/docgen/.
 paths:
   - "src/assets/templates/docgen/**"
 ---
@@ -71,3 +71,40 @@ heading-slug-fella i `.claude/rules/mkdocs-portal.md`:
 ```bash
 make docs-build
 ```
+
+## i18n-markørar og faste anker i docgen-malar
+
+Portaltekst i malane er ikkje skriven direkte, men som markørar
+`@@i18n:docgen.<nøkkel>@@` med tekst i `mkdocs/lib/i18n/strings.yaml` (nn + en).
+`publish.sh` byter dei ut **til slutt** (`i18n_strings.py render-tree`). Sjå
+steg 5 i `specs/backlog/lokalisering-dokumentasjonsportal.md`.
+
+**Aldri skriv `{#anker}` i ein Jinja-mal.** `{#` opnar ein Jinja-kommentar, og
+alt fram til neste `#}` forsvinn frå output. Det kan vere resten av malen.
+Bruk attr_list-forma `{: #anker }`, t.d.
+`## @@i18n:docgen.arv@@ {: #inheritance }`. I bash og Python (seksjonane på
+skjemasida) er `{#anker}` trygt.
+
+Ved ny eller endra overskrift/etikett i ein mal:
+
+1. **Ny tekst skal ha markør og nøkkel i katalogen** med alle språk.
+   LinkML-termar som svarar til nøklar i skjema-YAML-en (Slot, Enumeration,
+   Mixin, range, Induced, eigenskapsetikettar som «Slot URI») står utan markør.
+   `make i18n-check` feilar på markørar utan nøkkel.
+2. **Omsett overskrift skal ha fast anker lik dagens slug** (`i18n_strings.slugify`
+   av den opphavlege teksten, med teljing der overskrifta har teljing:
+   `{: #classes-{{ n }} }`). Faste anker vert ikkje gjorde unike av mkdocs. Kan
+   same overskrift kome to gonger på ei side, må det andre ankeret få `_1`
+   (sjå «Døme» i `class.md.jinja2`).
+3. **Overskrifter og radetikettar som seksjonsscripta parsar, er ein kontrakt.**
+   `classes.sh` (`### @@i18n:docgen.klasser@@`, teljinga i importerte skjema),
+   `metadata.sh` (`## @@i18n:docgen.modellmetadata@@`) og `badges.sh`
+   (`| @@i18n:docgen.versjon@@ |`, lisens, endringsdato, utgiver) matchar
+   markørane. Endrar du ein slik markør eller nøkkel, må parse-mønstra endrast
+   i same endring.
+4. **Verifiser anker, ikkje berre tekst.** Samanlikn `id`-attributta på h2-h6 per
+   side før og etter i ein sandkasse-kopi (jf. `.claude/rules/mkdocs-portal.md`).
+   Gen-doc må køyrast på nytt i begge kopiane (`make gen-schema-docs`).
+
+Konkret tilfelle: under steg 5 vart anker først skrivne som `{#inheritance}` i
+malane. Feilen vart fanga før køyring, og alle 53 vart gjorde om til `{: # }`.

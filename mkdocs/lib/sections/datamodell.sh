@@ -19,7 +19,7 @@ generate_datamodell() {
 
     cat <<EOF
 
-## $tittel
+## $tittel {#datamodell}
 
 > $forklaring
 

@@ -57,7 +57,7 @@ def main() -> None:
         data = json.loads(path.read_text(encoding="utf-8"))
     except Exception as e:
         # Dersom JSON-fila er ugyldig, skriv ein fallback-seksjon
-        print(f"\n## {t('seksjon.validering.tittel')}\n")
+        print(f"\n## {t('seksjon.validering.tittel')} {{#valideringsresultat}}\n")
         print(f"> {t('seksjon.validering.forklaring')}\n")
         print(f"*{t('seksjon.validering.ugyldig_fil', sti=path)}*\n")
         print(f"*{t('seksjon.validering.feilmelding', feil=e)}*")
@@ -94,7 +94,7 @@ def main() -> None:
 
     lines = [
         "",
-        f"## {t('seksjon.validering.tittel')}",
+        f"## {t('seksjon.validering.tittel')} {{#valideringsresultat}}",
         "",
         f"> {t('seksjon.validering.forklaring')}",
         "",
@@ -108,7 +108,7 @@ def main() -> None:
     if errors:
         lines += [
             "",
-            f"### {t('seksjon.validering.feil')} ({error_count})",
+            f"### {t('seksjon.validering.feil')} ({error_count}) {{#feil-{error_count}}}",
             "",
         ]
         for idx, issue in enumerate(errors, start=1):
@@ -122,7 +122,7 @@ def main() -> None:
     if warnings:
         lines += [
             "",
-            f"### {t('seksjon.validering.aatvaringar')} ({warning_count})",
+            f"### {t('seksjon.validering.aatvaringar')} ({warning_count}) {{#atvaringar-{warning_count}}}",
             "",
         ]
         for idx, issue in enumerate(warnings, start=1):

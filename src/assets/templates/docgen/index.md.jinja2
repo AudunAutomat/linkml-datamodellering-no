@@ -1,46 +1,46 @@
 # {% if schema.title %}{{ schema.title }}{% else %}{{ schema.name }}{% endif %}
 
-## Modellmetadata
+## @@i18n:docgen.modellmetadata@@ {: #modellmetadata }
 
-> Modellmetadata viser sentrale metadata for modellen, inkludert versjon, status, lisens, identifikatorar og avhengigheiter. Verdiane er henta direkte frå skjemaet.
+> @@i18n:docgen.modellmetadata_forklaring@@
 
-| Felt | Verdi |
+| @@i18n:docgen.felt@@ | @@i18n:docgen.verdi@@ |
 | --- | --- |
-| Name | {{ schema.name }} |
+| @@i18n:docgen.navn@@ | {{ schema.name }} |
 {% if schema.title -%}
-| Title | {{ schema.title }} |
+| @@i18n:docgen.tittel@@ | {{ schema.title }} |
 {% endif -%}
 {% if schema.description -%}
-| Description | {{ schema.description }} |
+| @@i18n:docgen.beskriving@@ | {{ schema.description }} |
 {% endif -%}
 {% if schema.id -%}
 | Schema URI | [{{ schema.id }}]({{ schema.id }}) |
 {% endif -%}
 {% if schema.version -%}
-| Versjon | {{ schema.version }} |
+| @@i18n:docgen.versjon@@ | {{ schema.version }} |
 {% endif -%}
 {% if schema.license -%}
-| Lisens | [{{ schema.license }}]({{ schema.license }}) |
+| @@i18n:docgen.lisens@@ | [{{ schema.license }}]({{ schema.license }}) |
 {% endif -%}
 {% if schema.annotations and schema.annotations.utgiver -%}
-| Utgiver | [{{ schema.annotations.utgiver.value }}]({{ schema.annotations.utgiver.value }}) |
+| @@i18n:docgen.utgiver@@ | [{{ schema.annotations.utgiver.value }}]({{ schema.annotations.utgiver.value }}) |
 {% endif -%}
 {% if schema.annotations and schema.annotations.status -%}
 | Status | [{{ schema.annotations.status.value }}]({{ schema.annotations.status.value }}) |
 {% endif -%}
 {% if schema.annotations and schema.annotations.endringsdato -%}
-| Endringsdato | {{ schema.annotations.endringsdato.value }} |
+| @@i18n:docgen.endringsdato@@ | {{ schema.annotations.endringsdato.value }} |
 {% endif -%}
 {% if schema.annotations and schema.annotations.utgivelsesdato -%}
-| Utgivelsesdato | {{ schema.annotations.utgivelsesdato.value }} |
+| @@i18n:docgen.utgivelsesdato@@ | {{ schema.annotations.utgivelsesdato.value }} |
 {% endif -%}
 {% if schema.imports -%}
-| Imports | {% for imp in schema.imports %}`{{ imp }}`{% if not loop.last %}<br>{% endif %}{% endfor %} |
+| @@i18n:docgen.importar@@ | {% for imp in schema.imports %}`{{ imp }}`{% if not loop.last %}<br>{% endif %}{% endfor %} |
 {% endif %}
 
 {% if include_top_level_diagram %}
 
-## Schema Diagram
+## @@i18n:docgen.skjemadiagram@@ {: #schema-diagram }
 
 ```{{ gen.mermaid_directive() }}
 {{ gen.mermaid_diagram() }}
@@ -59,14 +59,14 @@
 {%- set ns_total_classes.count = ns_total_classes.count + 1 -%}
 {%- endif -%}
 {%- endfor -%}
-### Classes ({{ ns_total_classes.count }})
+### @@i18n:docgen.klasser@@ ({{ ns_total_classes.count }}) {: #classes-{{ ns_total_classes.count }} }
 
-> Classes viser klasser som er definerte lokalt i {{ schema.name }} modellen. 
-> Klasser frå importerte modellar er ikkje inkluderte i teljinga, men kan vere refererte frå lokale klasser og kan inngå i valideringsresultat og diagram.  
-> Klasser grupperes i Obligatorisk, Anbefalt, Valgfri og Andre (uklassifisert).
+> @@i18n:docgen.klasser_forklaring_1a@@ {{ schema.name }} @@i18n:docgen.klasser_forklaring_1b@@ 
+> @@i18n:docgen.klasser_forklaring_2@@  
+> @@i18n:docgen.klasser_forklaring_3@@
 {%- if gen.hierarchical_class_view -%}
 
-| Class | Description |
+| @@i18n:docgen.klasse@@ | @@i18n:docgen.beskriving@@ |
 | --- | --- |
 {%- for u, v in gen.class_hierarchy_as_tuples() %}
 | {{ "&nbsp;"|safe*u*8 }}{{ gen.link(schemaview.get_class(v), True) }} | {{ schemaview.get_class(v).description|enshorten }} |
@@ -98,9 +98,9 @@
 {%- endfor -%}
 {%- if ns.classes %}
 
-#### {{ subset_name }} ({{ ns.classes|length }})
+#### {% if subset_name == 'Andre' %}@@i18n:docgen.andre@@{% else %}{{ subset_name }}{% endif %} ({{ ns.classes|length }}) {: #{{ subset_name|lower }}-{{ ns.classes|length }} }
 
-| Class | Description |
+| @@i18n:docgen.klasse@@ | @@i18n:docgen.beskriving@@ |
 | --- | --- |
 {%- for c in ns.classes %}
 | {{ gen.link(c, True) }} | {{ c.description|enshorten }} |
@@ -145,14 +145,14 @@
 {%- endfor -%}
 ### Slots ({{ ns_used_slots.names|length }})
 
-> Slots viser **eigenskapar** som er definert i eller brukt av lokale klasser i modellen.  
-> Eigenskapar grupperes i "Verdiar" som inneheld data, "Refransar" som refererer til andre klasser, og "Kodar" som refererer til kontrollerte verdiområder.  
-> *Defined in* kolonna angir kildeskjemaet for eigenskapen.
+> @@i18n:docgen.slots_forklaring_1@@  
+> @@i18n:docgen.slots_forklaring_2@@  
+> @@i18n:docgen.definert_i_forklaring_slots@@
 
 {%- if ns_slots_verdiar.items %}
-#### Verdiar ({{ ns_slots_verdiar.items|length }})
+#### @@i18n:docgen.verdiar@@ ({{ ns_slots_verdiar.items|length }}) {: #verdiar-{{ ns_slots_verdiar.items|length }} }
 
-| Slot | Description | Defined in |
+| Slot | @@i18n:docgen.beskriving@@ | @@i18n:docgen.definert_i@@ |
 | --- | --- | --- |
 {% for s in ns_slots_verdiar.items|sort(attribute=sort_by) -%}
 {%- set origin = s.from_schema if s.from_schema else schema.id %}
@@ -163,9 +163,9 @@
 {% endif %}
 
 {%- if ns_slots_referansar.items %}
-#### Referansar ({{ ns_slots_referansar.items|length }})
+#### @@i18n:docgen.referansar@@ ({{ ns_slots_referansar.items|length }}) {: #referansar-{{ ns_slots_referansar.items|length }} }
 
-| Slot | Description | Defined in |
+| Slot | @@i18n:docgen.beskriving@@ | @@i18n:docgen.definert_i@@ |
 | --- | --- | --- |
 {% for s in ns_slots_referansar.items|sort(attribute=sort_by) -%}
 {%- set origin = s.from_schema if s.from_schema else schema.id %}
@@ -176,9 +176,9 @@
 {% endif %}
 
 {%- if ns_slots_kodar.items %}
-#### Kodar ({{ ns_slots_kodar.items|length }})
+#### @@i18n:docgen.kodar@@ ({{ ns_slots_kodar.items|length }}) {: #kodar-{{ ns_slots_kodar.items|length }} }
 
-| Slot | Description | Defined in |
+| Slot | @@i18n:docgen.beskriving@@ | @@i18n:docgen.definert_i@@ |
 | --- | --- | --- |
 {% for s in ns_slots_kodar.items|sort(attribute=sort_by) -%}
 {%- set origin = s.from_schema if s.from_schema else schema.id %}
@@ -221,11 +221,11 @@
 
 ### Enumerations ({{ ns_used_enums.names|length }})
 
-> Enumerations viser kontrollerte **verdiområder** som er definert i eller brukt lokalt i modellen.  
-> *Defined in* kolonna angir kildeskjemaet for verdiområdet.
+> @@i18n:docgen.enums_forklaring@@  
+> @@i18n:docgen.definert_i_forklaring_enums@@
 
 {% if ns_used_enums.names %}
-| Enumeration | Description | Defined in |
+| Enumeration | @@i18n:docgen.beskriving@@ | @@i18n:docgen.definert_i@@ |
 | --- | --- | --- |
 {% for enum_name in ns_used_enums.names|sort -%}
 {%- set e = schemaview.get_enum(enum_name) -%}
@@ -237,7 +237,7 @@
 {% endif -%}
 {%- endfor -%}
 {% else %}
-*Ingen enumerations definert lokalt eller brukt i denne modellen.*
+*@@i18n:docgen.ingen_enums@@*
 {% endif %}
 
 {% set ns_used_types = namespace(names=[]) -%}
@@ -273,11 +273,11 @@
 
 ### Types ({{ ns_used_types.names|length }})
 
-> Types viser primitive **verdiformat** som datoar, URI-ar, språkstrengar og andre grunnleggjande datatypar som er definert i eller brukt i modellen.  
-> *Defined in* kolonna angir kildeskjemaet for verdiformatet.
+> @@i18n:docgen.types_forklaring@@  
+> @@i18n:docgen.definert_i_forklaring_types@@
 {%- if ns_used_types.names %}
 
-| Type | URI | Description | Defined in |
+| @@i18n:docgen.type@@ | URI | @@i18n:docgen.beskriving@@ | @@i18n:docgen.definert_i@@ |
 | --- | --- | --- | --- |
 {% for type_name in ns_used_types.names|sort -%}
 {%- set t = schemaview.get_type(type_name) -%}
@@ -304,7 +304,7 @@
 {% endif -%}
 {%- endfor -%}
 {% else %}
-*Ingen typar definert lokalt eller brukt i denne modellen.*
+*@@i18n:docgen.ingen_types@@*
 {% endif %}
 
 {%- set ns_used_subsets = namespace(names=[]) -%}
@@ -338,12 +338,12 @@
 
 ### Subsets ({{ ns_used_subsets.names|length }})
 
-> Subsets viser **klassifiseringar** av klasser og slots som blir brukt i modellen. For AP-NO-modellar vil dette typisk vere Obligatorisk, Anbefalt og Valgfri.  
-> *Defined in* kolonna angir kildeskjemaet for klassifiseringa.
+> @@i18n:docgen.subsets_forklaring@@  
+> @@i18n:docgen.definert_i_forklaring_subsets@@
 
 {%- if ns_used_subsets.names %}
 
-| Subset | Description | Defined in |
+| Subset | @@i18n:docgen.beskriving@@ | @@i18n:docgen.definert_i@@ |
 | --- | --- | --- |
 {% for subset_name in ns_used_subsets.names|sort -%}
 {%- set ss = schemaview.get_subset(subset_name) -%}
@@ -356,5 +356,5 @@
 {%- endfor -%}
 {% else %}
 
-*Ingen subsets definert lokalt eller brukt i denne modellen.*
+*@@i18n:docgen.ingen_subsets@@*
 {% endif %}
