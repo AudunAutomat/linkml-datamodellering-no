@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Automatiske testar for mkdocs/lib/scripts/i18n_status.py (endringsdeteksjon
 for omsetjingar). Køyrd av `make i18n-check` i python-pytest-kontaineren.
-Sjå specs/backlog/lokalisering-dokumentasjonsportal.md (steg 9).
+Sjå specs/done/lokalisering-dokumentasjonsportal.md (steg 9).
 """
 
 import io

@@ -11,7 +11,7 @@ paths:
 (Steg 3) kvar gong `make docs-publish` køyrer, éin per språk i
 strengkatalogen. `make docs-build` byggjer alle språka til `mkdocs/site/<lang>/`
 og legg `mkdocs/build/rot/` (artefakter på dagens sti, vidaresendingar frå
-gamle adresser) på rota. Sjå `specs/backlog/lokalisering-dokumentasjonsportal.md`.
+gamle adresser) på rota. Sjå `specs/done/lokalisering-dokumentasjonsportal.md`.
 
 **Sannkjelda for nav-menyen er `mkdocs/publish.sh`**, ikkje `mkdocs.yml`.
 
@@ -23,6 +23,24 @@ gamle adresser) på rota. Sjå `specs/backlog/lokalisering-dokumentasjonsportal.
   rediger desse manuelt
 - Statisk innhald (`mkdocs/docs/` utanom genererte domene-katalogar) vert aldri
   sletta av `publish.sh`
+
+### Fleirspråkleg portal
+
+Portalen vert bygd på alle språk i strengkatalogen (`mkdocs/lib/i18n/strings.yaml`),
+med sidene under `/<lang>/` og artefaktene på dagens sti. Mekanismen er skildra i
+`mkdocs/docs/automasjon/fleirsprak.md`, som er normativ kjelde. Dei viktigaste
+konsekvensane ved endringar:
+
+- **Ny portaltekst** (overskrift, etikett, merknad) i `publish.sh`,
+  `mkdocs/lib/sections/*.sh` eller `mkdocs/lib/scripts/*.py` skal ha ein
+  katalognøkkel med verdi for alle språk og hentast med `t`. Skriv ikkje tekst
+  direkte. `make i18n-check` fangar nøklar som manglar.
+- **Nye overskrifter** som vert omsette, skal ha fast anker (`{#slug}`) lik
+  slug-en av den nynorske teksten, slik at ankeret er likt i alle språk.
+- **Språkavhengig generering** skjer éin gong per språk (Steg 2/2b i
+  `publish.sh`). Ein ny genereringsfunksjon som skriv til `$DOCS`, må kallast i
+  begge.
+- Omsetjing av sider og katalogverdiar: sjå `.claude/rules/i18n-omsetjing.md`.
 
 `mkdocs/docs/` er brukarvendt dokumentasjon og normativ kjelde for steg-for-steg-rettleiingar (t.d. `ny-domenemodell.md`). CLAUDE.md er normativ kjelde for modelleringsprinsipp og AI-instruksjonar — desse to skal ikkje duplisere kvarandre.
 
@@ -128,7 +146,7 @@ Gjer i staden slik:
    CLAUDE.md («Aldri commit eller push»), og rapporter kva som vart rulla tilbake.
 
 Konkret tilfelle: under steg 1 i
-`specs/backlog/lokalisering-dokumentasjonsportal.md` (`theme.language: nn`)
+`specs/done/lokalisering-dokumentasjonsportal.md` (`theme.language: nn`)
 sletta ein `make docs-publish` mot ufullstendig `generated/` 48
 versjonskontrollerte filer under `mkdocs/docs/felles/` og fjerna
 ER-diagram-seksjonen frå fem skjemasider. Sjå
@@ -229,6 +247,6 @@ identifikator eller ei broten hausting, sjølv om portalen ser rett ut i nettles
    CLAUDE.md).
 
 Konkret tilfelle: ved valet av `/nn/` og `/en/` for fleirspråkleg portal (O6 i
-`specs/backlog/lokalisering-dokumentasjonsportal.md`) ville ei naiv flytting av
+`specs/done/lokalisering-dokumentasjonsportal.md`) ville ei naiv flytting av
 heile portalen ha broten alle `heimeside`-identifikatorar og haustingsadressene
 for katalog-`.ttl`. Sjå `specs/done/rule-portal-adresser-maskinelle-konsumentar.md`.

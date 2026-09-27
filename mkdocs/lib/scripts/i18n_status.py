@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Endringsdeteksjon for omsetjingar av portaltekst (steg 9 i
-specs/backlog/lokalisering-dokumentasjonsportal.md).
+specs/done/lokalisering-dokumentasjonsportal.md).
 
 Kvar omsetjing hugsar sha256 av den nynorske originalen ho vart laga frå:
 

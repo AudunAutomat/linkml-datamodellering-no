@@ -148,8 +148,8 @@ Artefakttabellen blir bygd dynamisk:
 
 1. **Steg 1:** Rens tidlegare genererte domene-katalogar frå `mkdocs/docs/<domain>/`
 2. **Steg 2:** Generer innhald per domene og skjema (parallelt) — køyrer `process_schema()` for kvart skjema
-3. **Steg 3:** Generer `valideringsregler.md` og hovud-`index.md`
-4. **Steg 4:** Generer `mkdocs.yml` (dynamisk nav-meny frå `generated/`-struktur)
+3. **Steg 2b/2c:** Same innhald for kvart anna språk, og byggjetre per språk (sjå [Fleirspråkleg portal](fleirsprak.md))
+4. **Steg 3:** Generer `mkdocs/build/mkdocs.<lang>.yml` (dynamisk nav-meny frå `generated/`-struktur, etikettar frå strengkatalogen)
 
 `process_schema()` (steg 2) genererer `index.md` for eitt skjema og køyrer parallelt for alle skjema.
 

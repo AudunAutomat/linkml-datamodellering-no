@@ -110,7 +110,7 @@ Når ein ny bug vert oppdaga og workaround lagt inn, opprett ei ny fil i
 
 ## Dokumentasjonsportal (mkdocs)
 
-Mkdocs-konfigen per språk (`mkdocs/build/mkdocs.<lang>.yml`) vert **automatisk generert** av `mkdocs/publish.sh` kvar gong `make docs-publish` køyrer. **Sannkjelda for nav-menyen er `mkdocs/publish.sh`** (`write_mkdocs_config`), og portaltekst ligg i strengkatalogen `mkdocs/lib/i18n/strings.yaml`. Portalen er fleirspråkleg (nynorsk + engelsk under `/nn/` og `/en/`, artefakter på dagens sti); sjå `specs/backlog/lokalisering-dokumentasjonsportal.md`.
+Mkdocs-konfigen per språk (`mkdocs/build/mkdocs.<lang>.yml`) vert **automatisk generert** av `mkdocs/publish.sh` kvar gong `make docs-publish` køyrer. **Sannkjelda for nav-menyen er `mkdocs/publish.sh`** (`write_mkdocs_config`), og portaltekst ligg i strengkatalogen `mkdocs/lib/i18n/strings.yaml`. Portalen er fleirspråkleg (nynorsk + engelsk under `/nn/` og `/en/`, artefakter på dagens sti); sjå `specs/done/lokalisering-dokumentasjonsportal.md`.
 
 Detaljert rettleiing (steg-for-steg for `publish.sh`, PlantUML-diagramgenerering, Jinja2-template whitespace-reglar, heading-slug-fella for æ/ø/å, relative/absolutte lenkjereglar) lastar automatisk ved arbeid med `mkdocs/`- eller `src/assets/templates/docgen/`-filer, sjå `.claude/rules/mkdocs-portal.md`.
 

@@ -21,7 +21,7 @@ CLI:
         Byt ut @@i18n:<nøkkel>@@-markørar i alle *.md under katalogane (på
         staden). Feilar ved ukjend nøkkel. Brukt av publish.sh for gen-doc-sider.
 
-Sjå specs/backlog/lokalisering-dokumentasjonsportal.md (steg 3).
+Sjå specs/done/lokalisering-dokumentasjonsportal.md (steg 3).
 """
 
 import argparse

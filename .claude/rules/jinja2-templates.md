@@ -77,7 +77,7 @@ make docs-build
 Portaltekst i malane er ikkje skriven direkte, men som markørar
 `@@i18n:docgen.<nøkkel>@@` med tekst i `mkdocs/lib/i18n/strings.yaml` (nn + en).
 `publish.sh` byter dei ut **til slutt** (`i18n_strings.py render-tree`). Sjå
-steg 5 i `specs/backlog/lokalisering-dokumentasjonsportal.md`.
+steg 5 i `specs/done/lokalisering-dokumentasjonsportal.md`.
 
 **Aldri skriv `{#anker}` i ein Jinja-mal.** `{#` opnar ein Jinja-kommentar, og
 alt fram til neste `#}` forsvinn frå output. Det kan vere resten av malen.

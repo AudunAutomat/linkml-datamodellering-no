@@ -20,7 +20,7 @@
 #   Jinja:   @@i18n:<nøkkel>@@ (vert bytt ut av publish.sh)
 #
 # Engelske verdiar er utkast frå steg 4 og vert gjennomgått i steg 10.
-# Sjekk: make i18n-check. Sjå specs/backlog/lokalisering-dokumentasjonsportal.md.
+# Sjekk: make i18n-check. Sjå specs/done/lokalisering-dokumentasjonsportal.md.
 
 languages: [nn, en]
 default_language: nn
@@ -1008,3 +1008,6 @@ strings:
   nav.om:
     nn: Om dette repoet
     en: About this repository
+  nav.fleirsprak:
+    nn: Fleirspråkleg portal
+    en: Multilingual portal

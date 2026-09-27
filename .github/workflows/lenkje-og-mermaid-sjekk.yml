@@ -242,7 +242,7 @@ jobs:
       # sider og sitemap per språk under /<lang>/; standardspråket (nn) har
       # same sidesett og same relative click-hrefs som dei andre språka
       # (build_language_trees.py), så éin gjennomgang dekkjer strukturen —
-      # sjå specs/backlog/lokalisering-dokumentasjonsportal.md (steg 8).
+      # sjå specs/done/lokalisering-dokumentasjonsportal.md (steg 8).
       - name: Evaluer mermaid click-hrefs i publisert portal
         run: |
           python3 mkdocs/lib/scripts/check-mermaid-click-hrefs.py \
@@ -302,7 +302,7 @@ jobs:
         with:
           # mkdocs/build/src-*: arbeidstre per ekstra språk (same relative
           # lenkjer som mkdocs/docs), slik at lychee sjekkar /en/ òg ved
-          # cache-treff — sjå specs/backlog/lokalisering-dokumentasjonsportal.md.
+          # cache-treff — sjå specs/done/lokalisering-dokumentasjonsportal.md.
           path: |
             mkdocs/docs
             mkdocs/build/src-*

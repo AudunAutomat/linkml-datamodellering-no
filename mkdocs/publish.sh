@@ -41,7 +41,7 @@ source "$LIB_DIR/utils/i18n.sh"
 # nøklar som vert brukte finst (t-kall inne i echo svelgjer feilstatus, sjå
 # mkdocs/lib/utils/i18n.sh), og last standardspråket éin gong — tabellen vert
 # arva av dei parallelle skjemajobbane. Fleire språktre: steg 6 i
-# specs/backlog/lokalisering-dokumentasjonsportal.md.
+# specs/done/lokalisering-dokumentasjonsportal.md.
 run_python_container /work/mkdocs/lib/scripts/i18n_strings.py check
 i18n_load
 
@@ -553,7 +553,7 @@ generate_domain_content() {
     # Byt ut i18n-markørar (@@i18n:<nøkkel>@@) frå gen-doc-malane og seksjonane
     # som siste transformasjon — classes.sh/metadata.sh/badges.sh parsar
     # gen-doc-outputen på markørane, ikkje på omsett tekst. Sjå steg 5 i
-    # specs/backlog/lokalisering-dokumentasjonsportal.md.
+    # specs/done/lokalisering-dokumentasjonsportal.md.
     for domain in "${ALL_DOMAINS[@]}"; do DOMAIN_DOCS_DIRS+=("$DOCS/$domain"); done
     timed_run "Byt ut i18n-markørar" python3 "$LIB_DIR/scripts/i18n_strings.py" render-tree --lang "$I18N_LANG" "${DOMAIN_DOCS_DIRS[@]}"
 }
@@ -573,7 +573,7 @@ log_info "$(printf "${CLR_OK}✓ Steg 2 ferdig${CLR_RST} (%s)" \
 # Same språkavhengige generering som for standardspråket (mkdocs/docs), med
 # tekst frå strengkatalogen for <lang>. Statiske sider: x.<lang>.md dersom ho
 # finst, elles den nynorske sida med merknaden «ikkje omsett». Sjå steg 6 i
-# specs/backlog/lokalisering-dokumentasjonsportal.md.
+# specs/done/lokalisering-dokumentasjonsportal.md.
 BUILD_DIR="$REPO_ROOT/mkdocs/build"
 DEFAULT_DOCS="$DOCS"
 # Sider publish.sh genererer i docs-treet (ikkje omsetjingskjelder) — same
@@ -660,7 +660,7 @@ log_info "$(printf "${CLR_OK}✓ Steg 2c ferdig${CLR_RST} (%s)" "$(fmt_elapsed_m
 # write_mkdocs_config <fil> <docs_dir> <site_url> <custom_dir> <site_dir|-> <alternate:true|false>
 # Skriv ein mkdocs-konfig for gjeldande språk ($I18N_LANG): tittel, copyright
 # og nav-etikettar frå strengkatalogen, og språkveljar (extra.alternate) når
-# <alternate> er true. Sjå steg 7-8 i specs/backlog/lokalisering-dokumentasjonsportal.md.
+# <alternate> er true. Sjå steg 7-8 i specs/done/lokalisering-dokumentasjonsportal.md.
 write_mkdocs_config() {
     local out="$1" docs_dir="$2" site_url="$3" custom_dir="$4" site_dir="$5" alternate="$6"
     local base_path="${PORTAL_URL#https://*/}"
@@ -776,6 +776,7 @@ STATIC
         echo "          - $(t nav.modellmanifest): automasjon/modellmanifest-generering.md"
         echo "          - $(t nav.readme_tabellar): automasjon/readme-tabellgenerering.md"
         echo "          - $(t nav.monitorering): automasjon/monitorering.md"
+        echo "          - $(t nav.fleirsprak): automasjon/fleirsprak.md"
         echo "      - $(t seksjon.modellanalyse.tittel):"
         echo "          - modellanalyse/index.md"
         echo "          - $(t modellanalyse.liknande_klassenavn.tittel) (${alle_domene}): modellanalyse/liknande-klassenavn-alle-domene.md"

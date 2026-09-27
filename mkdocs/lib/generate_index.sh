@@ -18,7 +18,7 @@ generate_schema_index() {
     local gendoc_index="$schema_dir/docs/index.md"
 
     # classes.sh/metadata.sh/badges.sh parsar gen-doc-outputen på
-    # i18n-markørar (steg 5 i specs/backlog/lokalisering-dokumentasjonsportal.md).
+    # i18n-markørar (steg 5 i specs/done/lokalisering-dokumentasjonsportal.md).
     # Output frå eldre malar (t.d. att-verande lokal generated/ for eit
     # omdøypt skjema) manglar markørane, og Klasser-/Modellmetadata-seksjonane
     # vert då ikkje med — åtvar i staden for å droppe dei stille.

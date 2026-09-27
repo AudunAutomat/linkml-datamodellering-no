@@ -8,7 +8,7 @@ generate_header() {
     echo "# $schema"
     echo ""
     # Modellinnhaldet (navn og skildringar frå skjemaet) vert ikkje omsett —
-    # sjå specs/backlog/lokalisering-dokumentasjonsportal.md (avgrensing).
+    # sjå specs/done/lokalisering-dokumentasjonsportal.md (avgrensing).
     if [ "$I18N_LANG" != "$I18N_DEFAULT_LANG" ]; then
         echo "!!! note \"$(t i18n.modellinnhald_norsk_tittel)\""
         echo "    $(t i18n.modellinnhald_norsk)"

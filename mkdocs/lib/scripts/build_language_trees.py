@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Byggjer byggjetre per språk for adressestrukturen L2 (O6 i
-specs/backlog/lokalisering-dokumentasjonsportal.md):
+specs/done/lokalisering-dokumentasjonsportal.md):
 
   <out>/<lang>/   sider (*.md) og felles ressursar (stylesheets o.l.) per språk,
                   med relative lenkjer til artefakter omskrivne til rot-stien

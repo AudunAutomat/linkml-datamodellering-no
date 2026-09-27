@@ -7,7 +7,7 @@ Køyr frå repo-rot i python-pytest-kontaineren:
 
 bash-lastaren (mkdocs/lib/utils/i18n.sh) vert røyktesta av `make i18n-check`,
 sidan python-pytest-imaget ikkje har bash.
-Sjå specs/backlog/lokalisering-dokumentasjonsportal.md (steg 3).
+Sjå specs/done/lokalisering-dokumentasjonsportal.md (steg 3).
 """
 
 import shlex

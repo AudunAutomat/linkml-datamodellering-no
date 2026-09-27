@@ -146,11 +146,12 @@ Nye skjema under `src/linkml/<domain>/<modell>/` vert oppdaga automatisk — ing
 
 | Kommando | Beskriving | Output |
 |---|---|---|
-| `make docs-publish` | Kopier `generated/` → `mkdocs/docs/` og regenerer `mkdocs.yml` | `mkdocs/docs/` |
-| `make docs-serve` | Start lokal dev-server med live reload. Leser `mkdocs/docs/` | `http://localhost:8000` |
-| `make docs-build` | Bygg statisk HTML-site (CI-pipeline for produksjon) | `mkdocs/site/` |
+| `make docs-publish` | Generer portalinnhald for alle språk, byggjetre og `mkdocs/build/mkdocs.<lang>.yml` | `mkdocs/docs/`, `mkdocs/build/` |
+| `make docs-serve [DOCS_LANG=<lang>]` | Start lokal dev-server med live reload for eitt språk | `http://localhost:8000/linkml-datamodellering-no/<lang>/` |
+| `make docs-serve-site` | Server den bygde portalen (alle språk, artefakter, vidaresendingar). Krev `make docs-build` | `http://localhost:8000/linkml-datamodellering-no/` |
+| `make docs-build` | Bygg statisk portal for alle språk (CI-pipeline for produksjon) | `mkdocs/site/` |
 
-`make docs-publish` køyrer `mkdocs/publish.sh` som kopier artefakter og dokumentasjon frå `generated/` til `mkdocs/docs/`, genererer `index.md` per skjema og domene, og oppdaterer navigasjonsstrukturen i `mkdocs.yml`. Nye domene og skjema dukkar opp automatisk neste gong `publish` vert køyrt.
+`make docs-publish` køyrer `mkdocs/publish.sh` som kopier artefakter og dokumentasjon frå `generated/` til `mkdocs/docs/`, genererer `index.md` per skjema og domene for kvart språk, og skriv navigasjonsstrukturen i `mkdocs/build/mkdocs.<lang>.yml`. Sjå [Fleirspråkleg portal](../automasjon/fleirsprak.md). Nye domene og skjema dukkar opp automatisk neste gong `publish` vert køyrt.
 
 ## LinkML-modell utkast (mcp-linkml-modell-utkast)
 

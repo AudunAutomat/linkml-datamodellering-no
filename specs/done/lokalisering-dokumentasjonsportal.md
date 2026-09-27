@@ -287,7 +287,7 @@ val vert teke i steg 2 (sjå handlingslista).
 - [x] 8. Makefile, CI-deploy og lenkjesjekk for `/en/` (sandkasse: `docs-publish` + `docs-build` grøne, 513/513 artefaktlenkjer, 8068/8068 vidaresendingar)
 - [x] 9. `source_hash` og `make i18n-status` (309 nøklar stempla, 35 kjeldesider utan omsetjing)
 - [x] 10. Første engelske innhald, LLM-omsett (katalog gjennomgått, `README.en.md`, `om.en.md`, stempla)
-- [ ] 11. Dokumentasjon og rules
+- [x] 11. Dokumentasjon og rules
 
 ## Opne saker
 
@@ -767,6 +767,22 @@ valt å la dette stå ope inntil vidare.
     - `build/en/om.md` er engelsk, og `build/nn/index.md` er uendra.
   - **Merk:** absolutte `/en/`-lenkjer i `README.en.md` svarar 404 i lychee fram
     til første publisering med L2-strukturen.
+- **Dokumentasjon (steg 11):**
+  - **Normativ skildring for menneske:** ny portalside
+    `mkdocs/docs/automasjon/fleirsprak.md`, med nav-oppføring (`nav.fleirsprak`)
+    og rad i `automasjon/index.md`.
+  - **LLM-framgangsmåte:** ny rule `.claude/rules/i18n-omsetjing.md`, lasta ved
+    arbeid med `*.en.md` og `mkdocs/lib/i18n/`. Ho dekkjer framgangsmåte,
+    terminologi, lenkjer og anker, og aldri stempling utan omsetjing.
+    Rula viser til portalsida i staden for å gjenta mekanismen (DRY).
+  - `.claude/rules/mkdocs-portal.md` har fått ein kort seksjon om kva ny
+    portaltekst, nye overskrifter og ny språkavhengig generering krev.
+  - `mkdocs/README.md` har fått ei oversikt over katalogane.
+  - **Utdaterte opplysningar retta** i `kom-i-gang/kommandoar.md` (kopi av
+    docs-kommandoane), `automasjon/index-md-struktur.md` (Steg 3/`mkdocs.yml`),
+    `automasjon/artefakt-generering.md` (uttrekk av Modellmetadata via markør) og
+    `automasjon/monitorering.md` (GoatCounter-oppskrift med `mkdocs/mkdocs.yml`,
+    som ikkje finst lenger).
 - **Prototypen køyrer containerar direkte (steg 2):** `make docs-publish`/`docs-build`
   byggjer alltid heile portalen og skriv til `mkdocs/docs/`. Prototypen køyrde
   difor `squidfunk/mkdocs-material:9.7` (same image som `Dockerfile.mkdocs`)
@@ -783,3 +799,51 @@ valt å la dette stå ope inntil vidare.
 - [mkdocs-static-i18n](https://github.com/ultrabug/mkdocs-static-i18n) og [issue #342](https://github.com/ultrabug/mkdocs-static-i18n/issues/342)
 - [Zensical: Language](https://zensical.org/docs/setup/language/), [Compatibility](https://zensical.org/compatibility/), [Upcoming changes](https://zensical.org/upcoming-changes/)
 - [Material for MkDocs: Zensical-kunngjering](https://squidfunk.github.io/mkdocs-material/blog/2025/11/05/zensical/)
+
+## Utført
+
+Alle 11 stega er gjennomførte (2026-09-27). Portalen vert bygd på nynorsk
+(standard) og engelsk med adressestrukturen `/nn/` og `/en/` (O6/L2).
+Artefaktene ligg på dagens sti (A0), og det er vidaresendingar frå gamle
+sideadresser. Portaltekst kjem frå strengkatalogen
+`mkdocs/lib/i18n/strings.yaml` (310 nøklar). Gen-doc-malane brukar i18n-markørar
+med faste anker (O2-a). Omsette sider ligg som `x.en.md`, og endringsdeteksjon
+skjer med `source_hash` og `make i18n-status`.
+
+- **Nye filer:**
+  - `mkdocs/lib/i18n/strings.yaml` og `strings.lock.yaml`
+  - `mkdocs/lib/utils/i18n.sh`
+  - `mkdocs/lib/scripts/{i18n_strings,i18n_status,build_language_trees}.py`
+  - `mkdocs/lib/templates/404.html`
+  - `tests/test_i18n_{strings,status}.py`
+  - `README.en.md` og `mkdocs/docs/om.en.md`
+  - `mkdocs/docs/automasjon/fleirsprak.md`
+  - `.claude/rules/i18n-omsetjing.md`
+- **Endra:**
+  - `mkdocs/publish.sh` (Steg 2 som funksjon, 2b, 2c, `write_mkdocs_config`,
+    `languages.env`) og `mkdocs/lib/sections/*.sh`
+  - gen-doc-malane i `src/assets/templates/docgen/`
+  - `make/50-docs.mk` (`docs-build`/`docs-serve`/`docs-serve-site`, `i18n-*`) og
+    `make/01-containers.mk` (`DOCS_RUN`)
+  - workflowane `generate.yml`, `lenkje-og-mermaid-sjekk.yml` og `codeql.yml`,
+    og `.github/lychee.toml`
+  - `.gitignore`, `README.md`, `CLAUDE.md`, `COMMANDS.md` og rulane
+    `mkdocs-portal.md`, `jinja2-templates.md` og `container-images.md`
+- **Verifisert i sandkasse** (dei ekte make-targeta):
+  - nynorsk byte-identisk til og med steg 4;
+  - overskriftsanker uendra (8068 sider) i steg 5;
+  - 513/513 artefaktlenkjer og 8068/8068 vidaresendingar per språk;
+  - språkveljar, søk og nav per språk;
+  - `make i18n-check` 20/20.
+- **Status for omsetjing:** katalogen er fullt omsett og stempla. 2 sider er
+  omsette (framside, om), 34 fell tilbake til nynorsk med merknad.
+- **Ikkje gjort / oppfølging:**
+  - Resten av dei statiske sidene er ikkje omsette.
+  - Tabellhovuda i README-tabellane er ikkje omsette.
+  - `generated/` må genererast på nytt (`make gen-schema-docs`) for at gen-doc-
+    sidene skal få markørar.
+  - Første publisering byggjer utan cache.
+  - Zensical-migrering er ope (O5).
+  - Den gamle actionlint-åtvaringa (SC2034, `blockfile`) i
+    `lenkje-og-mermaid-sjekk.yml` er ikkje retta.
+

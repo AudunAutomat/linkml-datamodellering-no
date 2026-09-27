@@ -12,7 +12,7 @@
 # `i18n_strings.py check` før bygget, som fangar ukjende nøklar statisk
 # (same sjekk som `make i18n-check`). Der kontrollflyten avheng av resultatet,
 # tilordn til ein variabel (`x=$(t key)`) slik at `set -e` slår inn.
-# Sjå specs/backlog/lokalisering-dokumentasjonsportal.md (steg 3).
+# Sjå specs/done/lokalisering-dokumentasjonsportal.md (steg 3).
 set -euo pipefail
 
 source "$REPO_ROOT/mkdocs/lib/utils/python_container.sh"

@@ -223,9 +223,11 @@ Presiseringar frå kjeldelesing som ikkje står der:
   brukt både i nav-menyen (steg 4) og i kvart skjema sin `index.md`
   (undermodell-boks / undermodell-seksjon).
 - **Metadata-tabellen** i den publiserte `index.md` er **ikkje** generert på
-  nytt av `publish.sh` — han ekstraherer `## Modellmetadata`-seksjonen
-  verbatim frå gen-doc sin eigen `docs/index.md` (awk mellom `## Modellmetadata`
-  og neste overskrift). Kjelda til tabellen er difor gen-doc/LinkML sjølv
+  nytt av `publish.sh` — han ekstraherer Modellmetadata-seksjonen
+  verbatim frå gen-doc sin eigen `docs/index.md` (awk mellom
+  `## @@i18n:docgen.modellmetadata@@`-markøren og neste overskrift; markøren
+  vert bytt ut med tekst for kvart språk til slutt, sjå
+  [Fleirspråkleg portal](fleirsprak.md)). Kjelda til tabellen er difor gen-doc/LinkML sjølv
   (§ 3.4), ikkje `publish.sh`.
 - **Artefaktabellen** i domene-`index.md` (`shapes.ttl`, `context.jsonld`,
   `schema.json`, `schema.xsd`, `openapi.yaml`, `asyncapi.yaml`,

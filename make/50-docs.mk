@@ -25,7 +25,7 @@ build-docker-mkdocs: ## Bygg MkDocs container-image
 	@podman build --format docker -f $(DOCS_DOCKERFILE) -t $(DOCS_IMAGE)
 
 # Språk, standardspråk og base-sti kjem frå mkdocs/build/languages.env, skrive av
-# mkdocs/publish.sh — sjå specs/backlog/lokalisering-dokumentasjonsportal.md (steg 8).
+# mkdocs/publish.sh — sjå specs/done/lokalisering-dokumentasjonsportal.md (steg 8).
 DOCS_LANGUAGES_ENV := $(CURDIR)/mkdocs/build/languages.env
 define docs_load_languages
 [ -f "$(DOCS_LANGUAGES_ENV)" ] || { log_error "Manglar $(DOCS_LANGUAGES_ENV) — køyr make docs-publish først"; exit 1; }; \
@@ -72,7 +72,7 @@ docs-publish: ## Generer språktre, byggjetre og mkdocs-konfig per språk i mkdo
 
 # ---------------------------------------------------------------------------
 # Fleirspråkleg portaltekst (strengkatalog) — sjå
-# specs/backlog/lokalisering-dokumentasjonsportal.md
+# specs/done/lokalisering-dokumentasjonsportal.md
 # ---------------------------------------------------------------------------
 
 i18n-check: ## Valider strengkatalogen for portaltekst, køyr testane og røyktest i18n-lastaren

@@ -30,7 +30,7 @@ max_cache_age = "1d"
 # skrivne om til rot-stien i den publiserte portalen (/<lang>/ -> /), så dei
 # ser brotne ut frå filsystemet. Arbeidstrea mkdocs/build/src-<lang>/ har
 # same relative lenkjer som mkdocs/docs og vert sjekka (dekkjer /en/). Sjå
-# specs/backlog/lokalisering-dokumentasjonsportal.md (steg 8).
+# specs/done/lokalisering-dokumentasjonsportal.md (steg 8).
 exclude_path = ["generated", "mkdocs/site", "mkdocs/node_modules", "specs", "description.md", "mkdocs/build/[a-z]{2,3}/", "mkdocs/build/rot/", "mkdocs/build/overrides-"]
 
 # Godta redirect- og informasjonskodar i tillegg til 2xx

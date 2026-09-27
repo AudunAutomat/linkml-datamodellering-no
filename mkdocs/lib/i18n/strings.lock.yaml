@@ -216,6 +216,7 @@ en:
   nav.bli_modelleigar: sha256:9b23880d947afe74c678a2db815f8b22213410ef0c87b1ac3da3c64a35a1d030
   nav.byggmanifest: sha256:6757f0bf9975a84dea7120298c7578e466aae272b35ab26ba30cb0b92bf66563
   nav.ekstern_bruk: sha256:da89a58890d01546d0cda9fdfcc11bd463e4734ecc7e9c0db30a529c030fbc0e
+  nav.fleirsprak: sha256:212c3474562882fe0dd3a9ca2281b01ea526c191d57d43d3d3556ed5ac1fecf4
   nav.importhierarki: sha256:b6a87227885711a020d6274d710c90e29c4b807794521f33c769f55e6ff8faa6
   nav.kom_i_gang: sha256:4009e6c27056ce3809a0bd96eb1cd24c3c8866d12e0e609fac48f93b85f2abf9
   nav.kommandooversikt: sha256:f3654c9aa0aec8674654c2bf12a70f4c6bd93cbfb328f59e2eea4cbe7f15d1ca

@@ -293,7 +293,7 @@ Desse alternativa kan leggjast til etter behov, men er **ikkje nødvendige i PoC
 2. Lag ein "site" (t.d. `brreg-linkml`)
 3. Legg til script-tag i MkDocs:
 
-   **Opprett `mkdocs/docs/overrides/main.html`:**
+   **Opprett `mkdocs/lib/templates/main.html`:**
    ```html
    {% extends "base.html" %}
    
@@ -303,12 +303,10 @@ Desse alternativa kan leggjast til etter behov, men er **ikkje nødvendige i PoC
    {% endblock %}
    ```
 
-   **Oppdater `mkdocs/mkdocs.yml`:**
-   ```yaml
-   theme:
-     name: material
-     custom_dir: docs/overrides
-   ```
+   **Rendra malen per språk:** `theme.custom_dir` er alt sett til
+   `overrides-<lang>` i `mkdocs/build/mkdocs.<lang>.yml`. Legg til ei
+   `i18n_render`-linje for `main.html` i Steg 2c i `mkdocs/publish.sh`, same
+   mønster som for `404.html` (sjå [Fleirspråkleg portal](fleirsprak.md)).
 
 4. Push til `main` og vent på at GitHub Pages oppdaterar seg
 
