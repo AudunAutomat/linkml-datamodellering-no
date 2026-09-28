@@ -6,6 +6,7 @@
     
     **Kva det betyr:**
     
+    - LinkML modellane er uoffisielle modellar
     - Modellar og verktøy er under utvikling og kan endre seg
     - Dokumentasjonen kan vere ufullstendig eller utdatert
     - Nokre funksjonar er berre delvis implementerte

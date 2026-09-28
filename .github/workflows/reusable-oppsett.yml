@@ -38,8 +38,10 @@ on:
         description: >-
           Multi-line sti-liste for source-artifacten. Standard dekker
           generate.yml/lenkje-og-mermaid-sjekk.yml sitt behov (heile
-          mkdocs/, README.md, CODEOWNERS.md inkludert); validate.yml
-          overstyrer med ei innsnevra liste.
+          mkdocs/, README*.md, CODEOWNERS.md inkludert); validate.yml
+          overstyrer med ei innsnevra liste. README*.md tek med
+          språkvariantane (README.en.md) som publish.sh brukar som
+          framside per språk.
         type: string
         default: |
           src/
@@ -47,7 +49,7 @@ on:
           .github/
           Makefile
           make/
-          README.md
+          README*.md
           CODEOWNERS.md
     outputs:
       domains:
