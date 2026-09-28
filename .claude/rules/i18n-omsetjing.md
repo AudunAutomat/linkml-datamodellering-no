@@ -42,6 +42,10 @@ lenger åtvare.
      på språket til fila (`make docs-publish`). Tabelltekst vert omsett i
      `readme_tabell.*`-nøklane i strengkatalogen.
    - Ikkje skriv front-matter for hand: `make i18n-stamp FILE=<x.en.md>`.
+   - **Ny side utanfor `src/` og `mkdocs/`** (t.d. ein språkvariant på
+     rotnivå): fila må inn i CI-fillistene, elles viser portalen stille
+     originalen. Sjå `.claude/rules/mkdocs-portal.md` § «Nye inndatafiler til
+     `publish.sh` må inn i CI-fillistene».
 3. **Katalognøkkel** (`mkdocs/lib/i18n/strings.yaml`): oppdater `en`-verdien,
    behald dei same `{plasshaldarane}`, og køyr deretter `make i18n-stamp KEYS="…"`.
    Rediger aldri `strings.lock.yaml` for hand.

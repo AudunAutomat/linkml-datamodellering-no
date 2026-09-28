@@ -1,6 +1,6 @@
 ---
 name: mkdocs-portal
-description: Korleis mkdocs/publish.sh byggjer dokumentasjonsportalen, heading-slug-fella for æ/ø/å, relative/absolutte lenkjereglar, docs-publish som verifisering, og portal-adresser som identifikatorar/haustingsadresser. Lastast automatisk ved arbeid med mkdocs/publish.sh eller sider under mkdocs/docs/. Jinja2-malkonvensjonar ligg i eiga rule, sjå .claude/rules/jinja2-templates.md.
+description: Korleis mkdocs/publish.sh byggjer dokumentasjonsportalen, heading-slug-fella for æ/ø/å, relative/absolutte lenkjereglar, nye inndatafiler til publish.sh i CI-fillistene, docs-publish som verifisering, og portal-adresser som identifikatorar/haustingsadresser. Lastast automatisk ved arbeid med mkdocs/publish.sh eller sider under mkdocs/docs/. Jinja2-malkonvensjonar ligg i eiga rule, sjå .claude/rules/jinja2-templates.md.
 paths:
   - "mkdocs/**"
 ---
@@ -110,6 +110,41 @@ Alle skjema-jobbar køyrer parallelt for å redusere byggtid.
 - **Lowercase-transformasjon** av klassefiler skjer for å unngå konflikt på case-insensitive filsystem (Windows/macOS)
 - **Filtrert PlantUML-diagram** vert prioritert over full versjon i ER-diagram-seksjonen
 
+### Nye inndatafiler til `publish.sh` må inn i CI-fillistene
+
+CI køyrer ikkje `publish.sh` mot ein full checkout. Kjeldekoden vert send
+mellom jobbar som ein artifact med **eksplisitt filliste**, og både
+byggjetriggeren og cache-nøklane listar inndatafilene eksplisitt. Ei fil
+utanfor katalogane som alt er dekte (`src/`, `mkdocs/`, `make/`, `.github/`),
+finst difor ikkje i CI før ho er lagd til. `publish.sh` har mjuke fallbackar
+(t.d. `i18n_source` → nynorsk original med «ikkje omsett»-merknad), så feilen
+gir **grønt bygg med feil innhald**, ikkje ein feilmelding. Lokalt verkar alt,
+fordi fila finst i arbeidstreet.
+
+**Aldri** rekn ei ny inndatafil til portalbygget som ferdig integrert berre
+fordi `make docs-publish` gir rett resultat lokalt.
+
+Når `publish.sh` (eller eit script han kallar) tek i bruk ei ny fil utanfor
+dei dekte katalogane, t.d. ein ny språkvariant på rotnivå:
+
+1. Legg fila (eller eit glob-mønster som `README*.md`) til i
+   `artifact-paths`-standardlista i `.github/workflows/reusable-oppsett.yml`.
+2. Legg ho til i `on.push.paths` i `.github/workflows/generate.yml`, slik at
+   ei endring i fila startar nytt bygg.
+3. Legg ho til i site-cache-nøkkelen i `generate.yml` og docs-cache-nøkkelen i
+   `lenkje-og-mermaid-sjekk.yml`, og bump versjonsprefikset (jf.
+   `.claude/rules/ci-workflows.md` § «Cache-nøklar for avleidde artefakter»).
+4. Legg ho til i sandkasse-kopien under «`make docs-publish` er ikkje ein trygg
+   verifiseringssteg» (steg 2.1) nedanfor.
+5. Etter push: sjekk at den publiserte sida brukar den nye fila, ikkje
+   fallbacken.
+
+Konkret tilfelle: `README.en.md` vart kjelde for den engelske framsida
+(`write_index_from_readme`), men mangla i `artifact-paths`, `paths`-filteret og
+begge cache-nøklane. `/en/` i den publiserte portalen viste norsk framside med
+«ikkje omsett»-merknad, medan det lokale bygget var rett. Sjå
+`specs/done/rule-nye-portalinndata-i-ci-fillister.md`.
+
 ### `make docs-publish` er ikkje ein trygg verifiseringssteg
 
 `publish.sh` (Steg 1) **slettar og regenererer** `mkdocs/docs/<domain>/` for
@@ -140,7 +175,7 @@ Gjer i staden slik:
    ufullstendig,** så køyr bygget i ein sandkasse-kopi i scratchpad og ikkje i
    repoet:
    1. Kopier `Makefile`, `make/`, `mkdocs/` (utan `site/`, `node_modules/` og
-      `.cache/`), `src/`, `generated/`, `README.md` og `CODEOWNERS.md` til
+      `.cache/`), `src/`, `generated/`, `README*.md` og `CODEOWNERS.md` til
       `<scratchpad>/box-before` **før** du endrar noko. Ein `tar`-straum frå
       `/mnt/c` tek fleire minutt, så vent til kopien er ferdig før første
       redigering. Køyr `make -C <box> docs-publish` og ta vare på `mkdocs/docs`.
