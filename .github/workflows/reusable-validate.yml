@@ -39,7 +39,7 @@ jobs:
       # frå actionen på HEAD — sjå specs/done/codeql-reusable-workflows-7-varsel.md.
       - name: Løys versjon (input / linkml-datamodellering.yaml / latest)
         id: config
-        uses: AudunAutomat/linkml-datamodellering-no/.github/actions/resolve-linkml-version@bf95adf2ece22b6dd16fda9a8db39083f7aae0ef # main
+        uses: AudunAutomat/linkml-datamodellering-no/.github/actions/resolve-linkml-version@6706c6cd8ac2d670e0fb7eaf424169071a855eea # main
         with:
           version: ${{ inputs.version }}
 
