@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/xkos-ap-no-v1.1.1...xkos-ap-no-v1.1.2) (2026-10-13)
+
+
+### Bug Fixes
+
+* **ci:** delt skript for byte-tak på Step Summary-rapportar ([2304b85](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/2304b85d77b22cc62ed3c04487f11a72f74e7a44))
+
 ## [1.1.1](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/xkos-ap-no-v1.1.0...xkos-ap-no-v1.1.1) (2026-09-26)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/cpsv-ap-no-v2.0.1...cpsv-ap-no-v2.0.2) (2026-10-13)
+
+
+### Bug Fixes
+
+* **ci:** delt skript for byte-tak på Step Summary-rapportar ([2304b85](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/2304b85d77b22cc62ed3c04487f11a72f74e7a44))
+
 ## [2.0.1](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/cpsv-ap-no-v2.0.0...cpsv-ap-no-v2.0.1) (2026-09-26)
 
 

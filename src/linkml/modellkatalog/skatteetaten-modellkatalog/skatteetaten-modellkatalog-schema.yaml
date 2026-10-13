@@ -1,16 +1,19 @@
+# version, endringsdato og utgivelsesdato vert automatisk oppdatert av CI.
+# Sjå CONTRIBUTING.md for detaljar om kva som er manuelt vs. automatisk.
+
 id: https://data.norge.no/modellkatalog/skatteetaten-modellkatalog
 name: skatteetaten-modellkatalog
 title: Skatteetaten - Modellkatalog
 description: >-
   Modellkatalog for Skatteetaten sine informasjonsmodellar.
   Implementerer ModelDCAT-AP-NO direkte via import.
-version: "1.1.2"
+version: "1.2.0"
 license: https://data.norge.no/nlod/no/2.0
 
 annotations:
   utgiver: https://data.norge.no/organizations/974761076
   status: http://purl.org/adms/status/UnderDevelopment
-  endringsdato: "2026-09-26"
+  endringsdato: "2026-10-13"
   utgivelsesdato: "2026-08-17"
 
 prefixes:

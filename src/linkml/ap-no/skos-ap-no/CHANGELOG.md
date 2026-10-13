@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.17.3](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/skos-ap-no-v2.17.2...skos-ap-no-v2.17.3) (2026-10-13)
+
+
+### Bug Fixes
+
+* **ci:** delt skript for byte-tak på Step Summary-rapportar ([2304b85](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/2304b85d77b22cc62ed3c04487f11a72f74e7a44))
+
 ## [2.17.2](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/skos-ap-no-v2.17.1...skos-ap-no-v2.17.2) (2026-09-26)
 
 
