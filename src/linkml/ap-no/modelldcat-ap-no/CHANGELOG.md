@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.3](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/modelldcat-ap-no-v1.15.2...modelldcat-ap-no-v1.15.3) (2026-10-13)
+
+
+### Bug Fixes
+
+* **ci:** delt skript for byte-tak på Step Summary-rapportar ([2304b85](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/2304b85d77b22cc62ed3c04487f11a72f74e7a44))
+
 ## [1.15.2](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/modelldcat-ap-no-v1.15.1...modelldcat-ap-no-v1.15.2) (2026-09-26)
 
 

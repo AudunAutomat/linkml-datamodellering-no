@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.3](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/referansemodell-bronze-v1.2.2...referansemodell-bronze-v1.2.3) (2026-10-13)
+
+
+### Bug Fixes
+
+* **ci:** delt skript for byte-tak på Step Summary-rapportar ([2304b85](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/2304b85d77b22cc62ed3c04487f11a72f74e7a44))
+* **referansemodell-bronze:** oppdater skildring til generisk bronze-policy ([50184dc](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/50184dc32a6ee7c59fc7ee97a3fe8c7644644b43))
+
 ## [1.2.2](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/referansemodell-bronze-v1.2.1...referansemodell-bronze-v1.2.2) (2026-09-26)
 
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/novari-modellkatalog-v1.1.2...novari-modellkatalog-v1.2.0) (2026-10-13)
+
+
+### Features
+
+* **mcp-linkml-validator:** generisk bronze-policy, nytt basis-no-lag og LinkML-linter ([dc6f0d5](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/dc6f0d514281f844827ea7a7b007b93d6da2b8af))
+
+
+### Bug Fixes
+
+* **ci:** delt skript for byte-tak på Step Summary-rapportar ([2304b85](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/2304b85d77b22cc62ed3c04487f11a72f74e7a44))
+
 ## [1.1.2](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/novari-modellkatalog-v1.1.1...novari-modellkatalog-v1.1.2) (2026-09-26)
 
 
