@@ -56,9 +56,10 @@ repo — bruk i staden:
     Repoet vart flytta frå `brreg/linkml-datamodellering-no` til
     `AudunAutomat/linkml-datamodellering-no` i september 2026. Alle
     versjon-taggar er flytta med, men GitHub Releases (med opplasta
-    artefakter) frå før flyttinga ligg framleis under
-    [github.com/brreg/linkml-datamodellering-no/releases](https://github.com/brreg/linkml-datamodellering-no/releases).
-    Nye releases vert publiserte i det nye repoet.
+    artefakter) frå før flyttinga er ikkje lenger tilgjengelege, sidan
+    `brreg`-repoet ikkje lenger er ope. Bruk ein
+    `raw.githubusercontent.com`-URL med tag for eldre versjonar. Nye
+    releases vert publiserte i det nye repoet.
 
 !!! tip "Anbefaling"
     Bruk alltid ein **skjema-spesifikk versjon-tag** (t.d. `dcat-ap-no-v2.13.0`, `common-ap-no-v1.0.0`) i imports — aldri `main` eller `latest` — for å unngå overraskande endringer når dette repoet vert oppdatert.

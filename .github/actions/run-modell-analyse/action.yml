@@ -3,7 +3,7 @@ description: >-
   Kapslar inn det 4-stegs skjelettet felles for dei 10 analyse-*-jobbane i
   modell-analyse.yml: hent python-pytest frå GHCR (i staden for å byggje
   det lokalt frå botnen), køyr eit analyse-*-make-target, skriv resultatet
-  til $GITHUB_STEP_SUMMARY, og last opp rapporten som artefakt. Krev at ein
+  til $GITHUB_STEP_SUMMARY (med byte-tak), og last opp rapporten som artefakt. Krev at ein
   ensure-images-jobb har sikra python-pytest i GHCR på førehand (sender
   image_tags-outputen hans inn som image-tags). Sjå
   specs/done/evaluering-dry-github-workflows.md (K1).
@@ -41,10 +41,8 @@ runs:
       run: |
         set -uo pipefail
         make ${{ inputs.make-target }} > ${{ inputs.report-file }}
-        {
-          echo "## ${{ inputs.summary-title }}"
-          cat ${{ inputs.report-file }}
-        } >> "$GITHUB_STEP_SUMMARY"
+        bash .github/scripts/step-summary-report.sh \
+          "${{ inputs.summary-title }}" "${{ inputs.report-file }}" "${{ inputs.artifact-name }}"
 
     - name: Last opp rapport
       if: always()

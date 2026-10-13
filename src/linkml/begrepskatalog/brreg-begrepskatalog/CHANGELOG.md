@@ -12,107 +12,107 @@
 
 ### Bug Fixes
 
-* **ap-no,fint,fair,begrepskatalog:** sett status til UnderDevelopment i alle skjema ([2c6215e](https://github.com/brreg/linkml-datamodellering-no/commit/2c6215eac75b1e247f5f10ec355fe9b504c382af))
-* **lenkjesjekk:** rett resterande brotne lenkjer og ekskluder stadfesta upubliserte vokabular ([6cb82bf](https://github.com/brreg/linkml-datamodellering-no/commit/6cb82bfa54ceafaeaab625aae5dcfbaa8241eb2d))
-* **scaffolding:** kollisjonsfri kontaktinformasjon-slot + dynamisk dcat-ap-no-versjon i new-modell ([f291dac](https://github.com/brreg/linkml-datamodellering-no/commit/f291dacd1ce17bffc8327cfabd571e3d3845af83))
+* **ap-no,fint,fair,begrepskatalog:** sett status til UnderDevelopment i alle skjema ([2c6215e](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/2c6215eac75b1e247f5f10ec355fe9b504c382af))
+* **lenkjesjekk:** rett resterande brotne lenkjer og ekskluder stadfesta upubliserte vokabular ([6cb82bf](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/6cb82bfa54ceafaeaab625aae5dcfbaa8241eb2d))
+* **scaffolding:** kollisjonsfri kontaktinformasjon-slot + dynamisk dcat-ap-no-versjon i new-modell ([f291dac](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/f291dacd1ce17bffc8327cfabd571e3d3845af83))
 
 ## [1.7.0](https://github.com/brreg/linkml-datamodellering-no/compare/brreg-begrepskatalog-v1.6.1...brreg-begrepskatalog-v1.7.0) (2026-08-14)
 
 
 ### Features
 
-* **generatorar:** legg til gen-graphql for GraphQL SDL-generering ([cb0a7bd](https://github.com/brreg/linkml-datamodellering-no/commit/cb0a7bd4c220dbee889df488bed0eaeb25960ce4))
+* **generatorar:** legg til gen-graphql for GraphQL SDL-generering ([cb0a7bd](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/cb0a7bd4c220dbee889df488bed0eaeb25960ce4))
 
 
 ### Bug Fixes
 
-* **fint,codeowners:** fjern owlgen-tvitydigheit i fint og CODEOWNERS-gap ([8319f57](https://github.com/brreg/linkml-datamodellering-no/commit/8319f57a65884a172e877c0b0a260efbbd0f9054))
-* **mkdocs:** aktiver plantuml-diagram for FINT, Begrepskatalog og Modellkatalog ([31881d6](https://github.com/brreg/linkml-datamodellering-no/commit/31881d6bdbb1660c29b9baaa4b14f7839e5f3364))
-* **validering:** tell importerte prefiks, fiks python-pytest i validate.yml, legg til nn-referansar ([41a89ab](https://github.com/brreg/linkml-datamodellering-no/commit/41a89abe89d5dfb47ee7a052bb2796416a75506d))
+* **fint,codeowners:** fjern owlgen-tvitydigheit i fint og CODEOWNERS-gap ([8319f57](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/8319f57a65884a172e877c0b0a260efbbd0f9054))
+* **mkdocs:** aktiver plantuml-diagram for FINT, Begrepskatalog og Modellkatalog ([31881d6](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/31881d6bdbb1660c29b9baaa4b14f7839e5f3364))
+* **validering:** tell importerte prefiks, fiks python-pytest i validate.yml, legg til nn-referansar ([41a89ab](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/41a89abe89d5dfb47ee7a052bb2796416a75506d))
 
 
 ### Performance Improvements
 
-* **mcp-linkml-validator:** parallelliser validate-examples, regenerer valideringsloggar ([fc67279](https://github.com/brreg/linkml-datamodellering-no/commit/fc672798d9b85870590a1bf7ea33fbca4181bf51))
+* **mcp-linkml-validator:** parallelliser validate-examples, regenerer valideringsloggar ([fc67279](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/fc672798d9b85870590a1bf7ea33fbca4181bf51))
 
 ## [1.6.1](https://github.com/brreg/linkml-datamodellering-no/compare/brreg-begrepskatalog-v1.6.0...brreg-begrepskatalog-v1.6.1) (2026-08-02)
 
 
 ### Bug Fixes
 
-* **ci:** bruk flatten-and-validate.bash i run-validation.sh for å handtere importar ([af53164](https://github.com/brreg/linkml-datamodellering-no/commit/af5316409e0d03aac44b3bc0471b1538727102d6))
+* **ci:** bruk flatten-and-validate.bash i run-validation.sh for å handtere importar ([af53164](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/af5316409e0d03aac44b3bc0471b1538727102d6))
 
 ## [1.6.0](https://github.com/brreg/linkml-datamodellering-no/compare/brreg-begrepskatalog-v1.5.0...brreg-begrepskatalog-v1.6.0) (2026-07-27)
 
 
 ### Features
 
-* **begrep:** legg til nynorsk (nn) for alle LangString-slots i begrepsfiler ([8ecf8dc](https://github.com/brreg/linkml-datamodellering-no/commit/8ecf8dc2f940fa4b06deceb44bf9adf37332d9e8))
-* **begrepskatalog:** begrep per fil, automatisk aggregering, nye verktøy og oppdatert dokumentasjon ([e2d7d95](https://github.com/brreg/linkml-datamodellering-no/commit/e2d7d9522971ad423c0f313d44a19780d23e4603))
+* **begrep:** legg til nynorsk (nn) for alle LangString-slots i begrepsfiler ([8ecf8dc](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/8ecf8dc2f940fa4b06deceb44bf9adf37332d9e8))
+* **begrepskatalog:** begrep per fil, automatisk aggregering, nye verktøy og oppdatert dokumentasjon ([e2d7d95](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/e2d7d9522971ad423c0f313d44a19780d23e4603))
 
 
 ### Bug Fixes
 
-* **mcp-begrep-utkast:** generer LangString som streng-array (ikkje objekt) for LinkML-kompatibilitet ([08f5b91](https://github.com/brreg/linkml-datamodellering-no/commit/08f5b9105f271ccd33ec25a9dc51cb79c7683c68))
+* **mcp-begrep-utkast:** generer LangString som streng-array (ikkje objekt) for LinkML-kompatibilitet ([08f5b91](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/08f5b9105f271ccd33ec25a9dc51cb79c7683c68))
 
 ## [1.5.0](https://github.com/brreg/linkml-datamodellering-no/compare/brreg-begrepskatalog-v1.4.0...brreg-begrepskatalog-v1.5.0) (2026-07-10)
 
 
 ### Features
 
-* **ap-no,begrepskatalog,modellkatalog:** legg til DQV-kvalitetsmålingar (kvantifiserbar kvalitet) ([9009b1e](https://github.com/brreg/linkml-datamodellering-no/commit/9009b1e63660f55fce18c1a9bf4dda0757a27d5e))
-* **ci:** legg til XSD-generering via avrotize-pipeline ([22b585b](https://github.com/brreg/linkml-datamodellering-no/commit/22b585b91e357a8280ad2c9c914407e8a0b1057a))
-* legg til OpenAPI 3.1 og AsyncAPI 3.0-generering ([7be7ef8](https://github.com/brreg/linkml-datamodellering-no/commit/7be7ef8ad6e4cda9fb2a08bbc336e1c782d5d794))
-* **mkdocs:** konfigurerbar lenke-tekst for offisiell referanse og description.md for alle modellar ([20d8bf8](https://github.com/brreg/linkml-datamodellering-no/commit/20d8bf8c0e3d5ed31c608ece6bf5d64d7802b9af))
-* **validate-capture:** parallelliser validering av alle skjema ([7d9a0a2](https://github.com/brreg/linkml-datamodellering-no/commit/7d9a0a28797a918d887b6ff22303ac6d56204655))
-* **validering:** komplett valideringssystem med auto-detect og visuell rapportering ([f0607bc](https://github.com/brreg/linkml-datamodellering-no/commit/f0607bc510640fa8c85b989b995e0162385eb06e))
+* **ap-no,begrepskatalog,modellkatalog:** legg til DQV-kvalitetsmålingar (kvantifiserbar kvalitet) ([9009b1e](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/9009b1e63660f55fce18c1a9bf4dda0757a27d5e))
+* **ci:** legg til XSD-generering via avrotize-pipeline ([22b585b](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/22b585b91e357a8280ad2c9c914407e8a0b1057a))
+* legg til OpenAPI 3.1 og AsyncAPI 3.0-generering ([7be7ef8](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/7be7ef8ad6e4cda9fb2a08bbc336e1c782d5d794))
+* **mkdocs:** konfigurerbar lenke-tekst for offisiell referanse og description.md for alle modellar ([20d8bf8](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/20d8bf8c0e3d5ed31c608ece6bf5d64d7802b9af))
+* **validate-capture:** parallelliser validering av alle skjema ([7d9a0a2](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/7d9a0a28797a918d887b6ff22303ac6d56204655))
+* **validering:** komplett valideringssystem med auto-detect og visuell rapportering ([f0607bc](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/f0607bc510640fa8c85b989b995e0162385eb06e))
 
 
 ### Bug Fixes
 
-* **los:** rett alle Los-URI-avvik og legg til rettleiing (LO1–LO5) ([05df4cc](https://github.com/brreg/linkml-datamodellering-no/commit/05df4ccd0f7b1565bd34b5fe039e238d3427bb63))
-* **release:** synk schema-versjon med release-nummer automatisk ([1d20298](https://github.com/brreg/linkml-datamodellering-no/commit/1d20298b932da0e876795152aab61baf99611daf))
-* **schemas,mcp-validator:** etterlevingsopprett mot Digdir felles modelleringsreglar (regel 6-11, 15) ([93a25e7](https://github.com/brreg/linkml-datamodellering-no/commit/93a25e79c2eacdfa5d7548d176370200efc79279))
+* **los:** rett alle Los-URI-avvik og legg til rettleiing (LO1–LO5) ([05df4cc](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/05df4ccd0f7b1565bd34b5fe039e238d3427bb63))
+* **release:** synk schema-versjon med release-nummer automatisk ([1d20298](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/1d20298b932da0e876795152aab61baf99611daf))
+* **schemas,mcp-validator:** etterlevingsopprett mot Digdir felles modelleringsreglar (regel 6-11, 15) ([93a25e7](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/93a25e79c2eacdfa5d7548d176370200efc79279))
 
 ## [1.4.0](https://github.com/brreg/linkml-datamodellering-no/compare/brreg-begrepskatalog-v1.3.0...brreg-begrepskatalog-v1.4.0) (2026-07-09)
 
 
 ### Features
 
-* **mkdocs:** konfigurerbar lenke-tekst for offisiell referanse og description.md for alle modellar ([97dacce](https://github.com/brreg/linkml-datamodellering-no/commit/97dacce159f02236196c9daa686e375e503f15ef))
+* **mkdocs:** konfigurerbar lenke-tekst for offisiell referanse og description.md for alle modellar ([97dacce](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/97dacce159f02236196c9daa686e375e503f15ef))
 
 ## [1.3.0](https://github.com/brreg/linkml-datamodellering-no/compare/brreg-begrepskatalog-v1.2.1...brreg-begrepskatalog-v1.3.0) (2026-07-04)
 
 
 ### Features
 
-* **validate-capture:** parallelliser validering av alle skjema ([6267587](https://github.com/brreg/linkml-datamodellering-no/commit/6267587223de8b03fe459c0d6458c492aa5dd279))
+* **validate-capture:** parallelliser validering av alle skjema ([6267587](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/6267587223de8b03fe459c0d6458c492aa5dd279))
 
 ## [1.2.1](https://github.com/brreg/linkml-datamodellering-no/compare/brreg-begrepskatalog-v1.2.0...brreg-begrepskatalog-v1.2.1) (2026-07-04)
 
 
 ### Bug Fixes
 
-* **release:** synk schema-versjon med release-nummer automatisk ([6dbb358](https://github.com/brreg/linkml-datamodellering-no/commit/6dbb358b6929bfbd73ef9c5fde8f1a0c24cb56e2))
+* **release:** synk schema-versjon med release-nummer automatisk ([6dbb358](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/6dbb358b6929bfbd73ef9c5fde8f1a0c24cb56e2))
 
 ## [1.2.0](https://github.com/brreg/linkml-datamodellering-no/compare/brreg-begrepskatalog-v1.1.0...brreg-begrepskatalog-v1.2.0) (2026-07-03)
 
 
 ### Features
 
-* **validering:** komplett valideringssystem med auto-detect og visuell rapportering ([20caed0](https://github.com/brreg/linkml-datamodellering-no/commit/20caed0d1764e27864f377fcaea212506f3a6fab))
+* **validering:** komplett valideringssystem med auto-detect og visuell rapportering ([20caed0](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/20caed0d1764e27864f377fcaea212506f3a6fab))
 
 ## [1.1.0](https://github.com/brreg/linkml-datamodellering-no/compare/brreg-begrepskatalog-v1.0.1...brreg-begrepskatalog-v1.1.0) (2026-07-01)
 
 
 ### Features
 
-* **ap-no,begrepskatalog,modellkatalog:** legg til DQV-kvalitetsmålingar (kvantifiserbar kvalitet) ([6fb9bad](https://github.com/brreg/linkml-datamodellering-no/commit/6fb9badce3ca37ea38fb2a6a882cad466ba8eae8))
+* **ap-no,begrepskatalog,modellkatalog:** legg til DQV-kvalitetsmålingar (kvantifiserbar kvalitet) ([6fb9bad](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/6fb9badce3ca37ea38fb2a6a882cad466ba8eae8))
 
 ## [1.0.1](https://github.com/brreg/linkml-datamodellering-no/compare/brreg-begrepskatalog-v1.0.0...brreg-begrepskatalog-v1.0.1) (2026-06-19)
 
 
 ### Bug Fixes
 
-* **los:** rett alle Los-URI-avvik og legg til rettleiing (LO1-LO5) ([7673852](https://github.com/brreg/linkml-datamodellering-no/commit/7673852bf911b8b8d0935aae6a471e9d1e79c485))
-* **schemas,mcp-validator:** etterlevingsopprett mot Digdir felles modelleringsreglar (regel 6-11, 15) ([72aaaf2](https://github.com/brreg/linkml-datamodellering-no/commit/72aaaf2990834bf37a84cd514798141559e1ffef))
+* **los:** rett alle Los-URI-avvik og legg til rettleiing (LO1-LO5) ([7673852](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/7673852bf911b8b8d0935aae6a471e9d1e79c485))
+* **schemas,mcp-validator:** etterlevingsopprett mot Digdir felles modelleringsreglar (regel 6-11, 15) ([72aaaf2](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/72aaaf2990834bf37a84cd514798141559e1ffef))

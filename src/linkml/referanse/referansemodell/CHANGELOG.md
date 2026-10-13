@@ -12,79 +12,79 @@
 
 ### Bug Fixes
 
-* **referanse:** fjern alle valideringsfunn i referansemodellane ([c90728b](https://github.com/brreg/linkml-datamodellering-no/commit/c90728bea35e451a144e64389474f667606a6167))
+* **referanse:** fjern alle valideringsfunn i referansemodellane ([c90728b](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/c90728bea35e451a144e64389474f667606a6167))
 
 ## [1.5.0](https://github.com/brreg/linkml-datamodellering-no/compare/referansemodell-v1.4.0...referansemodell-v1.5.0) (2026-08-25)
 
 
 ### Features
 
-* **gen-java:** legg til make gen-java og Java-bruk-seksjon i Kom i gang ([74396fc](https://github.com/brreg/linkml-datamodellering-no/commit/74396fcfb1531244e32d27599bf09353381e3fb1))
+* **gen-java:** legg til make gen-java og Java-bruk-seksjon i Kom i gang ([74396fc](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/74396fcfb1531244e32d27599bf09353381e3fb1))
 
 ## [1.4.0](https://github.com/brreg/linkml-datamodellering-no/compare/referansemodell-v1.3.0...referansemodell-v1.4.0) (2026-08-17)
 
 
 ### Features
 
-* **generatorar:** legg til gen-graphql for GraphQL SDL-generering ([cb0a7bd](https://github.com/brreg/linkml-datamodellering-no/commit/cb0a7bd4c220dbee889df488bed0eaeb25960ce4))
+* **generatorar:** legg til gen-graphql for GraphQL SDL-generering ([cb0a7bd](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/cb0a7bd4c220dbee889df488bed0eaeb25960ce4))
 
 
 ### Bug Fixes
 
-* **build-manifest:** legg til manglande generator-flagg i 11 build.yaml ([916d9df](https://github.com/brreg/linkml-datamodellering-no/commit/916d9df3205e7b1cb322eb8bdc8a59ce4d692a5b))
-* **referansemodell:** fjern duplikate definisjonar og endre til data.norge.no-namespace ([dd7f89b](https://github.com/brreg/linkml-datamodellering-no/commit/dd7f89b734e387f184fd342242e28fa672042902))
-* **referansemodell:** fjern duplikate slot/subset-definisjonar ([78711b1](https://github.com/brreg/linkml-datamodellering-no/commit/78711b18ef3f2a63a4db5ea0e42fb9fd4e85a43d))
+* **build-manifest:** legg til manglande generator-flagg i 11 build.yaml ([916d9df](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/916d9df3205e7b1cb322eb8bdc8a59ce4d692a5b))
+* **referansemodell:** fjern duplikate definisjonar og endre til data.norge.no-namespace ([dd7f89b](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/dd7f89b734e387f184fd342242e28fa672042902))
+* **referansemodell:** fjern duplikate slot/subset-definisjonar ([78711b1](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/78711b18ef3f2a63a4db5ea0e42fb9fd4e85a43d))
 
 
 ### Performance Improvements
 
-* **mcp-linkml-validator:** parallelliser validate-examples, regenerer valideringsloggar ([fc67279](https://github.com/brreg/linkml-datamodellering-no/commit/fc672798d9b85870590a1bf7ea33fbca4181bf51))
+* **mcp-linkml-validator:** parallelliser validate-examples, regenerer valideringsloggar ([fc67279](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/fc672798d9b85870590a1bf7ea33fbca4181bf51))
 
 ## [1.3.0](https://github.com/brreg/linkml-datamodellering-no/compare/referanse-v1.2.0...referanse-v1.3.0) (2026-07-30)
 
 
 ### Features
 
-* **metadata:** dynamisk README-generering frå skjema-metadata ([53def55](https://github.com/brreg/linkml-datamodellering-no/commit/53def559d46e92c604ff429b46be90381f907eaf))
+* **metadata:** dynamisk README-generering frå skjema-metadata ([53def55](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/53def559d46e92c604ff429b46be90381f907eaf))
 
 ## [1.2.0](https://github.com/brreg/linkml-datamodellering-no/compare/referanse-v1.1.0...referanse-v1.2.0) (2026-07-10)
 
 
 ### Features
 
-* **mkdocs:** konfigurerbar lenke-tekst for offisiell referanse og description.md for alle modellar ([20d8bf8](https://github.com/brreg/linkml-datamodellering-no/commit/20d8bf8c0e3d5ed31c608ece6bf5d64d7802b9af))
+* **mkdocs:** konfigurerbar lenke-tekst for offisiell referanse og description.md for alle modellar ([20d8bf8](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/20d8bf8c0e3d5ed31c608ece6bf5d64d7802b9af))
 
 
 ### Bug Fixes
 
-* **release:** synk schema-versjon med release-nummer automatisk ([1d20298](https://github.com/brreg/linkml-datamodellering-no/commit/1d20298b932da0e876795152aab61baf99611daf))
-* **samt-bu:** rett stale slotnamn på Kvalitetsdimensjon-instans i eksempel ([dbda72a](https://github.com/brreg/linkml-datamodellering-no/commit/dbda72ac21c417c8e31e97fa7832fbc993242f76))
-* **schemas,mcp-validator:** etterlevingsopprett mot Digdir felles modelleringsreglar (regel 6-11, 15) ([93a25e7](https://github.com/brreg/linkml-datamodellering-no/commit/93a25e79c2eacdfa5d7548d176370200efc79279))
+* **release:** synk schema-versjon med release-nummer automatisk ([1d20298](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/1d20298b932da0e876795152aab61baf99611daf))
+* **samt-bu:** rett stale slotnamn på Kvalitetsdimensjon-instans i eksempel ([dbda72a](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/dbda72ac21c417c8e31e97fa7832fbc993242f76))
+* **schemas,mcp-validator:** etterlevingsopprett mot Digdir felles modelleringsreglar (regel 6-11, 15) ([93a25e7](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/93a25e79c2eacdfa5d7548d176370200efc79279))
 
 ## [1.1.0](https://github.com/brreg/linkml-datamodellering-no/compare/referanse-v1.0.3...referanse-v1.1.0) (2026-07-09)
 
 
 ### Features
 
-* **mkdocs:** konfigurerbar lenke-tekst for offisiell referanse og description.md for alle modellar ([97dacce](https://github.com/brreg/linkml-datamodellering-no/commit/97dacce159f02236196c9daa686e375e503f15ef))
+* **mkdocs:** konfigurerbar lenke-tekst for offisiell referanse og description.md for alle modellar ([97dacce](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/97dacce159f02236196c9daa686e375e503f15ef))
 
 ## [1.0.3](https://github.com/brreg/linkml-datamodellering-no/compare/referanse-v1.0.2...referanse-v1.0.3) (2026-07-04)
 
 
 ### Bug Fixes
 
-* **release:** synk schema-versjon med release-nummer automatisk ([6dbb358](https://github.com/brreg/linkml-datamodellering-no/commit/6dbb358b6929bfbd73ef9c5fde8f1a0c24cb56e2))
+* **release:** synk schema-versjon med release-nummer automatisk ([6dbb358](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/6dbb358b6929bfbd73ef9c5fde8f1a0c24cb56e2))
 
 ## [1.0.2](https://github.com/brreg/linkml-datamodellering-no/compare/referanse-v1.0.1...referanse-v1.0.2) (2026-07-01)
 
 
 ### Bug Fixes
 
-* **samt-bu:** rett stale slotnamn på Kvalitetsdimensjon-instans i eksempel ([6e4d623](https://github.com/brreg/linkml-datamodellering-no/commit/6e4d623d1a5f91b472748d45942e8a4fb05ad53b))
+* **samt-bu:** rett stale slotnamn på Kvalitetsdimensjon-instans i eksempel ([6e4d623](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/6e4d623d1a5f91b472748d45942e8a4fb05ad53b))
 
 ## [1.0.1](https://github.com/brreg/linkml-datamodellering-no/compare/referanse-v1.0.0...referanse-v1.0.1) (2026-06-19)
 
 
 ### Bug Fixes
 
-* **schemas,mcp-validator:** etterlevingsopprett mot Digdir felles modelleringsreglar (regel 6-11, 15) ([72aaaf2](https://github.com/brreg/linkml-datamodellering-no/commit/72aaaf2990834bf37a84cd514798141559e1ffef))
+* **schemas,mcp-validator:** etterlevingsopprett mot Digdir felles modelleringsreglar (regel 6-11, 15) ([72aaaf2](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/72aaaf2990834bf37a84cd514798141559e1ffef))

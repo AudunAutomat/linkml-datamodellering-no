@@ -69,8 +69,23 @@ badges i readme?
 
    gjer ein analyse av all kildekode og identifiser gjentakelsar som kan la seg kode en gang og gjenbrukes ihht DRY prinsippet
 
-Evaluer om vi kan lage en plugin til vs-code som gjer det enklare å jobbe med linkml-modellering?
-To ting eg tenker på er context-aware auto-complete og evnt. panel som viser f.eks alle tilgjengelige types, slots og enums i modellen slik at du slepp å søke og scrolle opp og ned i modellfila så mykje når du editerer klasser. Du må gjerne komme med forslag til andre ting som kan forenkle brukeropplevelsen ved linkml-modellering. Skriv til /specs
 
 
 
+Du sa at "crun er installert, men /run/user/1000 er ikkje synleg i sandkassa. Eg køyrer actionlint på nytt utan sandkasse."
+
+Kan det være relatert til feilmeldinga eg fikk ved oppstart av wsl vist under?
+
+PS C:\dev\git\linkml-datamodellering-no> wsl -d ubuntu
+wsl: Failed to start the systemd user session for 'audun'. See journalctl for more details.
+(base) audun@LAPTOP-1UMHAP0N:/mnt/c/dev/git/linkml-datamodellering-no$
+
+ wsl --shutdown
+  wsl -d ubuntu
+  2. Viss feilen kjem att, slå på linger. Då startar brukarøkta saman med systemd og er ikkje avhengig av innlogginga:
+  ! sudo loginctl enable-linger audun
+     Viss det framleis ikkje verkar, viser journalctl -b -u user@1000.service den eigentlege grunnen til at økta ikkje startar.
+  3. Mellombels løysing for denne økta, utan omstart:
+  ! sudo systemctl start user@1000.service
+
+  Når ls -ld /run/user/1000 viser katalogen, kan eg køyre actionlint og make i18n-stamp/i18n-check, så blir specen ferdig.

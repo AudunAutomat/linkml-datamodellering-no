@@ -179,7 +179,6 @@ jobs:
           if [ -s "$manifest" ]; then
             while IFS=$'\t' read -r id src idx; do
               total=$((total + 1))
-              blockfile="/tmp/mermaid/blocks/block-${id}.mmd"
               logfile="/tmp/mermaid/blocks/block-${id}.log"
               # --user 0:0 er naudsynt: mermaid-cli-biletet køyrer som uid 1001,
               # men i podman rootless vert monterte filer eigd av "root" i
@@ -407,10 +406,8 @@ jobs:
             cat lenkjesjekk-report.md
           fi
 
-          {
-            echo "## Lenkjesjekk"
-            cat lenkjesjekk-report.md
-          } >> "$GITHUB_STEP_SUMMARY"
+          bash .github/scripts/step-summary-report.sh \
+            "Lenkjesjekk" lenkjesjekk-report.md lenkjesjekk-report
 
       # lychee 0.24.2 tel unsupported-lenkjer (t.d. CURIE-ar utan vertsnavn
       # som `rdf:langString`) i Summary, men listar dei ikkje — `--verbose`

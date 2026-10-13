@@ -1,6 +1,6 @@
 ---
 name: ci-workflows
-description: Actionlint-plikta (inkl. utdatert action-metadata), CI-YAML sin lægre DRY-terskel (2+), cache-nøklar for avleidde artefakter (hash deterministisk output, stadfest cache-miss før CI-verifisering), reusable workflow/composite action-avgrensingar (inkl. ./-stiar ved eksterne kall og røyktest-plikt for public reusable workflows), og GHCR-referansar med små bokstavar. Lastast automatisk ved arbeid med filer under .github/workflows/ eller .github/actions/.
+description: Actionlint-plikta (inkl. utdatert action-metadata), CI-YAML sin lægre DRY-terskel (2+), cache-nøklar for avleidde artefakter (hash deterministisk output, stadfest cache-miss før CI-verifisering), reusable workflow/composite action-avgrensingar (inkl. ./-stiar ved eksterne kall og røyktest-plikt for public reusable workflows), GHCR-referansar med små bokstavar, og byte-tak på rapportar til Step Summary. Lastast automatisk ved arbeid med filer under .github/workflows/ eller .github/actions/.
 paths:
   - ".github/workflows/**"
   - ".github/actions/**"
@@ -255,3 +255,34 @@ feila alle `oppsett / build-image / *`-jobbar i `generate.yml`,
 `validate.yml` og `lenkje-og-mermaid-sjekk.yml` (og `ensure-images` i
 `modell-analyse.yml`) med feilmeldinga over. Sjå F1 i
 `specs/done/ci-etter-origin-flytting-audunautomat.md`.
+
+## Step Summary: byte-tak på rapportar
+
+GitHub tek imot maks 1 MiB per steg i `$GITHUB_STEP_SUMMARY`. Er innhaldet
+større, avviser GitHub **heile** Step Summary-en for steget («upload
+aborted, supports content up to a size of 1024k»). Jobben er likevel grøn,
+og det einaste sporet er ein annotasjon. Ein rapport som veks med talet på
+funn (lenkjefeil, lint-funn, analyseresultat), kan krysse grensa utan at
+noko i koden er endra.
+
+**Aldri** skriv ein rapport med ubegrensa storleik til Step Summary med
+rein `cat <rapport> >> "$GITHUB_STEP_SUMMARY"`. Faste oppsummeringar og
+lister som alt er avgrensa (t.d. `head -50`), treng ikkje tak.
+
+Gjer i staden slik:
+
+1. Last opp heile rapporten som artefakt (`actions/upload-artifact`, med
+   `if: always()`).
+2. Skriv til Step Summary med det delte skriptet. Det avkortar ved heile
+   linjer under 900 000 byte (`SUMMARY_MAX_BYTES`). Når rapporten vert
+   avkorta, skriv skriptet ei linje i Step Summary som namngjev artefakten,
+   og ei linje i jobbloggen:
+   ```bash
+   bash .github/scripts/step-summary-report.sh "<tittel>" <rapport> <artefakt>
+   ```
+   Ikkje kopier avkortingslogikken inline (DRY-terskel 2+, sjå over).
+
+**Grunngjeving:** lenkjesjekk-køyring 38262481311 fekk ein rapport på
+1 101 197 byte (6850 feil) og mista heile Step Summary-en. Sjå
+`specs/done/lenkjesjekk-step-summary-over-1mib.md` og
+`specs/done/step-summary-byte-tak-modell-analyse.md` (det delte skriptet).

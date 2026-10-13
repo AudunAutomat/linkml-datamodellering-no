@@ -1,7 +1,7 @@
 ---
 i18n:
   source: ekstern-bruk.md
-  source_hash: sha256:b203a3ba23503065f51ce2a5dd31f31d32e23c1d4797ef00ffac4906eaacf92f
+  source_hash: sha256:7aaf2df9c007daf0d9871d15c0fbcebfe64a38ccfb31552a96a92ca06c14eff9
 ---
 # Use from an external repository {#bruk-fra-eksternt-repo}
 
@@ -61,9 +61,10 @@ repository — use instead:
     The repository was moved from `brreg/linkml-datamodellering-no` to
     `AudunAutomat/linkml-datamodellering-no` in September 2026. All
     version tags were moved along, but GitHub Releases (with uploaded
-    artifacts) from before the move are still located under
-    [github.com/brreg/linkml-datamodellering-no/releases](https://github.com/brreg/linkml-datamodellering-no/releases).
-    New releases are published in the new repository.
+    artifacts) from before the move are no longer available, since the
+    `brreg` repository is no longer public. Use a
+    `raw.githubusercontent.com` URL with a tag for older versions. New
+    releases are published in the new repository.
 
 !!! tip "Recommendation"
     Always use a **schema-specific version tag** (e.g. `dcat-ap-no-v2.13.0`, `common-ap-no-v1.0.0`) in imports — never `main` or `latest` — to avoid surprising changes when this repository is updated.

@@ -281,7 +281,13 @@ jobs:
         run: |
           set -uo pipefail
           make analyse-sammendrag > sammendrag-report.md
-          {
-            echo "## Sammendrag"
-            cat sammendrag-report.md
-          } >> "$GITHUB_STEP_SUMMARY"
+          bash .github/scripts/step-summary-report.sh \
+            "Sammendrag" sammendrag-report.md sammendrag-report
+
+      - name: Last opp sammendrag
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: sammendrag-report
+          path: sammendrag-report.md
+          retention-days: 30
