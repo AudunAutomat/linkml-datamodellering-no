@@ -2,6 +2,8 @@
 ## Referansemodell — bronsjenivå
 ## Viser krava i bronsepolicyen (generisk LinkML-baseline).
 ## Run: make mcp-linkml-valider-modell SCHEMA=src/linkml/referanse/referansemodell-bronze/referansemodell-bronze-schema.yaml POLICY=bronze
+## version, endringsdato og utgivelsesdato vert automatisk oppdatert av CI.
+## Sjå CONTRIBUTING.md for detaljar om kva som er manuelt vs. automatisk.
 ##
 
 id: https://data.norge.no/linkml/referansemodell-bronze
@@ -12,12 +14,12 @@ description: >-
   schema-metadata (title, version, license), default_prefix som absolutt URI og
   LinkML-navnekonvensjonar. Inneheld i tillegg class_uri, identifier-slot,
   slot_uri og begrepsidentifikator, som er krav frå basis-no.
-version: "1.2.2"
+version: "1.2.3"
 license: https://data.norge.no/nlod/no/2.0
 annotations:
   utgiver: https://data.norge.no/organizations/974760673
   status: http://purl.org/adms/status/UnderDevelopment
-  endringsdato: "2026-09-26"
+  endringsdato: "2026-10-13"
   utgivelsesdato: "2026-08-23"
 
 imports:

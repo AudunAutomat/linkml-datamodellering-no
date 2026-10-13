@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.0](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/referansemodell-silver-v2.1.3...referansemodell-silver-v2.2.0) (2026-10-13)
+
+
+### Features
+
+* **mcp-linkml-validator:** sjekk for open lisens og anbefalte DCAT-slots (retningslinje 1, 4, 6, 8, 10) ([e46b82a](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/e46b82a58076f404f1ca13482c7f8576854d4ccd))
+
+
+### Bug Fixes
+
+* **ci:** delt skript for byte-tak på Step Summary-rapportar ([2304b85](https://github.com/AudunAutomat/linkml-datamodellering-no/commit/2304b85d77b22cc62ed3c04487f11a72f74e7a44))
+
 ## [2.1.3](https://github.com/AudunAutomat/linkml-datamodellering-no/compare/referansemodell-silver-v2.1.2...referansemodell-silver-v2.1.3) (2026-09-26)
 
 

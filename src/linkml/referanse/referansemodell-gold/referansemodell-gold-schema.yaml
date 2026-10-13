@@ -13,6 +13,8 @@
 ## I tillegg oppgraderer gull bronze-åtvarslane til feil:
 ##   all_classes_have_class_uri → error (var warning på bronze)
 ##   all_slots_have_slot_uri    → error (var warning på bronze)
+## version, endringsdato og utgivelsesdato vert automatisk oppdatert av CI.
+## Sjå CONTRIBUTING.md for detaljar om kva som er manuelt vs. automatisk.
 ##
 
 id: https://data.norge.no/linkml/referansemodell-gold
@@ -21,12 +23,12 @@ title: Referansemodell - gullnivå
 description: >-
   Viser minstekrava for å bestå gullpolicyen: alle sølv-krav pluss
   FAIR-metadata (title, version, prefiks, lisens, proveniens).
-version: "2.1.3"
+version: "2.2.0"
 license: https://data.norge.no/nlod/no/2.0
 annotations:
   utgiver: https://data.norge.no/organizations/974760673
   status: http://purl.org/adms/status/UnderDevelopment
-  endringsdato: "2026-09-26"
+  endringsdato: "2026-10-13"
   utgivelsesdato: "2026-08-23"
   # gold: schema_has_annotation_oppdateringsfrekvens → error (sølv → gull)
   oppdateringsfrekvens: http://publications.europa.eu/resource/authority/frequency/IRREG
