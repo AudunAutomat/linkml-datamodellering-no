@@ -162,6 +162,7 @@ classes:
   # silver: datasett_tittel, datasett_beskrivelse, datasett_kontaktpunkt,
   #         datasett_utgiver, datasett_tema → error
   # silver: datasett_tilgangsrettigheter, datasett_lovgivning → warning
+  # silver: datasett_frekvens, datasett_landingsside, datasett_dokumentasjon → warning
   Datasett:
     description: Ei samling av data, utgitt eller kuratert av ei einskild kjelde.
     class_uri: dcat:Dataset
@@ -176,7 +177,16 @@ classes:
       - tema
       - tilgangsrettigheter
       - gjeldende_lovgivning
+      - frekvens
+      - landingsside
+      - dokumentasjon
     slot_usage:
+      frekvens:
+        in_subset: [Anbefalt]
+      landingsside:
+        in_subset: [Anbefalt]
+      dokumentasjon:
+        in_subset: [Anbefalt]
       tittel:
         required: true
         in_subset: [Obligatorisk]
@@ -199,6 +209,7 @@ classes:
 
   # silver: distribusjon_tilgangsurl → error
   # silver: distribusjon_lisens → warning
+  # silver: distribusjon_nedlastningslenke, distribusjon_format → warning
   Distribusjon:
     description: Ei spesifikk representasjon av eit datasett.
     class_uri: dcat:Distribution
@@ -208,7 +219,13 @@ classes:
       - id
       - tilgangsurl
       - lisens
+      - nedlastningslenke
+      - medietype
     slot_usage:
+      nedlastningslenke:
+        in_subset: [Anbefalt]
+      medietype:
+        in_subset: [Anbefalt]
       tilgangsurl:
         required: true
         in_subset: [Obligatorisk]
@@ -348,6 +365,31 @@ slots:
     range: uriorcurie
 
   # Distribusjon: silver distribusjon_tilgangsurl (dcat:accessURL)
+  frekvens:
+    description: Hvor ofte ressursen oppdateres.
+    slot_uri: dct:accrualPeriodicity
+    range: uriorcurie
+
+  landingsside:
+    description: Nettside som gir tilgang til ressursen og tilleggsinformasjon om den.
+    slot_uri: dcat:landingPage
+    range: uriorcurie
+
+  dokumentasjon:
+    description: Side eller dokument som beskriver ressursen.
+    slot_uri: foaf:page
+    range: uriorcurie
+
+  nedlastningslenke:
+    description: URL til en nedlastbar fil med hele distribusjonen.
+    slot_uri: dcat:downloadURL
+    range: uriorcurie
+
+  medietype:
+    description: Medietypen til distribusjonen, som definert av IANA.
+    slot_uri: dcat:mediaType
+    range: uriorcurie
+
   tilgangsurl:
     description: URL for å få tilgang til datasettet.
     slot_uri: dcat:accessURL

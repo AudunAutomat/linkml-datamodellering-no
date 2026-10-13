@@ -266,6 +266,45 @@ checks:
     class: Datasett
     slot_uri: dcatap:applicableLegislation
 
+  datasett_frekvens:
+    principle: Retningslinjer ved tilgjengeliggjøring av offentlige data
+    severity: warning
+    description: >
+      dcat:Dataset bør ha dct:accrualPeriodicity (oppdateringsfrekvens). Anbefalt i DCAT-AP-NO 2.
+      Retningslinje 6: tydeleg oppdateringsfrekvens.
+    check: class_has_slot_with_uri
+    class: Datasett
+    slot_uri: dct:accrualPeriodicity
+    digdir_rule: 9
+    retningslinje: 6
+    fair_principle: R1
+
+  datasett_landingsside:
+    principle: Retningslinjer ved tilgjengeliggjøring av offentlige data
+    severity: warning
+    description: >
+      dcat:Dataset bør ha dcat:landingPage (landingsside). Anbefalt i DCAT-AP-NO 2.
+      Retningslinje 4: skildringar som gjer det mogleg å finne og forstå dataa.
+    check: class_has_slot_with_uri
+    class: Datasett
+    slot_uri: dcat:landingPage
+    digdir_rule: 1
+    retningslinje: 4
+    fair_principle: F2
+
+  datasett_dokumentasjon:
+    principle: Retningslinjer ved tilgjengeliggjøring av offentlige data
+    severity: warning
+    description: >
+      dcat:Dataset bør ha foaf:page (dokumentasjon). Anbefalt i DCAT-AP-NO 2.
+      Retningslinje 4: dokumenter datasettene.
+    check: class_has_slot_with_uri
+    class: Datasett
+    slot_uri: foaf:page
+    digdir_rule: 1
+    retningslinje: 4
+    fair_principle: R1
+
   # ── Distribusjon (dcat:Distribution) ───────────────────────────────────────
 
   distribusjon_tilgangsurl:
@@ -290,6 +329,33 @@ checks:
     digdir_rule: 7
     retningslinje: 1
     fair_principle: R1.1
+
+  distribusjon_nedlastningslenke:
+    principle: Retningslinjer ved tilgjengeliggjøring av offentlige data
+    severity: warning
+    description: >
+      dcat:Distribution bør ha dcat:downloadURL (nedlastingslenkje). Anbefalt i DCAT-AP-NO 2.
+      Retningslinje 10: tilby komplett nedlasting.
+    check: class_has_slot_with_uri
+    class: Distribusjon
+    slot_uri: dcat:downloadURL
+    retningslinje: 10
+    fair_principle: A1
+
+  distribusjon_format:
+    principle: Retningslinjer ved tilgjengeliggjøring av offentlige data
+    severity: warning
+    description: >
+      dcat:Distribution bør ha dct:format eller dcat:mediaType. Anbefalt i DCAT-AP-NO 2.
+      Retningslinje 8: maskinlesbare standardformat.
+    check: merged_class_has_any_slot_with_uri
+    class: Distribusjon
+    slot_uris:
+      - dct:format
+      - dcat:mediaType
+    digdir_rule: 8
+    retningslinje: 8
+    fair_principle: I1
 
   # ── Datatjeneste (dcat:DataService) ────────────────────────────────────────
 

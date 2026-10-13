@@ -23,6 +23,22 @@ checks:
     digdir_rule: 4
     retningslinje: 11
 
+  schema_license_is_open:
+    severity: warning
+    description: >
+      schema.license bør vere ein open lisens: NLOD 2.0, CC BY 4.0 eller CC0 1.0
+      (som data.norge.no-/creativecommons.org-URI eller tilsvarande URI i EU sitt
+      Licence-vokabular). Retningslinjer ved tilgjengeliggjøring av offentlige data,
+      retningslinje 1: bruk åpne standardlisenser. Manglande schema.license vert
+      rapportert av schema_has_license, ikkje her (skip_if_missing).
+    check: schema_field_present
+    field: license
+    skip_if_missing: true
+    value_pattern: "^(https://data\\.norge\\.no/nlod/(no|en)/2\\.0/?|https?://creativecommons\\.org/(licenses/by/4\\.0|publicdomain/zero/1\\.0)/?|http://publications\\.europa\\.eu/resource/authority/licence/(NLOD_2_0|CC_BY_4_0|CC0))$"
+    digdir_rule: 7
+    retningslinje: 1
+    fair_principle: R1.1
+
   all_classes_have_class_uri:
     severity: warning
     description: >

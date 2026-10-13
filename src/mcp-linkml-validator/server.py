@@ -144,10 +144,27 @@ def _check_schema_id_is_http_uri(sv, schema, config, issues):
 
 def _check_schema_field_present(sv, schema, config, issues):
     field = config["field"]
-    if not getattr(schema, field, None):
+    value = str(getattr(schema, field, None) or "")
+    if not value:
+        # skip_if_missing: verdisjekk som ikkje skal dobbeltrapportere eit
+        # manglande felt som ein annan sjekk alt fangar (t.d. schema_has_license).
+        if not config.get("skip_if_missing"):
+            issues.append(issue(
+                config["severity"], _fair_code(config), "schema",
+                f"{_principle_prefix(config)}schema.{field} manglar",
+            ))
+        return
+    value_pattern = config.get("value_pattern", "")
+    allowed_values = config.get("allowed_values", [])
+    if value_pattern and not re.match(value_pattern, value):
         issues.append(issue(
             config["severity"], _fair_code(config), "schema",
-            f"{_principle_prefix(config)}schema.{field} manglar",
+            f"{_principle_prefix(config)}schema.{field} '{value}' passar ikkje forventa format",
+        ))
+    elif allowed_values and value not in allowed_values:
+        issues.append(issue(
+            config["severity"], _fair_code(config), "schema",
+            f"{_principle_prefix(config)}schema.{field} '{value}' er ikkje ein av: {', '.join(allowed_values)}",
         ))
 
 

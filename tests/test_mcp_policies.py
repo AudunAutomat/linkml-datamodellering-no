@@ -224,6 +224,9 @@ classes:
       - utgiver
       - tilgangsrettigheter
       - gjeldende_lovgivning
+      - frekvens
+      - landingsside
+      - dokumentasjon
   Kvalitetsmaal:
     class_uri: dqv:Metric
     description: Eit kvalitetsmål
@@ -247,6 +250,8 @@ classes:
       - id
       - tilgangsurl
       - lisens
+      - nedlastningslenke
+      - medietype
   Datatjeneste:
     class_uri: dcat:DataService
     description: Ei DCAT-datateneste
@@ -322,6 +327,26 @@ slots:
     description: Endepunktsadresse
     slot_uri: dcat:endpointURL
     range: uri
+  frekvens:
+    description: Oppdateringsfrekvens
+    slot_uri: dct:accrualPeriodicity
+    range: uriorcurie
+  landingsside:
+    description: Landingsside
+    slot_uri: dcat:landingPage
+    range: uri
+  dokumentasjon:
+    description: Dokumentasjon
+    slot_uri: foaf:page
+    range: uri
+  nedlastningslenke:
+    description: Nedlastingslenkje
+    slot_uri: dcat:downloadURL
+    range: uri
+  medietype:
+    description: Medietype
+    slot_uri: dcat:mediaType
+    range: uriorcurie
 """
 
 
@@ -658,6 +683,28 @@ class TestBasisNo(unittest.TestCase):
         self.assertFalse(has_warning(validate_schema(schema, "basis-no"), "all_classes_have_concept_ref"))
         self.assertFalse(has_error(validate_schema(schema, "gold"), "all_classes_have_concept_ref"))
 
+    # G3 (specs/done/nye-policy-sjekkar-retningslinjer-g3-g7.md): open lisens
+    @staticmethod
+    def _lisensfunn(r: dict) -> list:
+        return [i for i in r["issues"] if i["message"].startswith("schema.license '")]
+
+    def test_open_lisens_gir_ingen_lisensfunn(self):
+        for lisens in ("https://data.norge.no/nlod/no/2.0",
+                       "https://creativecommons.org/licenses/by/4.0/",
+                       "http://publications.europa.eu/resource/authority/licence/CC0"):
+            r = validate_schema(_minimal().replace("description: D\n", f"description: D\nlicense: {lisens}\n"), "basis-no")
+            self.assertEqual(self._lisensfunn(r), [], lisens)
+
+    def test_lukka_lisens_gir_advarsel_i_basis_no_og_feil_i_gull(self):
+        schema = _minimal().replace("description: D\n", "description: D\nlicense: https://example.org/proprietaer\n")
+        self.assertEqual([i["severity"] for i in self._lisensfunn(validate_schema(schema, "basis-no"))], ["warning"])
+        self.assertEqual([i["severity"] for i in self._lisensfunn(validate_schema(schema, "gold"))], ["error"])
+        self.assertEqual(self._lisensfunn(validate_schema(schema, "bronze")), [])
+
+    def test_manglande_lisens_vert_ikkje_dobbeltrapportert(self):
+        r = validate_schema(_minimal(), "basis-no")
+        self.assertEqual(len([i for i in r["issues"] if i["message"] == "schema.license manglar"]), 1)
+
     def test_bronze_har_ingen_norske_sjekkar(self):
         bronze_checks = set((load_policy("bronze").get("checks") or {}))
         for norsk in ("all_classes_have_concept_ref", "controlled_vocabulary_annotations",
@@ -877,6 +924,34 @@ class TestGold(unittest.TestCase):
     def test_gyldig_skjema_har_ingen_feil(self):
         r = validate_schema(_GOLD_PASS, "gold")
         self.assertEqual(r["errorCount"], 0)
+
+    # G4 (specs/done/nye-policy-sjekkar-retningslinjer-g3-g7.md): anbefalte
+    # DCAT-slots for retningslinje 4, 6, 8 og 10.
+    _G4 = {
+        "frekvens": ("class:Datasett", "dct:accrualPeriodicity"),
+        "landingsside": ("class:Datasett", "dcat:landingPage"),
+        "dokumentasjon": ("class:Datasett", "foaf:page"),
+        "nedlastningslenke": ("class:Distribusjon", "dcat:downloadURL"),
+        "medietype": ("class:Distribusjon", "dcat:mediaType"),
+    }
+
+    def _utan_slot(self, slot: str) -> str:
+        return _GOLD_PASS.replace(f"      - {slot}\n", "", 1)
+
+    def test_manglande_anbefalt_dcat_slot_gir_advarsel_i_solv_og_feil_i_gull(self):
+        for slot, (target, uri) in self._G4.items():
+            schema = self._utan_slot(slot)
+            for policy, severity in (("silver", "warning"), ("gold", "error")):
+                funn = [i for i in validate_schema(schema, policy)["issues"]
+                        if i["target"] == target and uri in i["message"]]
+                self.assertEqual([i["severity"] for i in funn], [severity], f"{slot}/{policy}")
+
+    def test_format_er_nok_i_staden_for_medietype(self):
+        schema = self._utan_slot("medietype").replace(
+            "      - nedlastningslenke\n", "      - nedlastningslenke\n      - format\n", 1
+        ) + "  format:\n    description: Format\n    slot_uri: dct:format\n    range: uriorcurie\n"
+        r = validate_schema(schema, "gold")
+        self.assertFalse([i for i in r["issues"] if "dct:format" in i["message"]])
 
     def test_arvar_silver_katalog_manglar_slot_gir_feil(self):
         # Gold arvar silver — AP-NO-sjekk for Katalog skal framleis gjelda
@@ -1343,7 +1418,7 @@ class TestPolicyKoherens(unittest.TestCase):
     gull-oppgradering.
 
     _TILSIKTA_UNNTAK let ein eksplisitt, grunngjeven sjekk unntakast frå
-    kravet (ingen slike finst per no — alle 24 kjende warning-sjekkar er
+    kravet (ingen slike finst per no — alle 30 kjende warning-sjekkar er
     oppgraderte)."""
 
     _TILSIKTA_UNNTAK: set = set()
