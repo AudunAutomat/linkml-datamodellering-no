@@ -156,7 +156,7 @@ def status(root, strict=False, out=sys.stdout):
                 page_stale.append(rel)
             else:
                 ok += 1
-        print(f"i18n-status ({lang}):", file=out)
+        print(f"translate-status ({lang}):", file=out)
         print(f"  katalog: {len(catalog.strings)} nøklar, {len(stale)} utdaterte, {len(unstamped)} ustempla"
               + (f", {len(orphan)} foreldrelause i låsefila" if orphan else ""), file=out)
         print(f"  sider: {ok} omsette og oppdaterte, {len(page_stale)} utdaterte, {len(page_unstamped)} ustempla, "

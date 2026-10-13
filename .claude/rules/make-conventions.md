@@ -1,6 +1,6 @@
 ---
 name: make-conventions
-description: Batching- og wrapper-target-mønster for make/*.mk-generatorar, src/assets/scripts/** og mkdocs/lib/scripts/**, orkestratorar som startar containerar (verten, ikkje PYTHON_RUN), pluss peikar til "ingen stille feil"-prinsippet. Lastast automatisk ved arbeid med filer under make/, src/assets/scripts/ eller mkdocs/lib/scripts/.
+description: Batching- og wrapper-target-mønster for make/*.mk-generatorar, src/assets/scripts/** og mkdocs/lib/scripts/**, orkestratorar som startar containerar (verten, ikkje PYTHON_RUN), synlegheit for nye target i make help, pluss peikar til "ingen stille feil"-prinsippet. Lastast automatisk ved arbeid med filer under make/, src/assets/scripts/ eller mkdocs/lib/scripts/.
 paths:
   - "make/**"
   - "src/assets/scripts/**"
@@ -14,6 +14,31 @@ rundt ein kommando som kan feile — bruk `run_logged "<label>" <kommando>` frå
 `LOG_FUNCTIONS` (`make/00-settings.mk`). I Python: bruk
 `error_handler.log_error()` for uventa unntak, og skriv alltid ei linje til
 stderr ved bevisste, mjuke fallback-verdiar.
+
+## Nye target skal vere synlege i `make help`
+
+`src/assets/scripts/makefile/help.sh` les berre target der navnet samsvarer med
+`[a-zA-Z_-]+`. Target med siffer i navnet vert difor **stille** utelatne, utan
+åtvaring. Eit target som ikkje samsvarer med noko mønster i `categories`-lista
+(der første treff vinn), havner i fallback-gruppa «Anna» nedst. Det er synleg,
+men ligg på feil stad.
+
+**Aldri** rekn eit nytt eller omdøypt target som ferdig berre fordi det har ein
+`## `-hjelpetekst.
+
+Gjer i staden slik:
+
+1. Gje targetet eit navn utan siffer.
+2. Sjekk at navnet samsvarer med eit eksisterande kategori-mønster i `help.sh`.
+   Elles utvidar du mønsteret til den kategorien som passar
+   (t.d. `(docs-|translate-)`).
+3. Verifiser med `make help` at targetet syner under rett kategori og ikkje
+   under «Anna».
+
+**Grunngjeving:** `i18n-check`/`i18n-status`/`i18n-stamp` var aldri synlege i
+`make help` på grunn av sifferet. Etter omdøypinga til `translate-*` vart dei
+lesne inn, men forsvann framleis, til mønsteret for «Dokumentasjonsportal»
+vart utvida. Sjå `specs/done/translate-make-targets.md`.
 
 ## Batching vs. parallellisering
 

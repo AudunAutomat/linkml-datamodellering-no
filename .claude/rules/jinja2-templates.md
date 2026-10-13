@@ -90,7 +90,7 @@ Ved ny eller endra overskrift/etikett i ein mal:
 1. **Ny tekst skal ha markør og nøkkel i katalogen** med alle språk.
    LinkML-termar som svarar til nøklar i skjema-YAML-en (Slot, Enumeration,
    Mixin, range, Induced, eigenskapsetikettar som «Slot URI») står utan markør.
-   `make i18n-check` feilar på markørar utan nøkkel.
+   `make translate-check` feilar på markørar utan nøkkel.
 2. **Omsett overskrift skal ha fast anker lik dagens slug** (`i18n_strings.slugify`
    av den opphavlege teksten, med teljing der overskrifta har teljing:
    `{: #classes-{{ n }} }`). Faste anker vert ikkje gjorde unike av mkdocs. Kan

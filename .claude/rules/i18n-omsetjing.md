@@ -12,14 +12,14 @@ Mekanismen (strengkatalog, omsette sider, adresser, `source_hash`) er skildra i
 `mkdocs/docs/automasjon/fleirsprak.md`. Denne rula gjeld **korleis** ein LLM
 omset.
 
-**Aldri** stempla (`make i18n-stamp`) ei side eller ein nøkkel utan at
+**Aldri** stempla (`make translate-stamp`) ei side eller ein nøkkel utan at
 omsetjinga faktisk er oppdatert mot den gjeldande nynorske originalen.
-Stemplinga markerer omsetjinga som oppdatert, og `make i18n-status` vil då ikkje
+Stemplinga markerer omsetjinga som oppdatert, og `make translate-status` vil då ikkje
 lenger åtvare.
 
 ### Framgangsmåte
 
-1. `make i18n-status` — finn manglande, ustempla og utdaterte omsetjingar.
+1. `make translate-status` — finn manglande, ustempla og utdaterte omsetjingar.
 2. **Side** (`x.en.md` ved sida av `x.md`):
    - Omset prosa, overskrifter, tabelltekst og kommentarar i kodeblokker.
    - Behald kommandoar, filstiar, make-variablar og norske identifikatorar
@@ -27,7 +27,7 @@ lenger åtvare.
    - Portal-lenkjer: `https://audunautomat.github.io/linkml-datamodellering-no/<sti>`
      vert `…/en/<sti>`. Artefaktlenkjer (`.ttl`, `.json` …) står utan språkprefiks.
    - **Anker på portalsider (`mkdocs/docs/**`):** behald overskriftsstrukturen
-     (same tal og nivå som originalen). `make i18n-stamp` set då fast anker
+     (same tal og nivå som originalen). `make translate-stamp` set då fast anker
      (`{#slug}`) lik den nynorske sluggen på kvar overskrift, og feilar om
      strukturen avvik. Interne `#…`-lenkjer til slike sider står difor
      **uendra** frå originalen. Skriv ikkje `{#…}` for hand.
@@ -41,15 +41,15 @@ lenger åtvare.
      **ikkje** omsetjast for hand. `generate-readme-tables.sh` fyller blokkene
      på språket til fila (`make docs-publish`). Tabelltekst vert omsett i
      `readme_tabell.*`-nøklane i strengkatalogen.
-   - Ikkje skriv front-matter for hand: `make i18n-stamp FILE=<x.en.md>`.
+   - Ikkje skriv front-matter for hand: `make translate-stamp FILE=<x.en.md>`.
    - **Ny side utanfor `src/` og `mkdocs/`** (t.d. ein språkvariant på
      rotnivå): fila må inn i CI-fillistene, elles viser portalen stille
      originalen. Sjå `.claude/rules/mkdocs-portal.md` § «Nye inndatafiler til
      `publish.sh` må inn i CI-fillistene».
 3. **Katalognøkkel** (`mkdocs/lib/i18n/strings.yaml`): oppdater `en`-verdien,
-   behald dei same `{plasshaldarane}`, og køyr deretter `make i18n-stamp KEYS="…"`.
+   behald dei same `{plasshaldarane}`, og køyr deretter `make translate-stamp KEYS="…"`.
    Rediger aldri `strings.lock.yaml` for hand.
-4. `make i18n-check` (og `make i18n-status` på nytt).
+4. `make translate-check` (og `make translate-status` på nytt).
 
 ### Terminologi
 
@@ -69,5 +69,5 @@ Konkret tilfelle: under steg 10 i
 `specs/done/lokalisering-dokumentasjonsportal.md` hadde dei engelske
 katalogutkasta blanda britisk og amerikansk skrivemåte (*catalogue*/*license*,
 *organisation*, *modelling*). Gjennomgangen avdekte òg to feil i den nynorske
-originalen. Endringane i originalen vart fanga av `make i18n-status` som
+originalen. Endringane i originalen vart fanga av `make translate-status` som
 utdaterte nøklar.

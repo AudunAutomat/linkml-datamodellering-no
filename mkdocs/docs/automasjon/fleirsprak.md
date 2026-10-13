@@ -66,7 +66,7 @@ strings:
   `@@i18n:docgen.<nøkkel>@@`, som `publish.sh` byter ut til slutt. Omsette
   overskrifter har faste anker `{: #slug }` lik den opphavlege sluggen.
 
-`make i18n-check` validerer katalogen og kontrollerer at alle nøklar som vert
+`make translate-check` validerer katalogen og kontrollerer at alle nøklar som vert
 brukte, finst.
 
 ### Omsette sider
@@ -113,10 +113,10 @@ frå:
 
 | Kommando | Kva skjer |
 |---|---|
-| `make i18n-status [STRICT=1]` | Listar sider og nøklar som manglar omsetjing, er ustempla eller er utdaterte fordi originalen er endra. Gjev åtvaringar; `STRICT=1` feilar ved utdaterte/ustempla |
-| `make i18n-stamp FILE=<x.en.md>` | Stemplar ei omsett side etter omsetjing |
-| `make i18n-stamp KEYS="k1 k2"` | Stemplar katalognøklar etter at den engelske verdien er oppdatert |
-| `make i18n-stamp` | Stemplar berre nøklar som manglar hash, t.d. nye nøklar |
+| `make translate-status [STRICT=1]` | Listar sider og nøklar som manglar omsetjing, er ustempla eller er utdaterte fordi originalen er endra. Gjev åtvaringar; `STRICT=1` feilar ved utdaterte/ustempla |
+| `make translate-stamp FILE=<x.en.md>` | Stemplar ei omsett side etter omsetjing |
+| `make translate-stamp KEYS="k1 k2"` | Stemplar katalognøklar etter at den engelske verdien er oppdatert |
+| `make translate-stamp` | Stemplar berre nøklar som manglar hash, t.d. nye nøklar |
 
 Stemplar du ei side under `mkdocs/docs/`, får kvar overskrift i omsetjinga eit
 fast anker (`{#slug}`) lik sluggen av den tilsvarande nynorske overskrifta.
@@ -126,10 +126,10 @@ originalen. Sider som òg vert viste på GitHub (`README.en.md`,
 
 Arbeidsflyt når den nynorske teksten er endra:
 
-1. `make i18n-status` — sjå kva omsetjingar som er utdaterte.
+1. `make translate-status` — sjå kva omsetjingar som er utdaterte.
 2. Oppdater `x.en.md` eller den engelske verdien i `strings.yaml`.
-3. `make i18n-stamp FILE=…` eller `make i18n-stamp KEYS="…"`.
-4. `make i18n-check`.
+3. `make translate-stamp FILE=…` eller `make translate-stamp KEYS="…"`.
+4. `make translate-check`.
 
 Omsetjinga vert gjord av ein LLM. Framgangsmåten ligg i
 [`.claude/rules/i18n-omsetjing.md`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/.claude/rules/i18n-omsetjing.md).
@@ -138,8 +138,8 @@ Omsetjinga vert gjord av ein LLM. Framgangsmåten ligg i
 
 1. Legg språkkoden til i `languages` og eit navn i `language_names` i
    `strings.yaml`, og legg inn verdi for språket på alle nøklar
-   (`make i18n-check` feilar til alle er på plass).
-2. `make i18n-stamp DOCS_LANG=<lang>` for å stemple nøklane.
+   (`make translate-check` feilar til alle er på plass).
+2. `make translate-stamp DOCS_LANG=<lang>` for å stemple nøklane.
 3. `make docs-publish && make docs-build` — språket får eige tre, eigen
    konfig, eigen søkjeindeks og plass i språkveljaren automatisk.
 

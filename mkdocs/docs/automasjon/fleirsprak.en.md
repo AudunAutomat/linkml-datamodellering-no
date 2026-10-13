@@ -1,7 +1,7 @@
 ---
 i18n:
   source: fleirsprak.md
-  source_hash: sha256:65e5521105c45fc7b87e11b2f824888660c1bd8717153db492425e6366e9e21d
+  source_hash: sha256:7dc8cef30e197c3ae1f12ca2e1a921f62ef408ff695b97fa3a086df52e678375
 ---
 # Multilingual portal {#fleirsprakleg-portal}
 
@@ -71,7 +71,7 @@ strings:
   `@@i18n:docgen.<nøkkel>@@`, which `publish.sh` replaces at the end. Translated
   headings have fixed anchors `{: #slug }` equal to the original slug.
 
-`make i18n-check` validates the catalog and checks that all keys that are
+`make translate-check` validates the catalog and checks that all keys that are
 used exist.
 
 ### Translated pages {#omsette-sider}
@@ -118,10 +118,10 @@ from:
 
 | Command | What happens |
 |---|---|
-| `make i18n-status [STRICT=1]` | Lists pages and keys that are missing a translation, are unstamped or are outdated because the original has changed. Gives warnings; `STRICT=1` fails on outdated/unstamped |
-| `make i18n-stamp FILE=<x.en.md>` | Stamps a translated page after translation |
-| `make i18n-stamp KEYS="k1 k2"` | Stamps catalog keys after the English value has been updated |
-| `make i18n-stamp` | Stamps only keys that are missing a hash, e.g. new keys |
+| `make translate-status [STRICT=1]` | Lists pages and keys that are missing a translation, are unstamped or are outdated because the original has changed. Gives warnings; `STRICT=1` fails on outdated/unstamped |
+| `make translate-stamp FILE=<x.en.md>` | Stamps a translated page after translation |
+| `make translate-stamp KEYS="k1 k2"` | Stamps catalog keys after the English value has been updated |
+| `make translate-stamp` | Stamps only keys that are missing a hash, e.g. new keys |
 
 When you stamp a page under `mkdocs/docs/`, every heading in the translation gets a
 fixed anchor (`{#slug}`) equal to the slug of the corresponding Nynorsk heading.
@@ -131,10 +131,10 @@ the original. Pages that are also shown on GitHub (`README.en.md`,
 
 Workflow when the Nynorsk text has changed:
 
-1. `make i18n-status` — see which translations are outdated.
+1. `make translate-status` — see which translations are outdated.
 2. Update `x.en.md` or the English value in `strings.yaml`.
-3. `make i18n-stamp FILE=…` or `make i18n-stamp KEYS="…"`.
-4. `make i18n-check`.
+3. `make translate-stamp FILE=…` or `make translate-stamp KEYS="…"`.
+4. `make translate-check`.
 
 The translation is done by an LLM. The procedure is described in
 [`.claude/rules/i18n-omsetjing.md`](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/.claude/rules/i18n-omsetjing.md).
@@ -143,8 +143,8 @@ The translation is done by an LLM. The procedure is described in
 
 1. Add the language code to `languages` and a name to `language_names` in
    `strings.yaml`, and add a value for the language to all keys
-   (`make i18n-check` fails until all are in place).
-2. `make i18n-stamp DOCS_LANG=<lang>` to stamp the keys.
+   (`make translate-check` fails until all are in place).
+2. `make translate-stamp DOCS_LANG=<lang>` to stamp the keys.
 3. `make docs-publish && make docs-build` — the language automatically gets its own tree, its own
    config, its own search index and a place in the language selector.
 

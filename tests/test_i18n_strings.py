@@ -5,7 +5,7 @@ Køyr frå repo-rot i python-pytest-kontaineren:
   podman run --rm -v "$PWD:/work" -w /work localhost/python-pytest:latest \
       python3 -m pytest tests/test_i18n_strings.py -v
 
-bash-lastaren (mkdocs/lib/utils/i18n.sh) vert røyktesta av `make i18n-check`,
+bash-lastaren (mkdocs/lib/utils/i18n.sh) vert røyktesta av `make translate-check`,
 sidan python-pytest-imaget ikkje har bash.
 Sjå specs/done/lokalisering-dokumentasjonsportal.md (steg 3).
 """

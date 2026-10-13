@@ -7,12 +7,12 @@
 # - docs-serve-site: server den bygde portalen (alle språk) på :8000
 # - docs-build: bygg statisk site for alle språk til mkdocs/site/ (/<lang>/ + rot)
 # - docs-publish: generer språktre og mkdocs-konfig per språk i mkdocs/build/
-# - i18n-check: valider strengkatalogen for portaltekst og røyktest lastaren
-# - i18n-status / i18n-stamp: endringsdeteksjon for omsetjingar (source_hash)
+# - translate-check: valider strengkatalogen for portaltekst og røyktest lastaren
+# - translate-status / translate-stamp: endringsdeteksjon for omsetjingar (source_hash)
 #
 # Relaterte script:
 # - mkdocs/publish.sh (hovudscript for docs-publish)
-# - mkdocs/lib/scripts/i18n_strings.py, mkdocs/lib/utils/i18n.sh (i18n-check)
+# - mkdocs/lib/scripts/i18n_strings.py, mkdocs/lib/utils/i18n.sh (translate-check)
 # - src/assets/scripts/makefile/generate-readme-tables.sh
 # ==============================================================================
 
@@ -75,8 +75,8 @@ docs-publish: ## Generer språktre, byggjetre og mkdocs-konfig per språk i mkdo
 # specs/done/lokalisering-dokumentasjonsportal.md
 # ---------------------------------------------------------------------------
 
-i18n-check: ## Valider strengkatalogen for portaltekst, køyr testane og røyktest i18n-lastaren
-	$(call print_header,i18n-check)
+translate-check: ## Valider strengkatalogen for portaltekst, køyr testane og røyktest lastaren
+	$(call print_header,translate-check)
 	@$(PYTHON_RUN) python3 mkdocs/lib/scripts/i18n_strings.py check
 	@$(PYTHON_RUN) python3 -m pytest -q -p no:cacheprovider tests/test_i18n_strings.py tests/test_i18n_status.py tests/test_modellanalyse_render.py
 	@langs=$$($(PYTHON_RUN) python3 mkdocs/lib/scripts/i18n_strings.py languages) && \
@@ -84,11 +84,11 @@ i18n-check: ## Valider strengkatalogen for portaltekst, køyr testane og røykte
 		for lang in $$LANGS; do i18n_load "$$lang"; v=$$(t i18n.ikkje_omsett.tittel); \
 		echo "i18n_load $$lang: $${#I18N[@]} nøklar, i18n.ikkje_omsett.tittel = $$v"; done'
 
-i18n-status: ## List manglande, ustempla og utdaterte omsetjingar (åtvaringar) [STRICT=1]
-	$(call print_header,i18n-status)
+translate-status: ## List manglande, ustempla og utdaterte omsetjingar (åtvaringar) [STRICT=1]
+	$(call print_header,translate-status)
 	@$(PYTHON_RUN) python3 mkdocs/lib/scripts/i18n_status.py status $(if $(STRICT),--strict)
 
-i18n-stamp: ## Stempla omsetjingar med hash av originalen [FILE=<x.lang.md>|KEYS="k1 k2"] [DOCS_LANG=<lang>]
-	$(call print_header,i18n-stamp)
+translate-stamp: ## Stempla omsetjingar med hash av originalen [FILE=<x.lang.md>|KEYS="k1 k2"] [DOCS_LANG=<lang>]
+	$(call print_header,translate-stamp)
 	@$(PYTHON_RUN) python3 mkdocs/lib/scripts/i18n_status.py \
 		$(if $(FILE),stamp-page "$(FILE)",stamp-catalog $(if $(DOCS_LANG),--lang $(DOCS_LANG)) $(if $(KEYS),--keys $(KEYS)))

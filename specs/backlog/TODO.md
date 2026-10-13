@@ -88,4 +88,4 @@ wsl: Failed to start the systemd user session for 'audun'. See journalctl for mo
   3. Mellombels løysing for denne økta, utan omstart:
   ! sudo systemctl start user@1000.service
 
-  Når ls -ld /run/user/1000 viser katalogen, kan eg køyre actionlint og make i18n-stamp/i18n-check, så blir specen ferdig.
+  Når ls -ld /run/user/1000 viser katalogen, kan eg køyre actionlint og make translate-stamp/translate-check, så blir specen ferdig.

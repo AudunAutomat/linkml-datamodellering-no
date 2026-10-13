@@ -10,7 +10,7 @@
 # publish.sh. Inne i `echo "$(t key)"` vert feilstatusen til t svelgd
 # (meldinga kjem likevel på stderr). Difor køyrer publish.sh
 # `i18n_strings.py check` før bygget, som fangar ukjende nøklar statisk
-# (same sjekk som `make i18n-check`). Der kontrollflyten avheng av resultatet,
+# (same sjekk som `make translate-check`). Der kontrollflyten avheng av resultatet,
 # tilordn til ein variabel (`x=$(t key)`) slik at `set -e` slår inn.
 # Sjå specs/done/lokalisering-dokumentasjonsportal.md (steg 3).
 set -euo pipefail

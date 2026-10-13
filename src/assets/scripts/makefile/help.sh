@@ -53,7 +53,7 @@ categories=(
     "Opprett og fjern modellar|(new-|remove-modell)"
     "Validering|(validate|lint|check-published-uris|check-import-duplicates)"
     "Generering (per domene eller skjema)|(gen-|domain-|convert-)"
-    "Dokumentasjonsportal|docs-"
+    "Dokumentasjonsportal|(docs-|translate-)"
     "Modell-analyse|analyse-"
     "Container images|build-docker-"
     "MCP-serverar|mcp-"
@@ -82,9 +82,21 @@ arg_group_re='^(.*[^[:space:]])[[:space:]]+(\[[^]]*=[^]]*\]|\([^)]*=[^)]*\))$'
 
 declare -A shown=()
 first=true
+# Siste, ikkje-tomme gruppe fangar target som ingen kategori over samsvarar
+# med, slik at dei ikkje vert stille utelatne (sjå
+# specs/done/make-help-anna-gruppe.md).
+categories+=("Anna|.")
+
 for entry in "${categories[@]}"; do
     label="${entry%%|*}"
     pattern="${entry#*|}"
+    if [ "$label" = "Anna" ]; then
+        rest=false
+        for line in "${lines[@]}"; do
+            [ -z "${shown[${line%%:*}]+x}" ] && { rest=true; break; }
+        done
+        [ "$rest" = true ] || continue
+    fi
     if [ "$first" = true ]; then
         first=false
     else

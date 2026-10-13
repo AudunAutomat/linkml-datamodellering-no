@@ -1,7 +1,7 @@
 ---
 i18n:
   source: README.md
-  source_hash: sha256:6427cab17acbad79d455de21a05a72bc6210150cf5c9dae8e19161a4acccd861
+  source_hash: sha256:cecdf700fa8e6c77923364d222149e2a81a740be595d89ebd95c034018ee941a
 ---
 # linkml-datamodellering-no
 
@@ -11,6 +11,7 @@ i18n:
     
     **What this means:**
     
+    - The LinkML models are unofficial models
     - Models and tools are under development and may change
     - The documentation may be incomplete or outdated
     - Some features are only partially implemented
