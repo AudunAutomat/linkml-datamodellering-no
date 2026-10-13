@@ -1,19 +1,23 @@
 ---
 i18n:
   source: README.md
-  source_hash: sha256:de802c1197c4c259d09e40570028ccdf2452faf33da06ac90d12afd3aa0b3c56
+  source_hash: sha256:60ee34dc316ca6c0b07c8d1f76bbcace4f40362e2c4e24cc9797e755df7af37a
 ---
 # Policies for mcp-linkml-validator
 
-The validation rules in these policies bring together three authoritative sources. Each check
-in the YAML files carries source metadata (`digdir_rule`, `retningslinje`, `fair_principle`), and
-the "Digdir rule", "Guideline" and "FAIR" columns in the tables below mirror these.
+The validation rules in these policies bring together three normative sources and one technical source.
+Checks linked to these sources carry source metadata in the YAML files (`digdir_rule`,
+`retningslinje`, `fair_principle`, `linkml`). The checks in the publishing policies refer instead
+to the AP-NO specification (`spec_url`, the "Source" column). The "Digdir rule", "Guideline" and "FAIR" columns in the check tables mirror the three
+normative sources. The technical source, LinkML, is collected in
+[LinkML conformance](#linkml-conformance-technical-source).
 
 | Source | Publisher | Type | Primarily concerns |
 |---|---|---|---|
 | [Retningslinjer ved tilgjengeliggjøring av offentlige data](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) ("Guidelines for making public data available") | Ministry of Local Government and Modernisation (now DFD), 2017 | 15 recommended guidelines | Data and dataset descriptions |
 | [Felles modelleringsregler for offentlig forvaltning](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029) ("Common modeling rules for the public sector") | Norwegian Digitalisation Agency, v1.0, June 2022 | 15 modeling rules | Information models |
 | [FAIR principles](https://www.go-fair.org/fair-principles/) | GO FAIR | 15 principles (Findable, Accessible, Interoperable, Reusable) | (Meta)data in general |
+| [LinkML](https://linkml.io/linkml/): the metamodel, the [Schema Linter](https://linkml.io/linkml/schemas/linter.html) and the `personinfo` tutorial | The LinkML project | Technical: conformance and conventions of the tool | The schema as a LinkML artifact, especially [`bronze`](#bronze) |
 
 Both the guidelines and the Digdir rules are numbered 1-15. In prose we therefore write
 "guideline 6" and "Digdir rule 9"; in the tables the column header tells them apart.
@@ -61,7 +65,7 @@ Legend: ✅ covered by a policy check · 🟡 partially covered · ❌ not cover
 | 5 | [**Visualisering**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#visualisering) (visualization) | The model is available with a good visual representation | Basis-no/Gold: `schema_har_erdiagram_aktivert` (build.yaml has `generators.erdiagram: true`) — the Mermaid syntax of the generated ER diagram is additionally validated nightly by the `mermaid-render` job in `lenkje-og-mermaid-sjekk.yml` | — |
 | 6 | [**Modularitet**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#modularitet) (modularity) | A manageable number of model elements per module | Basis-no: `class_count_limit` — warning if the schema has more than 50 classes | — |
 | 7 | [**Tilgjengeliggjøring**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#tilgjengeliggjring) (availability) | The model is freely available online with an open license | Bronze: `license` (warning) | [R1.1](https://www.go-fair.org/fair-principles/) |
-| 8 | [**Maskinprosserbarhet**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) (machine processability) | The model is available in open, machine-readable formats | Bronze: `no_inlined_on_primitive_range` (warning), LinkML linter (`recommended`); basis-no: `class_uri`, `slot_uri` (indirectly, via the rule 4 check) | [I1, I2](https://www.go-fair.org/fair-principles/) |
+| 8 | [**Maskinprosserbarhet**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) (machine processability) | The model is available in open, machine-readable formats | Basis-no: `class_uri`, `slot_uri` (indirectly, via the rule 4 check), `controlled_vocabulary_annotations` (warning). Silver: `distribusjon_format`, instance checks for controlled vocabularies. Gold: `i2_standard_prefixes`. LinkML structural checks (linter, `inlined`) are listed under [LinkML conformance](#linkml-conformance-technical-source) | [I1, I2](https://www.go-fair.org/fair-principles/) |
 | 9 | [**Datering**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#datering) (dating) | The model is dated with publication, modification and validity dates | Bronze: `version` (warning); Silver: `annotations.endringsdato` (warning) | [R1, R1.3](https://www.go-fair.org/fair-principles/) |
 | 10 | [**Ansvar**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#ansvar) (responsibility) | Ownership of and responsibility for the content of the model are clear | Silver: `annotations.utgiver` (warning) | [R1.2](https://www.go-fair.org/fair-principles/) |
 | 11 | [**Modellstatus**](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#modellstatus) (model status) | The model has an explicit status (under development, completed, deprecated …) | Silver: `annotations.status` (warning) | [R1.3](https://www.go-fair.org/fair-principles/) |
@@ -91,7 +95,7 @@ Legend: ✅ covered by a policy check · 🟡 partially covered · ❌ not cover
 | [A1.1](https://www.go-fair.org/fair-principles/) | Open, free and universally implementable protocol | Implicit: the HTTP(S) requirement in `schema_id_is_http_uri` | 🟡 |
 | [A1.2](https://www.go-fair.org/fair-principles/) | Authentication and authorization where necessary | `datasett_tilgangsrettigheter` | 🟡 |
 | [A2](https://www.go-fair.org/fair-principles/) | Metadata accessible even when the data are no longer available | — (a property of the catalog service, not of the schema) | ⚪ |
-| [I1](https://www.go-fair.org/fair-principles/) | Formal, shared language for knowledge representation | `all_classes_have_class_uri`, `all_slots_have_slot_uri`, `local_types_have_standard_uri`, `no_inlined_on_primitive_range`, `controlled_vocabulary_annotations`, `distribusjon_format` | ✅ |
+| [I1](https://www.go-fair.org/fair-principles/) | Formal, shared language for knowledge representation | `all_classes_have_class_uri`, `all_slots_have_slot_uri`, `local_types_have_standard_uri`, `controlled_vocabulary_annotations`, `distribusjon_format` | ✅ |
 | [I2](https://www.go-fair.org/fair-principles/) | Vocabularies that follow FAIR | `i2_standard_prefixes`, `all_classes_have_concept_ref` | ✅ |
 | [I3](https://www.go-fair.org/fair-principles/) | Qualified references to other (meta)data | `schema_importerer_dqv_ap_no`; `make analyse-modell-sammenhenger` (informative) | 🟡 |
 | [R1](https://www.go-fair.org/fair-principles/) | Richly described with relevant attributes | `schema.version`, `datasett_frekvens`, `datasett_dokumentasjon` and the combined F2/R1.x checks | ✅ |
@@ -99,28 +103,61 @@ Legend: ✅ covered by a policy check · 🟡 partially covered · ❌ not cover
 | [R1.2](https://www.go-fair.org/fair-principles/) | Detailed provenance | `schema_has_annotation_utgiver`, `*_utgiver`, `r12_provenance` | ✅ |
 | [R1.3](https://www.go-fair.org/fair-principles/) | Meet domain-relevant community standards | `schema_has_annotation_endringsdato`/`_oppdateringsfrekvens`/`_status`, `katalogpost_endringsdato` | ✅ |
 
+### LinkML conformance (technical source)
+
+LinkML is not a normative source for the public sector. The source is the tool's own
+requirements and conventions, and it is the basis for the generic [`bronze`](#bronze) baseline.
+Checks in `checks:` have the `linkml` key in YAML. For the `required:` fields and the linter,
+the source is recorded only here. Mapped against LinkML 1.11.1. The validator image installs
+`linkml>=1.11.1,<2.0.0` (`src/assets/containers/Dockerfile.mcp-linkml`), so the rule set
+may change with new versions.
+
+| Check | Policy | LinkML basis | `linkml` |
+|---|---|---|---|
+| `schema.id`, `schema.name` present | bronze (error) | Required fields on `SchemaDefinition` in the metamodel | metamodell |
+| Metamodel validation | all | The schema validates against the LinkML metamodel (`validate_schema=True` in the linter call) | metamodell |
+| `default_prefix_is_absolute_uri` | bronze (error) | `default_prefix` must expand to a URI base for generated element URIs | semantikk |
+| `no_inlined_on_primitive_range` | bronze (warning), gold (error) | `inlined`/`inlined_as_list` only has an effect when the range is a class | semantikk |
+| `local_types_have_standard_uri` | bronze (warning), gold (error) | Types in `types:` need a `uri` to map to XSD/RDF. Overlaps with Digdir rule 15 | semantikk |
+
+[Schema Linter](https://linkml.io/linkml/schemas/linter.html), the `recommended` rule set (`extends: recommended` in `bronze.yaml`):
+
+| Rule | Level in `recommended` | bronze | gold | Note |
+|---|---|---|---|---|
+| `no_undeclared_slots` | error | error | error | |
+| `no_undeclared_ranges` | error | error | error | |
+| `no_invalid_slot_usage` | error | error | error | |
+| `one_identifier_per_class` | error | error | error | |
+| `one_key_per_class` | error | error | error | |
+| `root_type_checks` | error | error | error | |
+| `no_xsd_int_type` | error | error | error | |
+| `standard_naming` | warning | warning | error | Overlaps with Digdir rule 3. Permissible values are exempt. `slot_naming: camel` in `build.yaml` gives a camelCase exception |
+| `recommended` | warning | off | off | The same requirement (`description`) is enforced by `recommended:`, so the linter would give a double signal |
+| `canonical_prefixes` | warning | off | off | Too strict for a generic baseline (requires e.g. `dcterms` instead of `dct`) |
+
 ### Cross-reference between the sources
 
-The table shows how the three sources overlap by theme. "—" means the source has no corresponding item.
+The table shows how the three normative sources and LinkML overlap by theme. "—" means the source has no corresponding item.
 
-| Theme | Guideline | Digdir rule | FAIR |
-|---|---|---|---|
-| Open license | 1 | 7 | R1.1 |
-| Access, registration and privacy | 2, 3, note | — | A1.2 |
-| Understandable descriptions and documentation | 4 | 1, 2, 13 | F2, I2 |
-| Data quality | 5 | 14 | I3 |
-| Updating and dating | 6 | 9 | R1, R1.3 |
-| Lifecycle status | — | 11 | R1.3 |
-| Visibility in a shared catalog | 7, 12 | — | F3, F4 |
-| Machine-readable standard formats and vocabularies | 8 | 8, 15 | I1, I2 |
-| API and download | 9, 10 | — | A1 |
-| Persistent addresses and identifiers | 11 | 4 | F1, F3, A1 |
-| Responsibility and provenance | — | 10 | R1.2 |
-| Contact point and feedback | 15 | 10 | F2 |
-| Naming, visualization, modularity | — | 3, 5, 6 | — |
-| Relationships between models | — | 12 | I3 |
-| Metadata available after the data are gone | — | — | A2 |
-| User adaptation and encouraging use | 13, 14 | — | — |
+| Theme | Guideline | Digdir rule | FAIR | LinkML |
+|---|---|---|---|---|
+| Open license | 1 | 7 | R1.1 | — |
+| Access, registration and privacy | 2, 3, note | — | A1.2 | — |
+| Understandable descriptions and documentation | 4 | 1, 2, 13 | F2, I2 | — |
+| Data quality | 5 | 14 | I3 | — |
+| Updating and dating | 6 | 9 | R1, R1.3 | — |
+| Lifecycle status | — | 11 | R1.3 | — |
+| Visibility in a shared catalog | 7, 12 | — | F3, F4 | — |
+| Machine-readable standard formats and vocabularies | 8 | 8, 15 | I1, I2 | semantikk (`types:`) |
+| API and download | 9, 10 | — | A1 | — |
+| Persistent addresses and identifiers | 11 | 4 | F1, F3, A1 | semantikk (`default_prefix`) |
+| Responsibility and provenance | — | 10 | R1.2 | — |
+| Contact point and feedback | 15 | 10 | F2 | — |
+| Naming, visualization, modularity | — | 3, 5, 6 | — | `standard_naming` |
+| Relationships between models | — | 12 | I3 | — |
+| LinkML structural validity (metamodel, declared slots and ranges, `inlined`) | — | — | — | metamodell, linter, semantikk |
+| Metadata available after the data are gone | — | — | A2 | — |
+| User adaptation and encouraging use | 13, 14 | — | — | — |
 
 ---
 
@@ -143,8 +180,8 @@ Used for schemas with `publish_external: true` in the manifest.
 
 | Level | Requirements | Digdir rules | Guidelines | FAIR principles |
 |---|---|---|---|---|
-| [`bronze`](#bronze) | Generic LinkML baseline: metadata, URIs, naming (linter) and modeling quality — without Norwegian prerequisites | 1, 2, 3, 4, 7, 8, 15 | 1, 4, 6, 8, 11 | F1, F2, A1, I1 (warning), R1 (warning), R1.1 (warning) |
-| [`basis-no`](#basis-no) | Bronze + Digdir/repository requirements: `class_uri`/`slot_uri`, identifier, concept identifier, modularity, ER diagram, controlled vocabularies | 1-8, 13, 15 | 1, 4, 6, 8, 11 | Bronze + F3 (warning), I2 (warning) |
+| [`bronze`](#bronze) | Generic LinkML baseline: metadata, URIs, naming (linter) and modeling quality — without Norwegian prerequisites | 1, 2, 3, 4, 7, 9, 15 | 1, 4, 6, 8, 11 | F1, F2, A1, I1 (warning), R1 (warning), R1.1 (warning) |
+| [`basis-no`](#basis-no) | Bronze + Digdir/repository requirements: `class_uri`/`slot_uri`, identifier, concept identifier, modularity, ER diagram, controlled vocabularies | 1-9, 13, 15 | 1, 4, 6, 8, 11 | Bronze + F3 (warning), I2 (warning) |
 | [`silver`](#silver) | Basis-no + AP-NO conformance and lifecycle metadata | 1-11, 13-15 | 1, 3-6, 8-12, 15 | Basis-no + A1.2, R1.2, R1.3, I3 |
 | [`gold`](#gold) | Silver + FAIR F1-R1.3: full semantic interoperability | 1-11, 13-15 | 1, 3-6, 8-12, 15 | F1-F3, A1, A1.2, I1-I3, R1-R1.3 (all error) |
 
@@ -174,7 +211,7 @@ in [`basis-no`](#basis-no). See `specs/done/gjennomgang-bronze-policy-generisk.m
 |---|---|---|---|---|---|---|
 | `schema.id` present | error | — (already error) | [4 — Identifiserbarhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | [11 — Persistent addresses and unique identifiers](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [F1](https://www.go-fair.org/fair-principles/) | Persistent identifier for the schema |
 | `schema.id` is an HTTP(S) URI | error | — (already error) | [4 — Identifiserbarhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | [11 — Persistent addresses and unique identifiers](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [F1, A1](https://www.go-fair.org/fair-principles/) | Ensures that the identifier is a resolvable URI |
-| `schema.name` present | error | — (already error) | [1 — Forståelighet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#forstelighet) | — | — | Machine-readable name of the schema |
+| `schema.name` present | error | — (already error) | — | — | — | Machine-readable name of the schema |
 | `schema.title` present | error | — (already error) | [1 — Forståelighet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#forstelighet), [2 — Meningsfullhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#meningsfullhet) | [4 — Document the datasets](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [F2](https://www.go-fair.org/fair-principles/) | Human-readable title |
 | `schema.default_prefix` present | error | — (already error) | [4 — Identifiserbarhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | [11 — Persistent addresses and unique identifiers](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | — | Default namespace for local identifiers |
 | `schema.default_prefix` expands (via `prefixes:` or directly) to an absolute HTTP(S) URI ending in `/` or `#` | error | — (already error) | [4 — Identifiserbarhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | [11 — Persistent addresses and unique identifiers](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | — | Idiomatic LinkML (`default_prefix: personinfo`) and a literal URI are both valid |
@@ -182,9 +219,9 @@ in [`basis-no`](#basis-no). See `specs/done/gjennomgang-bronze-policy-generisk.m
 | `schema.version` present | warning | error (gold) | [9 — Datering](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#datering) | [6 — Up-to-date data](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [R1](https://www.go-fair.org/fair-principles/) | Version number for traceability |
 | `schema.license` present | warning | error (gold) | [7 — Tilgjengeliggjøring](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#tilgjengeliggjring) | [1 — Open standard licenses](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [R1.1](https://www.go-fair.org/fair-principles/) | License for reuse of the schema |
 | Slot/attribute `description` present | warning | — | [1 — Forståelighet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#forstelighet) | [4 — Document the datasets](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [F2](https://www.go-fair.org/fair-principles/) | Applies both to global `slots:` and `attributes:` (except attributes on the `tree_root` class) |
-| LinkML linter, the `recommended` rule set (without the `recommended` and `canonical_prefixes` rules) | error/warning per rule | — | [8 — Maskinprosserbarhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | — | — | Metamodel validation and upstream rules such as `no_undeclared_slots`, `no_undeclared_ranges`, `one_identifier_per_class`, `no_invalid_slot_usage` |
+| LinkML linter, the `recommended` rule set (without the `recommended` and `canonical_prefixes` rules) | error/warning per rule | — | — | — | — | Metamodel validation and upstream rules such as `no_undeclared_slots`, `no_undeclared_ranges`, `one_identifier_per_class`, `no_invalid_slot_usage` |
 | Linter `standard_naming`: classes/enums `UpperCamelCase`, slots/attributes `snake_case` (local elements only, not permissible values) | warning | error (gold) | [3 — Navne- og skrivekonvensjoner](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#navne_og_skrivekonvensjoner) | — | — | Consistent naming. `build.yaml: slot_naming: camel` gives an exception for schemas that inherit camelCase from their source |
-| `inlined`/`inlined_as_list` is only set where the range is a class | warning | error (gold) | [8 — Maskinprosserbarhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | — | [I1](https://www.go-fair.org/fair-principles/) | Catches dead configuration — the key has no effect on a primitive range |
+| `inlined`/`inlined_as_list` is only set where the range is a class | warning | error (gold) | — | — | — | Catches dead configuration — the key has no effect on a primitive range |
 | Locally defined types (`types:`) have a `uri:` in a standard namespace (xsd/rdf/rdfs/owl) | warning | error (gold) | [15 — Standardiserte datatyper](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#standardiserte_datatyper) | [8 — Machine-readable standard formats](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [I1](https://www.go-fair.org/fair-principles/) | Types inherited from `linkml:types` are already guaranteed to be mapped to XSD and need no separate check |
 
 > **The LinkML linter** runs for all policies, with the rule set from the policy's `linter:` section.
@@ -295,7 +332,7 @@ Inherits silver, basis-no and bronze. Implements the gap to the FAIR principles 
 |---|---|---|---|---|---|---|
 | `schema.id` present | error | Bronze (already error) | [4 — Identifiserbarhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | [11 — Persistent addresses and unique identifiers](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [F1](https://www.go-fair.org/fair-principles/) | Persistent identifier for the schema |
 | `schema.id` is an HTTP(S) URI | error | Bronze (already error) | [4 — Identifiserbarhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | [11 — Persistent addresses and unique identifiers](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [F1, A1](https://www.go-fair.org/fair-principles/) | Ensures that the identifier is a resolvable URI |
-| `schema.name` present | error | Bronze (already error) | [1 — Forståelighet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#forstelighet) | — | — | Machine-readable name of the schema |
+| `schema.name` present | error | Bronze (already error) | — | — | — | Machine-readable name of the schema |
 | `schema.title` present | error | Bronze (already error) | [1 — Forståelighet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#forstelighet), [2 — Meningsfullhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#meningsfullhet) | [4 — Document the datasets](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [F2](https://www.go-fair.org/fair-principles/) | The title is part of the rich metadata that makes the resource searchable |
 | `schema.default_prefix` present | error | Bronze (already error) | [4 — Identifiserbarhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | [11 — Persistent addresses and unique identifiers](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | — | Default namespace for local identifiers |
 | `schema.default_prefix` is an absolute HTTPS URI ending in `/` | error | Basis-no (already error) | [4 — Identifiserbarhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | [11 — Persistent addresses and unique identifiers](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | — | Ensures correct URI construction |
@@ -310,7 +347,7 @@ Inherits silver, basis-no and bronze. Implements the gap to the FAIR principles 
 | All classes (except `tree_root`) have an identifier slot | error | Basis-no → gold | [4 — Identifiserbarhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#identifiserbarhet) | [11 — Persistent addresses and unique identifiers](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [F1](https://www.go-fair.org/fair-principles/) | Ensures that instances of the class can be uniquely identified |
 | All classes (except `tree_root`) have `annotations.begrepsidentifikator` | error | Basis-no → gold | [13 — Begreper](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#begreper) | [4 — Document the datasets](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [I2](https://www.go-fair.org/fair-principles/) | Links model elements to domain concepts in a concept catalog |
 | Slots with controlled vocabularies have correct annotations | error | Basis-no → gold | [8 — Maskinprosserbarhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | — | [I1](https://www.go-fair.org/fair-principles/) | Ensures machine-readable documentation of vocabulary requirements |
-| `inlined`/`inlined_as_list` is only set where the range is a class | error | Bronze → gold | [8 — Maskinprosserbarhet](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#maskinprosserbarhet) | — | [I1](https://www.go-fair.org/fair-principles/) | Catches dead configuration — the key has no effect on a primitive range |
+| `inlined`/`inlined_as_list` is only set where the range is a class | error | Bronze → gold | — | — | — | Catches dead configuration — the key has no effect on a primitive range |
 | `build.yaml` has `generators.erdiagram: true` | error | Basis-no → gold | [5 — Visualisering](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#visualisering) | — | — | Ensures that an ER diagram is generated for the schema |
 | The schema imports `dqv-ap-no-schema` | error | Silver → gold | [14 — Gjenbruk](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#gjenbruk) | [5 — Data quality](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [I3](https://www.go-fair.org/fair-principles/) | Reuse of the quality vocabulary instead of equivalent classes/slots of its own |
 | Locally defined types (`types:`) have a `uri:` in a standard namespace | error | Bronze → gold | [15 — Standardiserte datatyper](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029#standardiserte_datatyper) | [8 — Machine-readable standard formats](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) | [I1](https://www.go-fair.org/fair-principles/) | Types inherited from `linkml:types` are already guaranteed to be mapped to XSD |

@@ -158,7 +158,7 @@ Berre nødvendig ved første bruk eller etter endringar i Dockerfile.
 
 | Kommando | Beskriving | Output | Batching |
 |---|---|---|---|
-| `make lint` | Linter alle skjema i repoet. | OK/FEIL per skjema til stdout; avsluttar med kode 1 ved feil | Batcha — `batch-lint.py`, éin delt `Linter`/`TerminalFormatter`-sesjon for alle skjema |
+| `make lint` | Linter alle skjema i repoet. Brukar `src/assets/containers/.linkmllint.yaml` (`recommended` utan `standard_naming` og `canonical_prefixes`), ikkje `linter:`-konfigen i policyane som `make mcp-linkml-valider-modell` brukar. Regelsetta er difor ulike, t.d. er `standard_naming` av her, men aktiv frå bronze — sjå [LinkML-konformitet](src/mcp-linkml-validator/policies/README.md#linkml-konformitet-teknisk-kjelde). | OK/FEIL per skjema til stdout; avsluttar med kode 1 ved feil | Batcha — `batch-lint.py`, éin delt `Linter`/`TerminalFormatter`-sesjon for alle skjema |
 | `make lint SCHEMA=<sti>` | Linter eit enkelt skjema raskt utan å køyre generatorar. Nyttig for hurtigsjekk under utvikling. | OK/FEIL til stdout; avsluttar med kode 1 ved feil | Batcha (same mekanisme, N=1) |
 | `make validate-instance SCHEMA=<sti> INSTANCE=<sti>` | Validerer ei datafil mot eit skjema utan lint og generatorar. Raskaste enkeltsjekk av datainnhald. | OK/FEIL til stdout; avsluttar med kode 1 ved feil | Ikkje batcha — eitt skjema/éin instans om gongen |
 | `make roundtrip SCHEMA=<sti>` | Køyrer berre roundtrip-testane (JSON og TTL) for eitt skjema. Raskare enn full testsuite — nyttig etter skjema-endringar som kan påverke serialisering. | Testrapport for `roundtrip-json` og `roundtrip-ttl` til stdout; avsluttar med kode 1 ved feil | Batcha — `tests/test_make.sh` sitt Fase A/B-mønster (`batch-convert.py`), Kategori D |

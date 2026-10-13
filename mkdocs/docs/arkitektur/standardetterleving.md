@@ -92,7 +92,7 @@ underliggande datadrift-arbeidet er skildra i
 
 ## Sjå også
 
-- [Valideringsreglar](valideringsregler.md) — full sjekkliste for bronse/sølv/gull-policyane, med dekningsgrad per kjelde og kryssreferanse mellom dei tre autoritative kjeldene: Retningslinjer ved tilgjengeliggjøring av offentlige data, Digdirs Felles modelleringsregler og FAIR-prinsippa
+- [Valideringsreglar](valideringsregler.md) — full sjekkliste for bronse/sølv/gull-policyane, med dekningsgrad per kjelde og kryssreferanse mellom dei tre normative kjeldene (Retningslinjer ved tilgjengeliggjøring av offentlige data, Digdirs Felles modelleringsregler og FAIR-prinsippa) og LinkML som teknisk kjelde
 - [AP-NO arkitektur og avvik](ap-no-arkitektur.md) — korleis DCAT-, SKOS-, ModelDCAT-, CPSV-, DQV- og XKOS-AP-NO er bygde opp i repoet
 - [Publisering](../publisering/publisering-oversikt.md) — Digdir sin datatilbydar-sjekkliste og "Orden i eget hus"-trafikklyssystemet sett opp mot publiseringsflyten
 - [Fullstendig kartlegging (kjeldespec)](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/specs/done/rammeverk-informasjonsforvaltning.md) — den underliggande analysen denne sida er basert på, inkludert klasse-for-klasse-samanlikning for Person/Enhet og Adresse

@@ -173,8 +173,7 @@ checks:
       framstår som daud, misvisande konfigurasjon. Krev: ikkje berre anbefalt
       (bronze-nivå).
     check: no_inlined_on_primitive_range
-    digdir_rule: 8
-    fair_principle: I1
+    linkml: semantikk
 
   controlled_vocabulary_annotations:
     severity: error
@@ -436,6 +435,7 @@ checks:
     digdir_rule: 15
     retningslinje: 8
     fair_principle: I1
+    linkml: semantikk
 
 # FAIR-sjekkar — alle brot gir feil (severity: error)
 # Kvar sjekk er ein dict med:

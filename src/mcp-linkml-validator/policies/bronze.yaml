@@ -100,6 +100,7 @@ checks:
     check: default_prefix_is_absolute_uri
     digdir_rule: 4
     retningslinje: 11
+    linkml: semantikk
 
   schema_has_license:
     severity: warning
@@ -121,8 +122,7 @@ checks:
       nøkkelen ingen effekt — han vert stille ignorert av alle generatorane, og
       framstår som daud, misvisande konfigurasjon.
     check: no_inlined_on_primitive_range
-    digdir_rule: 8
-    fair_principle: I1
+    linkml: semantikk
 
   local_types_have_standard_uri:
     severity: warning
@@ -136,3 +136,4 @@ checks:
     digdir_rule: 15
     retningslinje: 8
     fair_principle: I1
+    linkml: semantikk

@@ -1,7 +1,7 @@
 ---
 i18n:
   source: standardetterleving.md
-  source_hash: sha256:b05a70abc9c91a96c65ddbb4aa261d01721068312c06fa28177a6ea9f6267348
+  source_hash: sha256:836279262e4d792bcb72cd307dbfe88314ec2435e558549f347f405bf542263d
 ---
 # Standards compliance {#standardetterleving}
 
@@ -97,7 +97,7 @@ underlying data drift work is described in
 
 ## See also {#sja-ogsa}
 
-- [Validation rules](valideringsregler.md) — full checklist for the bronze/silver/gold policies, with coverage per source and a cross-reference between the three authoritative sources: the guidelines for making public data available, Digdir's common modeling rules and the FAIR principles
+- [Validation rules](valideringsregler.md) — full checklist for the bronze/silver/gold policies, with coverage per source and a cross-reference between the three normative sources (the guidelines for making public data available, Digdir's common modeling rules and the FAIR principles) and LinkML as a technical source
 - [AP-NO architecture and deviations](ap-no-arkitektur.md) — how DCAT-, SKOS-, ModelDCAT-, CPSV-, DQV- and XKOS-AP-NO are structured in the repository
 - [Publishing](../publisering/publisering-oversikt.md) — Digdir's data provider checklist and the "Orden i eget hus" traffic light system set against the publishing flow
 - [Complete mapping (source spec)](https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/specs/done/rammeverk-informasjonsforvaltning.md) — the underlying analysis this page is based on, including a class-by-class comparison for Person/Entity and Address

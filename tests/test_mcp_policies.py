@@ -1450,13 +1450,38 @@ class TestPolicyKoherens(unittest.TestCase):
         ]
         self.assertEqual(ikkje_oppgraderte, [])
 
-    # Kjeldemetadata (jf. specs/done/gap-policyar-retningslinjer-apne-data.md):
-    # digdir_rule, retningslinje og fair_principle er sannkjelda for kolonnene
-    # i policies/README.md.
+    # Kjeldemetadata (jf. specs/done/gap-policyar-retningslinjer-apne-data.md og
+    # specs/done/linkml-som-teknisk-kjelde-policy-sjekkliste.md): digdir_rule,
+    # retningslinje, fair_principle og linkml er sannkjelda for kolonnene og
+    # dekningsgradstabellane i policies/README.md.
     _POLICYAR = ("bronze", "basis-no", "silver", "gold",
                  "felles-datakatalog", "felles-begrepskatalog")
-    _KJELDENOKLAR = ("digdir_rule", "retningslinje", "fair_principle")
+    _KJELDENOKLAR = ("digdir_rule", "retningslinje", "fair_principle", "linkml")
     _SEKSJONAR = ("checks", "fair_checks", "instance_checks")
+    _LINKML_TYPAR = ("metamodell", "semantikk", "praksis")
+
+    def test_linkml_kjelde_er_kontrollert_verdi(self):
+        """linkml: er éin av _LINKML_TYPAR eller linter:<regel>, der regelen
+        finst i LinkML sin linter-konfig (regelsett som policyen arvar)."""
+        import yaml
+        import linkml.linter
+        kjende_reglar = set(yaml.safe_load(
+            (Path(linkml.linter.__file__).parent / "config" / "default.yaml").read_text(encoding="utf-8")
+        )["rules"])
+        ugyldige = []
+        for navn in self._POLICYAR:
+            policy = load_policy(navn)
+            for seksjon in self._SEKSJONAR:
+                for sjekk, cfg in (policy.get(seksjon) or {}).items():
+                    verdi = cfg.get("linkml")
+                    if verdi is None:
+                        continue
+                    for del_ in (d.strip() for d in str(verdi).split(",")):
+                        regel = del_.removeprefix("linter:")
+                        if del_ not in self._LINKML_TYPAR and not (
+                                del_.startswith("linter:") and regel in kjende_reglar):
+                            ugyldige.append(f"{navn}:{sjekk}={verdi}")
+        self.assertEqual(ugyldige, [])
 
     def test_retningslinje_er_heiltal_1_til_15(self):
         ugyldige = []
