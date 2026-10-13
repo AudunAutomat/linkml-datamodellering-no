@@ -416,7 +416,7 @@ domenetype (standard, FINT, AP-NO/FAIR).
 
 ### Valfritt: engelsk skildring for internasjonalt synlege skjema
 
-Digdirs rettleiar for åpne data anbefaler engelske skildringar for data som skal vere
+[Retningslinjer ved tilgjengeliggjøring av offentlige data](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) (retningslinje 7) tilrår engelske skildringar for data som skal vere
 synlege internasjonalt. Dette er **ikkje eit policy-krav**, men kan leggjast til som:
 
 ```yaml

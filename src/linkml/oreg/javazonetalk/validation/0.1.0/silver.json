@@ -1,38 +1,15 @@
 {
+  "_generated_by": "utils/validation_log.py::write_validation_log (kalla frå save-validation-log.py / run-validation.sh) — ikkje rediger manuelt",
   "schema": "javazonetalk",
   "domain": "oreg",
   "version": "0.1.0",
   "validation_policy": "silver",
-  "validated_at": "2026-09-04T09:34:45.376370+00:00",
+  "validated_at": "2026-10-13T09:02:07.133381+00:00",
   "result": {
-    "valid": false,
-    "errorCount": 4,
-    "warningCount": 27,
+    "valid": true,
+    "errorCount": 0,
+    "warningCount": 23,
     "issues": [
-      {
-        "severity": "error",
-        "code": "container_missing_required_class",
-        "target": "class:JavazonetalkContainer",
-        "message": "Container 'JavazonetalkContainer' manglar attributt med range 'Katalog'"
-      },
-      {
-        "severity": "error",
-        "code": "container_missing_required_class",
-        "target": "class:JavazonetalkContainer",
-        "message": "Container 'JavazonetalkContainer' manglar attributt med range 'Datasett'"
-      },
-      {
-        "severity": "error",
-        "code": "container_missing_required_class",
-        "target": "class:JavazonetalkContainer",
-        "message": "Container 'JavazonetalkContainer' manglar attributt med range 'Kvalitetsmaal'"
-      },
-      {
-        "severity": "error",
-        "code": "container_missing_required_class",
-        "target": "class:JavazonetalkContainer",
-        "message": "Container 'JavazonetalkContainer' manglar attributt med range 'Kvalitetsmaaling'"
-      },
       {
         "severity": "warning",
         "code": "all_slots_have_slot_uri",
@@ -170,30 +147,6 @@
         "code": "schema_has_annotation_oppdateringsfrekvens",
         "target": "schema",
         "message": "schema.annotations.oppdateringsfrekvens manglar"
-      },
-      {
-        "severity": "warning",
-        "code": "container_missing_recommended_class",
-        "target": "class:JavazonetalkContainer",
-        "message": "Container 'JavazonetalkContainer' manglar attributt med range 'Distribusjon'"
-      },
-      {
-        "severity": "warning",
-        "code": "container_missing_recommended_class",
-        "target": "class:JavazonetalkContainer",
-        "message": "Container 'JavazonetalkContainer' manglar attributt med range 'Datatjeneste'"
-      },
-      {
-        "severity": "warning",
-        "code": "container_missing_recommended_class",
-        "target": "class:JavazonetalkContainer",
-        "message": "Container 'JavazonetalkContainer' manglar attributt med range 'Kvalitetsdimensjon'"
-      },
-      {
-        "severity": "warning",
-        "code": "container_missing_recommended_class",
-        "target": "class:JavazonetalkContainer",
-        "message": "Container 'JavazonetalkContainer' manglar attributt med range 'Kvalitetsmerknad'"
       }
     ]
   }

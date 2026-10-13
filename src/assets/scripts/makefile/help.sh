@@ -57,6 +57,7 @@ categories=(
     "Modell-analyse|analyse-"
     "Container images|build-docker-"
     "MCP-serverar|mcp-"
+    "Påskeegg|gource-"
 )
 
 # Merk: ingen -h til grep — når fleire filer er gitt, prefikser grep kvar

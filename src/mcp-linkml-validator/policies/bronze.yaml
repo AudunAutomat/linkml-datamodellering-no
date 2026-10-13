@@ -77,7 +77,8 @@ checks:
       Gjer skjemaet adresserbart og søkbart i katalogtenester.
     check: schema_id_is_http_uri
     digdir_rule: 4
-    fair_principle: F1
+    retningslinje: 11
+    fair_principle: F1, A1
 
   schema_has_default_prefix:
     severity: error
@@ -87,6 +88,7 @@ checks:
     check: schema_field_present
     field: default_prefix
     digdir_rule: 4
+    retningslinje: 11
 
   default_prefix_is_absolute_uri:
     severity: error
@@ -97,6 +99,7 @@ checks:
       element-URI-ar er gyldige (Digdir-regel 4: Identifiserbarhet).
     check: default_prefix_is_absolute_uri
     digdir_rule: 4
+    retningslinje: 11
 
   schema_has_license:
     severity: warning
@@ -107,6 +110,7 @@ checks:
     check: schema_field_present
     field: license
     digdir_rule: 7
+    retningslinje: 1
     fair_principle: R1.1
 
   no_inlined_on_primitive_range:
@@ -130,4 +134,5 @@ checks:
       treng ingen eigen sjekk.
     check: local_types_have_standard_uri
     digdir_rule: 15
+    retningslinje: 8
     fair_principle: I1

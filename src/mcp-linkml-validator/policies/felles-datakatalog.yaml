@@ -65,6 +65,8 @@ checks:
     check: container_has_class
     class: Modellkatalog
     spec_url: https://data.norge.no/specification/modelldcat-ap-no#Modellkatalog
+    retningslinje: 7, 12
+    fair_principle: F4
 
   container_har_informasjonsmodell:
     severity: error
@@ -107,6 +109,7 @@ checks:
     class: Modellkatalog
     slot_uri: dcat:contactPoint
     spec_url: https://data.norge.no/specification/modelldcat-ap-no#Modellkatalog-kontaktpunkt
+    retningslinje: 15
 
   modellkatalog_har_del:
     severity: error
@@ -137,6 +140,8 @@ checks:
     class: Modellkatalog
     slot_uri: dct:license
     spec_url: https://data.norge.no/specification/modelldcat-ap-no#Modellkatalog-lisens
+    retningslinje: 1
+    fair_principle: R1.1
 
   modellkatalog_har_modell:
     severity: warning
@@ -177,6 +182,7 @@ checks:
     class: Informasjonsmodell
     slot_uri: dcat:contactPoint
     spec_url: https://data.norge.no/specification/modelldcat-ap-no#Informasjonsmodell-kontaktpunkt
+    retningslinje: 15
 
   # ── Informasjonsmodell-krav — anbefalte ───────────────────────────────────────
 
@@ -213,6 +219,8 @@ checks:
     class: Informasjonsmodell
     slot_uri: dct:license
     spec_url: https://data.norge.no/specification/modelldcat-ap-no#Informasjonsmodell-lisens
+    retningslinje: 1
+    fair_principle: R1.1
 
   informasjonsmodell_har_tema:
     severity: warning

@@ -70,6 +70,7 @@ checks:
     check: schema_has_annotation
     annotation: endringsdato
     digdir_rule: 9
+    retningslinje: 6
     fair_principle: R1.3
 
   schema_has_annotation_oppdateringsfrekvens:
@@ -77,12 +78,13 @@ checks:
     description: >
       schema.annotations.oppdateringsfrekvens bør vere til stades med ein URI frå
       EU sin Frequency Named Authority List (publications.europa.eu). Svarar til
-      dct:accrualPeriodicity. Digdir-rettleiar for åpne data, punkt 6: Oppdaterte data —
+      dct:accrualPeriodicity. Retningslinjer ved tilgjengeliggjøring av offentlige data (regjeringen.no), retningslinje 6: Oppdaterte data —
       verksemda skal vere tydeleg på oppdateringsfrekvens.
     check: schema_has_annotation
     annotation: oppdateringsfrekvens
     value_pattern: "^http://publications\\.europa\\.eu/resource/authority/frequency/.+$"
     digdir_rule: 9
+    retningslinje: 6
     fair_principle: R1.3
 
   schema_has_annotation_status:
@@ -112,6 +114,7 @@ checks:
     must_import: dqv-ap-no-schema
     characteristic_class: Kvalitetsmaal
     digdir_rule: 14
+    retningslinje: 5
     fair_principle: I3
 
   # ── Katalog (dcat:Catalog) ──────────────────────────────────────────────────
@@ -123,8 +126,9 @@ checks:
     check: class_has_slot_with_uri
     class: Katalog
     slot_uri: dct:description
-    digdir_rule: 1, 2, 10
-    fair_principle: F2, R1.2
+    digdir_rule: 1, 2
+    retningslinje: 4, 12
+    fair_principle: F2
 
   katalog_kontaktpunkt:
     principle: DCAT-AP-NO
@@ -133,8 +137,9 @@ checks:
     check: class_has_slot_with_uri
     class: Katalog
     slot_uri: dcat:contactPoint
-    digdir_rule: 1, 2, 10
-    fair_principle: F2, R1.2
+    digdir_rule: 10
+    retningslinje: 12, 15
+    fair_principle: F2
 
   katalog_tittel:
     principle: DCAT-AP-NO
@@ -143,8 +148,9 @@ checks:
     check: class_has_slot_with_uri
     class: Katalog
     slot_uri: dct:title
-    digdir_rule: 1, 2, 10
-    fair_principle: F2, R1.2
+    digdir_rule: 1, 2
+    retningslinje: 4, 12
+    fair_principle: F2
 
   katalog_utgiver:
     principle: DCAT-AP-NO
@@ -153,8 +159,9 @@ checks:
     check: class_has_slot_with_uri
     class: Katalog
     slot_uri: dct:publisher
-    digdir_rule: 1, 2, 10
-    fair_principle: F2, R1.2
+    digdir_rule: 10
+    retningslinje: 12
+    fair_principle: R1.2
 
   # ── Katalogpost (dcat:CatalogRecord) ───────────────────────────────────────
 
@@ -166,6 +173,7 @@ checks:
     class: Katalogpost
     slot_uri: dct:modified
     digdir_rule: 9
+    retningslinje: 6
     fair_principle: R1.3
 
   katalogpost_primaertema:
@@ -175,8 +183,8 @@ checks:
     check: class_has_slot_with_uri
     class: Katalogpost
     slot_uri: foaf:primaryTopic
-    digdir_rule: 9
-    fair_principle: R1.3
+    fair_principle: F3
+    retningslinje: 12
 
   # ── Datasett (dcat:Dataset) ─────────────────────────────────────────────────
 
@@ -187,8 +195,9 @@ checks:
     check: class_has_slot_with_uri
     class: Datasett
     slot_uri: dct:description
-    digdir_rule: 1, 2, 10
-    fair_principle: F2, R1.2
+    digdir_rule: 1, 2
+    retningslinje: 4
+    fair_principle: F2
 
   datasett_kontaktpunkt:
     principle: DCAT-AP-NO
@@ -197,8 +206,9 @@ checks:
     check: class_has_slot_with_uri
     class: Datasett
     slot_uri: dcat:contactPoint
-    digdir_rule: 1, 2, 10
-    fair_principle: F2, R1.2
+    digdir_rule: 10
+    retningslinje: 15
+    fair_principle: F2
 
   datasett_tema:
     principle: DCAT-AP-NO
@@ -207,8 +217,9 @@ checks:
     check: class_has_slot_with_uri
     class: Datasett
     slot_uri: dcat:theme
-    digdir_rule: 1, 2, 10
-    fair_principle: F2, R1.2
+    digdir_rule: 1, 2
+    retningslinje: 4
+    fair_principle: F2
 
   datasett_tittel:
     principle: DCAT-AP-NO
@@ -217,8 +228,9 @@ checks:
     check: class_has_slot_with_uri
     class: Datasett
     slot_uri: dct:title
-    digdir_rule: 1, 2, 10
-    fair_principle: F2, R1.2
+    digdir_rule: 1, 2
+    retningslinje: 4
+    fair_principle: F2
 
   datasett_utgiver:
     principle: DCAT-AP-NO
@@ -227,8 +239,8 @@ checks:
     check: class_has_slot_with_uri
     class: Datasett
     slot_uri: dct:publisher
-    digdir_rule: 1, 2, 10
-    fair_principle: F2, R1.2
+    digdir_rule: 10
+    fair_principle: R1.2
 
   datasett_tilgangsrettigheter:
     principle: DCAT-AP-NO
@@ -240,6 +252,8 @@ checks:
     check: class_has_slot_with_uri
     class: Datasett
     slot_uri: dct:accessRights
+    retningslinje: 3
+    fair_principle: A1.2
 
   datasett_lovgivning:
     principle: DCAT-AP-NO
@@ -262,6 +276,7 @@ checks:
     class: Distribusjon
     slot_uri: dcat:accessURL
     fair_principle: A1
+    retningslinje: 10
 
   distribusjon_lisens:
     principle: Retningslinjer ved tilgjengeliggjøring av offentlige data
@@ -273,6 +288,7 @@ checks:
     class: Distribusjon
     slot_uri: dct:license
     digdir_rule: 7
+    retningslinje: 1
     fair_principle: R1.1
 
   # ── Datatjeneste (dcat:DataService) ────────────────────────────────────────
@@ -284,8 +300,8 @@ checks:
     check: class_has_slot_with_uri
     class: Datatjeneste
     slot_uri: dcat:endpointURL
-    digdir_rule: 1, 2, 10
-    fair_principle: F2, A1, R1.2
+    fair_principle: A1
+    retningslinje: 9
 
   datatjeneste_kontaktpunkt:
     principle: DCAT-AP-NO
@@ -294,8 +310,9 @@ checks:
     check: class_has_slot_with_uri
     class: Datatjeneste
     slot_uri: dcat:contactPoint
-    digdir_rule: 1, 2, 10
-    fair_principle: F2, A1, R1.2
+    digdir_rule: 10
+    retningslinje: 9, 15
+    fair_principle: F2
 
   datatjeneste_tittel:
     principle: DCAT-AP-NO
@@ -304,8 +321,9 @@ checks:
     check: class_has_slot_with_uri
     class: Datatjeneste
     slot_uri: dct:title
-    digdir_rule: 1, 2, 10
-    fair_principle: F2, A1, R1.2
+    digdir_rule: 1, 2
+    retningslinje: 9
+    fair_principle: F2
 
   datatjeneste_utgiver:
     principle: DCAT-AP-NO
@@ -314,8 +332,9 @@ checks:
     check: class_has_slot_with_uri
     class: Datatjeneste
     slot_uri: dct:publisher
-    digdir_rule: 1, 2, 10
-    fair_principle: F2, A1, R1.2
+    digdir_rule: 10
+    retningslinje: 9
+    fair_principle: R1.2
 
   # ── Aktør (foaf:Agent) ──────────────────────────────────────────────────────
 
@@ -347,6 +366,7 @@ checks:
     check: container_has_class
     class: Katalog
     exclude_schemas: *container_exclude_schemas
+    retningslinje: 12
 
   container_datasett:
     principle: DCAT-AP-NO / DQV-AP-NO
@@ -363,6 +383,7 @@ checks:
     check: container_has_class
     class: Kvalitetsmaal
     exclude_schemas: *container_exclude_schemas
+    retningslinje: 5
 
   container_kvalitetsmaaling:
     principle: DQV-AP-NO
@@ -371,6 +392,7 @@ checks:
     check: container_has_class
     class: Kvalitetsmaaling
     exclude_schemas: *container_exclude_schemas
+    retningslinje: 5
 
   container_distribusjon:
     principle: DCAT-AP-NO
@@ -379,6 +401,7 @@ checks:
     check: container_has_class
     class: Distribusjon
     exclude_schemas: *container_exclude_schemas
+    retningslinje: 10
 
   container_datatjeneste:
     principle: DCAT-AP-NO
@@ -387,6 +410,7 @@ checks:
     check: container_has_class
     class: Datatjeneste
     exclude_schemas: *container_exclude_schemas
+    retningslinje: 9
 
   container_kvalitetsdimensjon:
     principle: DQV-AP-NO
@@ -395,6 +419,7 @@ checks:
     check: container_has_class
     class: Kvalitetsdimensjon
     exclude_schemas: *container_exclude_schemas
+    retningslinje: 5
 
   container_kvalitetsmerknad:
     principle: DQV-AP-NO
@@ -403,6 +428,7 @@ checks:
     check: container_has_class
     class: Kvalitetsmerknad
     exclude_schemas: *container_exclude_schemas
+    retningslinje: 5
 
 # ── Instansvalidering ───────────────────────────────────────────────────────
 

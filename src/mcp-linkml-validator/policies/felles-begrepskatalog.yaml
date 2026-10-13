@@ -66,6 +66,8 @@ checks:
     check: container_has_class
     class: Begrep
     spec_url: https://data.norge.no/specification/skos-ap-no-begrep#Begrep
+    retningslinje: 7
+    fair_principle: F4
 
   container_har_samling:
     severity: warning
@@ -142,6 +144,7 @@ checks:
     class: Begrep
     slot_uri: dcat:contactPoint
     spec_url: https://data.norge.no/specification/skos-ap-no-begrep#Begrep-kontaktpunkt
+    retningslinje: 15
 
   # ── Begrep-krav — SKOS-AP-NO-Begrep anbefalte ────────────────────────────────
 
@@ -362,6 +365,7 @@ checks:
     class: Samling
     slot_uri: dcat:contactPoint
     spec_url: https://data.norge.no/specification/skos-ap-no-begrep#Begrepssamling-kontaktpunkt
+    retningslinje: 15
 
   samling_har_medlem:
     severity: error

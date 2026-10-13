@@ -74,7 +74,8 @@ checks:
       eit standard RDF-vokabular. Krev: ikkje berre anbefalt (basis-no-nivå).
     check: all_classes_have_class_uri
     digdir_rule: 4, 8
-    fair_principle: F3
+    retningslinje: 11
+    fair_principle: F3, I1
 
   all_slots_have_slot_uri:
     severity: error
@@ -83,6 +84,7 @@ checks:
       eit standard RDF-vokabular. Krev: ikkje berre anbefalt (basis-no-nivå).
     check: all_slots_have_slot_uri
     digdir_rule: 4, 8
+    retningslinje: 11
     fair_principle: I1
 
   schema_has_license:
@@ -94,6 +96,7 @@ checks:
     check: schema_field_present
     field: license
     digdir_rule: 7
+    retningslinje: 1
     fair_principle: R1.1
 
   all_classes_have_identifier:
@@ -104,6 +107,7 @@ checks:
       med URI i koblede data. Krev: ikkje berre anbefalt (basis-no-nivå).
     check: all_classes_have_identifier
     digdir_rule: 4
+    retningslinje: 11
     fair_principle: F1
 
   class_count_limit:
@@ -140,7 +144,8 @@ checks:
       - skos-ap-no
       - xkos-ap-no
     digdir_rule: 13
-    fair_principle: A2
+    retningslinje: 4
+    fair_principle: I2
 
   no_inlined_on_primitive_range:
     severity: error
@@ -188,6 +193,7 @@ checks:
     check: schema_has_annotation
     annotation: endringsdato
     digdir_rule: 9
+    retningslinje: 6
     fair_principle: R1.3
 
   schema_has_annotation_oppdateringsfrekvens:
@@ -195,13 +201,14 @@ checks:
     description: >
       schema.annotations.oppdateringsfrekvens skal vere til stades med ein URI frå
       EU sin Frequency Named Authority List (publications.europa.eu). Svarar til
-      dct:accrualPeriodicity. Digdir-rettleiar for åpne data, punkt 6: Oppdaterte data —
+      dct:accrualPeriodicity. Retningslinjer ved tilgjengeliggjøring av offentlige data (regjeringen.no), retningslinje 6: Oppdaterte data —
       verksemda skal vere tydeleg på oppdateringsfrekvens. Krev: ikkje berre anbefalt
       (sølv-nivå).
     check: schema_has_annotation
     annotation: oppdateringsfrekvens
     value_pattern: "^http://publications\\.europa\\.eu/resource/authority/frequency/.+$"
     digdir_rule: 9
+    retningslinje: 6
     fair_principle: R1.3
 
   schema_has_annotation_status:
@@ -231,6 +238,7 @@ checks:
     class: Distribusjon
     slot_uri: dct:license
     digdir_rule: 7
+    retningslinje: 1
     fair_principle: R1.1
 
   datasett_tilgangsrettigheter:
@@ -244,6 +252,8 @@ checks:
     check: class_has_slot_with_uri
     class: Datasett
     slot_uri: dct:accessRights
+    retningslinje: 3
+    fair_principle: A1.2
 
   datasett_lovgivning:
     principle: DCAT-AP-NO
@@ -267,6 +277,7 @@ checks:
     check: container_has_class
     class: Distribusjon
     exclude_schemas: *container_exclude_schemas
+    retningslinje: 10
 
   container_datatjeneste:
     principle: DCAT-AP-NO
@@ -278,6 +289,7 @@ checks:
     check: container_has_class
     class: Datatjeneste
     exclude_schemas: *container_exclude_schemas
+    retningslinje: 9
 
   container_kvalitetsdimensjon:
     principle: DQV-AP-NO
@@ -288,6 +300,7 @@ checks:
     check: container_has_class
     class: Kvalitetsdimensjon
     exclude_schemas: *container_exclude_schemas
+    retningslinje: 5
 
   container_kvalitetsmerknad:
     principle: DQV-AP-NO
@@ -299,6 +312,7 @@ checks:
     check: container_has_class
     class: Kvalitetsmerknad
     exclude_schemas: *container_exclude_schemas
+    retningslinje: 5
 
   schema_har_erdiagram_aktivert:
     severity: error
@@ -321,6 +335,7 @@ checks:
     must_import: dqv-ap-no-schema
     characteristic_class: Kvalitetsmaal
     digdir_rule: 14
+    retningslinje: 5
     fair_principle: I3
 
   local_types_have_standard_uri:
@@ -331,6 +346,7 @@ checks:
       Standardiserte datatyper. Krev: ikkje berre anbefalt (bronze-nivå).
     check: local_types_have_standard_uri
     digdir_rule: 15
+    retningslinje: 8
     fair_principle: I1
 
 # FAIR-sjekkar — alle brot gir feil (severity: error)
@@ -344,7 +360,7 @@ checks:
 # Merk: F1 (schema_id_is_http_uri), F3 (all_classes_have_class_uri) og
 # I1 (all_slots_have_slot_uri) er flytta til bronze.yaml og arva herifrå.
 # Dei er oppgradert til error via checks-blokka ovanfor. F2 (schema.title)
-# og F4 (schema.version) dekkjast tilsvarande av required:-lista øvst i
+# og R1 (schema.version) dekkjast tilsvarande av required:-lista øvst i
 # denne fila (title er alt required frå bronse; version er lagt til her på
 # gullnivå) — dei hadde tidlegare eigne f2_title/f4_version-oppføringar her
 # som dupliserte required/recommended-mekanismen og gav dobbel rapportering
@@ -363,6 +379,7 @@ fair_checks:
     check: schema_declares_standard_prefix
     standard_prefixes: [dct, dcat, skos, prov, rdf, rdfs, owl, foaf, xsd]
     digdir_rule: 8
+    retningslinje: 8
     fair_principle: I2
 
   # R — Reusable
@@ -378,6 +395,7 @@ fair_checks:
       - dct:license
       - http://purl.org/dc/terms/license
     digdir_rule: 7
+    retningslinje: 1
     fair_principle: R1.1
 
   r12_provenance:

@@ -8,11 +8,11 @@ name: javazonetalk
 title: 'TODO: tittel for javazonetalk'
 description: Generert modell for 'javazonetalk'.
 version: 0.1.0
-license: https://data.norge.no/nlod/no/2.0  # Andre gyldige lisensar: https://brreg.github.io/linkml-datamodellering-no/ap-no/common-ap-no/klasser/eulicence/
+license: https://data.norge.no/nlod/no/2.0  # Andre gyldige lisensar: https://audunautomat.github.io/linkml-datamodellering-no/ap-no/common-ap-no/klasser/eulicence/
 annotations:
   utgiver: https://data.norge.no/organizations/974760673
-  endringsdato: '2026-09-04'
-  utgivelsesdato: '2026-09-04'
+  endringsdato: '2026-10-13'
+  utgivelsesdato: '2026-10-13'
   status: http://purl.org/adms/status/UnderDevelopment
 prefixes:
   linkml: https://w3id.org/linkml/
@@ -28,8 +28,15 @@ default_prefix: https://data.norge.no/oreg/javazonetalk/
 default_range: string
 imports:
 - linkml:types
-- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/dcat-ap-no-v2.14.1/src/linkml/ap-no/dcat-ap-no/dcat-ap-no-schema  # krevst for felles id/tittel-slots og LangString-typen frå common-ap-no (jf. specs/done/evaluering-gjentakande-monster-backlog.md, P4)
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/dcat-ap-no-v2.14.3/src/linkml/ap-no/dcat-ap-no/dcat-ap-no-schema  # TODO: endre/legg til imports etter behov
 classes:
+  Javazonetalk:
+    description: 'TODO: beskriv klassen'
+    class_uri: javazonetalk:Javazonetalk
+    annotations:
+      begrepsidentifikator: https://concept-catalog.fellesdatakatalog.digdir.no/collections/TODO
+    slots:
+    - id
   JavazonetalkContainer:
     description: containerklasse for serialisering av klasser i javazonetalk modellen
     tree_root: true
@@ -40,13 +47,6 @@ classes:
         multivalued: true
         inlined: true
         inlined_as_list: true
-  Javazonetalk:
-    description: 'TODO: beskriv klassen'
-    class_uri: javazonetalk:javazonetalk
-    annotations:
-      begrepsidentifikator: https://concept-catalog.fellesdatakatalog.digdir.no/collections/TODO
-    slots:
-    - id
   Foredragsholder:
     description: Ein person som melder inn/held eit foredrag.
     class_uri: javazonetalk:Foredragsholder

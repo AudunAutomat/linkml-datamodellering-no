@@ -11,8 +11,8 @@ beskrivelse:
 versjonsnummer: 0.1.0
 lisens: https://data.norge.no/nlod/no/2.0
 utgiver: https://data.norge.no/organizations/974760673
-endringsdato: '2026-09-04'
-utgivelsesdato: '2026-09-04'
+endringsdato: '2026-10-13'
+utgivelsesdato: '2026-10-13'
 status: http://purl.org/adms/status/UnderDevelopment
 heimeside: https://audunautomat.github.io/linkml-datamodellering-no/oreg/javazonetalk/
 kontaktpunkt:
@@ -22,7 +22,7 @@ kontaktpunkt:
     nn: Brønnøysundregistra
   har_kontaktside: https://github.com/AudunAutomat/linkml-datamodellering-no/blob/main/CONTRIBUTING.md#rapportering-av-feil
 inneholder_modellelement:
-- https://data.norge.no/oreg/javazonetalk/javazonetalk
+- https://data.norge.no/oreg/javazonetalk/Javazonetalk
 - https://data.norge.no/oreg/javazonetalk/Foredragsholder
 - https://data.norge.no/oreg/javazonetalk/Konferanse
 - https://data.norge.no/oreg/javazonetalk/Foredrag
@@ -30,4 +30,7 @@ inneholder_modellelement:
 - https://data.norge.no/oreg/javazonetalk/Timeplan
 - https://data.norge.no/oreg/javazonetalk/Sesjonslokale
 finnes_i_format:
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/oreg/javazonetalk/diagrams/javazonetalk-filtered.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/oreg/javazonetalk/diagrams/javazonetalk.puml
+- https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/generated/oreg/javazonetalk/javazonetalk-schema.json
 - https://raw.githubusercontent.com/AudunAutomat/linkml-datamodellering-no/main/src/linkml/oreg/javazonetalk/javazonetalk-schema.yaml

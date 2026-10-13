@@ -80,13 +80,16 @@ ikkje instansdata. `bronze` er ein generisk LinkML-baseline; norske/Digdir-krav 
 `felles-datakatalog` og `felles-begrepskatalog` er separate policyer for
 skjema som publiserer til eksterne katalogar (`publish_external: true`).
 
-Policy-hierarkiet realiserer både Digdir sine
+Policy-hierarkiet stiller saman tre autoritative kjelder:
+[Retningslinjer ved tilgjengeliggjøring av offentlige data](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/)
+(retningslinje 1-15), Digdir sine
 [Felles modelleringsregler for offentlig forvaltning](https://www.digdir.no/informasjonsforvaltning/felles-modelleringsregler-offentlig-forvaltning/3029)
 (regel 1-15) og [FAIR-prinsippa](https://www.go-fair.org/fair-principles/)
-(Findable, Accessible, Interoperable, Reusable).
+(Findable, Accessible, Interoperable, Reusable). Kvar sjekk i policy-YAML har
+kjeldemetadata (`retningslinje`, `digdir_rule`, `fair_principle`).
 
 Sjå `src/mcp-linkml-validator/policies/README.md` for fullstendig sjekkliste,
-Digdir-regel-mapping og FAIR-prinsipp per nivå.
+dekningsgrad per kjelde og kryssreferanse mellom kjeldene.
 
 ## Kjente feil
 

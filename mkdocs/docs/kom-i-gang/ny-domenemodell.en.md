@@ -1,7 +1,7 @@
 ---
 i18n:
   source: ny-domenemodell.md
-  source_hash: sha256:54a458980a6882cdbf14f57eb63dc19d6a2ca3ab06acbdc1c92b1530859c517c
+  source_hash: sha256:14960b620eef990626d5acd3ccfb998ba1ec01a652bb963e6699fd024d8f089a
 ---
 # Guide: new domain model {#rettleiing-ny-domenemodell}
 
@@ -424,7 +424,7 @@ domain type (standard, FINT, AP-NO/FAIR).
 
 ### Optional: English description for internationally visible schemas {#valfritt-engelsk-skildring-for-internasjonalt-synlege-skjema}
 
-Digdir's guideline for open data recommends English descriptions for data that are to be
+The government's [guidelines for making public data available](https://www.regjeringen.no/no/dokumenter/retningslinjer-ved-tilgjengeliggjoring-av-offentlige-data/id2536870/) (guideline 7) recommend English descriptions for data that are to be
 visible internationally. This is **not a policy requirement**, but can be added as:
 
 ```yaml

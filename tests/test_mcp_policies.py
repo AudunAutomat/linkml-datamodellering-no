@@ -1375,6 +1375,41 @@ class TestPolicyKoherens(unittest.TestCase):
         ]
         self.assertEqual(ikkje_oppgraderte, [])
 
+    # Kjeldemetadata (jf. specs/done/gap-policyar-retningslinjer-apne-data.md):
+    # digdir_rule, retningslinje og fair_principle er sannkjelda for kolonnene
+    # i policies/README.md.
+    _POLICYAR = ("bronze", "basis-no", "silver", "gold",
+                 "felles-datakatalog", "felles-begrepskatalog")
+    _KJELDENOKLAR = ("digdir_rule", "retningslinje", "fair_principle")
+    _SEKSJONAR = ("checks", "fair_checks", "instance_checks")
+
+    def test_retningslinje_er_heiltal_1_til_15(self):
+        ugyldige = []
+        for navn in self._POLICYAR:
+            policy = load_policy(navn)
+            for seksjon in self._SEKSJONAR:
+                for sjekk, cfg in (policy.get(seksjon) or {}).items():
+                    verdi = cfg.get("retningslinje")
+                    if verdi is None:
+                        continue
+                    for del_ in str(verdi).split(","):
+                        if not (del_.strip().isdigit() and 1 <= int(del_) <= 15):
+                            ugyldige.append(f"{navn}:{sjekk}={verdi}")
+        self.assertEqual(ugyldige, [])
+
+    def test_gull_kjeldemetadata_samsvarar_med_arva_sjekk(self):
+        """gold.yaml redeklarerer arva sjekkar for å heve severity. Heile
+        oppføringa vert då erstatta, så kjeldemetadataen må haldast lik."""
+        silver = load_policy("silver").get("checks") or {}
+        gold = load_policy("gold").get("checks") or {}
+        avvik = [
+            f"{sjekk}.{nokkel}: sølv={silver[sjekk].get(nokkel)!r} gull={cfg.get(nokkel)!r}"
+            for sjekk, cfg in gold.items() if sjekk in silver
+            for nokkel in self._KJELDENOKLAR
+            if str(silver[sjekk].get(nokkel)) != str(cfg.get(nokkel))
+        ]
+        self.assertEqual(avvik, [])
+
 
 if __name__ == "__main__":
     unittest.main()

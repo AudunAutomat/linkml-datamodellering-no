@@ -21,6 +21,7 @@ checks:
       (Digdir-regel 4: Identifiserbarhet).
     check: default_prefix_is_https_uri
     digdir_rule: 4
+    retningslinje: 11
 
   all_classes_have_class_uri:
     severity: warning
@@ -29,6 +30,7 @@ checks:
       eit standard RDF-vokabular. Gjer klassane formelt beskriven og søkbare via URI.
     check: all_classes_have_class_uri
     digdir_rule: 4, 8
+    retningslinje: 11
     fair_principle: F3, I1
 
   all_slots_have_slot_uri:
@@ -40,6 +42,7 @@ checks:
       Sikrar formal semantisk interoperabilitet.
     check: all_slots_have_slot_uri
     digdir_rule: 4, 8
+    retningslinje: 11
     fair_principle: I1
 
   all_classes_have_identifier:
@@ -50,6 +53,7 @@ checks:
       at instansar kan adresserast med URI i koblede data.
     check: all_classes_have_identifier
     digdir_rule: 4
+    retningslinje: 11
     fair_principle: F1
 
   # ── Modularitet og visualisering (Digdir-regel 5, 6) ───────────────────────
@@ -103,7 +107,8 @@ checks:
       - skos-ap-no
       - xkos-ap-no
     digdir_rule: 13
-    fair_principle: A2
+    retningslinje: 4
+    fair_principle: I2
 
   controlled_vocabulary_annotations:
     severity: warning
