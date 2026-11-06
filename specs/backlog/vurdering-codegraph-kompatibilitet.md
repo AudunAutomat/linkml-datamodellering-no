@@ -229,7 +229,7 @@ CMD ["codegraph", "serve", "--mcp"]
 **Versjonspinning:** `@colbymchenry/codegraph@1.5.0` er siste versjon stadfesta via
 `gh api repos/colbymchenry/codegraph/contents/package.json` då denne specen vart
 skriven. Oppdater versjonsnummeret eksplisitt (aldri `@latest`) dersom du vil teste ein
-nyare versjon — same reproduserbarheitsprinsipp som `linkml>=1.11.1,<2.0.0`-pinninga i
+nyare versjon — same reproduserbarheitsprinsipp som `linkml==1.11.1`-pinninga i
 `Dockerfile.mcp-linkml`.
 
 ### 2 — Makefile-fragment

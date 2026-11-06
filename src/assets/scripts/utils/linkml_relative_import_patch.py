@@ -59,7 +59,7 @@ Dei tre stadene:
    `_EXPECTED_SOURCE_MARKER`-sjekk.
 
 MERK: (1) og (2) bind seg til den interne implementasjonen i
-linkml==1.11.1 / linkml_runtime>=1.11.1,<2.0.0 (pinna i
+linkml==1.11.1 / linkml_runtime==1.11.1 (pinna i
 src/assets/containers/Dockerfile.linkml / Dockerfile.mcp-linkml). Må
 verifiserast på nytt ved oppgradering — sjå `_EXPECTED_SOURCE_MARKER_*`
 under. (3) er robust mot slike oppgraderingar (pakkar berre inn, kjenner

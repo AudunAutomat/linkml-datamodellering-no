@@ -9,7 +9,7 @@
 FROM python:3.15-alpine AS base-builder
 RUN apk add --no-cache --virtual .build-deps gcc musl-dev libffi-dev g++
 RUN pip install --no-cache-dir --prefix=/install \
-    "linkml>=1.11.1,<2.0.0" "linkml-runtime>=1.11.1,<2.0.0" "pyyaml>=6.0.3"
+    "linkml==1.11.1" "linkml-runtime==1.11.1" "pyyaml>=6.0.3"
 
 FROM python:3.15-alpine AS base-runtime
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -30,6 +30,71 @@ COPY src/mcp-linkml-validator/server.py src/mcp-linkml-validator/validate-and-lo
 COPY src/mcp-linkml-validator/policies/ policies/
 RUN adduser -D mcp
 USER mcp
+CMD ["python", "server.py"]
+
+# --- PILOT: distroless-variant av validatoren ---------------------------------
+# Python 3.15 vert kopiert inn frå python:3.15-slim-trixie (Debian 13/glibc)
+# til gcr.io/distroless/cc-debian13 (same Debian-versjon => same glibc).
+# Delte bibliotek som Python/site-packages treng, men som cc-imaget manglar,
+# vert funne med ldd i builderen og kopierte inn. Sjå
+# specs/backlog/evaluering-distroless-baseimage.md.
+# Bygg: podman build --format docker -f src/assets/containers/Dockerfile.mcp-linkml \
+#         --target validator-distroless -t mcp-linkml-validator-distroless .
+FROM gcr.io/distroless/cc-debian13:nonroot AS distroless-cc
+
+FROM docker.io/library/python:3.15-slim-trixie AS distroless-builder
+RUN pip install --no-cache-dir \
+    "linkml==1.11.1" "linkml-runtime==1.11.1" "pyyaml>=6.0.3" \
+    && pip uninstall -y pip
+# Fjern stdlib-utvidingar validatoren ikkje brukar, slik at bibliotek dei
+# dreg inn (libsqlite3, ncurses, readline, libdb/gdbm) ikkje vert kopierte
+# inn og CVE-flata minkar. Berre sqlalchemy (sqlite-dialekt), _pytest og
+# sphinx importerer dei, og ingen av dei vert brukte av validatoren.
+RUN cd /usr/local/lib/python3.*/lib-dynload \
+    && rm _sqlite3.*.so _curses.*.so _curses_panel.*.so readline.*.so _dbm.*.so _gdbm.*.so
+COPY --from=distroless-cc / /cc-root
+# Samle alle .so-avhengigheiter (ldd) for python3 og alle .so-filer under
+# /usr/local som ikkje finst i cc-imaget frå før, til /runtime-libs med
+# same katalogstruktur (realpath, sidan /lib kan vere symlenkje). dpkg-
+# oppføringa for kvar pakke vert lagd i status.d (same format som distroless
+# sjølv brukar), slik at CVE-skannarar (t.d. trivy) ser dei innkopierte
+# biblioteka.
+RUN set -eu; mkdir -p /runtime-libs; \
+    find /usr/local -type f \( -name '*.so' -o -name '*.so.*' -o -path '/usr/local/bin/python3.*' \) \
+      -exec ldd {} + 2>/dev/null \
+    | awk '$2 == "=>" && $3 ~ /^\// {print $3}' | sort -u \
+    | while read -r lib; do \
+        case "$lib" in /usr/local/*) continue ;; esac; \
+        name=$(basename "$lib"); \
+        if [ -z "$(find /cc-root -name "$name" -print -quit)" ]; then \
+          dir=$(dirname "$(readlink -f "$lib")"); \
+          mkdir -p "/runtime-libs$dir"; \
+          cp -L "$lib" "/runtime-libs$dir/$name"; \
+          pkg=$(dpkg -S "$(readlink -f "$lib")" | cut -d: -f1); \
+          mkdir -p /runtime-libs/var/lib/dpkg/status.d; \
+          dpkg-query -s "$pkg" > "/runtime-libs/var/lib/dpkg/status.d/$pkg"; \
+          echo "kopierer inn: $dir/$name ($pkg)"; \
+        fi; \
+      done
+# Røyktest i builderen: importer dei tunge modulane med berre cc-root sine
+# bibliotek + dei innsamla, slik at ein manglande .so feilar i bygget.
+RUN for d in /cc-root/usr/lib/*-linux-gnu /cc-root/lib/*-linux-gnu /runtime-libs/usr/lib/*-linux-gnu /usr/local/lib; do \
+      [ -d "$d" ] && LIBS="${LIBS:+$LIBS:}$d"; done; \
+    LD_LIBRARY_PATH="$LIBS" /usr/local/bin/python3 -c \
+      "import linkml, linkml_runtime, yaml, pydantic_core, rdflib; from linkml.validator import validate; print('import ok')"
+
+FROM gcr.io/distroless/cc-debian13:nonroot AS validator-distroless
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV LD_LIBRARY_PATH=/usr/local/lib
+WORKDIR /app
+COPY --from=distroless-builder /usr/local /usr/local
+COPY --from=distroless-builder /runtime-libs/ /
+COPY src/assets/scripts/utils/ utils/
+COPY src/mcp-linkml-validator/server.py src/mcp-linkml-validator/validate-and-log.py ./
+COPY src/mcp-linkml-validator/policies/ policies/
+# Same CMD som validator-stadiet (utan ENTRYPOINT): make
+# mcp-linkml-valider-modell-test overstyrer kommandoen med `python3 ...`.
 CMD ["python", "server.py"]
 
 FROM base-runtime AS modell-utkast

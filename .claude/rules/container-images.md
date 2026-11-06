@@ -1,6 +1,6 @@
 ---
 name: container-images
-description: Container-invokeringsmønster i make/01-containers.mk, make/60-mcp.mk, Makefile og Dockerfile*/requirements*.txt under src/assets/containers/ — WORK_MOUNT, eksplisitt env-vidareføring, stdin-fella (BUG-10), attribution-plikt for nye verktøy, full kartlegging av monteringsstader for nye delte moduler (inkl. Dockerfile COPY-lister, frittståande orkestreringsskript og .mcp.json). Lastast automatisk ved arbeid med desse filene.
+description: Container-invokeringsmønster i make/01-containers.mk, make/60-mcp.mk, Makefile og Dockerfile*/requirements*.txt under src/assets/containers/ — WORK_MOUNT, eksplisitt env-vidareføring, stdin-fella (BUG-10), attribution-plikt for nye verktøy, full kartlegging av monteringsstader for nye delte moduler (inkl. Dockerfile COPY-lister, frittståande orkestreringsskript og .mcp.json), kartlegging av kommandooverstyringar ved endring av ENTRYPOINT/CMD, pakkemetadata for innkopierte bibliotek (distroless/CVE-skanning). Lastast automatisk ved arbeid med desse filene.
 paths:
   - "src/assets/containers/**"
   - "make/01-containers.mk"
@@ -145,6 +145,79 @@ heile-repo-monteringar, repo-relativ sti for direkte git-checkout-køyring)
 `linkml_relative_import_patch.py` gjer. Den fallbacken er trygg berre fordi
 patchen er ein valfri bug-workaround; ein hard avhengigheit skal krasje
 høgt med ein naturleg `ImportError` dersom ingen kandidat finn fila.
+
+## Endring av ENTRYPOINT/CMD krev kartlegging av kommandooverstyringar
+
+`podman run <image> <args>` erstattar `CMD`, men legg `<args>` **etter**
+`ENTRYPOINT`. Eit bilete som går frå berre `CMD ["python", "server.py"]`
+til `ENTRYPOINT ["python3"]` + `CMD ["server.py"]`, oppfører seg likt når
+det vert køyrt utan argument. Kvar kallar som sender med ein eigen
+kommando (`$(MCP_IMAGE) python3 /work/tests/...`), får derimot
+`python3 python3 /work/...`, og det feilar.
+
+**Aldri** avgrens kartlegginga til `--entrypoint`-overstyringar når
+`ENTRYPOINT` eller `CMD` vert endra. Det er argumenta *etter*
+image-navnet som vert råka.
+
+**Framgangsmåte:**
+
+1. Bruk dei same invokeringsstadene som i lista under «Ein ny påkravd
+   delt modul krev full kartlegging av alle monteringsstader» (punkt
+   1-4 og 7, pluss `.github/workflows/*.yml`). Søk der etter image-navnet
+   og make-variabelen (t.d. `MCP_IMAGE`, `mcp_image`, `MCP_RUN`), ikkje
+   etter `--entrypoint`.
+2. For kvart treff: sjekk om noko følgjer etter image-referansen. Det
+   gjeld argument i shell- og make-linjer (`$(MCP_IMAGE) python3 ...`),
+   og element etter `mcp_image` i Python-`subprocess`-lister.
+3. Føretrekk berre `CMD` utan `ENTRYPOINT` når bilete i repoet
+   allereie vert køyrde med eksplisitt kommando. Då er semantikken for
+   eksisterande kallarar uendra.
+4. Verifiser med minst éin reell køyring som overstyrer kommandoen
+   (t.d. kommandoen frå eit `-test`-target), ikkje berre køyring utan
+   argument.
+
+Konkret hending: første versjon av distroless-piloten for
+`mcp-linkml-validator` innførte `ENTRYPOINT ["/usr/local/bin/python3"]`.
+Kartlegginga fann ingen `--entrypoint`-overstyringar og vart rekna som
+ferdig. `make mcp-linkml-valider-modell-test` (`make/60-mcp.mk`) sender
+likevel `python3 /work/tests/test_mcp_policies.py` som kommando og ville
+ha feila. Feilen vart først oppdaga i neste testrunde. Sjå
+`specs/backlog/evaluering-distroless-baseimage.md` (Retta invokeringsfeil)
+og `specs/done/rule-entrypoint-cmd-kartlegging.md`.
+
+## Innkopierte bibliotek må ha pakkemetadata
+
+CVE-skannarar som trivy finn OS-pakkar via pakkedatabasen i biletet
+(`/var/lib/dpkg/status.d/` i distroless, `/var/lib/dpkg/status` i Debian,
+`/lib/apk/db/installed` i Alpine), ikkje ved å sjå på filene. Eit delt
+bibliotek som vert kopiert inn med `COPY --from=<builder>` utanom
+pakkehandsamaren, er difor **usynleg** for skanninga. Biletet ser
+tryggare ut enn det er, og CVE-ar i biblioteket vert aldri rapporterte.
+
+**Aldri** kopier inn `.so`-filer (t.d. funne med `ldd` for å få Python
+til å køyre i `gcr.io/distroless/cc-*`) utan å òg kopiere inn
+pakkeoppføringa for pakken som eig fila.
+
+**Framgangsmåte** (Debian-basert builder → distroless):
+
+1. Finn eigarpakken: `pkg=$(dpkg -S "$(readlink -f "$lib")" | cut -d: -f1)`
+   (bruk `readlink -f`, sidan `ldd` kan rapportere ein sti via
+   `/lib`-symlenkja som dpkg ikkje kjenner).
+2. Skriv oppføringa i distroless-format, éi fil per pakke:
+   `dpkg-query -s "$pkg" > /runtime-libs/var/lib/dpkg/status.d/$pkg`,
+   og kopier `/runtime-libs/` inn i runtime-stadiet saman med biblioteka.
+3. Verifiser med ei skanning av det ferdige biletet at kvar innkopierte
+   pakke dukkar opp (`trivy image --input <tar>` køyrt som container). Ein
+   innkopiert pakke med null treff, sjølv om han er kjend for å ha
+   CVE-ar, er eit teikn på at oppføringa manglar.
+
+Konkret hending: i distroless-piloten for `mcp-linkml-validator` vart 12
+bibliotek (libsqlite3, libuuid, libffi, libncursesw m.fl.) kopierte inn
+utan dpkg-oppføring. Den første trivy-skanninga viste 45 OS-funn. Med
+oppføringane på plass viste ho 70: 25 funn var usynlege, 9 av dei HIGH.
+Sjå `specs/backlog/evaluering-distroless-baseimage.md` (Pilotresultat
+og Avgjerder) og `src/assets/containers/Dockerfile.mcp-linkml`
+(`distroless-builder`).
 
 ## Attribution-plikt for nye verktøyavhengigheiter
 

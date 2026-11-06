@@ -103,9 +103,9 @@ Teiknforklaring: ✅ dekt av policy-sjekk · 🟡 delvis dekt · ❌ ikkje dekt 
 LinkML er ikkje ei normativ kjelde for offentleg forvaltning. Kjelda er verktøyet sine
 eigne krav og konvensjonar, og ho er grunnlaget for den generiske [`bronze`](#bronze)-baselinen.
 Sjekkar i `checks:` har nøkkelen `linkml` i YAML. For `required:`-felta og linteren er
-kjelda ført berre her. Kartlagt mot LinkML 1.11.1. Validator-imaget installerer
-`linkml>=1.11.1,<2.0.0` (`src/assets/containers/Dockerfile.mcp-linkml`), så regelsettet
-kan endre seg med nye versjonar.
+kjelda ført berre her. Kartlagt mot LinkML 1.11.1. Validator-imaget pinnar
+`linkml==1.11.1` (`src/assets/containers/Dockerfile.mcp-linkml`), så regelsettet
+endrar seg berre når versjonen vert oppgradert medvite.
 
 | Sjekk | Policy | LinkML-grunnlag | `linkml` |
 |---|---|---|---|
