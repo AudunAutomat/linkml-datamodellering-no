@@ -51,11 +51,17 @@ URL-import av `dcat-ap-no` v2.14.4 med relative importar vidare.
 
 - [x] Brukaren avgjer: pin til 1.11.1 no (steg 1). Vald 2026-11-06.
 - [x] Steg 1, sjå «Utført»
-- [ ] Steg 2-3
-- [ ] Steg 4
-- [ ] Steg 5
+- [x] Steg 2-3
+- [x] Steg 4
+- [x] Steg 5
 
 ## Avgjerder
+
+- **Steg 2-5 utført utan oppgradering.** Instruksen var å utføre stega, ikkje å oppgradere. Pinninga til 1.11.1 er behalden, og patchen er gjort trygg for begge versjonane, slik at ei seinare oppgradering berre krev endring av versjonsnummeret.
+- **Versjonsgjenkjenning på `_load_closure_import`, ikkje på versjonsnummer.** Patchen kjenner att upstream-fiksen for BUG-15 på attributtet. Det er meir robust enn å lese `importlib.metadata`, sidan fiksen kan bli tilbakeført eller endra uavhengig av versjonsnummeret.
+- **Wrapper i staden for kopi av upstream-koden på 1.12+.** BUG-15 er retta upstream, så ein kopi av `imports_closure()` ville berre ha bunde patchen til endå meir intern kode. Wrapperen kallar originalet og tømer cachen.
+- **Testane ligg i `test_mcp_policies.py`, ikkje i ei ny fil.** Fila køyrer allereie i validator-biletet via `make mcp-linkml-valider-modell-test`. Ei ny fil ville ha kravd eit nytt make-target. BUG-24 viser seg dessutan i ein policy-sjekk.
+- **`file://` i staden for HTTP-server i testane.** `file://`-importen gir same kodeveg (namn med `:`, URL-nøkkel, relativ import under URL) som `https://`, og testane vert deterministiske utan nettverk. Det er stadfesta med negative kontrollar på begge versjonane.
 
 - **Reproduksjon i scratchpad, ikkje i repoet.** Testskjemaet med berre URL-import vart lagt utanfor repoet, for å ikkje lage eit nytt domeneskjema berre for diagnose. Steg 3 flyttar mønsteret inn som ein ekte test.
 - **Pinning er tilrådd som første tiltak.** Pinninga er eitt-linjes, gjer bileta konsistente med `Dockerfile.linkml` og stoppar regresjonen før publisering. Ein versjonsbevisst patch krev test og bør gjerast saman med ei medviten oppgradering (jf. Python 3.14-diskusjonen).
@@ -80,4 +86,29 @@ Steg 1 (2026-11-06):
   - `javazonetalk` og `dcat-ap-no` validerer (silver).
   - `make translate-check` gir 26 passed, og `make translate-status` viser 0 utdaterte.
 
-Steg 2-5 står att til ei medviten oppgradering til linkml 1.12.x. Specen vert difor verande i `specs/backlog/`.
+Steg 2-5 (2026-11-06, etter eksplisitt instruks):
+- **Steg 2:** `linkml_relative_import_patch.py`: ny `_wrap_imports_closure_with_namespaces_reset()`.
+  - Når 1.11.1-merkøren manglar og `SchemaView._load_closure_import` finst (1.12+), vert upstream `imports_closure()` pakka inn med `namespaces.cache_clear()`. Wrapperen eksponerer `cache_clear`/`cache_info` som originalet.
+  - Åtvaringa vert berre skriven når ingen kjend variant vert kjend att.
+  - Docstringen er oppdatert.
+- **Steg 3:** `tests/test_mcp_policies.py`: ny `ImportPatchRegressionTest` med 4 testar.
+  - Testane: BUG-15 SchemaView, BUG-24 `namespaces()`, BUG-15 mergeutils via `PythonGenerator`, og BUG-24 gjennom `felles-begrepskatalog`-policyen.
+  - Testane brukar `file://`-import i tempdir, så dei køyrer utan nettverk.
+  - Køyrer via `make mcp-linkml-valider-modell-test`.
+- **Steg 4:**
+  - `bugs/relativ-import-via-versjonslast-url.md` og `bugs/schemaview-namespaces-cache-importerte-prefiks.md`: ny seksjon «Verifisering 2026-11-06».
+  - `BUGS.md`: BUG-15 (SchemaView-delen retta i 1.12.x, mergeutils framleis) og BUG-24 (framleis i 1.12.1).
+- **Steg 5:** `mergeutils.resolve_merged_imports()` er identisk i 1.11.1 og 1.12.1. `PythonGenerator` feilar utan patch på begge versjonane. Patchen trengst framleis og fungerer på 1.12.1.
+
+Verifisering:
+
+| Oppsett | Resultat |
+|---|---|
+| linkml 1.11.1 med patch (`make mcp-linkml-valider-modell-test`) | 79/79 OK |
+| linkml 1.12.1 med ny patch (heile suiten, `--network none`) | 79/79 OK, inga åtvaring |
+| 1.11.1 utan patch (negativ kontroll) | 4/4 regresjonstestar feilar |
+| 1.12.1 utan patch (negativ kontroll) | 3/4 feilar. BUG-15 SchemaView passerer, sidan han er retta upstream |
+| `linkml-local` (1.11.1) med patch, offline-reproduksjon | BUG-15, BUG-24 og mergeutils OK |
+| `make lint SCHEMA=.../javazonetalk-schema.yaml` | ingen problem |
+
+Pinninga til `linkml==1.11.1` i `Dockerfile.mcp-linkml` er behalden. Ei oppgradering til 1.12.x er no førebudd, men er ei eiga avgjerd.

@@ -1511,5 +1511,63 @@ class TestPolicyKoherens(unittest.TestCase):
         self.assertEqual(avvik, [])
 
 
+class ImportPatchRegressionTest(unittest.TestCase):
+    """Regresjonstestar for linkml_relative_import_patch (BUG-15, BUG-24).
+
+    Rotskjemaet importerer `sub/a` via ein `file://`-URL, og `sub/a` importerer
+    `../b` relativt. Det gjev same kodeveg som ein versjonslåst
+    `raw.githubusercontent.com`-import, men utan nettverk. `skos`/`dct` er
+    berre deklarerte i `b`. Testane feilar utan patchen på både linkml
+    1.11.1 og 1.12.1, sjå specs/done/linkml-relative-import-patch-1-12.md.
+    """
+
+    _HDR = "prefixes:\n  linkml: https://w3id.org/linkml/\n"
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        d = Path(self._tmp.name)
+        (d / "sub").mkdir()
+        (d / "b.yaml").write_text(
+            "id: https://example.org/b\nname: b\n" + self._HDR
+            + "  skos: http://www.w3.org/2004/02/skos/core#\n"
+            + "  dct: http://purl.org/dc/terms/\n"
+            + "default_prefix: skos\nimports:\n- linkml:types\nclasses:\n  B: {}\n",
+            encoding="utf-8")
+        (d / "sub" / "a.yaml").write_text(
+            "id: https://example.org/a\nname: a\n" + self._HDR
+            + "default_prefix: linkml\nimports:\n- ../b\n",
+            encoding="utf-8")
+        self.root = d / "root.yaml"
+        self.root.write_text(
+            "id: https://example.org/root\nname: root\n" + self._HDR
+            + "default_prefix: linkml\nimports:\n- linkml:types\n- "
+            + (d / "sub" / "a").as_uri() + "\nclasses:\n  R:\n    is_a: B\n",
+            encoding="utf-8")
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def test_bug15_schemaview_relativ_import_under_url(self):
+        from linkml_runtime.utils.schemaview import SchemaView
+        sv = SchemaView(str(self.root))
+        sv.imports_closure()
+        self.assertIn("b", {s.name for s in sv.schema_map.values()})
+
+    def test_bug24_namespaces_inneheld_importerte_prefiks(self):
+        from linkml_runtime.utils.schemaview import SchemaView
+        sv = SchemaView(str(self.root))
+        sv.imports_closure()
+        self.assertLessEqual({"skos", "dct"}, set(sv.namespaces().keys()))
+
+    def test_bug15_mergeutils_schemaloader_generator(self):
+        from linkml.generators.pythongen import PythonGenerator
+        self.assertIn("class B(", PythonGenerator(str(self.root)).serialize())
+
+    def test_bug24_standard_prefiks_via_import_gjev_ikkje_feil(self):
+        r = validate_schema(policy_name="felles-begrepskatalog", schema_path=str(self.root))
+        prefiksfeil = [i for i in r["issues"] if "Ingen standard vokabularprefiks" in i["message"]]
+        self.assertEqual(prefiksfeil, [])
+
+
 if __name__ == "__main__":
     unittest.main()

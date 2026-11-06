@@ -130,3 +130,21 @@ HTTP-server; URL-importert skjema med relativ import) →
 
 Merk: `linkml/linkml-runtime` er arkivert; runtime ligg no i monorepoet
 `linkml/linkml` (`packages/linkml_runtime`).
+
+## Verifisering 2026-11-06 (linkml 1.12.1)
+
+Testa med ein `file://`-reproduksjon utan nettverk, som no er regresjonstestar i
+`tests/test_mcp_policies.py` (`ImportPatchRegressionTest`).
+
+- **`SchemaView.imports_closure()`: retta i 1.12.1** (#3855 er utgjeven).
+  Importar vert lasta via `SchemaView._load_closure_import()`, og URL-nøklar
+  vert ikkje normaliserte. Patchen kjenner att 1.12+ og erstattar ikkje lenger
+  funksjonen. Han legg berre på `namespaces.cache_clear()` (BUG-24).
+- **`linkml.utils.mergeutils.resolve_merged_imports()`: framleis til stades i
+  1.12.1.** Funksjonen er identisk med 1.11.1, og `PythonGenerator` feilar med
+  `Unknown CURIE prefix: file` utan patchen. Mergeutils-patchen trengst
+  framleis. Om denne varianten er meld upstream, er ikkje sjekka.
+
+Status vert verande `workaround`, på grunn av mergeutils-varianten. Begge
+bileta er framleis pinna til `linkml==1.11.1`. Sjå
+`specs/done/linkml-relative-import-patch-1-12.md`.

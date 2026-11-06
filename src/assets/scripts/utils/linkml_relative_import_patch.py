@@ -64,6 +64,13 @@ src/assets/containers/Dockerfile.linkml / Dockerfile.mcp-linkml). Må
 verifiserast på nytt ved oppgradering — sjå `_EXPECTED_SOURCE_MARKER_*`
 under. (3) er robust mot slike oppgraderingar (pakkar berre inn, kjenner
 ikkje til interne detaljar).
+
+(1) er versjonsbevisst: i linkml-runtime 1.12+ (kjent att på
+`SchemaView._load_closure_import`) er BUG-15 retta upstream, og
+imports_closure() vert difor berre pakka inn med tøminga av
+namespaces()-cachen (BUG-24), ikkje erstatta. Verifisert mot 1.12.1, sjå
+specs/done/linkml-relative-import-patch-1-12.md. Regresjonstestar:
+`ImportPatchRegressionTest` i tests/test_mcp_policies.py.
 """
 
 import sys
@@ -87,12 +94,20 @@ def _apply_schemaview_patch() -> None:
 
     original_source = inspect.getsource(sv_mod.SchemaView.imports_closure)
     if _EXPECTED_SOURCE_MARKER_SCHEMAVIEW not in original_source:
+        if hasattr(sv_mod.SchemaView, "_load_closure_import"):
+            # linkml-runtime 1.12+: BUG-15 er retta upstream (URL-nøklar vert
+            # ikkje normaliserte, `_load_closure_import` løyser mot importøren
+            # si kjelde), men BUG-24 er det ikkje — behald upstream-closure-en
+            # og legg berre på tøminga av namespaces()-cachen.
+            _wrap_imports_closure_with_namespaces_reset(sv_mod)
+            return
         print(
             "ÅTVARING: linkml_relative_import_patch hoppar over patching av "
             "SchemaView.imports_closure() — kjeldekoden har endra seg sidan "
             "patchen vart skriven. Versjonslåste (raw.githubusercontent.com) "
             "importar av skjema med fleire nivå relative importar kan feile "
-            "med 'Unknown CURIE prefix'. Sjå "
+            "med 'Unknown CURIE prefix', og prefiks som berre er deklarerte i "
+            "importerte skjema vert ikkje ekspanderte (BUG-24). Sjå "
             "src/assets/scripts/utils/linkml_relative_import_patch.py.",
             file=sys.stderr,
         )
@@ -171,6 +186,27 @@ def _apply_schemaview_patch() -> None:
         return closure
 
     sv_mod.SchemaView.imports_closure = patched_imports_closure
+
+
+def _wrap_imports_closure_with_namespaces_reset(sv_mod) -> None:
+    """BUG-24-workaround for linkml-runtime 1.12+: kall upstream
+    imports_closure() uendra, og tøm SchemaView.namespaces()-cachen etterpå
+    (same tøming som patched_imports_closure gjer for 1.11.1)."""
+    import functools
+
+    original = sv_mod.SchemaView.imports_closure
+
+    @functools.wraps(original)
+    def imports_closure_with_namespaces_reset(self, *args, **kwargs):
+        closure = original(self, *args, **kwargs)
+        sv_mod.SchemaView.namespaces.cache_clear()
+        return closure
+
+    # Same cache-API som det lru_cache-a originalet, i tilfelle kallarar
+    # nyttar det.
+    imports_closure_with_namespaces_reset.cache_clear = original.cache_clear
+    imports_closure_with_namespaces_reset.cache_info = original.cache_info
+    sv_mod.SchemaView.imports_closure = imports_closure_with_namespaces_reset
 
 
 def _apply_mergeutils_patch() -> None:

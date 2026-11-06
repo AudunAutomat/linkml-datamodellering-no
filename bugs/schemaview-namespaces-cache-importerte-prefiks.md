@@ -84,3 +84,18 @@ Reprodusert i vanilla `linkml` 1.11.1 og `linkml/linkml` `main @ 5ef7622e`
 med minimal reproduksjon (lokal HTTP-server, URL-import av eit skjema som
 deklarerer `dqv`): `expand_curie('dqv:value')` gir `dqv:value` fram til
 `SchemaView.namespaces.cache_clear()`.
+
+## Verifisering 2026-11-06 (linkml 1.12.1)
+
+**Framleis til stades i 1.12.1.** `namespaces()` er framleis `@lru_cache(None)`,
+og ingen kode i `schemaview.py` kallar `cache_clear()`. Med eit skjema som berre
+får `skos`/`dct` via ein URL-import, gav `namespaces()` 2 prefiks i staden for
+27. Sjekken `schema_declares_standard_prefix` i validatoren (`gold`,
+`felles-datakatalog`, `felles-begrepskatalog`) ville då gi falsk feil.
+
+Den første versjonen av patchen kjende ikkje att 1.12.1 og hoppa over heile
+`imports_closure()`-patchen, og workarounden forsvann. Patchen er no
+versjonsbevisst: på 1.12+ pakkar han upstream `imports_closure()` inn og tømer
+`namespaces()`-cachen etterpå. Regresjonstestar:
+`ImportPatchRegressionTest.test_bug24_*` i `tests/test_mcp_policies.py`. Sjå
+`specs/done/linkml-relative-import-patch-1-12.md`.
