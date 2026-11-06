@@ -26,6 +26,12 @@ LOGDIR="tests/testlogs"
 LOG="$LOGDIR/test_make_$(date '+%Y%m%d_%H%M%S').log"
 mkdir -p "$LOGDIR"
 mkdir -p "$REPO_ROOT/tmp"
+# Markør for starten av testkøyringa: assert_file_nonempty() krev at
+# genererte artefakter er nyare enn denne, slik at Fase B ikkje kan passere
+# på gamle filer i generated/ (gitignorert, vert aldri rydda). Sjå
+# specs/done/rett-feil-i-make-test.md (Val 1b). tmp/ vert sletta av cleanup().
+TEST_START_MARKER="$REPO_ROOT/tmp/.test_make_start"
+touch "$TEST_START_MARKER"
 
 # ---------------------------------------------------------------------------
 # Skjemaoppdaging — same logikk som Makefile SCHEMAS-variabelen
@@ -140,6 +146,12 @@ roundtrip_ttl_job() {
     # staden for T-separator. Sjå bugs/datetime-separator-rdflib-roundtrip.md
     case "$name" in
         enhetsregisteret-bvrinnfelles|enhetsregisteret-bvrfriv) return 1 ;;
+    esac
+    # BUG-3: rdflib_loader byggjer predikattabellen frå all_slots(), så ein
+    # global slot vinn over eit containerattributt med same navn ("No pred
+    # for ..."). Sjå bugs/mappingerror-rdflib-roundtrip.md
+    case "$name" in
+        fint-administrasjon|fint-okonomi|fint-personvern|fint-utdanning|samt-bu) return 1 ;;
     esac
     [ -f "$example" ] || return 1
     return 0
@@ -1142,6 +1154,27 @@ sys.exit(0)
 assert_file_nonempty() {
     [ -f "$1" ] || { echo "Fil manglar: $1"; return 1; }
     [ -s "$1" ] || { echo "Fil er tom: $1"; return 1; }
+    [ "$1" -nt "$TEST_START_MARKER" ] || { echo "Fil er ikkje generert i denne testkøyringa (eldre enn starten): $1"; return 1; }
+}
+
+# generator_enabled <skjema> <flag> — true (0) berre når build.yaml har
+# `generators.<flag>: true`. Same tolking som read_build_yaml_flag() i
+# src/assets/scripts/makefile/batch-generate.py (manglande fil eller flagg =
+# av), slik at Fase B hoppar over nøyaktig dei artefakta Fase A ikkje
+# genererer.
+generator_enabled() {
+    local build_yaml
+    build_yaml="$(dirname "$1")/build.yaml"
+    [ -f "$build_yaml" ] && grep -q "^  $2: true$" "$build_yaml"
+}
+
+# skip_disabled_generator <skjema> <flag> <test-navn> — skriv skip-linja og
+# returnerer 0 når generatoren er slått av; returnerer 1 elles (testen skal
+# køyre). Bruk: `skip_disabled_generator "$schema" python gen-python && return 0`.
+skip_disabled_generator() {
+    generator_enabled "$1" "$2" && return 1
+    echo "Hoppar over $3 for $(schema_name "$1") ($2 er ikkje true i build.yaml)"
+    return 0
 }
 
 assert_json_valid() {
@@ -1162,6 +1195,7 @@ test_validate() {
 
 test_gen_jsonld() {
     local schema="$1" outfile="$2"
+    skip_disabled_generator "$schema" jsonld_context gen-jsonld && return 0
     phase_a_check jsonld "$schema" || return 1
     assert_file_nonempty "$outfile" || return 1
     assert_json_valid "$outfile" || return 1
@@ -1170,6 +1204,7 @@ test_gen_jsonld() {
 
 test_gen_python() {
     local schema="$1" outfile="$2"
+    skip_disabled_generator "$schema" python gen-python && return 0
     phase_a_check python "$schema" || return 1
     assert_file_nonempty "$outfile" || return 1
     python3 -m py_compile "$outfile" || { echo "Syntaksfeil i $outfile"; return 1; }
@@ -1177,6 +1212,7 @@ test_gen_python() {
 
 test_gen_jsonschema() {
     local schema="$1" outfile="$2"
+    skip_disabled_generator "$schema" json_schema gen-jsonschema && return 0
     phase_a_check jsonschema "$schema" || return 1
     assert_file_nonempty "$outfile" || return 1
     assert_json_valid "$outfile" || return 1
@@ -1218,6 +1254,7 @@ test_gen_rdf() {
         echo "Hoppar over gen-rdf for $name (BUG-17: versjonslåst URL-import)"
         return 0
     fi
+    skip_disabled_generator "$schema" rdf gen-rdf && return 0
     phase_a_check rdf "$schema" || return 1
     assert_file_nonempty "$outfile" || return 1
     phase_a_check rdf_validity "$outfile" || return 1
@@ -1225,6 +1262,7 @@ test_gen_rdf() {
 
 test_gen_erdiagram() {
     local schema="$1" outfile="$2"
+    skip_disabled_generator "$schema" erdiagram gen-erdiagram-mermaid && return 0
     phase_a_check erdiagram "$schema" || return 1
     assert_file_nonempty "$outfile" || return 1
     grep -q '```mermaid' "$outfile" || { echo "Manglar mermaid-blokk i $outfile"; return 1; }
@@ -1233,6 +1271,7 @@ test_gen_erdiagram() {
 
 test_gen_docs() {
     local schema="$1"
+    skip_disabled_generator "$schema" docs gen-schema-docs && return 0
     phase_a_check docs "$schema" || return 1
     # .md-fil-innhaldssjekken (katalog finst, ikkje-tom, #-overskrift) er
     # batcha til Fase A sitt docs_validity-steg, sjå
@@ -1243,6 +1282,7 @@ test_gen_docs() {
 
 test_gen_shacl() {
     local schema="$1" outfile="$2"
+    skip_disabled_generator "$schema" shacl gen-shacl && return 0
     phase_a_check shacl "$schema" || return 1
     assert_file_nonempty "$outfile" || return 1
     phase_a_check rdf_validity "$outfile" || return 1
@@ -1250,6 +1290,7 @@ test_gen_shacl() {
 
 test_gen_owl() {
     local schema="$1" outfile="$2"
+    skip_disabled_generator "$schema" owl gen-owl && return 0
     phase_a_check owl "$schema" || return 1
     assert_file_nonempty "$outfile" || return 1
     phase_a_check rdf_validity "$outfile" || return 1
@@ -1319,6 +1360,9 @@ test_roundtrip_ttl() {
             echo "Hoppar over roundtrip-ttl for $name (BUG-2: linkml-runtime delt slot_uri-bug)"
         elif [[ "$name" == "enhetsregisteret-bvrinnfelles" || "$name" == "enhetsregisteret-bvrfriv" ]]; then
             echo "Hoppar over roundtrip-ttl for $name (BUG-19: linkml-runtime datetime-separator-bug)"
+        elif [[ "$name" == "fint-administrasjon" || "$name" == "fint-okonomi" || \
+                "$name" == "fint-personvern" || "$name" == "fint-utdanning" || "$name" == "samt-bu" ]]; then
+            echo "Hoppar over roundtrip-ttl for $name (BUG-3: linkml-runtime attributt/global slot-navnekollisjon)"
         else
             echo "Ingen eksempelfil: $example (hoppar over)"
         fi
@@ -1372,6 +1416,7 @@ test_convert_rdf() {
 
 test_gen_proto() {
     local schema="$1" outfile="$2"
+    skip_disabled_generator "$schema" protobuf gen-proto && return 0
     phase_a_check proto "$schema" || return 1
     assert_file_nonempty "$outfile" || return 1
     grep -qE 'syntax\s*=\s*"proto3"' "$outfile" || { echo "Manglar proto3-syntaksdeklarasjon i $outfile"; return 1; }
@@ -1379,6 +1424,7 @@ test_gen_proto() {
 
 test_gen_plantuml() {
     local schema="$1" pumlfile="$2" svgfile="$3"
+    skip_disabled_generator "$schema" plantuml gen-plantuml && return 0
     phase_a_check plantuml "$schema" || return 1
     assert_file_nonempty "$pumlfile" || return 1
     assert_file_nonempty "$svgfile" || return 1

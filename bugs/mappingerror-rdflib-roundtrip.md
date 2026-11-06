@@ -18,11 +18,14 @@ linkml_runtime.MappingError: No pred for https://data.norge.no/samt/samt-bu/id <
 
 | Skjema | Attributt i containeren | Global slot med same navn | Test |
 |---|---|---|---|
-| `fint-administrasjon` | `AdministrasjonContainer.arbeidsforhold` | `arbeidsforhold` (`slot_uri: adm:arbeidsforhold`) | `test_roundtrip_ttl` (FEIL) |
-| `fint-okonomi`, `fint-personvern`, `fint-utdanning` | same mønster | | `test_roundtrip_ttl` (FEIL) |
-| `samt-bu` | `SamtBuContainer.id` | `id` (frå `common-ap-no`) | `test_roundtrip_ttl` (FEIL) |
+| `fint-administrasjon` | `AdministrasjonContainer.arbeidsforhold` | `arbeidsforhold` (`slot_uri: adm:arbeidsforhold`) | `test_roundtrip_ttl` (hoppa over) |
+| `fint-okonomi`, `fint-personvern`, `fint-utdanning` | same mønster | | `test_roundtrip_ttl` (hoppa over) |
+| `samt-bu` | `SamtBuContainer.id` | `id` (frå `common-ap-no`) | `test_roundtrip_ttl` (hoppa over) |
 
-Desse skjemaa er ikkje i skip-lista — dei køyrer og feilar.
+Desse skjemaa vert hoppa over i `roundtrip_ttl_job()`/`test_roundtrip_ttl()` i `tests/test_make.sh`
+(«Hoppar over roundtrip-ttl for <skjema> (BUG-3: …)»), sidan 2026-11-06. Før det køyrde dei og feila, i strid med
+konvensjonen om skip med BUG-referanse. Sjå `specs/done/rett-feil-i-make-test.md`. Framleis til stades i
+`linkml` 1.12.1.
 
 ## Rot-årsak (stadfesta med minimal reproduksjon)
 
@@ -51,7 +54,7 @@ kolliderer med globale slotnavn.
 
 ## Workaround
 
-Ingen aktiv workaround. Moglege interne tiltak (ikkje gjennomførte):
+Skip i `tests/test_make.sh` (sjå over). Ingen workaround i sjølve lastinga. Moglege interne tiltak (ikkje gjennomførte):
 
 - Gi containerattributtet eit navn som ikkje kolliderer med ein global slot
   (t.d. `arbeidsforholdliste`). Endrar serialiseringsformatet.
@@ -65,5 +68,10 @@ Upstream-fiks i `rdflib_loader`: slå opp predikat via `induced_slot` per
 subjektklasse, same som dumparen. Truleg same fiks som BUG-2 (U1). Må
 meldast i [linkml/linkml](https://github.com/linkml/linkml/issues) — sjå U2.
 
-Når upstream-fix er på plass: verifiser `make roundtrip` for skjemaa over og
-oppdater denne fila til `Status: løyst`.
+Når upstream-fix er på plass: fjern skip-vilkåret for skjemaa over i `tests/test_make.sh`, verifiser
+`make roundtrip` og oppdater denne fila til `Status: løyst`.
+
+BUG-2 (`bugs/inlined-as-list-rdflib-roundtrip.md`) har opphav i same linje i `rdflib_loader.py`
+(`uri_to_slot` frå `all_slots()`). Ein lokal patch som byggjer predikattabellen per subjektklasse frå
+`induced_slot()`, vil truleg rette begge. Det er vurdert i `specs/done/rett-feil-i-make-test.md` (Val 2b),
+men ikkje gjennomført.

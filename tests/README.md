@@ -27,6 +27,11 @@ Kvar skjema-køyring utfører 17 testar parallelt (generatorar, lint, roundtrip)
 | `roundtrip-json` | `yaml→json→yaml→json` er informasjonstap-fri |
 | `roundtrip-ttl` | `yaml→ttl→yaml→json` er informasjonstap-fri |
 
+Generator-testane (`gen-*`) vert hoppa over når generatoren ikkje er `true` i skjemaet sitt
+`build.yaml` (same tolking som `batch-generate.py`). Artefakta må vere genererte i same
+testkøyring: ei fil som er eldre enn starten av køyringa (t.d. eit gamalt artefakt i
+`generated/`), gjev feil.
+
 Raskare alternativ for utvikling:
 
 ```bash
@@ -50,14 +55,14 @@ make test SCHEMA=<sti>              # full suite (~3 min)
 | `ngr-person` | ✓ | ✓ | |
 | `ngr-virksomhet` | ✓ | skip ([BUG-2]) | same |
 | **FINT** | | | |
-| `fint-administrasjon` | ✓ | FEIL | MappingError: attributt skuggar global slot ([BUG-3]) |
+| `fint-administrasjon` | ✓ | skip ([BUG-3]) | MappingError: attributt skuggar global slot ([BUG-3]) |
 | `fint-arkiv` | ✓ | ✓ | |
-| `fint-okonomi` | ✓ | FEIL | same ([BUG-3]) |
-| `fint-personvern` | ✓ | FEIL | same ([BUG-3]) |
+| `fint-okonomi` | ✓ | skip ([BUG-3]) | same ([BUG-3]) |
+| `fint-personvern` | ✓ | skip ([BUG-3]) | same ([BUG-3]) |
 | `fint-ressurs` | ✓ | ✓ | |
-| `fint-utdanning` | ✓ | FEIL | same ([BUG-3]) |
+| `fint-utdanning` | ✓ | skip ([BUG-3]) | same ([BUG-3]) |
 | **SAMT** | | | |
-| `samt-bu` | ✓ | FEIL | MappingError: attributt `id` skuggar global slot ([BUG-3]) |
+| `samt-bu` | ✓ | skip ([BUG-3]) | MappingError: attributt `id` skuggar global slot ([BUG-3]) |
 | **Offentlege register** | | | |
 | `enhetsregisteret-bvrinnfelles` | ✓ | skip ([BUG-19]) | `DateTime` med `base: str` mistar `T` |
 | `register-over-aksjeeiere` | ✓ | ✓ | |
