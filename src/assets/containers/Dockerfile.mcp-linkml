@@ -9,7 +9,7 @@
 FROM python:3.15-alpine AS base-builder
 RUN apk add --no-cache --virtual .build-deps gcc musl-dev libffi-dev g++
 RUN pip install --no-cache-dir --prefix=/install \
-    "linkml==1.11.1" "linkml-runtime==1.11.1" "pyyaml>=6.0.3"
+    "linkml==1.12.1" "linkml-runtime==1.12.1" "pyyaml>=6.0.3"
 
 FROM python:3.15-alpine AS base-runtime
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -44,7 +44,7 @@ FROM gcr.io/distroless/cc-debian13:nonroot AS distroless-cc
 
 FROM docker.io/library/python:3.15-slim-trixie AS distroless-builder
 RUN pip install --no-cache-dir \
-    "linkml==1.11.1" "linkml-runtime==1.11.1" "pyyaml>=6.0.3" \
+    "linkml==1.12.1" "linkml-runtime==1.12.1" "pyyaml>=6.0.3" \
     && pip uninstall -y pip
 # Fjern stdlib-utvidingar validatoren ikkje brukar, slik at bibliotek dei
 # dreg inn (libsqlite3, ncurses, readline, libdb/gdbm) ikkje vert kopierte

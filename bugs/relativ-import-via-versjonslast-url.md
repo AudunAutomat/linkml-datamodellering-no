@@ -111,7 +111,7 @@ vert oppgradert og metoden er endra, hoppar patchen over seg sjølv og skriv
 ei tydeleg åtvaring til stderr i staden for å risikere å bryte noko stille.
 Må difor kontrollerast på nytt (og potensielt oppdaterast) ved kvar
 `linkml_runtime`-versjonsoppgradering i
-`src/assets/containers/Dockerfile.mcp-linkml` (pinna `==1.11.1`).
+`src/assets/containers/Dockerfile.mcp-linkml` (pinna `==1.12.1`).
 
 ## Løysing
 

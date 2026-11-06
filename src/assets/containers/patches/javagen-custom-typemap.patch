@@ -1,0 +1,16 @@
+--- a/linkml/generators/javagen.py
++++ b/linkml/generators/javagen.py
+@@ -31,6 +31,13 @@
+     "xsd:time": "LocalTime",
+     "xsd:anyURI": "URI",
+     "xsd:decimal": "BigDecimal",
++    # Lokal patch: eigendefinerte typar i common-ap-no utan typeof
++    # (LangString, GYear, Duration, NonNegativeInteger). BUG-25,
++    # bugs/javagen-eigendefinerte-typar-utan-typeof.md.
++    "rdf:langString": "String",
++    "xsd:gYear": "String",
++    "xsd:duration": "String",
++    "xsd:nonNegativeInteger": "Integer",
+ }
+ 
+ JAVA_KEYWORDS = [

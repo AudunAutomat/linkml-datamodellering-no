@@ -111,7 +111,7 @@ grunngjeving utan å spørje brukaren om løyve først").
 ## Kall aldri LinkML-`Linter()` utan eksplisitt konfig
 
 `linkml.linter.linter.Linter()` utan argument slår saman eit tomt konfig
-med `default.yaml`. I LinkML 1.11.1 har *kvar* regel der `level: disabled`,
+med `default.yaml`. I LinkML 1.11.1 og 1.12.1 har *kvar* regel der `level: disabled`,
 så `linter.lint(...)` returnerer då ingen lint-funn i det heile. Om
 `validate_schema=True` er sett, køyrer berre metamodell-valideringa. Kallet
 feilar ikkje og gjev ikkje noka åtvaring. Eit tomt resultat ser ut som

@@ -4,7 +4,7 @@ FROM python:3.15-alpine AS builder
 RUN apk add --no-cache --virtual .build-deps gcc musl-dev libffi-dev g++
 
 RUN pip install --no-cache-dir --prefix=/install \
-    "linkml==1.11.1" \
+    "linkml==1.12.1" "linkml-runtime==1.12.1" \
     rdflib
 
 
@@ -19,5 +19,12 @@ COPY src/assets/containers/patches/docgen-max-chars.patch /tmp/
 RUN DOCGEN_PATH=$(find /usr/local/lib -path '*/site-packages/linkml/generators/docgen.py') \
     && patch "$DOCGEN_PATH" < /tmp/docgen-max-chars.patch \
     && rm /tmp/docgen-max-chars.patch
+
+# Patch LinkML javagen: TYPEMAP manglar URI-ane til eigendefinerte typar
+# utan typeof (BUG-25, bugs/javagen-eigendefinerte-typar-utan-typeof.md)
+COPY src/assets/containers/patches/javagen-custom-typemap.patch /tmp/
+RUN JAVAGEN_PATH=$(find /usr/local/lib -path '*/site-packages/linkml/generators/javagen.py') \
+    && patch "$JAVAGEN_PATH" < /tmp/javagen-custom-typemap.patch \
+    && rm /tmp/javagen-custom-typemap.patch
 
 WORKDIR /work

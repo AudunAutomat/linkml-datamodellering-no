@@ -1,7 +1,7 @@
 ---
 i18n:
   source: README.md
-  source_hash: sha256:97a0787fdaba3451a25a463c930b36a597ff5f1d6297c0820bea898f38716a23
+  source_hash: sha256:4158d74144a4cedb297231aafe534fe8e5a199a19707ae1528e72e32a46cec23
 ---
 # Policies for mcp-linkml-validator
 
@@ -108,8 +108,8 @@ Legend: ✅ covered by a policy check · 🟡 partially covered · ❌ not cover
 LinkML is not a normative source for the public sector. The source is the tool's own
 requirements and conventions, and it is the basis for the generic [`bronze`](#bronze) baseline.
 Checks in `checks:` have the `linkml` key in YAML. For the `required:` fields and the linter,
-the source is recorded only here. Mapped against LinkML 1.11.1. The validator image pins
-`linkml==1.11.1` (`src/assets/containers/Dockerfile.mcp-linkml`), so the rule set
+the source is recorded only here. Mapped against LinkML 1.11.1 and checked against 1.12.1. The validator image pins
+`linkml==1.12.1` (`src/assets/containers/Dockerfile.mcp-linkml`), so the rule set
 only changes when the version is deliberately upgraded.
 
 | Check | Policy | LinkML basis | `linkml` |

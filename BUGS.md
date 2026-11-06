@@ -30,6 +30,7 @@ Dette repoet er ein **Proof of Concept** og har fleire kjente avgrensingar:
 - **BUG-14**: Mermaid sin `classDiagram` støttar berre eitt `click`-mål per klasseboks — attributt-rader i diagrammet peikar difor alltid til klassa sjølv, ikkje til sloten
 - **BUG-17**: `gen-rdf` fetchar `<import>.context.jsonld` over nettverk for versjonslåste URL-importar og feilar med 404 — slike skjema vert automatisk hoppa over for rdf-generering
 - **BUG-24**: `SchemaView.namespaces()` bufrar prefiks-kartet før importane er lasta — CURIE-ar med prefiks frå importerte skjema vert ikkje ekspanderte (workaround i import-patchen)
+- **BUG-25**: `gen-java` (linkml 1.12+) kan ikkje mappe eigendefinerte typar utan `typeof` (`LangString`, `GYear`, `Duration`, `NonNegativeInteger`) — workaround: lokal `javagen-custom-typemap.patch`
 
 ### Publisering
 - Publisering til Felles Begrepskatalog/Datakatalog krev manuell koordinering med Digitaliseringsdirektoratet
@@ -73,10 +74,12 @@ Sjå [GOVERNANCE.md](GOVERNANCE.md) for kva stabilitet og support du kan forvent
 | [BUG-22](bugs/reusable-workflow-latest-ref-manglar.md) | Public reusable workflows sjekkar ut `ref: latest` (standard når `ap-no-version` manglar), men ingen git-ref heiter `latest` — checkout feilar for eksterne kallarar | `løyst` | `.github/workflows/reusable-{generate,lint,validate}.yml` | eksterne kallarar utan låst `ap-no-version: vX.Y.Z` |
 | [BUG-23](bugs/kom-i-gang-import-tag-for-ikkje-releasa-skjema.md) | «Kom i gang»-seksjonen genererer import-URL til `<skjema>-v<versjon>`-tag også for skjema som ikkje er release-please-komponentar — taggen vert aldri laga (404) | `open` | `mkdocs/lib/sections/kom_i_gang.sh` | `brreg-felles-{aktoer,digital-adresse,geografisk-adresse,tid,typer}`, `enhetsregisteret-{bvrbekreftelse,bvrettersendingavvedlegg,bvrfriv,bvrstiftelsesdokument,frivilligorganisasjonapi}`, `javazonetalk` |
 | [BUG-24](bugs/schemaview-namespaces-cache-importerte-prefiks.md) | `SchemaView.namespaces()` er `@lru_cache`-a og vert kalla av `load_import()` (for URL-/CURIE-importar) før `schema_map` er fylt — prefiks som berre er deklarerte i importerte skjema manglar, og `expand_curie()` returnerer CURIE-en uendra (meldt: linkml/linkml#3896, #3933; framleis til stades i 1.12.1) | `upstream` | `linkml-runtime` | skjema som brukar prefiks berre deklarerte i importerte skjema (stadfesta: `enhetsregisteret-{bvrbekreftelse,bvrettersendingavvedlegg,bvrfriv,bvrstiftelsesdokument,frivilligorganisasjonapi}`, `javazonetalk`) |
+| [BUG-25](bugs/javagen-eigendefinerte-typar-utan-typeof.md) | `JavaGenerator.map_type()` slår berre opp `uri` i `TYPEMAP` og `typeof` (ikkje `base`) — eigendefinerte typar i `common-ap-no` utan `typeof` gjev `cannot be mapped to a type` når 1.12+ genererer Java for importerte klassar | `workaround` | `linkml` | skjema med `java: true` som importerer `common-ap-no` (stadfesta: `samt-bu`, `referansemodell`) |
 
 ## Upstream-status
 
 Verifisert 2026-09-26 mot `linkml` 1.11.1 og `linkml/linkml` `main @ 5ef7622e`
+(repoet brukar `linkml` 1.12.1 frå 2026-11-06; BUG-15 og BUG-24 er verifiserte på nytt mot 1.12.1)
 med minimale reproduksjonar. Upstream-klare rapportar (U1-U8), eksisterande
 issues og kva som er fiksa på `main` står i
 [specs/backlog/upstream-linkml-bugrapportar.md](specs/backlog/upstream-linkml-bugrapportar.md).

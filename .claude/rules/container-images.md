@@ -1,6 +1,6 @@
 ---
 name: container-images
-description: Container-invokeringsmønster i make/01-containers.mk, make/60-mcp.mk, Makefile og Dockerfile*/requirements*.txt under src/assets/containers/ — WORK_MOUNT, eksplisitt env-vidareføring, stdin-fella (BUG-10), attribution-plikt for nye verktøy, full kartlegging av monteringsstader for nye delte moduler (inkl. Dockerfile COPY-lister, frittståande orkestreringsskript og .mcp.json), kartlegging av kommandooverstyringar ved endring av ENTRYPOINT/CMD, pakkemetadata for innkopierte bibliotek (distroless/CVE-skanning). Lastast automatisk ved arbeid med desse filene.
+description: Container-invokeringsmønster i make/01-containers.mk, make/60-mcp.mk, Makefile og Dockerfile*/requirements*.txt under src/assets/containers/ — WORK_MOUNT, eksplisitt env-vidareføring, stdin-fella (BUG-10), attribution-plikt for nye verktøy, full kartlegging av monteringsstader for nye delte moduler (inkl. Dockerfile COPY-lister, frittståande orkestreringsskript og .mcp.json), eksakt og lik pinning av linkml/linkml-runtime, kartlegging av kommandooverstyringar ved endring av ENTRYPOINT/CMD, pakkemetadata for innkopierte bibliotek (distroless/CVE-skanning). Lastast automatisk ved arbeid med desse filene.
 paths:
   - "src/assets/containers/**"
   - "make/01-containers.mk"
@@ -145,6 +145,49 @@ heile-repo-monteringar, repo-relativ sti for direkte git-checkout-køyring)
 `linkml_relative_import_patch.py` gjer. Den fallbacken er trygg berre fordi
 patchen er ein valfri bug-workaround; ein hard avhengigheit skal krasje
 høgt med ein naturleg `ImportError` dersom ingen kandidat finn fila.
+
+## linkml og linkml-runtime skal pinnast eksakt og likt
+
+Patchane i `src/assets/scripts/utils/linkml_relative_import_patch.py` og
+`src/assets/containers/patches/*.patch` bind seg til intern kjeldekode i
+ein bestemt linkml-versjon. Eit ope versjonskrav (`>=`, `<`, `~=`) eller
+ein manglande pin på `linkml-runtime` lèt pip velje versjon ved byggetid.
+Ei ny upstream-utgjeving hamnar då i biletet utan at nokon har vurdert
+henne. Ein patch som ikkje lenger kjenner att kjeldekoden, slår seg av med
+berre ei åtvaring til stderr. Bygget feilar ikkje, og testane fangar det
+berre dersom dei dekkjer akkurat den kodevegen.
+
+**Aldri** bruk eit ope versjonskrav for `linkml` eller `linkml-runtime` i
+ein `Dockerfile*`. Lat heller aldri `linkml-runtime` vere upinna fordi
+`linkml` er pinna: pip kan då velje ein nyare runtime enn den `linkml`
+vart testa med.
+
+**Framgangsmåte:**
+
+1. Pin begge eksakt (`"linkml==X.Y.Z" "linkml-runtime==X.Y.Z"`) i
+   **kvart** builder-stadium som installerer dei. Det gjeld
+   `Dockerfile.linkml` og alle stadia i `Dockerfile.mcp-linkml`
+   (`base-builder`, `distroless-builder`).
+2. Bruk same versjon i alle bileta, slik at `linkml-local` og
+   MCP-bileta ikkje gir ulikt resultat for same skjema.
+3. Stadfest versjonen i det bygde biletet:
+   `podman run --rm --entrypoint python3 <image> -c "import importlib.metadata as m; print(m.version('linkml'), m.version('linkml-runtime'))"`.
+4. Ei oppgradering er ei eiga, medviten oppgåve. Ho krev:
+   - ein baseline av alle genererte artefakter før oppgraderinga
+   - `make test` på begge versjonane
+   - at kvar lokal patch blir verifisert på nytt
+
+   Sjå `specs/done/oppgrader-linkml-1-12-1.md` for metode.
+
+Konkrete hendingar (begge 2026-11-06):
+- `Dockerfile.mcp-linkml` hadde `linkml>=1.11.1,<2.0.0`. Ei nybygging gav
+  1.12.1, og `linkml_relative_import_patch` slo av BUG-24-workarounden
+  stille. Validatoren ville då ha gitt falsk «Ingen standard
+  vokabularprefiks deklarert». Sjå
+  `specs/done/linkml-relative-import-patch-1-12.md`.
+- `Dockerfile.linkml` pinna berre `linkml==1.11.1`. Ei nybygging gav
+  `linkml-runtime` 1.12.1, altså blanda versjonar i biletet som køyrer
+  alle generatorane. Sjå `specs/done/oppgrader-linkml-1-12-1.md` (Funn).
 
 ## Endring av ENTRYPOINT/CMD krev kartlegging av kommandooverstyringar
 
