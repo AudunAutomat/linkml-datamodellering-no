@@ -51,7 +51,7 @@ JSON Schema (fil)
 | `version` | `0.1.0` (bronze-krav) |
 | `license` | `https://data.norge.no/nlod/no/2.0` (endre ved behov — sjå [gyldige lisensar](https://audunautomat.github.io/linkml-datamodellering-no/ap-no/common-ap-no/klasser/eulicence/)) |
 | `annotations.*` | Berre i silver-policy: `utgiver`, `endringsdato`, `utgivelsesdato`, `status` med TODO-stubs |
-| `prefixes` | Standard vokabularprefiksar frå policyen (`dct`, `dcat`, `foaf`, `skos`, `xsd` m.fl.) + schema-avleia prefiks |
+| `prefixes` | Standard vokabularprefiksar frå policyen (`dct`, `dcat`, `foaf`, `skos`, `xsd` m.fl.) + skjemaprefiks avleia frå `schemaName` (snake_case, translitterert). Er prefikset reservert (`standard_prefixes` eller `linkml:types`: `linkml`, `xsd`, `shex`, `schema`), vert `_modell` lagt til og ei åtvaring skriven |
 | `default_prefix` | Absolutt HTTPS-URI avleia frå `schemaId` (t.d. `https://data.norge.no/ngr/adresse/`) |
 | `imports` | `linkml:types` (standard) |
 | `subsets` | Ikkje definert lokalt — `Obligatorisk`/`Anbefalt`/`Valgfri` vert berre *referert* via `in_subset` og må finnast i importgrafen (t.d. via `common-ap-no-schema.yaml`) |

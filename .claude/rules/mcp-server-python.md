@@ -144,3 +144,29 @@ viste det seg at testfixturane mangla `imports: linkml:types` og hadde
 udefinerte range-klassar, utan at nokon hadde merka det. Sjå
 `specs/done/gjennomgang-bronze-policy-generisk.md` (B23) og
 `specs/done/linter-rule-og-bronze-oppfolging.md`.
+
+## Generert skjema skal verifiserast med `make lint`, ikkje berre med generatoren sin eigen validering
+
+`generate_linkml` (`mcp-linkml-modell-utkast`) lintar og dummy-validerer
+utkastet, men køyrer **ikkje** `check-import-duplicates`, som `make lint`
+køyrer. Eit utkast kan difor vere «gyldig» i MCP-svaret (`lintIssues: []`,
+`dummyValidation.valid: true`) og likevel feile i `make lint` med
+`Prefix: <namn> mismatch between <skjema> og types`.
+
+**Aldri** rekn ei endring i `converter.py` (prefiks, `prefixes`, `default_prefix`,
+`class_uri`/`slot_uri`, imports) som verifisert berre fordi `make
+mcp-linkml-modell-utkast-test` og MCP-svaret er grøne.
+
+Framgangsmåte:
+
+1. Etter endring i prefiks-/URI-utleiing: køyr `make lint SCHEMA=<generert fil>`
+   på eit utkast frå **både** `inputFormat: empty` og eit JSON Schema-døme.
+2. Test med `schemaName` som er ein reservert prefiks (`schema`, `dct`, `xsd`,
+   `linkml`), ikkje berre «normale» namn.
+3. Ein køyrande MCP-server har gammal kode til han vert restarta (`/mcp`).
+   Verifiser difor mot `make mcp-linkml-modell-utkast` eller unit-testane, ikkje
+   mot ein server som starta før endringa.
+
+Konkret hending: standard `schemaId` `https://example.org/schema` gav prefikset
+`schema:`, som kolliderer med `linkml:types` (`http://schema.org/`). Sjå
+`specs/done/fiks-generator-prefiks-kollisjon.md`.

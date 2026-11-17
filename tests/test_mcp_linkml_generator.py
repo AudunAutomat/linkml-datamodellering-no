@@ -330,6 +330,35 @@ class TestConversion(unittest.TestCase):
         })
         self.assertEqual(schema["slots"]["tittel"]["slot_uri"], "test:tittel")
 
+    def test_prefiks_folgjer_schema_name_ikkje_schema_id(self):
+        yaml_str, _ = convert(
+            {"type": "object", "properties": {}}, _policy(),
+            schema_id="https://example.org/schema", schema_name="min-modell",
+        )
+        schema = yaml.safe_load(yaml_str)
+        self.assertIn("min_modell", schema["prefixes"])
+        self.assertNotIn("schema", schema["prefixes"])
+        self.assertEqual(schema["classes"]["MinModell"]["class_uri"], "min_modell:MinModell")
+
+    def test_reservert_prefiks_faar_suffiks_og_aatvaring(self):
+        policy = _policy()
+        policy["standard_prefixes"]["dct"] = "http://purl.org/dc/terms/"
+        for reservert in ("schema", "dct", "xsd", "linkml"):
+            with self.subTest(schema_name=reservert):
+                yaml_str, warnings = convert(
+                    {"type": "object", "properties": {}}, policy,
+                    schema_id="https://example.org/test", schema_name=reservert,
+                )
+                schema = yaml.safe_load(yaml_str)
+                self.assertIn(f"{reservert}_modell", schema["prefixes"])
+                self.assertEqual(schema["prefixes"][f"{reservert}_modell"],
+                                 "https://example.org/test/")
+                self.assertTrue(any(f"'{reservert}_modell'" in w for w in warnings), warnings)
+
+    def test_prefiks_translittererer_norske_teikn(self):
+        schema, _ = _convert({"type": "object", "properties": {}}, schema_name="Bøker-på-nett")
+        self.assertIn("boeker_paa_nett", schema["prefixes"])
+
     def test_subsets_vert_ikkje_lokalt_definert(self):
         """Subset-navna vert berre referert via in_subset, aldri definert lokalt —
         ei lokal subsets-blokk kolliderer med same navn importert frå

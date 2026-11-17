@@ -154,6 +154,29 @@ def _lookup_ekstern_class_uri(cls_name: str) -> dict | None:
     return {"confidence": "moderate", "options": [f"{prefix}:{local}" for prefix, local, _uri in candidates]}
 
 
+# Prefiks som `linkml:types` deklarerer. Eit lokalt prefiks med same namn gir
+# «Prefix mismatch» i `check-import-duplicates` (`make lint`).
+_LINKML_TYPES_PREFIXES = frozenset({"linkml", "xsd", "shex", "schema"})
+
+
+def _derive_schema_prefix(schema_name: str, reserved: set, warnings: list) -> str:
+    """Utleier skjemaprefikset frå `schemaName` (snake_case).
+
+    Kolliderer kandidaten med eit reservert prefiks (policyen sine
+    `standard_prefixes` + `linkml:types`), vert `_modell` lagt til og ei
+    åtvaring skriven (jf. CLAUDE.md § «Ingen stille feil»).
+    """
+    prefix = _to_snake_case(schema_name) or "ex"
+    if prefix in reserved:
+        new_prefix = f"{prefix}_modell"
+        warnings.append(
+            f"Prefikset '{prefix}' er reservert (standard_prefixes eller linkml:types) — "
+            f"brukar '{new_prefix}' som skjemaprefiks"
+        )
+        prefix = new_prefix
+    return prefix
+
+
 def _register_prefix(prefixes: dict, prefix: str, uri: str, warnings: list) -> None:
     """Legg ein ekstern vokabularprefiks til `prefixes`, med kollisjonsvern.
 
@@ -448,7 +471,9 @@ def convert(
 
     # ── Prefiks ──────────────────────────────────────────────────────────────
     schema_uri  = schema_id.rstrip("/") + "/"
-    prefix_name = schema_id.rstrip("/").split("/")[-1].replace("-", "_")
+    prefix_name = _derive_schema_prefix(
+        schema_name, set(std_prefixes) | _LINKML_TYPES_PREFIXES, warnings
+    )
     prefixes: dict = {"linkml": std_prefixes.get("linkml", "https://w3id.org/linkml/")}
     prefixes[prefix_name] = schema_uri
     for k, v in std_prefixes.items():
