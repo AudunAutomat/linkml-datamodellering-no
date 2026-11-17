@@ -224,7 +224,7 @@ Dette repoet er ein **Proof of Concept** og har ingen garantert support-SLA:
 | **Bug i felles infrastruktur** (CI/CD, Makefile, validator, generatorar) | GitHub Issue med merkelapp `bug` | Repo-administrator |
 | **Bug i domenemodell** (feil URI, ugyldig YAML, manglande metadata) | GitHub Issue med merkelapp `bug` + tag katalogeigarleiing | Katalogeigarleiing for org |
 | **Datakvalitet** (TODO-verdiar, mangelfull dokumentasjon) | GitHub Issue med merkelapp `data-quality` | Katalogeigarleiing for org |
-| **Sikkerheitssårbarheit** (infrastruktur, CI/CD) | **E-post til ave@brreg.no** (IKKJE public issue) | Repo-administrator |
+| **Sikkerheitssårbarheit** (infrastruktur, CI/CD) | **E-post til audunvindenesegge@gmail.com** (IKKJE public issue) | Repo-administrator |
 | **Personopplysningar i data** | GitHub Issue med merkelapp `data-quality` + `urgent` | Katalogeigarleiing for org |
 
 ### Ansvarsfordeling

@@ -184,7 +184,7 @@ Dersom ein registrert organisasjon ønskjer å trekkje seg ut av repoet:
 
 #### Steg 1: Varsel repo-administrator
 
-Send e-post til repo-administrator (ave@brreg.no) med:
+Send e-post til repo-administrator (audunvindenesegge@gmail.com) med:
 - Grunngjeving (valfritt)
 - Kva som skal skje med eksisterande modellar og data
 - Tidsramme for uttrekkinga
@@ -353,7 +353,7 @@ Ueinigheitar om endringar i felles infrastruktur:
 
 | Komponent | Ansvarleg for sikkerheit | Rapportering |
 |---|---|---|
-| Felles infrastruktur (CI/CD, containerar, AP-NO-profilar) | Repo-administrator | E-post til ave@brreg.no |
+| Felles infrastruktur (CI/CD, containerar, AP-NO-profilar) | Repo-administrator | E-post til audunvindenesegge@gmail.com |
 | Domenemodellar (schema, datafiler) | Katalogeigarleiing per org | GitHub Issue (`bug` eller `data-quality`) |
 | Personopplysningar i datafiler | Katalogeigarleiing per org | GitHub Issue + omgåande fjerning |
 | Publiserte artefakter på GitHub Pages | Repo-administrator (infrastruktur), Katalogeigarleiing (innhald) | Avhengig av type problem |

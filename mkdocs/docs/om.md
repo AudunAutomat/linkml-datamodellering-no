@@ -13,7 +13,7 @@ Ikkje minst legges det tilrete for å eksportere modeller og data på W3C-semant
 
 ## Kontakt
 
-**Repo-administrator:** Audun Vindenes Egge ([ave@brreg.no](mailto:ave@brreg.no))
+**Repo-administrator:** Audun Vindenes Egge ([audunvindenesegge@gmail.com](mailto:audunvindenesegge@gmail.com))
 
 ## Bidra og gje tilbakemelding
 

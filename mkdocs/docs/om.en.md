@@ -18,7 +18,7 @@ Not least, it makes it possible to export models and data in W3C semantic format
 
 ## Contact {#kontakt}
 
-**Repository administrator:** Audun Vindenes Egge ([ave@brreg.no](mailto:ave@brreg.no))
+**Repository administrator:** Audun Vindenes Egge ([audunvindenesegge@gmail.com](mailto:audunvindenesegge@gmail.com))
 
 ## Contribute and give feedback {#bidra-og-gje-tilbakemelding}
 

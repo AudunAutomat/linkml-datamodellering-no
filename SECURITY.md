@@ -4,7 +4,7 @@
 
 Bruk **ikkje** public GitHub Issues for å rapportere sikkerheitssårbarheiter.
 
-Send e-post til **ave@brreg.no** med:
+Send e-post til **audunvindenesegge@gmail.com** med:
 - Beskriving av sårbarheita
 - Steg for å reprodusere problemet
 - Mogleg verknad
@@ -51,11 +51,11 @@ Vi koordinerer ansvarleg offentleggjering saman med deg.
 
 | Type problem | Ansvarleg | Rapporteringsmåte |
 |---|---|---|
-| Infrastruktur-sårbarheit (CI/CD, containerar, secrets) | Repo-administrator | **E-post til ave@brreg.no** |
-| Sårbarheit i felles verktøy (mcp-linkml-validator, mcp-linkml-modell-utkast) | Repo-administrator | **E-post til ave@brreg.no** |
+| Infrastruktur-sårbarheit (CI/CD, containerar, secrets) | Repo-administrator | **E-post til audunvindenesegge@gmail.com** |
+| Sårbarheit i felles verktøy (mcp-linkml-validator, mcp-linkml-modell-utkast) | Repo-administrator | **E-post til audunvindenesegge@gmail.com** |
 | Feil i domenemodell (feil URI, ugyldig YAML) | Katalogeigarleiing | GitHub Issue (`bug`) |
 | Personopplysningar i datafiler | Katalogeigarleiing | GitHub Issue (`data-quality`) + fjern data omgåande |
-| Sårbarheit i AP-NO-profilar (felles infrastruktur) | Repo-administrator | **E-post til ave@brreg.no** |
+| Sårbarheit i AP-NO-profilar (felles infrastruktur) | Repo-administrator | **E-post til audunvindenesegge@gmail.com** |
 
 ---
 
@@ -85,7 +85,7 @@ Vi koordinerer ansvarleg offentleggjering saman med deg.
 
 Dersom ein sårbarheit er **kritisk** (t.d. lekking av credentials, RCE i CI/CD):
 
-1. Send e-post til **ave@brreg.no** med `[CRITICAL]` i subject-linja
+1. Send e-post til **audunvindenesegge@gmail.com** med `[CRITICAL]` i subject-linja
 2. Vi svarer innan **1 arbeidsdagdag**
 3. Offentleggjering vert utsett til ein fix er tilgjengeleg
 
