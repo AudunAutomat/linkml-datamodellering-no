@@ -12,7 +12,17 @@ set -euo pipefail
 : "${LOG_FUNCTIONS:?miljøvariabelen LOG_FUNCTIONS må vere sett (eksportert frå make/00-settings.mk — køyr via make test/roundtrip, ikkje scriptet direkte)}"
 eval "$LOG_FUNCTIONS"
 
-SCRIPT_T0=$(date +%s%3N)
+# mktemp_ext <prefiks> <suffiks> — portabel mktemp med filendelse. BSD mktemp
+# (macOS) erstattar berre XXXXXX som står heilt sist i malen, så malen vert
+# laga utan suffiks og fila omdøypt etterpå.
+mktemp_ext() {
+    local f
+    f=$(mktemp "${1}XXXXXX") || return 1
+    mv "$f" "${f}${2}" || return 1
+    printf '%s' "${f}${2}"
+}
+
+SCRIPT_T0=$(now_ms)
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
@@ -221,9 +231,9 @@ _run_one() {
     echo "========================================"
     log_debug "→ $tname"
     local t0 elapsed rc=0
-    t0=$(date +%s%3N)
+    t0=$(now_ms)
     "$@" 2>&1 || rc=$?
-    elapsed=$(( $(date +%s%3N) - t0 ))
+    elapsed=$(( $(now_ms) - t0 ))
     # Heile statuslinja (navn + "..." + OK/FEIL + linjeskift) skrivast som
     # ÉIN printf — éin write()-syscall for ei linje av denne lengda er
     # atomisk med omsyn til andre samstundes skjema sine skriv til same
@@ -266,7 +276,7 @@ run_schema_tests() {
     dir_name=$(schema_dir_name "$schema")
     local example="src/linkml/$domain/$dir_name/examples/$dir_name-eksempel.yaml"
     local tmplog
-    tmplog=$(mktemp /tmp/test_make_schema_XXXXXX.log)
+    tmplog=$(mktemp_ext "/tmp/test_make_schema_" ".log")
 
     echo "→ Startar testar for $name ..." >&3
 
@@ -371,7 +381,7 @@ wait_for_tests() {
     done
     echo ""
     echo "Resultat: $pass OK, $fail feil"
-    echo "Total tidsbruk: $(fmt_elapsed_ms $(( $(date +%s%3N) - SCRIPT_T0 )))"
+    echo "Total tidsbruk: $(fmt_elapsed_ms $(( $(now_ms) - SCRIPT_T0 )))"
     echo "Sjå $LOG for detaljar"
     [ "$fail" -eq 0 ]
 }
@@ -432,9 +442,9 @@ run_phase_a_step() {
     # (jf. run_phase_a(), Del 1) — direkte log_info her ville lekke live til
     # terminalen og interleave med dei andre 16 samstundes Fase A-stega.
     local t0 elapsed
-    t0=$(date +%s%3N)
+    t0=$(now_ms)
     make "$target" SCHEMAS="${SCHEMAS[*]}" > "$logfile" 2>&1 || true
-    elapsed=$(( $(date +%s%3N) - t0 ))
+    elapsed=$(( $(now_ms) - t0 ))
     printf '%s\t%s\t%s\t%s\n' "${#SCHEMAS[@]}" "$elapsed" "$target" "skjema" > "$(phase_a_metafile "$key")"
     {
         echo "========================================"
@@ -469,14 +479,14 @@ run_phase_a_step_split2() {
     logfile_b="${logfile}.b"
     echo "→ Fase A: $target ($total skjema, 2 parallelle batchar) ..." >&3
     local t0 elapsed
-    t0=$(date +%s%3N)
+    t0=$(now_ms)
     local -a split_pids=()
     make "$target" SCHEMAS="${half_a[*]}" > "$logfile_a" 2>&1 & split_pids+=($!)
     make "$target" SCHEMAS="${half_b[*]}" > "$logfile_b" 2>&1 & split_pids+=($!)
     for pid in "${split_pids[@]}"; do
         wait "$pid" || true
     done
-    elapsed=$(( $(date +%s%3N) - t0 ))
+    elapsed=$(( $(now_ms) - t0 ))
     cat "$logfile_a" "$logfile_b" > "$logfile"
     rm -f "$logfile_a" "$logfile_b"
     printf '%s\t%s\t%s\t%s\n' "$total" "$elapsed" "$target" "skjema" > "$(phase_a_metafile "$key")"
@@ -505,7 +515,7 @@ run_phase_a_lint() {
     logfile=$(phase_a_logfile "lint")
     echo "→ Fase A: linkml-lint --ignore-warnings (${#SCHEMAS[@]} skjema) ..." >&3
     local t0 elapsed
-    t0=$(date +%s%3N)
+    t0=$(now_ms)
     podman run --rm \
         -v "$REPO_ROOT:/work" -w /work \
         -e PYTHONWARNINGS=ignore -e HOME=/tmp --user root \
@@ -513,7 +523,7 @@ run_phase_a_lint() {
         python3 src/assets/scripts/makefile/batch-lint.py \
             --config src/assets/containers/.linkmllint.yaml --ignore-warnings -- "${SCHEMAS[@]}" \
         > "$logfile" 2>&1 || true
-    elapsed=$(( $(date +%s%3N) - t0 ))
+    elapsed=$(( $(now_ms) - t0 ))
     printf '%s\t%s\t%s\t%s\n' "${#SCHEMAS[@]}" "$elapsed" "linkml-lint --ignore-warnings" "skjema" > "$(phase_a_metafile "lint")"
     {
         echo "========================================"
@@ -570,11 +580,11 @@ run_phase_a_mcp_instance() {
     echo "→ Fase A: mcp-validate-instance (${#jobs[@]} skjema) ..." >&3
     local logfile t0 elapsed
     logfile=$(phase_a_logfile "mcp_instance")
-    t0=$(date +%s%3N)
+    t0=$(now_ms)
     REPO_ROOT="$REPO_ROOT" VALIDATOR_DIR="$REPO_ROOT/src/mcp-linkml-validator" MCP_IMAGE="$MCP_IMAGE" \
         python3 src/mcp-linkml-validator/batch-validate-instances.py \
             --output-dir "$outdir" "${jobs[@]}" > "$logfile" 2>&1 || true
-    elapsed=$(( $(date +%s%3N) - t0 ))
+    elapsed=$(( $(now_ms) - t0 ))
     printf '%s\t%s\t%s\t%s\n' "${#jobs[@]}" "$elapsed" "mcp-validate-instance" "skjema" > "$(phase_a_metafile "mcp_instance")"
     {
         echo "========================================"
@@ -596,14 +606,14 @@ _run_phase_a_convert_batch() {
     n=$(wc -l < "$jobs_tsv")
     echo "→ Fase A: $label ($n jobb(ar)) ..." >&3
     local t0 elapsed
-    t0=$(date +%s%3N)
+    t0=$(now_ms)
     podman run --rm \
         -v "$REPO_ROOT:/work" -w /work \
         -e PYTHONWARNINGS=ignore -e HOME=/tmp --user root \
         "$LINKML_IMAGE" \
         python3 src/assets/scripts/makefile/batch-convert.py --jobs-tsv "/work/$jobs_tsv" \
         > "$logfile" 2>&1 || true
-    elapsed=$(( $(date +%s%3N) - t0 ))
+    elapsed=$(( $(now_ms) - t0 ))
     printf '%s\t%s\t%s\t%s\n' "$n" "$elapsed" "$label" "jobb(ar)" > "$(phase_a_metafile "$key")"
     rm -f "$jobs_tsv"
     {
@@ -629,8 +639,8 @@ _run_phase_a_convert_batch_split2() {
     n=$(wc -l < "$jobs_tsv")
     echo "→ Fase A: $label ($n jobb(ar), 2 parallelle batchar) ..." >&3
     local jobs_a jobs_b
-    jobs_a=$(mktemp "$LOGDIR/${key}_split_a_XXXXXX.tsv")
-    jobs_b=$(mktemp "$LOGDIR/${key}_split_b_XXXXXX.tsv")
+    jobs_a=$(mktemp_ext "$LOGDIR/${key}_split_a_" ".tsv")
+    jobs_b=$(mktemp_ext "$LOGDIR/${key}_split_b_" ".tsv")
     awk -F'\t' -v out_a="$jobs_a" -v out_b="$jobs_b" '
         !seen[$1] { seen[$1] = ++nschemas; order[nschemas] = $1 }
         { lines[$1] = lines[$1] $0 "\n" }
@@ -647,7 +657,7 @@ _run_phase_a_convert_batch_split2() {
     logfile_a="${logfile}.a"
     logfile_b="${logfile}.b"
     local t0 elapsed
-    t0=$(date +%s%3N)
+    t0=$(now_ms)
     local -a split_pids=()
     podman run --rm \
         -v "$REPO_ROOT:/work" -w /work \
@@ -664,7 +674,7 @@ _run_phase_a_convert_batch_split2() {
     for pid in "${split_pids[@]}"; do
         wait "$pid" || true
     done
-    elapsed=$(( $(date +%s%3N) - t0 ))
+    elapsed=$(( $(now_ms) - t0 ))
     cat "$logfile_a" "$logfile_b" > "$logfile"
     rm -f "$logfile_a" "$logfile_b" "$jobs_a" "$jobs_b" "$jobs_tsv"
     printf '%s\t%s\t%s\t%s\n' "$n" "$elapsed" "$label" "jobb(ar)" > "$(phase_a_metafile "$key")"
@@ -684,7 +694,7 @@ run_phase_a_convert_rdf() {
         return 0
     fi
     local jobs_tsv
-    jobs_tsv=$(mktemp "$LOGDIR/phase_a_convert_rdf_jobs_XXXXXX.tsv")
+    jobs_tsv=$(mktemp_ext "$LOGDIR/phase_a_convert_rdf_jobs_" ".tsv")
     local has_jobs=0
     for schema in "${SCHEMAS[@]}"; do
         local domain name example outdir dir_name
@@ -712,7 +722,7 @@ run_phase_a_roundtrip_json() {
         return 0
     fi
     local jobs_tsv
-    jobs_tsv=$(mktemp "$LOGDIR/phase_a_roundtrip_json_jobs_XXXXXX.tsv")
+    jobs_tsv=$(mktemp_ext "$LOGDIR/phase_a_roundtrip_json_jobs_" ".tsv")
     local has_jobs=0
     for schema in "${SCHEMAS[@]}"; do
         local domain name example rtdir dir_name
@@ -742,7 +752,7 @@ run_phase_a_roundtrip_ttl() {
         return 0
     fi
     local jobs_tsv
-    jobs_tsv=$(mktemp "$LOGDIR/phase_a_roundtrip_ttl_jobs_XXXXXX.tsv")
+    jobs_tsv=$(mktemp_ext "$LOGDIR/phase_a_roundtrip_ttl_jobs_" ".tsv")
     local has_jobs=0
     for schema in "${SCHEMAS[@]}"; do
         local domain name example rtdir dir_name
@@ -773,7 +783,7 @@ run_phase_a_linkml_validate() {
         return 0
     fi
     local jobs_tsv
-    jobs_tsv=$(mktemp "$LOGDIR/phase_a_linkml_validate_jobs_XXXXXX.tsv")
+    jobs_tsv=$(mktemp_ext "$LOGDIR/phase_a_linkml_validate_jobs_" ".tsv")
     local has_jobs=0
     for schema in "${SCHEMAS[@]}"; do
         local domain name example validate_schema dir_name
@@ -794,14 +804,14 @@ run_phase_a_linkml_validate() {
     n=$(wc -l < "$jobs_tsv")
     echo "→ Fase A: linkml-validate ($n skjema) ..." >&3
     local t0 elapsed
-    t0=$(date +%s%3N)
+    t0=$(now_ms)
     podman run --rm \
         -v "$REPO_ROOT:/work" -w /work \
         -e PYTHONWARNINGS=ignore -e HOME=/tmp --user root \
         "$LINKML_IMAGE" \
         python3 src/assets/scripts/makefile/batch-linkml-validate.py --jobs-tsv "/work/$jobs_tsv" \
         > "$logfile" 2>&1 || true
-    elapsed=$(( $(date +%s%3N) - t0 ))
+    elapsed=$(( $(now_ms) - t0 ))
     printf '%s\t%s\t%s\t%s\n' "$n" "$elapsed" "linkml-validate" "skjema" > "$(phase_a_metafile "linkml_validate")"
     rm -f "$jobs_tsv"
     {
@@ -821,7 +831,7 @@ run_phase_a_linkml_validate() {
 # men rett etter at hovud-wait-løkka er ferdig.
 run_phase_a_rdf_validity() {
     local jobs_list
-    jobs_list=$(mktemp "$LOGDIR/phase_a_rdf_validity_jobs_XXXXXX.txt")
+    jobs_list=$(mktemp_ext "$LOGDIR/phase_a_rdf_validity_jobs_" ".txt")
     local has_jobs=0
     for schema in "${SCHEMAS[@]}"; do
         local domain name outdir
@@ -854,14 +864,14 @@ run_phase_a_rdf_validity() {
     n=$(wc -l < "$jobs_list")
     echo "→ Fase A: rdf-validity ($n fil(er)) ..." >&3
     local t0 elapsed
-    t0=$(date +%s%3N)
+    t0=$(now_ms)
     podman run --rm \
         -v "$REPO_ROOT:/work" -w /work \
         -e PYTHONWARNINGS=ignore -e HOME=/tmp --user root \
         "$LINKML_IMAGE" \
         python3 src/assets/scripts/makefile/batch-rdf-validate.py --files-list "/work/$jobs_list" \
         > "$logfile" 2>&1 || true
-    elapsed=$(( $(date +%s%3N) - t0 ))
+    elapsed=$(( $(now_ms) - t0 ))
     printf '%s\t%s\t%s\t%s\n' "$n" "$elapsed" "rdf-validity" "fil(er)" > "$(phase_a_metafile "rdf_validity")"
     rm -f "$jobs_list"
     {
@@ -883,7 +893,7 @@ run_phase_a_rdf_validity() {
 # mellom filene i staden for å stable ho sekvensielt.
 run_phase_a_docs_validity() {
     local jobs_list
-    jobs_list=$(mktemp "$LOGDIR/phase_a_docs_validity_jobs_XXXXXX.tsv")
+    jobs_list=$(mktemp_ext "$LOGDIR/phase_a_docs_validity_jobs_" ".tsv")
     local has_jobs=0
     local prefix="gen-schema-docs"
     for schema in "${SCHEMAS[@]}"; do
@@ -906,14 +916,14 @@ run_phase_a_docs_validity() {
     n=$(wc -l < "$jobs_list")
     echo "→ Fase A: docs-validity ($n skjema) ..." >&3
     local t0 elapsed
-    t0=$(date +%s%3N)
+    t0=$(now_ms)
     podman run --rm \
         -v "$REPO_ROOT:/work" -w /work \
         -e PYTHONWARNINGS=ignore -e HOME=/tmp --user root \
         "$PYTHON_IMAGE" \
         python3 src/assets/scripts/makefile/batch-docs-validate.py --jobs-tsv "/work/$jobs_list" \
         > "$logfile" 2>&1 || true
-    elapsed=$(( $(date +%s%3N) - t0 ))
+    elapsed=$(( $(now_ms) - t0 ))
     printf '%s\t%s\t%s\t%s\n' "$n" "$elapsed" "docs-validity" "skjema" > "$(phase_a_metafile "docs_validity")"
     rm -f "$jobs_list"
     {
@@ -1455,7 +1465,7 @@ test_roundtrip_json_schema() {
 
     # Steg 1: JSON Schema → LinkML
     local tmp_linkml
-    tmp_linkml=$(mktemp "$REPO_ROOT/tmp/rt_linkml_XXXXXX.yaml")
+    tmp_linkml=$(mktemp_ext "$REPO_ROOT/tmp/rt_linkml_" ".yaml")
 
     python3 -c "
 import json
@@ -1498,7 +1508,7 @@ sys.exit(1)
 
     # Steg 2: LinkML → JSON Schema
     local tmp_json_schema
-    tmp_json_schema=$(mktemp "$REPO_ROOT/tmp/rt_jsonschema_XXXXXX.json")
+    tmp_json_schema=$(mktemp_ext "$REPO_ROOT/tmp/rt_jsonschema_" ".json")
 
     podman run --rm \
         -v "$REPO_ROOT:/work" -w /work \
@@ -1980,7 +1990,7 @@ run_json_schema_tests() {
     for json_schema in "${json_schemas[@]}"; do
         local basename_js=$(basename "$json_schema")
         local tmplog
-        tmplog=$(mktemp /tmp/test_make_jsonschema_XXXXXX.log)
+        tmplog=$(mktemp_ext "/tmp/test_make_jsonschema_" ".log")
 
         {
             _run_one "roundtrip-json-schema ($basename_js)" test_roundtrip_json_schema "$json_schema"
@@ -1996,7 +2006,7 @@ run_json_schema_tests() {
 # ---------------------------------------------------------------------------
 run_copy_artifacts_tests() {
     local tmplog
-    tmplog=$(mktemp /tmp/test_make_copyartifacts_XXXXXX.log)
+    tmplog=$(mktemp_ext "/tmp/test_make_copyartifacts_" ".log")
 
     {
         _run_one "copy-artifacts-click-href" test_copy_artifacts_click_href

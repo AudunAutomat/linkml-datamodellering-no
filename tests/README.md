@@ -41,6 +41,10 @@ make roundtrip SCHEMA=<sti>         # berre roundtrip-testar (~30 sek)
 make test SCHEMA=<sti>              # full suite (~3 min)
 ```
 
+## `test_check_prereqs.sh`
+
+Testar `src/assets/scripts/makefile/check-prereqs.bash` på verten utan å installere noko: stubba kommandoar i ein midlertidig `PATH` og `PREREQS_OS=Darwin|Linux` dekkjer begge OS-grenane (Homebrew- vs apt-råd, make < 4, podman-maskin manglar/stoppa, `df`-feil gir åtvaring og ikkje stille død). Køyr: `bash tests/test_check_prereqs.sh`. Ikkje del av `make test` (krev ikkje podman, og må kunne køyrast på ei fersk maskin). Må vere bash 3.2-kompatibel.
+
 ## Roundtrip-dekning
 
 `make roundtrip [SCHEMA=<sti>]` køyrer berre roundtrip-testane.

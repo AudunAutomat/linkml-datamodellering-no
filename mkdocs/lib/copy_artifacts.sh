@@ -5,6 +5,15 @@ trap 'echo "ERROR in ${BASH_SOURCE[0]}:${LINENO} — command: ${BASH_COMMAND}" >
 
 source "$REPO_ROOT/mkdocs/lib/utils/imported_schemas.sh"
 
+# find_cp_into <målkatalog> <find-argument...> — kopierer treff frå find inn i
+# målkatalogen. Portabel erstatning for `find ... -exec cp -t <mål> {} +`:
+# `cp -t` finst berre i GNU cp, ikkje i BSD cp (macOS). Batchar framleis alle
+# filer inn i færre cp-prosessar.
+find_cp_into() {
+    local dest="$1"; shift
+    find "$@" -exec sh -c 'dest="$1"; shift; cp "$@" "$dest"' _ "$dest" {} +
+}
+
 copy_schema_artifacts() {
     local domain="$1"
     local schema="$2"
@@ -16,7 +25,7 @@ copy_schema_artifacts() {
     # Kopier artefaktfiler (berre filer, ikkje docs/-underkatalog)
     # -exec ... + batchar alle filer inn i færre cp-prosessar (i staden for
     # éin cp-prosess per fil) — sjå specs/backlog/batch-docs-publish-generering.md
-    find "$schema_dir" -maxdepth 1 -type f -exec cp -t "$out" {} +
+    find_cp_into "$out" "$schema_dir" -maxdepth 1 -type f
 
     # Finn kjeldemappe for skjemaet (kan vere ulik $schema-navnet) via det
     # pre-berekna oppslaget frå Steg 1.5 i staden for eit eige find-kall —
@@ -46,18 +55,18 @@ copy_schema_artifacts() {
     # Kopier PlantUML-diagramfiler til diagrams/-underkatalog
     if [ -d "$schema_dir/diagrams" ]; then
         mkdir -p "$out/diagrams"
-        find "$schema_dir/diagrams" -type f -exec cp -t "$out/diagrams" {} +
+        find_cp_into "$out/diagrams" "$schema_dir/diagrams" -type f
     fi
 
     # Kopier genererte Java-klasser til java/-underkatalog
     if [ -d "$schema_dir/java" ]; then
         mkdir -p "$out/java"
-        find "$schema_dir/java" -type f -exec cp -t "$out/java" {} +
+        find_cp_into "$out/java" "$schema_dir/java" -type f
     fi
 
     # Kopier gen-doc markdown-filer til klasser/-underkatalog
     if [ -d "$schema_dir/docs" ]; then
-        find "$schema_dir/docs" -name "*.md" -exec cp -t "$out/klasser" {} +
+        find_cp_into "$out/klasser" "$schema_dir/docs" -name "*.md"
         # Rename alle .md-filer til lowercase (via .tmp for case-insensitive filsystem)
         for f in "$out/klasser/"*.md; do
             [ -f "$f" ] || continue
@@ -68,9 +77,11 @@ copy_schema_artifacts() {
                 mv "$out/klasser/${lower}.tmp" "$out/klasser/$lower"
             fi
         done
-        # Oppdater alle interne .md-lenkjer til lowercase
+        # Oppdater alle interne .md-lenkjer til lowercase.
+        # perl -pi i staden for `sed -i ... \L`: BSD sed (macOS) støttar korkje
+        # `sed -i` utan suffiks eller \L (GNU-utviding).
         find "$out/klasser" -maxdepth 1 -name "*.md" \
-            -exec sed -i 's/](\([^)]*\.md\))/](\L\1)/g' {} +
+            -exec perl -pi -e 's/\]\(([^)]*\.md)\)/"](" . lc($1) . ")"/ge' {} +
         # Oppdater mermaid click-hrefs i to steg (BUG-13, sjå
         # specs/backlog/mermaid-diagram-elementaere-typar-og-attributtklikk.md):
         #
@@ -82,13 +93,13 @@ copy_schema_artifacts() {
         # det tilsikta, korrekte lenkjemålet — han skal bevarast uendra,
         # berre med "../"-prefikset og den påklistra avsluttande "/" fjerna.
         find "$out/klasser" -maxdepth 1 -name "*.md" \
-            -exec sed -i -E 's|click ([A-Za-z0-9_]+) href "\.\./(https?://[^"]+)/"|click \1 href "\2"|g' {} +
+            -exec perl -pi -e 's|click ([A-Za-z0-9_]+) href "\.\./(https?://[^"]+)/"|click $1 href "$2"|g' {} +
         # Steg 2: for genuint lokale klasse-/enum-/slot-/type-referansar
         # (href framleis prefiksa med "../" etter steg 1 — eksterne URL-ar
         # er det ikkje lenger) vert href bygd på nytt frå navnet i
         # click-statementet, ikkje frå den eksisterande href-verdien (som
         # kan vere feilkasa, sjå specs/done/mermaid-klikkbare-lenker-404.md)
         find "$out/klasser" -maxdepth 1 -name "*.md" \
-            -exec sed -i -E 's|click ([A-Za-z0-9_]+) href "\.\./[^"]*"|click \1 href "../\L\1\E/"|g' {} +
+            -exec perl -pi -e 's|click ([A-Za-z0-9_]+) href "\.\./[^"]*"|click $1 href "../\L$1\E/"|g' {} +
     fi
 }

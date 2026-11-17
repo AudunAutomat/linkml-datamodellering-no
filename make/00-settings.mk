@@ -77,10 +77,16 @@ fmt_elapsed_ms() {
 # av vertsmaskinen) — sjå bugs/monotonisk-tidtaking-make.md (BUG-21).
 now_ms() {
   local up sec frac
-  read -r up _ < /proc/uptime
-  sec=$${up%.*}
-  frac=$${up#*.}
-  printf '%d' $$(( sec * 1000 + 10#$$frac * 10 ))
+  if [ -r /proc/uptime ]; then
+    read -r up _ < /proc/uptime
+    sec=$${up%.*}
+    frac=$${up#*.}
+    printf '%d' $$(( sec * 1000 + 10#$$frac * 10 ))
+  else
+    # macOS/BSD har ikkje /proc — monotonisk klokke via perl (følgjer med macOS).
+    # Feil (t.d. perl manglar) går til stderr og gir ikkje-null exit.
+    perl -MTime::HiRes=clock_gettime,CLOCK_MONOTONIC -e 'printf "%d", clock_gettime(CLOCK_MONOTONIC) * 1000'
+  fi
 }
 timed_run() {
   local label="$$1"; shift

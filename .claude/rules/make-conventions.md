@@ -1,10 +1,13 @@
 ---
 name: make-conventions
-description: Batching- og wrapper-target-mønster for make/*.mk-generatorar, src/assets/scripts/** og mkdocs/lib/scripts/**, orkestratorar som startar containerar (verten, ikkje PYTHON_RUN), synlegheit for nye target i make help, pluss peikar til "ingen stille feil"-prinsippet. Lastast automatisk ved arbeid med filer under make/, src/assets/scripts/ eller mkdocs/lib/scripts/.
+description: Batching- og wrapper-target-mønster for make/*.mk-generatorar, src/assets/scripts/** og mkdocs/lib/scripts/**, orkestratorar som startar containerar (verten, ikkje PYTHON_RUN), synlegheit for nye target i make help, portabelt shell mellom macOS (BSD) og Linux (GNU), pluss peikar til "ingen stille feil"-prinsippet. Lastast automatisk ved arbeid med filer under make/, src/assets/scripts/, mkdocs/lib/, mkdocs/publish.sh, tests/*.sh eller Makefile.
 paths:
   - "make/**"
   - "src/assets/scripts/**"
-  - "mkdocs/lib/scripts/**"
+  - "mkdocs/lib/**"
+  - "mkdocs/publish.sh"
+  - "tests/**/*.sh"
+  - "Makefile"
 ---
 
 ## Ingen stille feil
@@ -122,3 +125,48 @@ Gjer i staden slik:
 teknisk verifikasjon»). Begge modusane av `make validate-capture` feila deretter i
 om lag 8 veker utan at nokon merka det. Sjå F3 i
 `specs/done/validate-capture-utan-schema.md`.
+
+## Portabelt shell: macOS (BSD) og Linux (GNU)
+
+macOS er offisielt støtta (krav og installasjon: `COMMANDS.md` § macOS og
+`make check-prereqs`). macOS leverer BSD-verktøy, bash 3.2 og Apple make 3.81.
+Script og make-oppskrifter skrivne mot GNU feilar der. Feilen syner seg ofte
+langt frå årsaka (aritmetikkfeil, «Fil manglar», tapt `pipefail`) og vert aldri
+fanga av WSL2/Ubuntu eller CI, som begge har GNU-verktøy.
+
+**Aldri** bruk ein GNU-spesifikk konstruksjon i nytt eller endra script utan
+portabelt alternativ:
+
+| Konstruksjon | Problem på macOS | Portabelt alternativ |
+|---|---|---|
+| `cp -t <mål> …`, `mv -t` | `-t` finst berre i GNU | `find_cp_into` (`mkdocs/lib/copy_artifacts.sh`), eller `find … -exec sh -c 'd=$1; shift; cp "$@" "$d"' _ "$mål" {} +` |
+| `sed -i 's/…/'` | BSD krev argument til `-i` | `sed -i.bak … && rm -f fil.bak` |
+| `\L`, `\U`, `\E`, `sed -r`, `\+`/`\|` i sed | GNU-utvidingar | `perl -pi -e '…'` (`lc($1)` / `\L$1\E`) |
+| `date +%s%N`, `%3N` | BSD skriv ein bokstavleg `N` | `now_ms` frå `LOG_FUNCTIONS` (monotonisk, jf. BUG-21) |
+| `/proc/uptime`, `/proc/version` | finst ikkje | gard med `[ -r … ]` og ha ein macOS-gren (`now_ms` har ein) |
+| `mktemp /sti/x_XXXXXX.log` | BSD erstattar berre `X` heilt sist, og gir ei bokstavleg fil | `mktemp_ext <prefiks> <suffiks>` (`tests/test_make.sh`) |
+| `mktemp -d` utan mal | macOS les ikkje `TMPDIR` | `mktemp -d "${TMPDIR:-/tmp}/navn.XXXXXX"` |
+| `df -BG`, `stat -c`, `readlink -f`, `date -d`, `xargs -r`, `grep -P`, `sort -V`, `find -printf`, `base64 -w` | GNU-flagg | POSIX-variant (`df -Pk`, `stat -f%z`-fallback, …) |
+| `mapfile`/`readarray`, `declare -A`/`local -A`, `${v,,}`, `${v^^}`, `\|&` | bash 4+; `/bin/bash` er 3.2 | tillate i scripta som køyrer via `make` (bash >= 4 vert kravd og sjekka), **ikkje** i `check-prereqs.bash` og `tests/test_check_prereqs.sh`, som køyrer før Homebrew-bash er installert |
+| `.SHELLFLAGS`, `.ONESHELL`, `$(file)`, `undefine`, `&:` i make | make 3.82+/4.x; `.SHELLFLAGS` vert ignorert på 3.81 utan feilmelding | macOS-brukarar har make >= 4 (sjekka), men sett `pipefail` i `SHELL` (`SHELL := … -o pipefail`), ikkje i `.SHELLFLAGS` |
+| `python3` på verten som importerer ein tredjepartspakke (t.d. `yaml`) | pakken følgjer med Ubuntu, ikkje macOS | legg avhengigheita i `check-prereqs.bash`, eller køyr kallet i container |
+
+**Framgangsmåte:**
+
+1. Slå opp konstruksjonen i tabellen før du skriv han. Vel det portable alternativet.
+2. Grep dei endra filene:
+   `grep -nE 'cp (-[a-zA-Z]+ )*-t |sed -i( |$)|date \+[^ ]*%[0-9]*N|/proc/|mktemp [^|;]*X{3,}\.[a-z]+|mapfile|readarray|declare -A|df -B|stat -c|readlink -f|date -d|xargs -r|grep -P|sort -V'`.
+   Kvart treff må rettast, eller grunngjevast (t.d. bash 4 i eit script som
+   alltid køyrer under `make`).
+3. Verifiser på macOS når du kan (`make test`; `make docs-publish` i ein
+   sandkasse-kopi, jf. `mkdocs-portal.md`). Linux/CI-grøn seier ingenting om
+   macOS. Kan du ikkje køyre på macOS, skriv det eksplisitt i rapporten.
+4. `make test` på macOS med mange feil og `Error 137` frå `podman` tyder at
+   Podman-VM-en er for liten (OOM-kill), ikkje at koden er feil. Sjekk
+   `make check-prereqs` (åtvarar under 4 GiB) før du jaktar kodefeil.
+
+Konkret tilfelle: fyrste `make test` på ein Mac stoppa på `date +%s%3N`
+(«value too great for base») og `mktemp …_XXXXXX.log` («File exists»). Etter
+retting avdekte `make test`/`domain-*`/`docs-publish` òg `/proc/uptime` i
+`now_ms`, `cp -t`/`sed -i`/`\L` i `copy_artifacks.sh` og `.SHELLFLAGS` (tapt
+`pipefail` på make 3.81). Sjå `specs/done/check-prereqs-macos.md` (F10-F14).

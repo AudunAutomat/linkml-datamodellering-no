@@ -14,6 +14,25 @@ Alle kommandoar køyrer via containerar — ingen lokal Python-installasjon tren
 installerte, køyr scriptet direkte i staden: `bash
 src/assets/scripts/makefile/check-prereqs.bash`.
 
+### macOS
+
+macOS er eit offisielt støtta miljø (Podman køyrer i ei Linux-VM). Scriptet
+gjev Homebrew-instruksjonar på macOS og åtvarar/feilar for desse punkta
+(Apple leverer i for gamle versjonar, eller har ikkje PyYAML):
+
+| Føresetnad | Krav | Installasjon |
+|---|---|---|
+| Homebrew | tilgjengeleg | <https://brew.sh> |
+| GNU make | >= 4.0 (Apple: 3.81) | `brew install make`, og `export PATH="$(brew --prefix make)/libexec/gnubin:$PATH"` i `~/.zshrc` (eller køyr `gmake`) |
+| python3 + PyYAML | `python3 -c 'import yaml'` lukkast (treng for `make docs-publish`; Ubuntu/WSL har `python3-yaml` som standard) | `python3 -m pip install --user --break-system-packages pyyaml` (Homebrew har ingen pyyaml-formel, og Homebrew-Python er «externally managed»; Linux: `sudo apt-get -y install python3-yaml`) |
+| bash | >= 4 (Apple: 3.2) | `brew install bash`, og `export PATH="$(brew --prefix)/bin:$PATH"` i `~/.zshrc` |
+| Podman | tilgjengeleg + køyrande maskin | `brew install podman`, deretter `podman machine init` og `podman machine start` |
+
+`Makefile` brukar `bash` frå `PATH` (ikkje `/bin/bash`), så Homebrew-bash vert
+brukt automatisk når han ligg først i `PATH`. Podman-VM-en har eigen disk
+(`podman machine init --disk-size <GB>`); diskplass-sjekken gjeld verts-disken.
+Sjå `specs/done/check-prereqs-macos.md`.
+
 ## Logging
 
 Alle `make`-kommandoar støttar `LOGLVL`-variabelen for å styre detaljnivå:

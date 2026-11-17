@@ -11,7 +11,7 @@ All commands run via containers — no local Python installation is needed.
 
 | Command | Description | Output |
 |---|---|---|
-| `make check-prereqs` | Checks that Git, Podman, GNU make, user namespaces and free disk space are configured correctly | Writes OK/FEIL per prerequisite to stdout; exits with code 1 on failure |
+| `make check-prereqs` | Checks that Git, Podman, GNU make (>= 4.0 on macOS), bash >= 4, user namespaces and free disk space are configured correctly. Gives Homebrew instructions on macOS (see `COMMANDS.md` § macOS) | Writes OK/FEIL per prerequisite to stdout; exits with code 1 on failure |
 
 ## Building container images {#container-image-bygging}
 

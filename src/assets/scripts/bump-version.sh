@@ -103,7 +103,8 @@ if $DRY_RUN; then
 fi
 
 # Oppdater version:-felt i schema-YAML
-sed -i "s/^version: .*/version: \"${NEW_VERSION}\"/" "$SCHEMA_FILE"
+# -i.bak + rm: portabelt mellom GNU sed og BSD sed (macOS)
+sed -i.bak "s/^version: .*/version: \"${NEW_VERSION}\"/" "$SCHEMA_FILE" && rm -f "${SCHEMA_FILE}.bak"
 echo "Oppdatert: $SCHEMA_FILE"
 
 # Lag Git-tagg

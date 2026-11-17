@@ -5,8 +5,11 @@
 # Modular (settings, containers, generators, osv.) er inkluderte frå make/*.mk.
 # ==============================================================================
 
-SHELL       := /bin/bash
-.SHELLFLAGS := -o pipefail -c
+# bash frå PATH (ikkje hardkoda /bin/bash): macOS sin /bin/bash er 3.2, men
+# scripta treng bash >= 4 (Homebrew). `-o pipefail` ligg i SHELL i staden for
+# .SHELLFLAGS, sidan .SHELLFLAGS først finst frå GNU make 3.82 — sjå
+# specs/done/check-prereqs-macos.md (F9/F10).
+SHELL       := $(or $(shell command -v bash),/bin/bash) -o pipefail
 
 # Hopp over skjemaoppdaging (find over src/linkml, config.mk-regenerering)
 # når einaste mål er `help` (eller ingen mål, som fell tilbake til
