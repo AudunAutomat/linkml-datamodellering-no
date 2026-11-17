@@ -54,7 +54,7 @@ JSON Schema (fil)
 | `prefixes` | Standard vokabularprefiksar frå policyen (`dct`, `dcat`, `foaf`, `skos`, `xsd` m.fl.) + skjemaprefiks avleia frå `schemaName` (snake_case, translitterert). Er prefikset reservert (`standard_prefixes` eller `linkml:types`: `linkml`, `xsd`, `shex`, `schema`), vert `_modell` lagt til og ei åtvaring skriven |
 | `default_prefix` | Absolutt HTTPS-URI avleia frå `schemaId` (t.d. `https://data.norge.no/ngr/adresse/`) |
 | `imports` | `linkml:types` (standard) |
-| `subsets` | Ikkje definert lokalt — `Obligatorisk`/`Anbefalt`/`Valgfri` vert berre *referert* via `in_subset` og må finnast i importgrafen (t.d. via `common-ap-no-schema.yaml`) |
+| `subsets` | Ikkje definert lokalt — `Obligatorisk`/`Anbefalt`/`Valgfri` vert berre *referert* via `in_subset` og må finnast i importgrafen (t.d. via `common-ap-no-schema.yaml`). Brukar utkastet `in_subset`, legg konverteraren til ei åtvaring i `warnings` med subsetnamna, sidan `make lint` elles feilar med «Subset … is not defined» |
 | `slots.id` | Global `id`-slot med `identifier: true` og `range: uriorcurie` |
 | `slots.<prop>` | Ein global slot per eigeskap i JSON Schema, med `slot_uri: <prefix>:<prop>`. Slotnavnet vert snake_case (translitterert, t.d. `nedlastingsURL` → `nedlastings_url`). Originalnavnet vert teke vare på i `aliases:` når det er endra. Fell to eigenskapar saman til same slot, gjev konverteraren ei åtvaring |
 | `classes.<Klasse>` | Ein klasse per `$defs`-objekt, med navnet i UpperCamelCase (t.d. `geografisk-adresse` → `GeografiskAdresse`, same for typar og enum). Har `class_uri`, `annotations.begrepsidentifikator: TODO` og `slot_usage` med `required`/`in_subset`. Ein `allOf`-komponert def (sjå under) får i tillegg `is_a` |

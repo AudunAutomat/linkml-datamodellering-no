@@ -660,6 +660,22 @@ def convert(
 
         classes_out[cls_name] = entry
 
+    # ── Åtvaring: subset vert berre refererte, aldri definerte lokalt ────────
+    # Generatoren definerer ingen `subsets:`-seksjon (bronze-policy: subseta skal
+    # komme frå importgrafen). `make lint` feilar elles med «Subset … is not defined».
+    used_subsets = list(dict.fromkeys(
+        s
+        for cls in classes_out.values()
+        for su in (cls.get("slot_usage") or {}).values()
+        for s in su.get("in_subset", [])
+    ))
+    if used_subsets:
+        warnings.append(
+            f"Subseta {', '.join(repr(s) for s in used_subsets)} er refererte via in_subset, "
+            "men ikkje definerte i skjemaet — importer ein AP-NO-profil "
+            "(t.d. common-ap-no-schema) eller legg til subsets: før make lint passerer"
+        )
+
     # ── Containerklasse ───────────────────────────────────────────────────────
     add_container  = gen.get("add_container_class", True)
     container_name = gen.get("container_class_name") or f"{_to_pascal_case(schema_name)}Container"

@@ -73,6 +73,11 @@ def _convert(json_schema: dict, schema_name: str = "test") -> tuple[dict, list[s
     return yaml.safe_load(yaml_str), warnings
 
 
+def _utan_subset_aatvaring(warnings: list[str]) -> list[str]:
+    """Fjernar subset-åtvaringa, for testar som sjekkar at *anna* ikkje gir åtvaringar."""
+    return [w for w in warnings if "in_subset" not in w]
+
+
 # ---------------------------------------------------------------------------
 # TestConversion
 # ---------------------------------------------------------------------------
@@ -116,7 +121,7 @@ class TestConversion(unittest.TestCase):
             }
         })
         self.assertEqual(schema["slots"]["kunde"]["range"], "Kunde")
-        self.assertEqual([], warnings)
+        self.assertEqual([], _utan_subset_aatvaring(warnings))
 
     def test_array_type_gir_multivalued(self):
         schema, _ = _convert({
@@ -249,7 +254,7 @@ class TestConversion(unittest.TestCase):
             }
         })
         self.assertEqual(schema["slots"]["val"]["range"], "string")
-        self.assertEqual([], warnings)
+        self.assertEqual([], _utan_subset_aatvaring(warnings))
 
     def test_anyof_fleire_ikkje_null_typar_gir_åtvaring(self):
         _, warnings = _convert({
@@ -355,6 +360,34 @@ class TestConversion(unittest.TestCase):
                                  "https://example.org/test/")
                 self.assertTrue(any(f"'{reservert}_modell'" in w for w in warnings), warnings)
 
+    def test_subset_aatvaring_ved_eigenskapar(self):
+        _, warnings = _convert({
+            "$defs": {
+                "Ting": {
+                    "type": "object",
+                    "properties": {"a": {"type": "string"}, "b": {"type": "string"}},
+                    "required": ["a"],
+                },
+                "Anna": {"type": "object", "properties": {"c": {"type": "string"}}},
+            }
+        })
+        subset_w = [w for w in warnings if "in_subset" in w]
+        self.assertEqual(len(subset_w), 1, warnings)
+        self.assertIn("'Obligatorisk', 'Anbefalt'", subset_w[0])
+
+    def test_ingen_subset_aatvaring_utan_eigenskapar(self):
+        _, warnings = _convert({"type": "object", "properties": {}})
+        self.assertFalse(any("in_subset" in w for w in warnings), warnings)
+
+    def test_subset_aatvaring_bruker_subsetnamn_frå_policy(self):
+        policy = _policy()
+        policy["subsets"] = {"required_maps_to": "Paakravd", "non_required_default": "Valgfri"}
+        _, warnings = convert(
+            {"$defs": {"Ting": {"type": "object", "properties": {"a": {"type": "string"}}, "required": ["a"]}}},
+            policy, schema_id="https://example.org/test", schema_name="test",
+        )
+        self.assertTrue(any("'Paakravd'" in w for w in warnings), warnings)
+
     def test_prefiks_translittererer_norske_teikn(self):
         schema, _ = _convert({"type": "object", "properties": {}}, schema_name="Bøker-på-nett")
         self.assertIn("boeker_paa_nett", schema["prefixes"])
@@ -415,7 +448,7 @@ class TestConversion(unittest.TestCase):
         # GeografiskAdresse har éin kjeldeverifisert ekstern class_uri-kandidat
         # (sjå _EKSTERN_CLASS_URI_KANDIDATAR) — vert sett automatisk, med åtvaring.
         self.assertEqual(schema["classes"]["GeografiskAdresse"]["class_uri"], "locn:Address")
-        allof_warnings = [w for w in warnings if "class_uri" not in w]
+        allof_warnings = [w for w in _utan_subset_aatvaring(warnings) if "class_uri" not in w]
         self.assertEqual([], allof_warnings)
 
     def test_allof_med_fleire_ref_gir_åtvaring(self):
