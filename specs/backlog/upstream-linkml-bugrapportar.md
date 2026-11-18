@@ -33,6 +33,7 @@ LinkML-relaterte feila som framleis gjeld.
 - [x] Steg 6 — sjå § Eksisterande upstream-issues
 - [x] Steg 7 — sjå § Upstream-rapportar (U1-U8)
 - [x] Steg 8 — sjå § Tilrådingar
+- [x] Re-verifiser mot `linkml` 1.12.1 (2026-11-18, sjå § Re-verifisering mot 1.12.1)
 - [ ] Meld U1-U8 upstream (brukaren gjer dette sjølv, sjå § Tilrådingar)
 - [x] Oppdater `bugs/*.md` og `BUGS.md` med korrigerte rotårsaker og issue-lenkjer (2026-09-26, sjå § Avgjerder)
 - [x] Fjern forelda `convert-instance-rdf`-skip for NGR i `tests/test_make.sh` og lychee-eksklusjonen for BUG-20 (2026-09-26; verifisert med `make test`-filter og `lychee --dump`, endeleg CI-stadfesting ved neste lenkjesjekk)
@@ -41,7 +42,8 @@ LinkML-relaterte feila som framleis gjeld.
 
 | Image | Innhald | Bruk |
 |---|---|---|
-| `localhost/linkml-local:latest` | `linkml==1.11.1` + lokal `docgen-max-chars.patch` | Repoets eige image — verifisering mot ekte skjema |
+| `localhost/linkml-local:latest` | `linkml==1.11.1` + lokal `docgen-max-chars.patch` (frå 2026-11-06: `linkml==1.12.1` + `docgen-max-chars.patch` og `javagen-custom-typemap.patch`) | Repoets eige image — verifisering mot ekte skjema |
+| `localhost/linkml-vanilla:1.12.1` | `python:3.12-slim` + `pip install linkml==1.12.1 linkml-runtime==1.12.1`, ingen patchar (2026-11-18) | Re-verifisering mot gjeldande versjon |
 | `localhost/linkml-vanilla:1.11.1` | `python:3.12-slim` + `pip install linkml==1.11.1`, ingen patchar | Upstream-MRE-ar mot siste release |
 | `localhost/linkml-main:5ef7622e` | `linkml`/`linkml-runtime` frå `linkml/linkml@5ef7622e` (monorepo, `packages/*`) | Sjekk om feilen framleis finst på `main` |
 
@@ -65,7 +67,7 @@ BUG-15 og BUG-24 peika til det arkiverte repoet; retta 2026-09-26.
 | BUG-4 | Makefile | `løyst` | — | — | — | Framleis løyst |
 | BUG-5 | mcp-linkml-validator | `løyst` | — | — | — | Framleis løyst (`walk()` handterer lister) |
 | BUG-6 | linkml | `workaround` | Ja (MRE) | Ja | Ja | **Framleis relevant** (→ U6). `main` (`679eba10`) slår no saman *strukturelt identiske* klasser, men ikkje-identisk redeklarering krasjar framleis/vert stilt erstatta |
-| BUG-7 | linkml | `workaround` | Ja (MRE) | Ja | **Nei** | **Fiksa på `main`** (`679eba10`, 2026-06-10), ikkje utgjeven. Ikkje meld |
+| BUG-7 | linkml | `workaround` | Ja (MRE) | Ja | **Nei** | **Fiksa på `main`** (`679eba10`, 2026-06-10). **Utgjeven i 1.12.1** (verifisert 2026-11-18, sjå § Re-verifisering). Ikkje meld |
 | BUG-8 | linkml-runtime | `open` | Ja (MRE) | Ja | Ja | **Ikkje ein upstream-bug.** LinkML krev ein `designates_type`-slot for polymorfi. Med global slot `designates_type: true` + `range: uriorcurie` går full YAML→TTL→YAML-roundtrip. Relaterte, allereie melde feil: #2107, #2399, #3663, #2506 |
 | BUG-9 | avrotize | `upstream` | Ikkje re-verifisert | — | — | Utanfor LinkML-scope; ikkje re-verifisert i denne runden |
 | BUG-10 | make | `løyst` | — | — | — | Framleis løyst (`< /dev/null` på plass) |
@@ -113,13 +115,15 @@ Prioritert rekkjefølgje: U1, U2, U3, U7, U8, U6, U5, U4.
 Kvar rapport følgjer same mal: tittel, éi setning om problemet, minimal
 reproduksjon, forventa/faktisk, årsak og framlegg til fiks. Alle MRE-ar er
 køyrde på nytt i denne forma (2026-09-27) og reproduserer på både 1.11.1 og
-`main`. Legg til denne linja nedst i kvart issue:
+`main`; køyrde mot 1.12.1 2026-11-18, og U1-U8 reproduserer òg der. Legg til denne linja nedst i kvart issue:
 
-> **Environment:** linkml 1.11.1 (PyPI); also reproduced on `main` @ `5ef7622e`.
+> **Environment:** linkml 1.12.1 (PyPI); also reproduced on 1.11.1 and on `main` @ `5ef7622e`.
 
 ---
 
 ### U1 — Two slots with the same `slot_uri` break RDF loading
+
+*Radnummer i U1-U8 er frå 1.11.1/`main` og stemmer i 1.12.1 bortsett frå U8 (`jsonldgen.py:211`, ikkje 205).*
 
 *Dekkjer BUG-1/BUG-2 (10 skjema skippa i roundtrip-ttl).*
 
@@ -424,8 +428,32 @@ gen-rdf schema.yaml
 
 - **Expected:** RDF output. The imported schema is already loaded, so no extra files should be needed.
 - **Actual:** the server log shows `GET /schemas/leaf.context.jsonld`, and `gen-rdf` fails with `HTTP Error 404`.
-- **Cause:** `jsonldgen.py:205` adds `<import> + ".context.jsonld"` to `@context` for every import; rdflib then downloads it. #3641 only filters out local imports.
+- **Cause:** `jsonldgen.py:211` (1.12.1; line 205 in 1.11.1) adds `<import> + ".context.jsonld"` to `@context` for every import; rdflib then downloads it. #3641 only filters out local imports.
 - **Suggested fix:** build the context in memory for all imports, or skip remote contexts that can't be fetched.
+
+## Re-verifisering mot 1.12.1
+
+Køyrt 2026-11-18 i `localhost/linkml-vanilla:1.12.1` (`linkml==1.12.1`,
+`linkml-runtime==1.12.1`, ingen patchar), same MRE-ar som i § Upstream-rapportar.
+Repoet brukar 1.12.1 sidan 2026-11-06 (`specs/done/oppgrader-linkml-1-12-1.md`).
+
+| Punkt | Resultat i 1.12.1 | Endring frå 1.11.1 |
+|---|---|---|
+| U1 | `TypeError: Catalog.__init__() got an unexpected keyword argument 'title_literal'` | Ingen |
+| U2 | `MappingError: No pred for https://example.org/items` | Ingen |
+| U3 | `timestamp: '2024-01-01 10:30:00'` | Ingen |
+| U4 | `id: ex:thing1` | Ingen |
+| U5 | `back.yaml` = `{id: ex:c1}` (tittelen er borte) | Ingen |
+| U6 | `gen-python`/`gen-rdf`/`gen-jsonld-context` feilar med `Conflicting URIs`; `gen-json-schema` gir `Standard` med berre `extra` | Ingen |
+| U7 | `click Uri href "../http://www.w3.org/2001/XMLSchema#anyURI/"` | Ingen |
+| U8 | `GET /schemas/leaf.context.jsonld` → 404 | Ingen (radnummer 205 → 211) |
+| BUG-7 | `gen-python`/`gen-rdf`/`gen-jsonld-context` gir `rc=0`, både for lokal redeklarering av identisk slot og for to søsken-importar med same slot | **Fiksa** (`679eba10` er med i 1.12.1) |
+| BUG-15 | SchemaView-delen retta, `mergeutils`-varianten framleis til stades | Sjå `specs/done/linkml-relative-import-patch-1-12.md` (ikkje køyrt på nytt her) |
+| BUG-24 | Framleis til stades | Sjå same spec (ikkje køyrt på nytt her) |
+
+Ikkje re-verifisert 2026-11-18: BUG-17 (lokal-import-varianten), BUG-20 (ikkje
+reproduserbar frå før) og `main` etter `5ef7622e`. Sjekk `main` før U1-U8 vert
+meldte, slik at ingen av dei alt er fiksa.
 
 ## Tilrådingar
 
@@ -440,10 +468,13 @@ gen-rdf schema.yaml
    - BUG-17: noter at lokal-import-varianten er fiksa i #3641.
    - BUG-19: presiser at feilen berre gjeld eigendefinert type `DateTime` (`base: str`) i `brreg-felles-typer`. Intern workaround: `typeof: datetime` i staden for `base: str` (må verifiserast).
    - BUG-20: lukk som ikkje-reproduserbar; vurder å fjerne lychee-eksklusjonen `^https://psi\.norge\.no/los/tema/$`.
-4. **Ved neste `linkml`-release > 1.11.1:** verifiser at BUG-7 og BUG-15 er løyste og fjern workaround-greina i `linkml_relative_import_patch.py` (behald `cache_clear()` for BUG-24 til #3896/#3933 er løyst).
+4. **Etter oppgradering til 1.12.1 (2026-11-06):** BUG-15 (SchemaView) er løyst og BUG-7 er løyst (sjå § Re-verifisering). Workaround-greina for BUG-15 i `linkml_relative_import_patch.py` er alt gjort versjonsbevisst (`specs/done/linkml-relative-import-patch-1-12.md`); behald `cache_clear()` for BUG-24 til #3896/#3933 er løyst. Workarounden for BUG-7 (fjerning av lokal redeklarering og duplikat-slots) kan fjernast, men verifiser først med `make roundtrip`/`make test` på `modelldcat-ap-no`/`dcat-ap-no` — MRE-en er syntetisk.
 5. **Sidefunn:** grans negativ elapsed-tid for `erdiagram` i `make gen-schema-docs`.
 
 ## Avgjerder
+
+- **Re-verifisering mot 1.12.1 (2026-11-18, brukarønske):** specen var skriven mot 1.11.1 medan repoet sidan 2026-11-06 brukar 1.12.1. Berre MRE-ane frå specen er køyrde på nytt, i eit patchfritt `linkml-vanilla:1.12.1`-image bygd i scratchpad (feilsøkingsunntaket i CLAUDE.md gjeld framleis: syntetiske MRE-ar har ingen Makefile-target). Resultat i § Re-verifisering mot 1.12.1.
+- **Berre BUG-7 er endra av oppgraderinga.** Rapporttekstane U1-U8 er behaldne, med oppdatert versjon i miljølinja og radnummer for U8. `bugs/*.md` og `BUGS.md` er ikkje endra: BUG-7 står framleis som `workaround`, og status vert først endra etter at `make roundtrip`/`make test` på dei råka skjemaa er køyrt utan workarounden.
 
 - **Specen vert verande i `specs/backlog/`:** leveransen er kartlegginga og rapporttekstane; sjølve innmeldinga upstream og oppdatering av bug-filene er att som opne punkt.
 - **Bug-filene og `BUGS.md` er ikkje endra:** brukaren bad om verifisering og dokumentasjon i `specs/`. Korrigerte rotårsaker er lista under § Tilrådingar i staden for å endre fleire filer utan avklaring.
