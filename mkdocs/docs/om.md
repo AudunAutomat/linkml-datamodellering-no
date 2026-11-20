@@ -48,6 +48,7 @@ den publiserte portalen — er utelatne.
 | [PyYAML](https://github.com/yaml/pyyaml) | MIT License | YAML-prosessering |
 | [pytest](https://github.com/pytest-dev/pytest) | MIT License | Testing |
 | [openapi-spec-validator](https://github.com/python-openapi/openapi-spec-validator) | Apache License 2.0 | OpenAPI-validering |
+| [pyshacl](https://github.com/RDFLib/pySHACL) | Apache License 2.0 | SHACL-validering (`make validate-shacl`) |
 | [avrotize](https://github.com/clemensv/avrotize) | MIT License | Skjemakonvertering (Avro/XSD m.fl.) |
 | [AsyncAPI CLI](https://github.com/asyncapi/cli) | Apache License 2.0 | AsyncAPI-spesifikasjonsgenerering |
 | [Python](https://www.python.org/) | PSF License 2.0 | Køyretidsmiljø i containerbileta |

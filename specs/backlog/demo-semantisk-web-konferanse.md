@@ -498,14 +498,18 @@ demomodellen enno.
 
 **Infrastruktur (må vere på plass før scriptet):**
 
-1. [ ] **`pyshacl`:** legg i `requirements-python-test.txt`, bygg `python-pytest` på
-   nytt, verifiser Alpine-installasjon og lisens.
-2. [ ] **`make validate-shacl`** i `make/40-validation.mk` med `run_logged`, exit-kode
-   og `make help`-kategori. Test i `tests/test_make.sh`.
-3. [ ] **`om.md`:** legg `pyshacl` i attribusjonstabellen (norsk og engelsk
+1. [x] **`pyshacl`:** legg i `requirements-python-test.txt`, bygg `python-pytest` på
+   nytt, verifiser Alpine-installasjon og lisens. Utført 2026-11-20: pyshacl 0.40.2
+   (Apache-2.0, pakkelisensfila i imaget) installerer reint på `python:3.15-alpine`.
+   `make test` er ikkje køyrd enno.
+2. [~] **`make validate-shacl`** i `make/40-validation.mk` med `run_logged`, exit-kode
+   og `make help`-kategori. Test i `tests/test_make.sh`. Target er skrive og køyrt (gir
+   exit 1 ved brot); **mangler:** `make help`-sjekk og test i `tests/test_make.sh`.
+3. [x] **`om.md`:** legg `pyshacl` i attribusjonstabellen (norsk og engelsk
    versjon, jf. `om.en.md`).
-4. [ ] **Engelske analysenavn:** tre nye mål i `make/91-modell-analyse.mk`, norske
-   som alias, begge i `.PHONY`. Grep, `make help`-sjekk og identisk utdata.
+4. [~] **Engelske analysenavn:** tre nye mål i `make/91-modell-analyse.mk`, norske
+   som alias, begge i `.PHONY`. Grep, `make help`-sjekk og identisk utdata. Mål og alias
+   er skrivne, og `make help` viser begge under «Modell-analyse»; **mangler:** identisk-utdata-sjekk mot ein modell.
 
 **Demo:**
 
@@ -542,6 +546,13 @@ demomodellen enno.
     Utanfor repoet.
 15. [ ] **Evaluer** om arbeidet avdekkjer behov for ny rule eller bug-fil (jf.
     CLAUDE.md, avslutning steg a).
+
+**Funn frå `validate-shacl` (2026-11-20):** LinkML sin eigen eksempel-TTL for
+`ngr-adresse` gir `sh:class`-brot (`Value does not have class ngr:GeografiskOmrade`),
+fordi lenka noder (`<kommune/0301>`) ikkje har eigen `rdf:type` i fila. Lenking framfor
+inlining gir difor brot med mindre dei refererte nodane òg er med og typa. Demodata må
+inkludere typa noder for alle refererte klassar, og «ugyldig»-fila må brøyte på eit
+anna, tydeleg punkt (manglande påkravd eigenskap). Ikkje eit bug i pyshacl.
 
 ## Offline-sjekkliste (dagen før, medan nett er tilgjengeleg)
 

@@ -31,6 +31,7 @@ SIMILARITY_THRESHOLD ?= 0.8
         analyse-ubrukte-slots analyse-ubrukte-enums \
         analyse-ubrukte-types analyse-ubrukte-subsets \
         analyse-isolerte-klasser analyse-ikkje-tilkopla-container \
+        analyse-unused-slots analyse-isolated-classes analyse-unreachable-classes \
         analyse-lokal-modellanalyse-domene \
         analyse-iri-dereferering analyse-innhaldsforhandling \
         analyse-ap-no-gjenbruk analyse-modell-sammenhenger \
@@ -77,10 +78,12 @@ analyse-similar-alle-domene-batch: ## Skriv dei tre kombinerte similar-*-all-rep
 	@$(PYTHON_RUN) python3 /work/src/assets/scripts/makefile/find-similar-names.py \
 	  --out-dir $(OUT_DIR) --threshold $(SIMILARITY_THRESHOLD)
 
-analyse-ubrukte-slots: ## Finn lokalt definerte slots som ikkje er brukt av nokon lokal klasse [SCHEMA=<sti>]
-	$(call print_header,analyse-ubrukte-slots,SCHEMA=$(SCHEMA)) 1>&2
+analyse-unused-slots: ## Finn lokalt definerte slots som ikkje er brukt av nokon lokal klasse [SCHEMA=<sti>]
+	$(call print_header,analyse-unused-slots,SCHEMA=$(SCHEMA)) 1>&2
 	@$(LINKML_RUN) python3 src/assets/scripts/makefile/find-unused-local-definitions.py \
 	  --kind slot --schema $(SCHEMA)
+
+analyse-ubrukte-slots: analyse-unused-slots ## Alias for analyse-unused-slots
 
 analyse-ubrukte-enums: ## Finn lokalt definerte enums som ikkje er brukt av nokon lokal klasse [SCHEMA=<sti>]
 	$(call print_header,analyse-ubrukte-enums,SCHEMA=$(SCHEMA)) 1>&2
@@ -97,15 +100,19 @@ analyse-ubrukte-subsets: ## Finn lokalt definerte subsets som ikkje er brukt av 
 	@$(LINKML_RUN) python3 src/assets/scripts/makefile/find-unused-local-definitions.py \
 	  --kind subset --schema $(SCHEMA)
 
-analyse-isolerte-klasser: ## Finn lokale klasser utan referansar til/frå noka anna lokal klasse [SCHEMA=<sti>]
-	$(call print_header,analyse-isolerte-klasser,SCHEMA=$(SCHEMA)) 1>&2
+analyse-isolated-classes: ## Finn lokale klasser utan referansar til/frå noka anna lokal klasse [SCHEMA=<sti>]
+	$(call print_header,analyse-isolated-classes,SCHEMA=$(SCHEMA)) 1>&2
 	@$(LINKML_RUN) python3 src/assets/scripts/makefile/find-unused-local-definitions.py \
 	  --kind class --schema $(SCHEMA)
 
-analyse-ikkje-tilkopla-container: ## Finn lokale klasser som ikkje er nåbare frå containerklassen (tree_root), sjølv om dei er kopla til kvarandre [SCHEMA=<sti>]
-	$(call print_header,analyse-ikkje-tilkopla-container,SCHEMA=$(SCHEMA)) 1>&2
+analyse-isolerte-klasser: analyse-isolated-classes ## Alias for analyse-isolated-classes
+
+analyse-unreachable-classes: ## Finn lokale klasser som ikkje er nåbare frå containerklassen (tree_root), sjølv om dei er kopla til kvarandre [SCHEMA=<sti>]
+	$(call print_header,analyse-unreachable-classes,SCHEMA=$(SCHEMA)) 1>&2
 	@$(LINKML_RUN) python3 src/assets/scripts/makefile/find-unused-local-definitions.py \
 	  --kind unreachable --schema $(SCHEMA)
+
+analyse-ikkje-tilkopla-container: analyse-unreachable-classes ## Alias for analyse-unreachable-classes
 
 analyse-lokal-modellanalyse-domene: ## Skriv alle seks ubrukt-lokalt/isolerte-klasser/ikkje-tilkopla-container-rapportane for alle skjema i domenet, éin kontainar (sjå specs/done/effektiviser-modellanalyse-koyretid.md) [DOMAIN=<domene>] [OUT_DIR=generated]
 	$(call print_header,analyse-lokal-modellanalyse-domene,DOMAIN=$(DOMAIN)) 1>&2

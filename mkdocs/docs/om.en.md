@@ -53,6 +53,7 @@ the published portal — are omitted.
 | [PyYAML](https://github.com/yaml/pyyaml) | MIT License | YAML processing |
 | [pytest](https://github.com/pytest-dev/pytest) | MIT License | Testing |
 | [openapi-spec-validator](https://github.com/python-openapi/openapi-spec-validator) | Apache License 2.0 | OpenAPI validation |
+| [pyshacl](https://github.com/RDFLib/pySHACL) | Apache License 2.0 | SHACL validation (`make validate-shacl`) |
 | [avrotize](https://github.com/clemensv/avrotize) | MIT License | Schema conversion (Avro/XSD and more) |
 | [AsyncAPI CLI](https://github.com/asyncapi/cli) | Apache License 2.0 | AsyncAPI specification generation |
 | [Python](https://www.python.org/) | PSF License 2.0 | Runtime environment in the container images |

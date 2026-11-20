@@ -44,6 +44,16 @@ validate-instance: ## Valider instansfil mot skjema (SCHEMA=<sti> INSTANCE=<sti>
 	$(call print_header,validate-instance,SCHEMA=$(SCHEMA)  INSTANCE=$(INSTANCE))
 	$(LINKML_RUN) linkml validate --schema "$(SCHEMA)" "$(INSTANCE)"
 
+validate-shacl: ## Valider RDF-data (TTL) mot genererte SHACL-shapes med pyshacl (SCHEMA=<sti> DATA=<ttl> [SHAPES=<ttl>])
+	@test -n "$(SCHEMA)" || { eval "$$LOG_FUNCTIONS"; log_error "Bruk: make validate-shacl SCHEMA=<sti> DATA=<ttl> [SHAPES=<ttl>]"; exit 1; }
+	@test -n "$(DATA)" || { eval "$$LOG_FUNCTIONS"; log_error "Bruk: make validate-shacl SCHEMA=<sti> DATA=<ttl> [SHAPES=<ttl>]"; exit 1; }
+	$(eval _SHACL_SHAPES := $(or $(SHAPES),$(patsubst $(SCHEMA_DIR)/%-schema.yaml,generated/%-shapes.ttl,$(SCHEMA))))
+	$(call print_header,validate-shacl,SCHEMA=$(SCHEMA)  DATA=$(DATA)  SHAPES=$(_SHACL_SHAPES))
+	@test -f "$(_SHACL_SHAPES)" || { eval "$$LOG_FUNCTIONS"; log_error "Fann ikkje shapes-fila $(_SHACL_SHAPES) - køyr make gen-shacl SCHEMA=$(SCHEMA) først, eller sett SHAPES=<ttl>"; exit 1; }
+	@test -f "$(DATA)" || { eval "$$LOG_FUNCTIONS"; log_error "Fann ikkje datafila $(DATA)"; exit 1; }
+	@eval "$$LOG_FUNCTIONS"; \
+	run_logged "validate-shacl $(DATA)" $(PYTHON_RUN) pyshacl -s "$(_SHACL_SHAPES)" -df turtle -sf turtle "$(DATA)"
+
 # ---------------------------------------------------------------------------
 # Policy-validering (bronze/basis-no/silver/gold/felles-*)
 # ---------------------------------------------------------------------------
