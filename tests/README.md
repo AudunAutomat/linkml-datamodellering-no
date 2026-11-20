@@ -45,6 +45,10 @@ make test SCHEMA=<sti>              # full suite (~3 min)
 
 Testar `src/assets/scripts/makefile/check-prereqs.bash` på verten utan å installere noko: stubba kommandoar i ein midlertidig `PATH` og `PREREQS_OS=Darwin|Linux` dekkjer begge OS-grenane (Homebrew- vs apt-råd, make < 4, podman-maskin manglar/stoppa, `df`-feil gir åtvaring og ikkje stille død). Køyr: `bash tests/test_check_prereqs.sh`. Ikkje del av `make test` (krev ikkje podman, og må kunne køyrast på ei fersk maskin). Må vere bash 3.2-kompatibel.
 
+## `test_validate_shacl.sh`
+
+Testar `make validate-shacl` med faste fixtures (`tests/fixtures/validate-shacl-*.ttl`, ingen filer frå `generated/`): gyldig data gir exit 0 og «Conforms: True», data utan påkravd eigenskap gir exit ≠ 0 og «Conforms: False», og manglande argument eller filer gir bruksmelding og exit ≠ 0. Køyr: `bash tests/test_validate_shacl.sh`. Krev podman og `python-pytest`-imaget (`make build-docker-python`). Ikkje del av `make test`, som køyrer per skjema, medan fleire eksisterande eksempel-TTL-ar bryt sine eigne shapes (sjå `specs/backlog/demo-semantisk-web-konferanse.md`).
+
 ## Roundtrip-dekning
 
 `make roundtrip [SCHEMA=<sti>]` køyrer berre roundtrip-testane.

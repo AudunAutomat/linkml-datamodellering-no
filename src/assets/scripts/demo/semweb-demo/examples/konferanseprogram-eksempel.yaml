@@ -1,0 +1,13 @@
+konferansar:
+  - id: https://example.org/konferanse/semweb-2026
+    tittel: Semantic Web Conference 2026
+foredrag:
+  - id: https://example.org/foredrag/1
+    tittel: Én kilde til sannhet
+    varighet: 20
+    har_foredragsholder:
+      - https://example.org/person/1
+    del_av_konferanse: https://example.org/konferanse/semweb-2026
+foredragsholdere:
+  - id: https://example.org/person/1
+    navn: Kari Nordmann

@@ -429,16 +429,16 @@ ikkje berre om YAML-en er gyldig):
 
 ```bash
 make lint SCHEMA=<S>                                      # structural, ~1 s
-make mcp-linkml-valider-modell SCHEMA=<S> POLICY=bronze   # ~3 s
+make mcp-linkml-valider-modell SCHEMA=<S> POLICY=bronze   # clean, ~3 s
+make mcp-linkml-valider-modell SCHEMA=<S> POLICY=basis-no # two warnings
 ```
 
-Gir funn 1 og 2 (`all_classes_have_concept_ref`, `all_slots_have_slot_uri`).
+Bronze er reint. Basis-no gir funn 1 og 2 (`all_classes_have_concept_ref`, `all_slots_have_slot_uri`).
 Scriptet set inn retting for eit utval (`Foredrag` for begrepsidentifikator, `varighet` for
 `slot_uri`), same mønster som JavaZone steg 9.
 
 ```bash
-make mcp-linkml-valider-modell SCHEMA=<S> POLICY=bronze   # findings gone
-make mcp-linkml-valider-modell SCHEMA=<S> POLICY=basis-no # stricter, still passes?
+make mcp-linkml-valider-modell SCHEMA=<S> POLICY=basis-no # findings gone
 ```
 
 > *«Policies are levels. Bronze is a generic LinkML baseline. `basis-no` adds the
@@ -502,30 +502,36 @@ demomodellen enno.
    nytt, verifiser Alpine-installasjon og lisens. Utført 2026-11-20: pyshacl 0.40.2
    (Apache-2.0, pakkelisensfila i imaget) installerer reint på `python:3.15-alpine`.
    `make test` er ikkje køyrd enno.
-2. [~] **`make validate-shacl`** i `make/40-validation.mk` med `run_logged`, exit-kode
-   og `make help`-kategori. Test i `tests/test_make.sh`. Target er skrive og køyrt (gir
-   exit 1 ved brot); **mangler:** `make help`-sjekk og test i `tests/test_make.sh`.
+2. [x] **`make validate-shacl`** i `make/40-validation.mk` med `run_logged`, exit-kode
+   og `make help`-kategori. Test i `tests/test_make.sh`. `DATA` er valfri (standard
+   `generated/<modell>-eksempel.ttl`). Rapporten vert alltid skriven ut (ikkje via
+   `run_logged`, som berre viser stdout ved DEBUG). Test: `tests/test_validate_shacl.sh`
+   (12 sjekkar, eigne fixtures; ikkje i `make test`, som er per skjema). `make help` viser
+   målet under «Validering». `make test`: 528 OK, 0 feil.
 3. [x] **`om.md`:** legg `pyshacl` i attribusjonstabellen (norsk og engelsk
    versjon, jf. `om.en.md`).
-4. [~] **Engelske analysenavn:** tre nye mål i `make/91-modell-analyse.mk`, norske
-   som alias, begge i `.PHONY`. Grep, `make help`-sjekk og identisk utdata. Mål og alias
-   er skrivne, og `make help` viser begge under «Modell-analyse»; **mangler:** identisk-utdata-sjekk mot ein modell.
+4. [x] **Engelske analysenavn:** tre nye mål i `make/91-modell-analyse.mk`, norske
+   som alias, begge i `.PHONY`. Grep, `make help`-sjekk og identisk utdata. Verifisert: `make help` viser
+   begge under «Modell-analyse», og alias og primærmål gir identisk utdata (òg headeren,
+   sidan aliaset berre kallar det engelske målet).
 
 **Demo:**
 
-5. [ ] **Bygg fixture** i `src/assets/scripts/demo/semweb-demo/` (norsk skjema med
+5. [x] **Bygg fixture** i `src/assets/scripts/demo/semweb-demo/` (norsk skjema med
    `structured_aliases` på klassar og slots, `build.yaml`, `description.md`, gyldig eksempel-YAML, ugyldig TTL, innsettingsfilene
-   for akt 3 og 5). Ingen AP-NO-import, lokale subsets.
-6. [ ] **Verifiser at modellen** passerer `make lint`, validatoren (bronze, funn 1 og
+   for akt 3 og 5). Ingen AP-NO-import, lokale subsets. Skjema, `build.yaml`, `description.md`,
+   gyldig eksempel og ugyldig TTL er skrivne (`examples/konferanseprogram-ugyldig.ttl`).
+   **Mangler:** innsettingsfilene for akt 3 og 5 (kjem med scriptet, punkt 11).
+6. [x] **Verifiser at modellen** passerer `make lint`, validatoren (bronze, funn 1 og
    2 kjem opp, basis-no passerer) og alle `gen-*` i akt 2 og 3. Sjekk at
    `structured_aliases` ikkje gir lint- eller policyfeil.
-7. [ ] **Verifiser plantede funn 3-6** mot dei fire analysejobbane. Finn klassenavn
+7. [x] **Verifiser plantede funn 3-6** mot dei fire analysejobbane. Finn klassenavn
    for funn 6 (sjå § Opne spørsmål).
 8. [ ] **Verifiser «éin slot, seks artefakter»:** køyr grep mot alle seks filer og
    fyll tabellen med faktiske treff.
-9. [ ] **Verifiser `validate-shacl`:** gyldig data gir «Conforms: True», ugyldig gir
+9. [x] **Verifiser `validate-shacl`:** gyldig data gir «Conforms: True», ugyldig gir
    brot. Dokumenter funn om lukka shapes eller type-mismatch.
-10a. [ ] **Alias-test (påkravd):** legg `structured_aliases` med `in_language: en` på alle
+10a. [x] **Alias-test (påkravd):** legg `structured_aliases` med `in_language: en` på alle
     klassar og slots i prototypen (og sjå til samanlikning `aliases` og `title` på éi
     klasse). Køyr `gen-schema-docs`, `docs-publish` og alle `gen-*`. Sjå om portalen
     viser alias, og om OWL/RDF-sida får språkmerkte literalar (`skos:altLabel "Talk"@en`)
@@ -553,6 +559,39 @@ fordi lenka noder (`<kommune/0301>`) ikkje har eigen `rdf:type` i fila. Lenking 
 inlining gir difor brot med mindre dei refererte nodane òg er med og typa. Demodata må
 inkludere typa noder for alle refererte klassar, og «ugyldig»-fila må brøyte på eit
 anna, tydeleg punkt (manglande påkravd eigenskap). Ikkje eit bug i pyshacl.
+
+
+## Verifisert 2026-11-20 (fixturen mot linkml 1.12.1)
+
+Fixturen vart kopiert til `src/linkml/oreg/konferanseprogram/`, køyrd og sletta igjen.
+
+- `make lint`: ingen funn. `gen-shacl/-owl/-jsonld-context/-jsonschema/-rdf/-python/
+  -erdiagram-mermaid/-plantuml/-schema-docs`: alle exit 0. `validate-instance`: ingen
+  feil. `structured_aliases` gir ingen lint- eller policyfeil.
+- **Policy-trappa:** bronze gir **ingen** funn. Funn 1 (`all_classes_have_concept_ref`
+  på `Foredrag`) og 2 (`all_slots_have_slot_uri` på `varighet`) kjem først på
+  **basis-no**, jf. «norske krav startar på basis-no». Akt 5 må difor vise
+  basis-no-funna og retta basis-no, ikkje bronze. `build.yaml` i fixturen har
+  `validation_policy: basis-no`.
+- **Funn 3 og 4:** `analyse-unused-slots` gir `kommentar`, `analyse-isolated-classes`
+  gir `Sponsor`.
+- **Funn 5:** reachability bruker ein **udirigert** graf. Sesjon vart ikkje flagga så
+  lenge han peika på `Foredrag`. Retta ved at `Sesjon` ikkje har slot mot `Foredrag`
+  (eigen `starttidspunkt` i staden). No gir `analyse-unreachable-classes` `Rom`,
+  `Sesjon` og `Sponsor` (siste som venta overlapp med funn 4).
+- **Funn 6:** `analyse-similar-classes-all NAME=konferanseprogram` gir **fem** treff på
+  100 %: `Foredrag`, `Foredragsholder`, `Konferanse`, `Sesjon` mot `oreg/javazonetalk`
+  og `Rom` mot `fint-utdanning`. Ikkje eitt nesten-treff, men eit reelt og forklarleg
+  funn: JavaZone-modellen finst i repoet. Talk track: «five classes already modelled
+  elsewhere».
+- **`validate-shacl`:** eksempelet frå fixturen gir `Conforms: True` (nodane er
+  inlina i containeren, så dei har `rdf:type`). `examples/konferanseprogram-ugyldig.ttl`
+  (Foredrag utan `dct:title`) gir `Conforms: False` med eitt `MinCountConstraintComponent`-brot.
+- **Alias (10a):** `structured_aliases` kjem berre ut i `<modell>-schema.ttl` (gen-rdf)
+  som `skosxl:Label` med `skosxl:literalForm "Talk"` og `schema1:inLanguage "en"`. Dei
+  er **ikkje** i OWL, SHACL, JSON-LD context, JSON Schema, Python eller gen-doc-sidene,
+  så portalen viser dei ikkje. Avgjerd: engelsk term vert vist på ei termtabell-slide og
+  ved å vise `-schema.ttl`-utsnittet. Docgen-utviding er ei eiga spec.
 
 ## Offline-sjekkliste (dagen før, medan nett er tilgjengeleg)
 

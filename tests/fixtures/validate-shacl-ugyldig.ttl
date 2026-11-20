@@ -1,0 +1,3 @@
+@prefix ex: <https://example.org/test/> .
+
+<https://example.org/p/2> a ex:Person .

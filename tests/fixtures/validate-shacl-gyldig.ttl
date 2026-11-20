@@ -1,0 +1,4 @@
+@prefix ex: <https://example.org/test/> .
+
+<https://example.org/p/1> a ex:Person ;
+    ex:navn "Kari" .
