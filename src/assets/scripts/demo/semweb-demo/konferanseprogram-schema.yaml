@@ -58,9 +58,9 @@ classes:
         multivalued: true
         inlined: true
         inlined_as_list: true
-      foredrag:
+      foredragsliste:
         description: Foredraga i datafila.
-        slot_uri: konferanseprogram:foredrag
+        slot_uri: konferanseprogram:foredragsliste
         range: Foredrag
         multivalued: true
         inlined: true

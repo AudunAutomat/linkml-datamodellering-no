@@ -8,7 +8,7 @@ generators:
   python: true
   json_schema: true
   owl: true
-  owl_flags: ""
+  owl_flags: "--no-use-native-uris"
   rdf: true
   protobuf: false
   graphql: false

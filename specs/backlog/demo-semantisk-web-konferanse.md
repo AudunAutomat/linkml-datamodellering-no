@@ -367,14 +367,23 @@ make gen-python SCHEMA=<S>           # ~2 s
 Etter generering: **«éin slot, seks artefakter»**. Scriptet køyrer `grep` for
 `dct:title`/`tittel` mot kvar fil og viser éi linje frå kvar:
 
-| Artefakt | Forventa treff (**ikkje verifisert enno**) |
+| Artefakt | Verifisert treff (`grep -n`, 2026-11-20) |
 |---|---|
 | YAML | `slot_uri: dct:title` |
-| OWL | `dct:title` som property/annotasjon |
+| OWL | `dct:title a owl:DatatypeProperty` (**krev `owl_flags: "--no-use-native-uris"`**, sjå under) |
 | SHACL | `sh:path dct:title` |
-| JSON-LD context | `"tittel": {"@id": "dct:title"}` |
-| RDF/Turtle (skjema) | `dct:title` |
-| JSON Schema | `"tittel"` som property |
+| JSON-LD context | `"tittel": {` etterfylgt av `"@id": "dct:title"` (grep med `-A2`) |
+| RDF/Turtle (skjema) | `linkml:slot_uri "http://purl.org/dc/terms/title"^^xsd:anyURI` |
+| JSON Schema | `"tittel": {` (ingen URI; kontrast, ikkje semantikk) |
+
+**OWL-fella:** `gen-owl` med standardflagg ignorerer `slot_uri`. Han lagar
+`konferanseprogram:tittel a owl:DatatypeProperty` og berre `skos:exactMatch` for klassar
+(`Foredrag` exactMatch `dct:BibliographicResource`). Med `owl_flags: "--no-use-native-uris"`
+i `build.yaml` får han `dct:title`, `dct:creator`, `foaf:name` og `foaf:Person` som
+sjølvstendige OWL-ressursar. Fixturen set flagget. Repoet sine eigne modellar bruker
+standardflagget (ingen `owl_flags` er sette nokon stad), så dei viser ikkje
+vokabulargjenbruk i OWL. Ikkje endra her; vert noko å omtale i demoen («our OWL reuses
+`dct:title`, not a private copy»).
 
 > *«Same slot. A predicate in OWL, a `sh:path` in SHACL, a term in the JSON-LD
 > context, a property in the JSON Schema. Nobody typed it six times.»*
@@ -527,7 +536,7 @@ demomodellen enno.
    `structured_aliases` ikkje gir lint- eller policyfeil.
 7. [x] **Verifiser plantede funn 3-6** mot dei fire analysejobbane. Finn klassenavn
    for funn 6 (sjå § Opne spørsmål).
-8. [ ] **Verifiser «éin slot, seks artefakter»:** køyr grep mot alle seks filer og
+8. [x] **Verifiser «éin slot, seks artefakter»:** køyr grep mot alle seks filer og
    fyll tabellen med faktiske treff.
 9. [x] **Verifiser `validate-shacl`:** gyldig data gir «Conforms: True», ugyldig gir
    brot. Dokumenter funn om lukka shapes eller type-mismatch.
@@ -537,7 +546,7 @@ demomodellen enno.
     viser alias, og om OWL/RDF-sida får språkmerkte literalar (`skos:altLabel "Talk"@en`)
     eller SKOS-XL-ressursar. Avgjer ut frå resultatet kva som vert vist i demoen
     (sjå § Opne spørsmål).
-10. [ ] **Portalen:** mål `make docs-publish`, verifiser offline og kva sider som
+10. [x] **Portalen:** mål `make docs-publish`, verifiser offline og kva sider som
     vert vist. Avgjer om portalen skal vere førehandsstarta.
 11. [ ] **Skriv `src/assets/scripts/demo/semweb-demo-script.sh`** etter mønsteret i
     `javazone-demo-script.sh` (Enter-pause, `QUICK`-flagg, farga kommandolinjer,
@@ -545,7 +554,9 @@ demomodellen enno.
     `javazone-demo-auto-innsetjing.md`.
 12. [ ] **Rydd sideeffektar** i scriptet: sletting av `validation/<versjon>/` og
     `git restore` (eller sletting) av `metadata/*-manifest.yaml` dersom
-    `gen-informasjonsmodell-instance` vert køyrt.
+    `gen-informasjonsmodell-instance` vert køyrt. Etter `docs-publish`: `git restore
+    README.md README.en.md mkdocs/docs/felles` (sjå § Portalmåling), og sletting av
+    `generated/oreg/konferanseprogram/`.
 13. [ ] **Test heile sekvensen med klokke**, offline, minst to gonger. Mål: 18:30,
     med 1:30 buffer.
 14. [ ] **Slides:** hook-slide, «éin slot, seks artefakter»-slide, avslutningsslide.
@@ -592,6 +603,32 @@ Fixturen vart kopiert til `src/linkml/oreg/konferanseprogram/`, køyrd og sletta
   er **ikkje** i OWL, SHACL, JSON-LD context, JSON Schema, Python eller gen-doc-sidene,
   så portalen viser dei ikkje. Avgjerd: engelsk term vert vist på ei termtabell-slide og
   ved å vise `-schema.ttl`-utsnittet. Docgen-utviding er ei eiga spec.
+
+**Portalmåling (punkt 10, 2026-11-20):**
+
+- `make docs-publish`: 39 s på full checkout. `make docs-build`: 58 s (to språk).
+  `docs-serve` og `docs-serve-site` bruker `-it` og krev ein terminal. **Avgjerd:**
+  portalen vert bygd og servert på førehand i ein eigen terminal med `make docs-build`
+  og `make docs-serve-site`, og demoen byter berre fane. 40-60 s er for lenge live.
+- Modellens indeksside har overskrifter «ER diagram», «Data model» (klassar, slots,
+  subsets), «Generated artifacts (9)», **«Validation results»** (to åtvaringar frå
+  basis-no) og **«Model analysis»** (isolerte klassar 1, ikkje tilkopla container 3, ubrukte
+  slots 1). Rapportane vert med dersom `mcp-linkml-valider-modell` og
+  `analyse-lokal-modellanalyse-domene DOMAIN=oreg` er køyrde før `docs-publish`.
+- ER-diagrammet er ein førerendra SVG (PlantUML), ikkje mermaid i nettlesaren.
+- **Offline:** seks `img.shields.io`-merke (versjon, status, utgivar m.fl.) og Google
+  Fonts vert ikkje lasta utan nett. Sida fungerer elles. Kosmetisk; ta ein
+  skjermdump av ferdig side som reserve.
+- **Alias:** vert **ikkje** viste i portalen (ingen `Talk` på klassesida).
+- **Filnavnkollisjon (funn):** containerattributtet `foredrag` og klassen `Foredrag` gir
+  same filnamn (`klasser/foredrag.md`, case-insensitivt), og klassesida forsvann i
+  portalen. Retta ved å døype attributtet om til `foredragsliste`. Same fella gjeld alle
+  modellar der ein slot og ei klasse berre skil seg på store/små bokstavar.
+- **Sideeffektar av `docs-publish`:** han skriv ei rad for modellen i `README.md` og
+  `README.en.md` og slettar sporet `mkdocs/docs/felles/` (ca. 510 filer) når `generated/`
+  ikkje har domenet `felles`. Scriptet må ende med
+  `git restore README.md README.en.md mkdocs/docs/felles` (berre dersom dei er uendra frå
+  før demoen), og `src/linkml/oreg/konferanseprogram/` må slettast.
 
 ## Offline-sjekkliste (dagen før, medan nett er tilgjengeleg)
 
