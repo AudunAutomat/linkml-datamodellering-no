@@ -1,12 +1,6 @@
 ##
 ## Demomodell for konferanseprogram (semantisk web-demo).
 ## Norsk modell med engelske termar via structured_aliases (in_language: en).
-## Planta funn for demoen (sjå specs/backlog/demo-semantisk-web-konferanse.md):
-##   1 Foredrag manglar annotations.begrepsidentifikator
-##   2 slotten varighet manglar slot_uri
-##   3 slotten kommentar er definert, men ikkje brukt
-##   4 klassen Sponsor er isolert
-##   5 Sesjon og Rom er ikkje nåbare frå containeren (Sesjon peikar ikkje på Foredrag)
 ##
 
 id: https://data.norge.no/oreg/konferanseprogram
@@ -89,7 +83,6 @@ classes:
         required: true
         in_subset: [Obligatorisk]
 
-  # Funn 1: manglar annotations.begrepsidentifikator
   Foredrag:
     description: Eit foredrag på ein konferanse.
     class_uri: dct:BibliographicResource
@@ -128,7 +121,6 @@ classes:
         required: true
         in_subset: [Obligatorisk]
 
-  # Funn 5: Sesjon er ikkje nåbar frå containeren (og dermed heller ikkje Rom)
   Sesjon:
     description: Ei tidsavgrensa økt der foredrag vert haldne.
     class_uri: konferanseprogram:Sesjon
@@ -155,7 +147,6 @@ classes:
       - id
       - navn
 
-  # Funn 4: isolert klasse (ingen referansar til eller frå)
   Sponsor:
     description: Ein organisasjon som støttar konferansen økonomisk.
     class_uri: konferanseprogram:Sponsor
@@ -195,7 +186,6 @@ slots:
       - literal_form: name
         in_language: en
 
-  # Funn 2: manglar slot_uri
   varighet:
     description: Varigheita på foredraget, i minutt.
     range: integer
@@ -203,7 +193,6 @@ slots:
       - literal_form: duration
         in_language: en
 
-  # Funn 3: definert, men ikkje brukt av nokon klasse
   kommentar:
     description: Fri kommentar til ressursen.
     slot_uri: konferanseprogram:kommentar

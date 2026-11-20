@@ -1,7 +1,7 @@
 ---
 i18n:
   source: kommandoar.md
-  source_hash: sha256:3dca8610956ae28224de4c569ffc23860b86308543684be23cbe2cd0af2fb05e
+  source_hash: sha256:9483d0dd470870125a1d214bd6a6dd801f2071c43e7071670dbb067c3458af68
 ---
 # Commands {#kommandoar}
 
@@ -44,6 +44,7 @@ Only needed on first use or after changes to a Dockerfile.
 | `make lint` | Lints all schemas in the repository. | OK/FEIL per schema to stdout; exits with code 1 on failure |
 | `make lint SCHEMA=<sti>` | Lints a single schema quickly without running generators. Useful as a quick check during development. | OK/FEIL to stdout; exits with code 1 on failure |
 | `make validate-instance SCHEMA=<sti> INSTANCE=<sti>` | Validates a data file against a schema without lint and generators. The fastest single check of data content. | OK/FEIL to stdout; exits with code 1 on failure |
+| `make validate-shacl SCHEMA=<sti> [DATA=<ttl>] [SHAPES=<ttl>]` | Validates RDF data (Turtle) against the generated SHACL shapes with `pyshacl`. Default `SHAPES` is `generated/<domene>/<modell>/<modell>-shapes.ttl`, default `DATA` is `<modell>-eksempel.ttl`. Exits with code 1 on violation. | `Conforms: True/False` and validation report to stdout |
 | `make roundtrip SCHEMA=<sti>` | Runs only the roundtrip tests (JSON and TTL) for one schema. Faster than the full test suite — useful after schema changes that may affect serialization. | Test report for `roundtrip-json` and `roundtrip-ttl` to stdout; exits with code 1 on failure |
 | `make roundtrip` | Runs roundtrip tests for all schemas in the repository. | Test report to stdout; exits with code 1 on failure |
 | `make roundtrip-json-schema SCHEMA=<sti>` | Runs a roundtrip test specifically for JSON Schema generation. Verifies that YAML → JSON Schema → YAML gives the same result. | Test report to stdout; exits with code 1 on failure |

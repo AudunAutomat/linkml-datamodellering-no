@@ -530,7 +530,9 @@ demomodellen enno.
    `structured_aliases` på klassar og slots, `build.yaml`, `description.md`, gyldig eksempel-YAML, ugyldig TTL, innsettingsfilene
    for akt 3 og 5). Ingen AP-NO-import, lokale subsets. Skjema, `build.yaml`, `description.md`,
    gyldig eksempel og ugyldig TTL er skrivne (`examples/konferanseprogram-ugyldig.ttl`).
-   **Mangler:** innsettingsfilene for akt 3 og 5 (kjem med scriptet, punkt 11).
+   Innsettingane for akt 3 og 5 ligg som heredoc-blokker i scriptet (ikkje som eigne
+   filer, same mønster som JavaZone-scriptet). Funn-kommentarar er fjerna frå skjemaet,
+   sidan publikum ser fila.
 6. [x] **Verifiser at modellen** passerer `make lint`, validatoren (bronze, funn 1 og
    2 kjem opp, basis-no passerer) og alle `gen-*` i akt 2 og 3. Sjekk at
    `structured_aliases` ikkje gir lint- eller policyfeil.
@@ -548,11 +550,11 @@ demomodellen enno.
     (sjå § Opne spørsmål).
 10. [x] **Portalen:** mål `make docs-publish`, verifiser offline og kva sider som
     vert vist. Avgjer om portalen skal vere førehandsstarta.
-11. [ ] **Skriv `src/assets/scripts/demo/semweb-demo-script.sh`** etter mønsteret i
+11. [x] **Skriv `src/assets/scripts/demo/semweb-demo-script.sh`** etter mønsteret i
     `javazone-demo-script.sh` (Enter-pause, `QUICK`-flagg, farga kommandolinjer,
     ikkje `set -e`, opprydding med j/N). Gjenbruk innsetjings- og diff-mekanismen frå
     `javazone-demo-auto-innsetjing.md`.
-12. [ ] **Rydd sideeffektar** i scriptet: sletting av `validation/<versjon>/` og
+12. [~] **Rydd sideeffektar** i scriptet: sletting av `validation/<versjon>/` og
     `git restore` (eller sletting) av `metadata/*-manifest.yaml` dersom
     `gen-informasjonsmodell-instance` vert køyrt. Etter `docs-publish`: `git restore
     README.md README.en.md mkdocs/docs/felles` (sjå § Portalmåling), og sletting av
@@ -629,6 +631,35 @@ Fixturen vart kopiert til `src/linkml/oreg/konferanseprogram/`, køyrd og sletta
   ikkje har domenet `felles`. Scriptet må ende med
   `git restore README.md README.en.md mkdocs/docs/felles` (berre dersom dei er uendra frå
   før demoen), og `src/linkml/oreg/konferanseprogram/` må slettast.
+
+
+**Scriptet (punkt 11, skrive og køyrt 2026-11-20):** `src/assets/scripts/demo/semweb-demo-script.sh`
+[`QUICK=true|false`] [`PREPARE=true|false`]. Akt 0-7, 29 Enter-pausar, klokke i prompten,
+valfritt `demo-fun-tools`-bilete (figlet/glow/boxes) med fallback til vanleg tekst. Køyrt
+gjennom 5 gonger med automatisk Enter (`yes ''`): 0 feil, òg med `/bin/bash` 3.2 og
+`QUICK=true`. Tid for ei full gjennomkøyring utan pausar: ca. 33-44 s, så all tid i demoen
+er tale, ikkje venting.
+
+Funn under scriptarbeidet:
+
+- **`mv` bytte inode:** innsetjing via `mv fil.tmp fil` gav tilfeldig «File ... does not
+  exist» i dei neste `make`-stega (podman-montering på macOS såg ikkje den nye fila).
+  Retta ved å skrive tilbake i same fil (`cat tmp > fil`). Bør vurderast som ny rule dersom
+  mønsteret dukkar opp utanfor demoen.
+- **`gen-owl` skriv ca. 20 linjer deprecation-åtvaringar** frå linkml til skjermen.
+  Scriptet filtrerer dei (`make_quiet_deprecations`) og viser heile utskrifta dersom make
+  feilar.
+- **Layer 3b gir med vilje exit 1.** `run_shacl_expect_violation` viser rapporten og ei
+  grøn forklaring, ikkje «step failed».
+- **Diffheader:** `git diff --no-index` viser temp-stien til før-fila. Scriptet viser berre
+  hunkane med ein rein overskrift.
+- BSD-awk tek ikkje newline i `awk -v`. Innhaldet vert sendt via `ENVIRON`.
+
+**Ikkje verifisert i scriptet:** oppryddingsvegen med «y» (rm av modell og `generated/`,
+`git restore` av portalstiane; automatisk testing mislukkast fordi `podman run -i` i
+`PYTHON_RUN` et av stdin-røyret, jf. BUG-10), `PREPARE=true`-vegen (`docs-build` og
+verifisering av portal i nettlesar), interaktiv `less`/`glow`, og visninga av akt 1
+(`show_excerpt`) i ein ekte terminal. Punkt 13 (klokketest, offline, to gonger) står att.
 
 ## Offline-sjekkliste (dagen før, medan nett er tilgjengeleg)
 
