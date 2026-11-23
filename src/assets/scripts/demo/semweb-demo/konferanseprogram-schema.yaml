@@ -13,7 +13,7 @@ description: >-
 version: 0.1.0
 license: https://data.norge.no/nlod/no/2.0
 annotations:
-  utgiver: https://data.norge.no/organizations/974760673
+  utgiver: AudunAutomat
   status: http://purl.org/adms/status/UnderDevelopment
   endringsdato: "2026-11-20"
   utgivelsesdato: "2026-11-20"

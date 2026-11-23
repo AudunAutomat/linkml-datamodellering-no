@@ -17,7 +17,11 @@
 # når dei kjem direkte frå ei Make-recipe-linje, ikkje via eit
 # miljøvariabel-lag.
 #
-# Bruk: convert-examples.sh [domene]
+# Valfritt andre argument INSTANCE=<sti til *-eksempel.yaml> avgrensar til éi
+# einskild eksempelfil (domene og modell vert utleidde frå stien, og
+# `example_rdf: false` vert ikkje vurdert — ei eksplisitt førespurnad vinn).
+#
+# Bruk: convert-examples.sh [domene] [instans]
 # Miljøvariablar som må vere sette: SCHEMA_DIR, GEN_DIR, LOG_FUNCTIONS
 set -euo pipefail
 trap 'echo "ERROR in ${BASH_SOURCE[0]}:${LINENO} — command: ${BASH_COMMAND}" >&2; exit 1' ERR
@@ -28,18 +32,36 @@ trap 'echo "ERROR in ${BASH_SOURCE[0]}:${LINENO} — command: ${BASH_COMMAND}" >
 eval "$LOG_FUNCTIONS"
 
 domain_filter="${1:-}"
+instance="${2:-}"
 search_dir="$SCHEMA_DIR"
 [ -n "$domain_filter" ] && search_dir="$SCHEMA_DIR/$domain_filter"
 
+if [ -n "$instance" ]; then
+    case "$instance" in
+        */examples/*-eksempel.yaml) ;;
+        *) log_error "INSTANCE må vere ei fil som matchar */examples/*-eksempel.yaml: $instance"; exit 1 ;;
+    esac
+    [ -f "$instance" ] || { log_error "Fann ikkje INSTANCE-fila: $instance"; exit 1; }
+    case "$instance" in
+        "$SCHEMA_DIR"/*) ;;
+        *) log_error "INSTANCE må ligge under $SCHEMA_DIR: $instance"; exit 1 ;;
+    esac
+fi
+
 enabled=()
 enabled_names=()
-for example in $(find "$search_dir" -path '*/examples/*-eksempel.yaml' 2>/dev/null | sort); do
+if [ -n "$instance" ]; then
+    example_list="$instance"
+else
+    example_list="$(find "$search_dir" -path '*/examples/*-eksempel.yaml' 2>/dev/null | sort)"
+fi
+for example in $example_list; do
     [ -f "$example" ] || continue
     name=$(basename "$example" .yaml)
     profil=$(echo "$name" | sed 's/-eksempel$//')
     domain=$(echo "$example" | awk -F/ '{print $3}')
     manifest="$SCHEMA_DIR/$domain/$profil/build.yaml"
-    if [ -f "$manifest" ] && grep -q "^  example_rdf: false" "$manifest"; then
+    if [ -z "$instance" ] && [ -f "$manifest" ] && grep -q "^  example_rdf: false" "$manifest"; then
         continue
     fi
     mkdir -p "$GEN_DIR/$domain/$profil"

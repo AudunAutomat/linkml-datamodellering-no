@@ -300,14 +300,15 @@ Alle `make`-kommandoane tek 1-4 sekund, så tida går til tale, ikkje venting.
 
 | Tid | Akt | Innhald |
 |---|---|---|
-| 0:00-1:00 | 0. Hook | Problemet: same modell i åtte formater, som driv frå kvarandre |
-| 1:00-3:00 | 1. Kjelda | Vis YAML-fila. Éin slot med `slot_uri` mot standardvokabular |
-| 3:00-7:00 | 2. Generer | `gen-*` for RDF-artefakter og to kontrastar. «Éin slot, seks artefakter» |
-| 7:00-9:00 | 3. Live-endring | Éin ny slot i YAML, generer på nytt, diff over alle artefakta |
-| 9:00-11:00 | 4. Portalen | Same modell i mkdocs: oversikt utan handskriven dokumentasjon |
-| 11:00-15:00 | 5. Validering | Modellvalidatoren (policy-trappa), `pyshacl` på generert SHACL |
-| 15:00-17:30 | 6. Analysejobbane | Tre jobbar mot plantede funn, og `-all` mot heile repoet |
-| 17:30-18:30 | 7. Avslutning | Tre poeng å ta med |
+| 0:00-1:00 | 0. The problem | Problemet: same modell i åtte formater, som driv frå kvarandre |
+| 1:00-3:00 | 1. One source of truth | Eitt steg: heile YAML-fila i `less`. `class_uri` og `slot_uri` mot standardvokabular, `structured_aliases` |
+| 3:00-6:00 | 2. Generate | `gen-*` for RDF-artefakter og JSON Schema. «Éin slot, seks artefakter» |
+| 6:00-8:00 | 3. Create an app | `gen-python`, så tre Python-appar mot same klassar: YAML, JSON og RDF |
+| 8:00-10:00 | 4. One edit | Éin ny slot i YAML, generer på nytt, diff over alle artefakta |
+| 10:00-12:00 | 5. The portal | Same modell i mkdocs: oversikt utan handskriven dokumentasjon |
+| 12:00-15:00 | 6. Validation | Modellvalidatoren (policy-trappa), `pyshacl` på generert SHACL |
+| 15:00-17:30 | 7. Analysis | Tre jobbar mot plantede funn, og `-all` mot heile repoet |
+| 17:30-18:30 | 8. Take-aways | Tre poeng å ta med |
 | 18:30-20:00 | Buffer | Kutt fyrst `analyse-isolated-classes` og `analyse-unreachable-classes` |
 
 ## Det scripta forløpet
@@ -319,21 +320,56 @@ Scriptet viser kvart steg (tittel og kommando) og ventar på Enter, same stil so
 
 ### Akt 0 — Hook (1:00)
 
-Ingen kommando. Éi slide med åtte artefakt-ikon rundt éi YAML-fil.
+Ingen kommando. Éi slide (utkast til slide-tekst under; engelsk, som resten av demoen).
+
+**Slide-tekst (hook-slide):**
+
+```
+Same model, many places
+...that drift apart
+
+   Talk ──┬─ OWL ontology
+          ├─ SHACL shapes
+          ├─ JSON Schema
+          ├─ Python class
+          ├─ Docs / wiki
+          └─ JSON-LD context
+
+   Six hand-written copies.
+   Someone renames a field. Five copies don't hear about it.
+   Connecting different models? Each one is hard to understand.
+
+   One model to rule them all.
+```
+
+Layout: «Talk» som sentralt konsept til venstre, seks stader til høgre med pilar ut.
+Éin av stadene kan markerast raud med t.d. `title` mot `name` for å vise drift.
+Botnlinja (parafrase av Tolkien) er bru til akt 1; heile verset vert ikkje brukt.
+Ingen bilete eller logoar frå filmane. Vil ein ha «Docs / wiki» bytt med `gen-rdf`
+for å matche dei seks artefakta i akt 2 ein-til-ein, er det eit alternativ.
 
 > *«Every standards body I know maintains the same model in several places: a
 > spec document, an OWL file, SHACL shapes, a JSON Schema for the developers, a
-> diagram. They drift apart. Today I'll show a repository where there is exactly
-> one place you edit, and everything else is generated.»*
+> diagram. They drift apart, and when you try to connect them, every model is
+> hard to understand on its own terms. Today I'll show a repository where there
+> is exactly one place you edit, and everything else is generated.»*
 
-### Akt 1 — Kjelda (2:00)
+### Akt 1 — One source of truth (2:00)
+
+Eitt steg, «LinkML model is source of truth». Scriptet opnar **heile** skjemafila i `less`
+(med linjenummer), starta ved `classes:` (`show_excerpt "classes:"`). Éi visning i staden for to:
+klassane og slotane ligg i same fil, så ein blar frå `classes:` ned til `slots:` utan nytt steg.
 
 ```bash
-# Show the one file everything comes from
-less <S>     # utvald utsnitt; QUICK-modus brukar ferdig visning
+# LinkML model is source of truth
+less <S>     # heile fila, opna ved classes:; bla med piltastar/Space, q for å gå vidare
 ```
 
-Vis éin klasse og éin slot, og zoom på mappinga:
+Bla gjennom mappinga i fila:
+
+1. **Klassen `Foredrag`** (`classes:`): `class_uri: dct:BibliographicResource`, og `structured_aliases`
+   med «Talk».
+2. **Slotten `tittel`** (`slots:`, lenger ned): `slot_uri: dct:title` og alias «title».
 
 ```yaml
   tittel:
@@ -341,16 +377,17 @@ Vis éin klasse og éin slot, og zoom på mappinga:
     range: string
 ```
 
-> *«No new vocabulary here. `slot_uri` ties this slot to `dct:title`. That one
-> line is what every generator below uses as the predicate.»*
+> *«No new vocabulary here. `class_uri` and `slot_uri` tie the classes and slots of the
+> model to terms everybody already knows, like `dct:title`. Those lines are what every
+> generator below uses as the predicate.»*
 
-Vis deretter `structured_aliases` på same slot og på klassen `Foredrag`:
+Påpeik `structured_aliases` på same slot og på klassen:
 
 > *«The model is in Norwegian, because that is the language of the people who own it.
 > The English term travels with it as a language-tagged alias, so the model is
 > readable to everyone in this room, and to machines.»*
 
-### Akt 2 — Generer (4:00)
+### Akt 2 — Generate (3:00)
 
 ```bash
 # RDF side
@@ -361,8 +398,10 @@ make gen-rdf SCHEMA=<S>              # ~3 s   (schema as Turtle)
 
 # Contrast for the developers in the room
 make gen-jsonschema SCHEMA=<S>       # ~2 s
-make gen-python SCHEMA=<S>           # ~2 s
 ```
+
+Etter kvar `gen-*` skriv scriptet ut stien til den genererte fila (`Generated: …`) og viser
+innhaldet i `less`.
 
 Etter generering: **«éin slot, seks artefakter»**. Scriptet køyrer `grep` for
 `dct:title`/`tittel` mot kvar fil og viser éi linje frå kvar:
@@ -391,7 +430,29 @@ vokabulargjenbruk i OWL. Ikkje endra her; vert noko å omtale i demoen («our OW
 Rett eksakte greppattern etter at prototypen er køyrd. Viser grepet noko anna enn
 tabellen, er tabellen feil, ikkje grepet.
 
-### Akt 3 — Live-endring (2:00)
+### Akt 3 — Create an app (2:00)
+
+Ny hovudoverskrift (pikselfont som dei andre aktane), rett etter «One slot, six artifacts». Dekkjer fire steg:
+
+1. **«Generate Python classes»**: `make gen-python SCHEMA=<S>` (~2 s).
+2. **«App 1: read the YAML data»**: `less` på `konferanseprogram_app_yaml.py`, så køyring.
+3. **«App 2: convert to JSON and read it»**: `konferanseprogram_app_json.py` konverterer YAML-eksempelet til
+   JSON (`json_dumper`) og les JSON-fila att med same klassar (`json_loader`). Etter køyringa vert dei fyrste
+   linjene av `konferanseprogram.json` viste.
+4. **«App 3: convert to RDF and read it»**: `konferanseprogram_app_rdf.py` konverterer til Turtle
+   (`rdflib_dumper`, med `SchemaView` over skjemaet, så `slot_uri`/`class_uri` vert brukt) og les Turtle att
+   (`rdflib_loader`). Dei fyrste linjene av `konferanseprogram.ttl` vert viste: `dct:title`, `foaf:name`,
+   `dct:BibliographicResource`.
+
+Alle tre appane skriv ut same linje, `One source of truth (20 min) - Audun Vindenes Egge @ SEMIC 2026`.
+Poenget er at éi modell gjer same data lesbare frå tre formater. Appane køyrer i `linkml-local` og
+fungerer som portalens «Using Python»-snippet (`yaml_loader.load`, `target_class=`), men lastar
+containerklassen. Detaljar og avvik frå snippeten står i § Avgjerder («Python-app i akt 3»).
+
+> *«The classes are generated from the same file. Read the data as YAML, as JSON or as RDF: you get
+> the same objects, because they all follow the same model.»*
+
+### Akt 4 — Live-endring (2:00)
 
 Sentralt poeng: éi endring i kjelda, alt anna følgjer.
 
@@ -416,7 +477,7 @@ Steg C viser tre korte diffar (SHACL, JSON-LD context, JSON Schema) med same
 > *«One line in the source. Four generated files updated. No file was edited by
 > hand, so none of them can disagree.»*
 
-### Akt 4 — Portalen (2:00)
+### Akt 5 — Portalen (2:00)
 
 ```bash
 make gen-schema-docs SCHEMA=<S>      # ~4 s
@@ -429,7 +490,7 @@ Vis modellsida og eit diagram. Sjå § Portalen for opne punkt.
 > *«Nobody wrote this documentation. It is rendered from the same YAML. For a
 > model with fifty classes, this is how you get an overview.»*
 
-### Akt 5 — Validering (4:00)
+### Akt 6 — Validering (3:00)
 
 **Poeng:** tre lag. Modellen, dataa, og SHACL-en vi nett genererte.
 
@@ -471,7 +532,7 @@ make validate-shacl SCHEMA=<S> DATA=<ugyldig-ttl>                    # violation
 > reports the violation in the bad data. A standard SHACL engine, no LinkML in the
 > validation path.»*
 
-### Akt 6 — Analysejobbane (2:30)
+### Akt 7 — Analysejobbane (2:30)
 
 **Poeng:** modellen vert analysert som kode. Jobbane finn ting ein ikkje ser for hand.
 
@@ -490,7 +551,7 @@ make analyse-similar-classes-all NAME=konferanseprogram # funn 6: i heile repoet
 Kutt-prioritet ved tidsnaud: behald `analyse-similar-classes-all` og
 `analyse-isolated-classes`, kutt dei to andre.
 
-### Akt 7 — Avslutning (1:00)
+### Akt 8 — Avslutning (1:00)
 
 Éi slide, tre poeng:
 
@@ -528,13 +589,13 @@ demomodellen enno.
 
 5. [x] **Bygg fixture** i `src/assets/scripts/demo/semweb-demo/` (norsk skjema med
    `structured_aliases` på klassar og slots, `build.yaml`, `description.md`, gyldig eksempel-YAML, ugyldig TTL, innsettingsfilene
-   for akt 3 og 5). Ingen AP-NO-import, lokale subsets. Skjema, `build.yaml`, `description.md`,
+   for akt 4 og 6). Ingen AP-NO-import, lokale subsets. Skjema, `build.yaml`, `description.md`,
    gyldig eksempel og ugyldig TTL er skrivne (`examples/konferanseprogram-ugyldig.ttl`).
-   Innsettingane for akt 3 og 5 ligg som heredoc-blokker i scriptet (ikkje som eigne
+   Innsettingane for akt 4 og 6 ligg som heredoc-blokker i scriptet (ikkje som eigne
    filer, same mønster som JavaZone-scriptet). Funn-kommentarar er fjerna frå skjemaet,
    sidan publikum ser fila.
 6. [x] **Verifiser at modellen** passerer `make lint`, validatoren (bronze, funn 1 og
-   2 kjem opp, basis-no passerer) og alle `gen-*` i akt 2 og 3. Sjekk at
+   2 kjem opp, basis-no passerer) og alle `gen-*` i akt 2 og 4. Sjekk at
    `structured_aliases` ikkje gir lint- eller policyfeil.
 7. [x] **Verifiser plantede funn 3-6** mot dei fire analysejobbane. Finn klassenavn
    for funn 6 (sjå § Opne spørsmål).
@@ -550,7 +611,7 @@ demomodellen enno.
     (sjå § Opne spørsmål).
 10. [x] **Portalen:** mål `make docs-publish`, verifiser offline og kva sider som
     vert vist. Avgjer om portalen skal vere førehandsstarta.
-11. [x] **Skriv `src/assets/scripts/demo/semweb-demo-script.sh`** etter mønsteret i
+11. [x] **Skriv `src/assets/scripts/demo/SEMIC-demo.sh`** etter mønsteret i
     `javazone-demo-script.sh` (Enter-pause, `QUICK`-flagg, farga kommandolinjer,
     ikkje `set -e`, opprydding med j/N). Gjenbruk innsetjings- og diff-mekanismen frå
     `javazone-demo-auto-innsetjing.md`.
@@ -561,7 +622,7 @@ demomodellen enno.
     `generated/oreg/konferanseprogram/`.
 13. [ ] **Test heile sekvensen med klokke**, offline, minst to gonger. Mål: 18:30,
     med 1:30 buffer.
-14. [ ] **Slides:** hook-slide, «éin slot, seks artefakter»-slide, avslutningsslide.
+14. [ ] **Slides:** hook-slide (tekst er skrive i akt 0), «éin slot, seks artefakter»-slide, avslutningsslide.
     Utanfor repoet.
 15. [ ] **Evaluer** om arbeidet avdekkjer behov for ny rule eller bug-fil (jf.
     CLAUDE.md, avslutning steg a).
@@ -583,7 +644,7 @@ Fixturen vart kopiert til `src/linkml/oreg/konferanseprogram/`, køyrd og sletta
   feil. `structured_aliases` gir ingen lint- eller policyfeil.
 - **Policy-trappa:** bronze gir **ingen** funn. Funn 1 (`all_classes_have_concept_ref`
   på `Foredrag`) og 2 (`all_slots_have_slot_uri` på `varighet`) kjem først på
-  **basis-no**, jf. «norske krav startar på basis-no». Akt 5 må difor vise
+  **basis-no**, jf. «norske krav startar på basis-no». Akt 6 må difor vise
   basis-no-funna og retta basis-no, ikkje bronze. `build.yaml` i fixturen har
   `validation_policy: basis-no`.
 - **Funn 3 og 4:** `analyse-unused-slots` gir `kommentar`, `analyse-isolated-classes`
@@ -633,8 +694,8 @@ Fixturen vart kopiert til `src/linkml/oreg/konferanseprogram/`, køyrd og sletta
   før demoen), og `src/linkml/oreg/konferanseprogram/` må slettast.
 
 
-**Scriptet (punkt 11, skrive og køyrt 2026-11-20):** `src/assets/scripts/demo/semweb-demo-script.sh`
-[`QUICK=true|false`] [`PREPARE=true|false`]. Akt 0-7, 29 Enter-pausar, klokke i prompten,
+**Scriptet (punkt 11, skrive og køyrt 2026-11-20):** `src/assets/scripts/demo/SEMIC-demo.sh`
+[`QUICK=true|false`] [`PREPARE=true|false`]. Akt 0-8, 29 Enter-pausar, klokke i prompten,
 valfritt `demo-fun-tools`-bilete (figlet/glow/boxes) med fallback til vanleg tekst. Køyrt
 gjennom 5 gonger med automatisk Enter (`yes ''`): 0 feil, òg med `/bin/bash` 3.2 og
 `QUICK=true`. Tid for ei full gjennomkøyring utan pausar: ca. 33-44 s, så all tid i demoen
@@ -669,7 +730,7 @@ make build-docker-linkml
 make build-docker-python          # inkl. pyshacl
 make build-docker-mcp-validator
 make build-docker-mkdocs
-bash src/assets/scripts/demo/semweb-demo-script.sh   # byggjer fun-tools første gong
+bash src/assets/scripts/demo/SEMIC-demo.sh   # byggjer fun-tools første gong
 make docs-publish && make docs-serve                 # test portalen offline etterpå
 ```
 
@@ -714,7 +775,7 @@ git status --short   # skal vere tom bortsett frå dei varige endringane
   held seg på norsk i denne omgangen, og `build.yaml` får ingen språknøkkel. Demoen
   omset munnleg og viser ei slide med dei tre-fire meldingane på engelsk. Eit språkval
   (`REPORT_LANG`, meldingskatalog nøkkelen på `code`) vert eventuelt ei eiga spec seinare.
-- **Hybrid-modell** (brukarval): ferdig modell vist i akt 1-2, éi live-endring i akt 3.
+- **Hybrid-modell** (brukarval): ferdig modell vist i akt 1-2, éi live-endring i akt 4.
 - **Engelsk demo, norsk modell med engelske termar via `structured_aliases`**
   (brukarval 2026-11-20). Erstattar eit tidlegare val om engelsk modell: modelleringa
   følgjer skriftspråkregelen i CLAUDE.md (bokmål, inga avvik), og den engelske termen
@@ -747,3 +808,17 @@ git status --short   # skal vere tom bortsett frå dei varige endringane
   `samt-bu-manifest.yaml` vart rulla tilbake etter køyringane i denne økta.
 - **Ny tidsfordeling:** hook 1:00, kjelda 2:00, generer 4:00, live 2:00, portal 2:00,
   validering 4:00, analyse 2:30, avslutning 1:00, buffer 1:30. Total 18:30 pluss buffer.
+
+- **Python-app i akt 3 (2026-11-20, etter førespurnad; flytta frå akt 2 2026-11-22):** to steg i den eigne akta «Create an app», etter «One slot, six artifacts»: vis `semweb-demo-app/konferanseprogram_app_yaml.py` i less, og køyr han mot eksempelfila (seinare utvida til tre appar, sjå under). Appen følgjer portalens «Using Python»-snippet (`yaml_loader.load(..., target_class=...)`), men
+  - lastar som `KonferanseprogramContainer` (eksempelfila er containeren; snippeten i portalen brukar første klasse, `Konferanse`, som ikkje passar for ei container-fil),
+  - krev kopi av `konferanseprogram-model.py` til `konferanseprogram_model.py` (portalen importerer `konferanseprogram_model`, men den genererte fila har bindestrek og kan ikkje importerast),
+  - køyrer i `linkml-local`-biletet (har `linkml-runtime`; `python-pytest` har ikkje). `podman run` direkte i demo-scriptet, same unntak som for `fun`-biletet; `pip install` i portalsnippeten er då ikkje naudsynt i demoen.
+  Appen ligg utanfor fixturemappa (`semweb-demo-app/`) slik at han ikkje vert kopiert inn i `src/linkml/`. Verifisert: QUICK-køyring gir «One source of truth (20 min) - Audun Vindenes Egge @ SEMIC 2026», og midlertidig katalog vert rydda.
+  Opent: portalsnippeten (modellnamn/klasse) er misvisande for modellar med containerklasse, vurder å retta malen separat.
+
+- **Terminal-slides i demoen (2026-11-20):** `src/assets/scripts/demo/slides/` har slidane som scripts, kalla frå `SEMIC-demo.sh` via `show_slide`: `semic-cover` og `semic-title` først (hoppar `QUICK=true` over), `hook` i akt 0, og `semic-questions` og `semic-thanks` (to QR-kodar: LinkedIn og portalen) til slutt (alltid). Teikna 8-bit i SEMIC 2026-stil, delt kode i `semic-canvas.awk`. Verifisert: kjøring utan tty (røyr) gir ingen krasj (`slide-lib.sh` har ikkje `set -e`), og QR-kodane dekodar til rett URL. Ikkje verifisert i ekte terminal, og lågaste terminalhøgd er ca. 35 rader (QR-kodane) / 22 (resten); mindre gir tekstfallback. Malbiletet som bakgrunn finst som val (`SEMIC_BACKGROUND=template`) men er ikkje standard (brukaren likte 8-bit-stilen betre). Handlingsliste punkt 14 er dermed delvis gjort (forside, tittel, hook, spørsmål, takk); «éin slot, seks artefakter» og avslutningsslide med take-aways står att.
+
+- **Ny akt «3. Create an app» (2026-11-22, brukarval):** `gen-python` og dei to Python-app-stega ligg under den nye hovudoverskrifta, som kjem rett etter «One slot, six artifacts» (og dermed rett før «For the developers: Python classes»). Aktane etter vart omnummererte (live-endring 4, portalen 5, validering 6, analyse 7, avslutning 8). Tidsbudsjettet vart justert slik at slutten er uendra (18:30, buffer 1:30): Generate 4:00 -> 3:00, Create an app 1:30, Validation 4:00 -> 3:30. Same endring i `SEMIC-demo.sh` (act-overskrifter og kommentarar).
+- **Akt 1 slått saman til eitt steg (2026-11-22, brukarval):** «LinkML model is source of truth» viser heile skjemafila i `less`, opna ved `classes:`. Erstattar to steg (klassar, slots) som ikkje gav meir.
+
+- **Tre Python-appar i akt 3 (2026-11-22, brukarval):** `semweb-demo-app/` har `konferanseprogram_app_yaml.py` (den opphavlege), `_json.py` (YAML -> JSON med `json_dumper`, les med `json_loader`) og `_rdf.py` (YAML -> Turtle med `rdflib_dumper`, les med `rdflib_loader`; krev `SchemaView(<skjema>)`). Verifisert 2026-11-22: alle tre skriv ut same linje, og rundturen YAML -> JSON -> objekt og YAML -> RDF -> objekt gir same data for denne modellen (BUG-2/BUG-3-fellene for `rdflib_loader` råkar ikkje fixturen). Funksjonen `app_flow` viser koden i less, køyrer appen i `linkml-local` og viser dei fyrste 16 linjene av fila appen skreiv. Tidsbudsjettet: Create an app 1:30 -> 2:00, Validation 3:30 -> 3:00.

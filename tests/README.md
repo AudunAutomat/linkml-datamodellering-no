@@ -47,7 +47,7 @@ Testar `src/assets/scripts/makefile/check-prereqs.bash` på verten utan å insta
 
 ## `test_validate_shacl.sh`
 
-Testar `make validate-shacl` med faste fixtures (`tests/fixtures/validate-shacl-*.ttl`, ingen filer frå `generated/`): gyldig data gir exit 0 og «Conforms: True», data utan påkravd eigenskap gir exit ≠ 0 og «Conforms: False», og manglande argument eller filer gir bruksmelding og exit ≠ 0. Køyr: `bash tests/test_validate_shacl.sh`. Krev podman og `python-pytest`-imaget (`make build-docker-python`). Ikkje del av `make test`, som køyrer per skjema, medan fleire eksisterande eksempel-TTL-ar bryt sine eigne shapes (sjå `specs/backlog/demo-semantisk-web-konferanse.md`).
+Testar `make validate-shacl` med faste fixtures (`tests/fixtures/validate-shacl-*.ttl`, ingen filer frå `generated/`): gyldig data gir exit 0 og «Conforms: True», data utan påkravd eigenskap gir exit ≠ 0 og «Conforms: False», og manglande argument eller filer gir bruksmelding og exit ≠ 0. Køyr: `bash tests/test_validate_shacl.sh`. Krev podman og `python-pytest`-imaget (`make build-docker-python`). Ikkje del av `make test`, som køyrer per skjema, medan fleire eksisterande eksempel-TTL-ar bryt sine eigne shapes (sjå `specs/backlog/demo-SEMIC.md`).
 
 ## Roundtrip-dekning
 

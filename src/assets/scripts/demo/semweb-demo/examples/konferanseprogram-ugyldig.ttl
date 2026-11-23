@@ -5,10 +5,10 @@
 # Foredraget manglar dct:title, som er påkravd (Obligatorisk).
 <https://example.org/foredrag/2> a dct:BibliographicResource ;
     dct:creator <https://example.org/person/1> ;
-    dct:isPartOf <https://example.org/konferanse/semweb-2026> .
+    dct:isPartOf <https://example.org/konferanse/semic-2026> .
 
-<https://example.org/konferanse/semweb-2026> a dcmitype:Event ;
-    dct:title "Semantic Web Conference 2026" .
+<https://example.org/konferanse/semic-2026> a dcmitype:Event ;
+    dct:title "SEMIC 2026" .
 
 <https://example.org/person/1> a foaf:Person ;
-    foaf:name "Kari Nordmann" .
+    foaf:name "Audun Vindenes Egge" .

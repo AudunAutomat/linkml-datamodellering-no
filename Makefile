@@ -127,10 +127,10 @@ roundtrip-json-schema: ## Køyr JSON Schema roundtrip-testar [JSONSCHEMA=<sti>]
 # Image-bygging, MCP, scaffolding og verktøy flytta til make/*.mk
 # ---------------------------------------------------------------------------
 
-convert-instance-rdf: ## Konverter eksempelfiler frå YAML til RDF/Turtle [DOMAIN=<domene>]
-	$(call print_header,convert-instance-rdf,$(if $(DOMAIN),DOMAIN=$(DOMAIN)))
+convert-instance-rdf: ## Konverter eksempelfiler frå YAML til RDF/Turtle [DOMAIN=<domene>|INSTANCE=<sti>]
+	$(call print_header,convert-instance-rdf,$(if $(DOMAIN),DOMAIN=$(DOMAIN))$(if $(INSTANCE), INSTANCE=$(INSTANCE)))
 	@JOBS_TSV=$$(mktemp "$(GEN_DIR)/.convert-jobs.XXXXXX") && \
-	SCHEMA_DIR=$(SCHEMA_DIR) GEN_DIR=$(GEN_DIR) bash src/assets/scripts/makefile/convert-examples.sh $(DOMAIN) > "$$JOBS_TSV" && \
+	SCHEMA_DIR=$(SCHEMA_DIR) GEN_DIR=$(GEN_DIR) bash src/assets/scripts/makefile/convert-examples.sh "$(DOMAIN)" "$(INSTANCE)" > "$$JOBS_TSV" && \
 	if [ -s "$$JOBS_TSV" ]; then \
 		$(LINKML_RUN) python3 src/assets/scripts/makefile/batch-generate-instances.py --generator convert --jobs-tsv "$$JOBS_TSV"; rc=$$?; \
 	else \
