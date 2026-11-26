@@ -475,7 +475,7 @@ EOF
         "    slot_uri: ${NAME}:varighet"
 }
 
-# Layer 3b skal gi exit != 0 (det er poenget). Vis rapporten, og forklar at
+# Siste SHACL-steget («SHACL reports the violation …») skal gi exit != 0 (det er poenget). Vis rapporten, og forklar at
 # brotet er forventa, i staden for den generelle "step failed"-meldinga.
 run_shacl_expect_violation() {
     if make validate-shacl SCHEMA="$SCHEMA" DATA="$MODEL_DIR/examples/$NAME-ugyldig.ttl"; then
@@ -606,26 +606,26 @@ prompt_enter "Press Enter when back from the portal … "
 
 # ---- Akt 6: validering ----
 act "6. Validation"
-step "Layer 1a: structural lint" "$(disp "make lint" "SCHEMA=$SCHEMA")" make lint SCHEMA="$SCHEMA"
-step "Layer 1b: policy bronze (generic LinkML baseline)" \
+step "Structural lint" "$(disp "make lint" "SCHEMA=$SCHEMA")" make lint SCHEMA="$SCHEMA"
+step "Policy bronze (generic LinkML baseline)" \
     "$(disp "make mcp-linkml-valider-modell" "SCHEMA=$SCHEMA POLICY=bronze")" run_validate_bronze
-step "Layer 1c: policy basis-no (Norwegian public-sector requirements)" \
+step "Policy basis-no (Norwegian public-sector requirements)" \
     "$(disp "make mcp-linkml-valider-modell" "SCHEMA=$SCHEMA POLICY=basis-no")" run_validate_basis_no
 echo ""
 echo "${CLR_DBG}Fix the two findings in the source file:${CLR_RST}"
 edit_and_diff fix_findings
 step "basis-no again: findings gone" \
     "$(disp "make mcp-linkml-valider-modell" "SCHEMA=$SCHEMA POLICY=basis-no")" run_validate_basis_no
-step "Layer 2: instance data against the model" \
+step "Instance data against the model" \
     "$(disp "make validate-instance" "SCHEMA=$SCHEMA INSTANCE=$MODEL_DIR/examples/$NAME-eksempel.yaml")" \
     make -s validate-instance SCHEMA="$SCHEMA" INSTANCE="$MODEL_DIR/examples/$NAME-eksempel.yaml"
-step "Layer 3 (setup): example data as RDF" \
+step "Example data as RDF (SHACL setup)" \
     "$(disp "make convert-instance-rdf" "INSTANCE=$MODEL_DIR/examples/$NAME-eksempel.yaml")" \
     make convert-instance-rdf INSTANCE="$MODEL_DIR/examples/$NAME-eksempel.yaml"
-step "Layer 3a: the generated SHACL accepts the good data" \
+step "SHACL accepts the good data" \
     "$(disp "make validate-shacl" "SCHEMA=$SCHEMA")" \
     make validate-shacl SCHEMA="$SCHEMA"
-step "Layer 3b: and reports the violation in the bad data" \
+step "SHACL reports the violation in the bad data" \
     "$(disp "make validate-shacl" "SCHEMA=$SCHEMA DATA=$MODEL_DIR/examples/$NAME-ugyldig.ttl")" \
     run_shacl_expect_violation
 
@@ -642,7 +642,7 @@ act "8. Take-aways"
 echo ""
 echo "  1. One source, N artifacts that are generated, never hand-edited."
 echo "  2. Validators check the model, the data and the generated SHACL."
-echo "  3. Analysis and the portal give you the overview before it ships."
+echo "  3. Analysis and the portal give you overview of the current model-state."
 echo ""
 if have_fun; then
     printf 'https://audunautomat.github.io/linkml-datamodellering-no/' | fun cowsay -n

@@ -4,6 +4,7 @@ BEGIN {
     init_canvas()
     init_fonts()
     init_font3()
+    NC1 = 18; NC2 = 17; NODEBIG = 0.08          # svake blå noder, same stil som «Thank you»
 
     # tekstboksen (i piksel, 1 piksel = 1 kolonne x 1/2 rad) — greinene skal nærme seg han utan å røre
     ttxt = toupper(TITLE)
@@ -49,7 +50,7 @@ BEGIN {
 
         # --- greiner med noder som veks inn frå venstre kant (pikselbuffer) ---------------
         # 8-bit: tynne rosa linjer (teikn) i lange kurver frå venstre og nedre kant,
-        # opp og mot høgre, med forgreiningar og blå noder (pikselsirklar) i ulike storleikar.
+        # opp og mot høgre, med forgreiningar og svake blå noder (pikselsirklar) i ulike storleikar, i same dempa stil som «Thank you».
         # Held seg under logoen (PSTOPY) og i venstre ca. 31 % av breidda (PGX1).
         PSTOPY = 2 * (int(0.07 * H) + 9)       # rett under logoen
         PGX1 = 0.31 * W
@@ -87,7 +88,7 @@ function pbranch(x, y, a, depth, steps, ytop, xl,   n, since, lc, reach, tgx, tg
     reach = (xl > PGX1)
     if (reach) { tgx = ttx + rand() * tw * 0.75; tgy = TYB + rand() * 10 }    # mål: under teksten, med god avstand
     if (ytop == "") ytop = PSTOPY + 4 + rand() * 0.6 * (2 * H - PSTOPY)    # kvar greine sluttar på eiga høgd
-    lc = (depth >= 2) ? 139 : 175
+    lc = (depth >= 1) ? 237 : 59                         # dempa greinefargar, same som «Thank you»
     since = 0; turn = 0
     side = (rand() < 0.5) ? -1 : 1                       # sidegreiner kjem vekselvis frå kvar side, som på eit tre
     nextfork = 10 + int(rand() * 8)

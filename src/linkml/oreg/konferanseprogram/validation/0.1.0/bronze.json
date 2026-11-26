@@ -4,7 +4,7 @@
   "domain": "oreg",
   "version": "0.1.0",
   "validation_policy": "bronze",
-  "validated_at": "2026-11-23T07:42:54.257719+00:00",
+  "validated_at": "2026-11-26T17:09:42.250574+00:00",
   "result": {
     "valid": true,
     "errorCount": 0,

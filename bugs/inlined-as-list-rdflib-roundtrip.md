@@ -4,6 +4,7 @@
 **Status:** `upstream`
 **Komponent:** `linkml-runtime` (`linkml_runtime/loaders/rdflib_loader.py`, `uri_to_slot`)
 **Oppdaga:** 2026-06-09 (rotårsak retta 2026-09-26)
+**Upstream:** [linkml/linkml#4285](https://github.com/linkml/linkml/issues/4285) (meldt 2026-11-26)
 
 > **Merk om filnavnet:** Fila heitte opphavleg «inlined_as_list + identifier»
 > fordi rotårsaka først vart feilaktig tilskriven den kombinasjonen. Filnavnet
@@ -60,8 +61,9 @@ Minimal reproduksjon: to globale slots `title` og `title_literal`, begge
 
 Kombinasjonen `inlined_as_list` + `identifier: true` er **ikkje** årsaka.
 
-Reprodusert på `linkml` 1.11.1 og `linkml/linkml` `main @ 5ef7622e`
-(2026-09-25). Ingen eksisterande upstream-issue funnen (2026-09-26).
+Reprodusert på `linkml` 1.11.1, 1.12.1 og `linkml/linkml` `main`
+(`5ef7622e` 2026-09-25, `eff06809` 2026-11-26). Ingen eksisterande
+upstream-issue funnen; meldt som [#4285](https://github.com/linkml/linkml/issues/4285) 2026-11-26.
 
 ## Workaround
 
@@ -77,7 +79,7 @@ vokabularterm vert brukt med ulik range i ulike klasser.
 
 Upstream-fiks i `rdflib_loader`: slå opp predikatet blant slotane til
 subjektklassa (`class_induced_slots`) i staden for i ein global URI-tabell.
-Må meldast i [linkml/linkml](https://github.com/linkml/linkml/issues)
+Meldt i [linkml/linkml#4285](https://github.com/linkml/linkml/issues/4285)
 (`linkml-runtime`-repoet er arkivert) — sjå U1.
 
 Når upstream-fix er på plass:

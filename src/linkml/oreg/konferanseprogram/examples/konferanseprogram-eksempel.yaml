@@ -3,7 +3,7 @@ konferansar:
     tittel: SEMIC 2026
 foredragsliste:
   - id: https://example.org/foredrag/1
-    tittel: One source of truth
+    tittel: The Right Tool Is More Than Half the Job
     varighet: 20
     har_foredragsholder:
       - https://example.org/person/1

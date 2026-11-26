@@ -4,6 +4,7 @@
 **Status:** `workaround`
 **Komponent:** `linkml` (`linkml/generators/jsonldgen.py::JSONLDGenerator.end_schema`, brukt av `linkml/generators/rdfgen.py::RDFGenerator.end_schema`)
 **Oppdaga:** 2026-08-14
+**Upstream:** [linkml/linkml#4291](https://github.com/linkml/linkml/issues/4291) (meldt 2026-11-26 — URL-varianten; lokal-variant fiksa i [#3641](https://github.com/linkml/linkml/pull/3641))
 
 ## Symptom
 
@@ -83,8 +84,9 @@ utanfor scope (sjå `specs/done/fiks-ap-no-import-feil-new-modell.md`).
 
 ## Løysing
 
-Upstream-fiks bør etterspørjast (sjå
-`specs/backlog/upstream-linkml-bugrapportar.md` § U8). `JSONLDGenerator.end_schema()` sin
+Upstream-fiks er etterspurd i
+[linkml/linkml#4291](https://github.com/linkml/linkml/issues/4291) (2026-11-26; sjå
+`specs/backlog/upstream-linkml-bugrapportar.md` § U8; reprodusert på 1.12.1 og `main @ eff06809`). `JSONLDGenerator.end_schema()` sin
 `.context.jsonld`-konstruksjon er eit medvite designval i LinkML (føreset
 at genererte artefakt vert publisert saman med kjeldekoden), ikkje ein bug
 i tradisjonell forstand — usannsynleg at upstream endrar standardåtferda.

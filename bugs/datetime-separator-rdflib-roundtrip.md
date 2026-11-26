@@ -4,6 +4,7 @@
 **Status:** `upstream`
 **Komponent:** `linkml-runtime` (`linkml_runtime/loaders/rdflib_loader.py`, `v = o.value`)
 **Oppdaga:** 2026-08-14 (rotårsak stadfesta 2026-09-26)
+**Upstream:** [linkml/linkml#4287](https://github.com/linkml/linkml/issues/4287) (meldt 2026-11-26)
 
 ## Symptom
 
@@ -48,8 +49,8 @@ går tapt.
 
 Minimal reproduksjon (eigendefinert type `uri: xsd:dateTime`, `base: str`)
 i `specs/backlog/upstream-linkml-bugrapportar.md` § U3. Reprodusert på
-`linkml` 1.11.1 og `main @ 5ef7622e`. Ingen eksisterande upstream-issue
-funnen (2026-09-26).
+`linkml` 1.11.1, 1.12.1 og `main @ eff06809` (2026-11-26). Ingen eksisterande
+upstream-issue funnen; meldt som [#4287](https://github.com/linkml/linkml/issues/4287) 2026-11-26.
 
 ## Workaround
 
@@ -64,7 +65,7 @@ datetime-handteringa vert brukt. Krev kontroll av genererte artefakter
 ## Løysing
 
 Upstream-fiks: bruk leksikalsk form (`str(o)`) når måltypen har `base: str`.
-Må meldast i [linkml/linkml](https://github.com/linkml/linkml/issues) — sjå U3.
+Meldt i [linkml/linkml#4287](https://github.com/linkml/linkml/issues/4287) — sjå U3.
 
 Når fiksen (upstream eller intern) er på plass: fjern skip-betingelsen og
 oppdater denne fila til `Status: løyst`.

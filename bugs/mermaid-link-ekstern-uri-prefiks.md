@@ -4,6 +4,7 @@
 **Status:** `upstream`
 **Komponent:** `linkml` (`linkml/generators/docgen.py`, `DocGenerator.link_mermaid()`)
 **Oppdaga:** 2026-08-13
+**Upstream:** [linkml/linkml#4290](https://github.com/linkml/linkml/issues/4290) (meldt 2026-11-26; relatert PR: [#2550](https://github.com/linkml/linkml/pull/2550))
 
 ## Symptom
 
@@ -130,10 +131,12 @@ Sjå `specs/backlog/mermaid-diagram-elementaere-typar-og-attributtklikk.md`
 Upstream-fix i `linkml` sin `docgen.py`, der `link_mermaid()` sjekkar om
 `link` alt startar med `http://`/`https://` (t.d. via
 `link.startswith(("http://", "https://"))`) og i så fall returnerer han
-uendra, i staden for å pakke han inn i `f"../{link}/"`. Ingen GitHub-issue er
-identifisert pr. 2026-09-26 — skal meldast i
-[linkml/linkml](https://github.com/linkml/linkml/issues), sjå
-`specs/backlog/upstream-linkml-bugrapportar.md` § U7.
+uendra, i staden for å pakke han inn i `f"../{link}/"`. Ingen eksisterande
+GitHub-issue funnen; meldt som
+[linkml/linkml#4290](https://github.com/linkml/linkml/issues/4290)
+(2026-11-26; reprodusert på 1.12.1 og `main @ eff06809`), sjå
+`specs/backlog/upstream-linkml-bugrapportar.md` § U7. Relatert, open og uaktiv PR:
+[#2550](https://github.com/linkml/linkml/pull/2550).
 
 Når upstream-fix er på plass: stadfest at ein fersk `make gen-doc`-køyring
 ikkje lenger produserer `../http://`/`../https://`-prefiksa hrefar for

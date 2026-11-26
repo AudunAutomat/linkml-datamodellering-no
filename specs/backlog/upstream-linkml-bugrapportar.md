@@ -31,10 +31,11 @@ LinkML-relaterte feila som framleis gjeld.
 - [x] Steg 4 — MRE-ar laga og køyrde mot tre image (sjå § Testoppsett)
 - [x] Steg 5 — køyrt mot `main @ 5ef7622e` (2026-09-25)
 - [x] Steg 6 — sjå § Eksisterande upstream-issues
-- [x] Steg 7 — sjå § Upstream-rapportar (U1-U8)
+- [x] Steg 7 — sjå § Upstream-rapportar (U1-U3 og U5-U8; U4 sletta 2026-11-26)
 - [x] Steg 8 — sjå § Tilrådingar
 - [x] Re-verifiser mot `linkml` 1.12.1 (2026-11-18, sjå § Re-verifisering mot 1.12.1)
-- [ ] Meld U1-U8 upstream (brukaren gjer dette sjølv, sjå § Tilrådingar)
+- [x] Re-analyse mot issue-trackaren (2026-11-26, berre tracker- og kjeldesøk, sjå § Re-analyse mot issue-trackaren)
+- [x] Meld U1-U3 og U5-U8 upstream (brukaren meldte dei 2026-11-26, sjå § Meldte issues)
 - [x] Oppdater `bugs/*.md` og `BUGS.md` med korrigerte rotårsaker og issue-lenkjer (2026-09-26, sjå § Avgjerder)
 - [x] Fjern forelda `convert-instance-rdf`-skip for NGR i `tests/test_make.sh` og lychee-eksklusjonen for BUG-20 (2026-09-26; verifisert med `make test`-filter og `lychee --dump`, endeleg CI-stadfesting ved neste lenkjesjekk)
 
@@ -45,6 +46,7 @@ LinkML-relaterte feila som framleis gjeld.
 | `localhost/linkml-local:latest` | `linkml==1.11.1` + lokal `docgen-max-chars.patch` (frå 2026-11-06: `linkml==1.12.1` + `docgen-max-chars.patch` og `javagen-custom-typemap.patch`) | Repoets eige image — verifisering mot ekte skjema |
 | `localhost/linkml-vanilla:1.12.1` | `python:3.12-slim` + `pip install linkml==1.12.1 linkml-runtime==1.12.1`, ingen patchar (2026-11-18) | Re-verifisering mot gjeldande versjon |
 | `localhost/linkml-vanilla:1.11.1` | `python:3.12-slim` + `pip install linkml==1.11.1`, ingen patchar | Upstream-MRE-ar mot siste release |
+| `localhost/linkml-main:eff06809` | Som under, men frå `eff06809` (2026-11-25, 1.13.0.dev0; bygd 2026-11-26 med `UV_DYNAMIC_VERSIONING_BYPASS`) | Re-analyse U3/U5 |
 | `localhost/linkml-main:5ef7622e` | `linkml`/`linkml-runtime` frå `linkml/linkml@5ef7622e` (monorepo, `packages/*`) | Sjekk om feilen framleis finst på `main` |
 
 MRE-filene ligg i scratchpad (ikkje committa); alle naudsynte YAML-filer og
@@ -78,7 +80,7 @@ BUG-15 og BUG-24 peika til det arkiverte repoet; retta 2026-09-26.
 | BUG-15 | linkml-runtime | `workaround` | Ja (MRE) | Ja | **Nei** | **Fiksa på `main`** (#3855, `9cf563ce`, 2026-09-24), ikkje utgjeven. Ikkje meld |
 | BUG-16 | script | `løyst` | — | — | — | Forelda — `update-modellkatalog.py` er fjerna |
 | BUG-17 | linkml | `workaround` | Ja (MRE) | Ja | Ja (URL-import) | **Framleis relevant for URL-importar** (→ U8). Lokal-import-varianten er fiksa på `main` (#3641, `b07ae874`) |
-| BUG-18 | linkml-runtime | `workaround` | Ja (MRE) | Ja | Ja | **Framleis relevant**, men låg alvorsgrad — begge formene er gyldige `uriorcurie` (→ U4, valfri) |
+| BUG-18 | linkml-runtime | `workaround` | Ja (MRE) | Ja | Ja | **Framleis relevant**, men låg alvorsgrad — begge formene er gyldige `uriorcurie` (tidlegare U4, no sletta: tilsikta etter [#4156](https://github.com/linkml/linkml/pull/4156); sjå § Avgjerder) |
 | BUG-19 | linkml-runtime | `open` | Ja | Ja | Ja | **Framleis relevant — rotårsak funnen.** Gjeld berre eigendefinert type `uri: xsd:dateTime` + `base: str`; innebygd `datetime` roundtrippar korrekt (→ U3) |
 | BUG-20 | linkml (docgen) | `open` | **Nei** | **Nei** | **Nei** | **Ikkje reproduserbar.** Fersk `make gen-schema-docs` bevarer backticks. Diagnosen var basert på forelda `generated/`-output (frå før backtickane vart lagde til i `7e1a2ac7`, 2026-08-16). Tilrådd lukka |
 | BUG-21 | make | `løyst` | Sjå merknad | — | — | Løyst for `date +%s%3N`, men sjå sidefunn under (negativ tid) |
@@ -104,26 +106,26 @@ BUG-15 og BUG-24 peika til det arkiverte repoet; retta 2026-09-26.
 | BUG-1b LangString | Relatert: [#3548](https://github.com/linkml/linkml/issues/3548) (ingen språktagg-mekanisme) | Meld U5 som eige issue med referanse til #3548 |
 | BUG-6 klasse-redeklarering | [#417](https://github.com/linkml/linkml/issues/417) (lukka 2023 — union-semantikk avvist) | Meld U6 om **inkonsistensen** mellom generatorar, ikkje om union |
 
-Ingen treff for U1, U2, U3, U4, U7 og U8 (søk på `rdflib_loader`, `RDFLibLoader`,
+Ingen treff for U1, U2, U3, U7 og U8 (søk på `rdflib_loader`, `RDFLibLoader`,
 `No pred for`, `MappingError`, `slot_uri`, `link_mermaid`, `context.jsonld`,
 `datetime` m.fl., 2026-09-26).
 
 ## Upstream-rapportar
 
-Prioritert rekkjefølgje: U1, U2, U3, U7, U8, U6, U5, U4.
+Prioritert rekkjefølgje: U1, U2, U3, U7, U8, U6, U5. (U4 er sletta; nummera er ikkje omnummererte, slik at referansar til U5-U8 held.)
 
 Kvar rapport følgjer same mal: tittel, éi setning om problemet, minimal
 reproduksjon, forventa/faktisk, årsak og framlegg til fiks. Alle MRE-ar er
 køyrde på nytt i denne forma (2026-09-27) og reproduserer på både 1.11.1 og
-`main`; køyrde mot 1.12.1 2026-11-18, og U1-U8 reproduserer òg der. Legg til denne linja nedst i kvart issue:
-
-> **Environment:** linkml 1.12.1 (PyPI); also reproduced on 1.11.1 and on `main` @ `5ef7622e`.
+`main`; køyrde mot 1.12.1 2026-11-18, og U1-U8 reproduserer òg der. Kvar rapport har ei eiga miljølinje nedst (same tekst, limast inn i issuen). Testa versjonar for kvar rapport (U1-U3 og U5-U8, same MRE-ar): `linkml` 1.11.1 og `main @ 5ef7622e` (2026-09-27), 1.12.1 (2026-11-18) og `main @ eff06809`, 1.13.0.dev0 (2026-11-26). Dei to siste er køyrde i `linkml-vanilla:1.12.1` og `linkml-main:eff06809`.
 
 ---
 
 ### U1 — Two slots with the same `slot_uri` break RDF loading
 
-*Radnummer i U1-U8 er frå 1.11.1/`main` og stemmer i 1.12.1 bortsett frå U8 (`jsonldgen.py:211`, ikkje 205).*
+**Meldt:** [linkml/linkml#4285](https://github.com/linkml/linkml/issues/4285) (2026-11-26).
+
+*Radnummer i U1-U3 og U5-U8 er frå 1.11.1/`main` og stemmer i 1.12.1 bortsett frå U8 (`jsonldgen.py:211`, ikkje 205).*
 
 *Dekkjer BUG-1/BUG-2 (10 skjema skippa i roundtrip-ttl).*
 
@@ -155,12 +157,16 @@ linkml-convert -s schema.yaml -o back.yaml out.ttl    # fails
 
 - **Expected:** `back.yaml` equals `data.yaml`.
 - **Actual:** `TypeError: Catalog.__init__() got an unexpected keyword argument 'title_literal'`
-- **Cause:** `rdflib_loader.py:99` builds `uri_to_slot` keyed by URI only, so the last slot with that URI wins for all classes.
+- **Cause:** `rdflib_loader.py:99` (line 101 on `main` @ `eff06809`) builds `uri_to_slot` keyed by URI only, so the last slot with that URI wins for all classes.
 - **Suggested fix:** resolve the predicate among the subject class's own slots (`class_induced_slots`).
+
+> **Environment:** linkml 1.12.1 (PyPI); also reproduced on 1.11.1 and on `main` @ `eff06809` (1.13.0.dev0).
 
 ---
 
 ### U2 — An attribute with the same name as a global slot breaks RDF loading
+
+**Meldt:** [linkml/linkml#4286](https://github.com/linkml/linkml/issues/4286) (2026-11-26).
 
 *Dekkjer BUG-3 (`fint-administrasjon`, `fint-okonomi`, `fint-personvern`, `fint-utdanning`, `samt-bu`).*
 
@@ -194,12 +200,16 @@ linkml-convert -s schema.yaml -o back.yaml out.ttl    # fails
 
 - **Expected:** `back.yaml` equals `data.yaml`.
 - **Actual:** `MappingError: No pred for https://example.org/items`
-- **Cause:** `rdflib_loader.py:99` builds the predicate map from `all_slots()`, which is keyed by name, so the global slot hides the attribute. The dumper uses `induced_slot(name, class)`.
+- **Cause:** `rdflib_loader.py:99` (line 101 on `main` @ `eff06809`) builds the predicate map from `all_slots()`, which is keyed by name, so the global slot hides the attribute. The dumper uses `induced_slot(name, class)`.
 - **Suggested fix:** use `induced_slot` per class in the loader, like the dumper. Likely the same fix as U1.
+
+> **Environment:** linkml 1.12.1 (PyPI); also reproduced on 1.11.1 and on `main` @ `eff06809` (1.13.0.dev0).
 
 ---
 
 ### U3 — Custom `xsd:dateTime` type loses the `T` on RDF load
+
+**Meldt:** [linkml/linkml#4287](https://github.com/linkml/linkml/issues/4287) (2026-11-26).
 
 *Dekkjer BUG-19 (`enhetsregisteret-bvrinnfelles`, `enhetsregisteret-bvrfriv`).*
 
@@ -232,47 +242,16 @@ linkml-convert -s schema.yaml -o back.yaml out.ttl
 
 - **Expected:** `timestamp: '2024-01-01T10:30:00'`
 - **Actual:** `timestamp: '2024-01-01 10:30:00'`
-- **Cause:** `rdflib_loader.py:148` uses `o.value` (a Python `datetime`), which is later turned into a string with `str()`.
+- **Cause:** `rdflib_loader.py:148` (line 270 on `main` @ `eff06809`) uses `o.value` (a Python `datetime`), which is later turned into a string with `str()`.
 - **Suggested fix:** use the lexical form `str(o)` when the type's base is `str`.
 
----
-
-### U4 — (valfri) Full URI comes back as a CURIE after RDF round-trip
-
-*Dekkjer BUG-18. Begge formene er gyldige `uriorcurie`, så meld som forbetringsframlegg, ikkje bug.*
-
-**Title:** `RDFLibLoader`: identifier written as a full URI is returned as a CURIE
-
-```yaml
-id: https://example.org/s
-name: s
-prefixes: {linkml: https://w3id.org/linkml/, ex: https://example.org/}
-default_prefix: ex
-default_range: string
-imports: [linkml:types]
-classes:
-  Thing:
-    attributes:
-      id: {identifier: true, range: uriorcurie}
-  Container:
-    tree_root: true
-    attributes:
-      things: {range: Thing, multivalued: true, inlined_as_list: true}
-```
-
-```sh
-echo '{things: [{id: "https://example.org/thing1"}]}' > data.yaml
-linkml-convert -s schema.yaml -o out.ttl data.yaml
-linkml-convert -s schema.yaml -o back.yaml out.ttl
-```
-
-- **Expected:** `id: https://example.org/thing1`
-- **Actual:** `id: ex:thing1`
-- **Suggestion:** a loader option to keep full URIs, or document that round-trips are only equal up to CURIE contraction.
+> **Environment:** linkml 1.12.1 (PyPI); also reproduced on 1.11.1 and on `main` @ `eff06809` (1.13.0.dev0).
 
 ---
 
 ### U5 — `rdf:langString` values are written as invalid RDF and silently lost
+
+**Meldt:** [linkml/linkml#4288](https://github.com/linkml/linkml/issues/4288) (2026-11-26).
 
 *Dekkjer BUG-1 (LangString). Relatert til [#3548](https://github.com/linkml/linkml/issues/3548).*
 
@@ -307,9 +286,13 @@ linkml-convert -s schema.yaml -o back.yaml out.ttl    # title is gone
 - **Actual:** `back.yaml` is `{id: ex:c1}`.
 - **Cause:** the dumper writes `Literal(value, datatype=rdf:langString)`; the loader's `o.value` is `None` for that literal, and `None` is dropped.
 
+> **Environment:** linkml 1.12.1 (PyPI); also reproduced on 1.11.1 and on `main` @ `eff06809` (1.13.0.dev0).
+
 ---
 
 ### U6 — Re-declaring an imported class: some generators crash, others silently drop slots
+
+**Meldt:** [linkml/linkml#4289](https://github.com/linkml/linkml/issues/4289) (2026-11-26).
 
 *Dekkjer BUG-6. [#417](https://github.com/linkml/linkml/issues/417) avviste union-semantikk; dette gjeld **inkonsistensen**.*
 
@@ -354,9 +337,13 @@ classes:
 - **Expected:** the same behaviour in all generators — ideally a clear error (also in `linkml lint`).
 - **Note:** `679eba10` on `main` only merges *identical* duplicates; this case still fails.
 
+> **Environment:** linkml 1.12.1 (PyPI); also reproduced on 1.11.1 and on `main` @ `eff06809` (1.13.0.dev0).
+
 ---
 
 ### U7 — `gen-doc` Mermaid diagrams: broken links `../http://…` for built-in types
+
+**Meldt:** [linkml/linkml#4290](https://github.com/linkml/linkml/issues/4290) (2026-11-26).
 
 *Dekkjer BUG-13.*
 
@@ -384,12 +371,16 @@ grep click docs/Person.md
 - **Actual:** `click Uri href "../http://www.w3.org/2001/XMLSchema#anyURI/"`
 - **Cause (two parts):**
   1. The template's type filter uses `all_type_object_names()`, which ignores imported types when `render_imports` is off, so `uri` is drawn as a class.
-  2. `link_mermaid()` (`docgen.py:458-471`) always returns `f"../{link}/"`, even for absolute URLs.
+  2. `link_mermaid()` (`docgen.py:458-471`; unchanged on `main` @ `eff06809`) always returns `f"../{link}/"`, even for absolute URLs.
 - **Suggested fix:** return absolute URLs unchanged in `link_mermaid()`, and/or include imported types in the filter.
+
+> **Environment:** linkml 1.12.1 (PyPI); also reproduced on 1.11.1 and on `main` @ `eff06809` (1.13.0.dev0).
 
 ---
 
 ### U8 — `gen-rdf` fails with 404 for schemas that import a schema by URL
+
+**Meldt:** [linkml/linkml#4291](https://github.com/linkml/linkml/issues/4291) (2026-11-26).
 
 *Dekkjer BUG-17 (URL-varianten; lokale importar er fiksa i [#3641](https://github.com/linkml/linkml/pull/3641)).*
 
@@ -428,8 +419,10 @@ gen-rdf schema.yaml
 
 - **Expected:** RDF output. The imported schema is already loaded, so no extra files should be needed.
 - **Actual:** the server log shows `GET /schemas/leaf.context.jsonld`, and `gen-rdf` fails with `HTTP Error 404`.
-- **Cause:** `jsonldgen.py:211` (1.12.1; line 205 in 1.11.1) adds `<import> + ".context.jsonld"` to `@context` for every import; rdflib then downloads it. #3641 only filters out local imports.
+- **Cause:** `jsonldgen.py:211` (1.12.1; line 205 in 1.11.1; line 226 on `main` @ `eff06809`) adds `<import> + ".context.jsonld"` to `@context` for every import; rdflib then downloads it. #3641 only filters out local imports.
 - **Suggested fix:** build the context in memory for all imports, or skip remote contexts that can't be fetched.
+
+> **Environment:** linkml 1.12.1 (PyPI); also reproduced on 1.11.1 and on `main` @ `eff06809` (1.13.0.dev0).
 
 ## Re-verifisering mot 1.12.1
 
@@ -442,7 +435,6 @@ Repoet brukar 1.12.1 sidan 2026-11-06 (`specs/done/oppgrader-linkml-1-12-1.md`).
 | U1 | `TypeError: Catalog.__init__() got an unexpected keyword argument 'title_literal'` | Ingen |
 | U2 | `MappingError: No pred for https://example.org/items` | Ingen |
 | U3 | `timestamp: '2024-01-01 10:30:00'` | Ingen |
-| U4 | `id: ex:thing1` | Ingen |
 | U5 | `back.yaml` = `{id: ex:c1}` (tittelen er borte) | Ingen |
 | U6 | `gen-python`/`gen-rdf`/`gen-jsonld-context` feilar med `Conflicting URIs`; `gen-json-schema` gir `Standard` med berre `extra` | Ingen |
 | U7 | `click Uri href "../http://www.w3.org/2001/XMLSchema#anyURI/"` | Ingen |
@@ -455,9 +447,78 @@ Ikkje re-verifisert 2026-11-18: BUG-17 (lokal-import-varianten), BUG-20 (ikkje
 reproduserbar frå før) og `main` etter `5ef7622e`. Sjekk `main` før U1-U8 vert
 meldte, slik at ingen av dei alt er fiksa.
 
+## Meldte issues
+
+Brukaren meldte U1-U3 og U5-U8 i `linkml/linkml` 2026-11-26. Rekkjefølgje og titlar er stadfesta mot GitHub (alle opne same dag, ingen kommentarar sett). U4 vart ikkje meldt (sletta).
+
+| Rapport | Issue | Dekkjer | Tittel |
+|---|---|---|---|
+| U1 | [#4285](https://github.com/linkml/linkml/issues/4285) | BUG-1/BUG-2 | `RDFLibLoader`: two slots with the same `slot_uri` → `TypeError: unexpected keyword argument` |
+| U2 | [#4286](https://github.com/linkml/linkml/issues/4286) | BUG-3 | `RDFLibLoader`: `MappingError: No pred for …` when an attribute has the same name as a global slot |
+| U3 | [#4287](https://github.com/linkml/linkml/issues/4287) | BUG-19 | `RDFLibLoader`: custom type `uri: xsd:dateTime, base: str` turns `2024-01-01T10:30:00` into `2024-01-01 10:30:00` |
+| U5 | [#4288](https://github.com/linkml/linkml/issues/4288) | BUG-1 (LangString) | Type with `uri: rdf:langString` writes `"x"^^rdf:langString` (invalid RDF) and the loader silently drops it |
+| U6 | [#4289](https://github.com/linkml/linkml/issues/4289) | BUG-6 | Class re-declared in an importing schema: `gen-python` raises, `gen-json-schema` silently drops the imported slots |
+| U7 | [#4290](https://github.com/linkml/linkml/issues/4290) | BUG-13 | `gen-doc --no-render-imports`: Mermaid `click` links for `linkml:types` become `"../http://www.w3.org/2001/XMLSchema#anyURI/"` |
+| U8 | [#4291](https://github.com/linkml/linkml/issues/4291) | BUG-17 (URL) | `gen-rdf` downloads `<import-url>.context.jsonld` and fails with HTTP 404 |
+
+**Oppfølging (opne punkt):**
+
+- ~~Legg issue-lenkjene inn i `bugs/*.md` og `BUGS.md`~~ — gjort 2026-11-26 (BUG-1, -2, -3, -6, -13, -17, -19: `**Upstream:**`-linje i bug-fila, oppdatert prosa, lenkjer i `BUGS.md` PoC-status; BUG-24 fekk #3896/#3933 i `BUGS.md`). Statusar uendra.
+- #4285 og #4286 har truleg same fiks (ein `induced_slot` per klasse i `rdflib_loader`); følg med om utviklarane slår dei saman.
+- Følg med på #3896/#3933 (BUG-24) og #2506 (BUG-8); ikkje meldte på nytt.
+- Når linkml 1.13.0 kjem: køyr MRE-ane og `make roundtrip`/`make test` før oppgradering, og fjern workarounds som er fiksa.
+
+## Re-analyse mot issue-trackaren (2026-11-26)
+
+Berre tracker- og kjeldesøk (GitHub API og `raw.githubusercontent.com`); **ingen
+MRE-ar er køyrde på nytt.** «Status» under er difor `main`-kjelda lesen, ikkje
+verifisert ved køyring. Utgangspunkt: siste release er framleis **1.12.1**
+(2026-10-13, ingen nyare på PyPI); `main` er `eff06809` (2026-11-25), 101 commits
+framføre `v1.12.1`, og er det som vert 1.13.0 (deprecation-meldingar i `main`
+nemner 1.13.0).
+
+### Status for kjende lenkjer
+
+| Lenkje | Status 2026-11-26 | Endring sidan 2026-11-18 |
+|---|---|---|
+| [#3896](https://github.com/linkml/linkml/issues/3896), [#3933](https://github.com/linkml/linkml/issues/3933) (BUG-24) | Opne, 0 kommentarar, sist oppdatert 2026-08/09 | Ingen |
+| [#3855](https://github.com/linkml/linkml/pull/3855) (BUG-15), [#3641](https://github.com/linkml/linkml/pull/3641) (BUG-17 lokal) | Lukka/fletta | Ingen |
+| [#2506](https://github.com/linkml/linkml/issues/2506), [#2107](https://github.com/linkml/linkml/issues/2107), [#2399](https://github.com/linkml/linkml/issues/2399) (BUG-8) | Opne, ikkje rørte sidan 2025 | Ingen |
+| [#3663](https://github.com/linkml/linkml/issues/3663) (BUG-8) | Open, 3 kommentarar, oppdatert 2026-10-14 | Ingen nye |
+| [#3548](https://github.com/linkml/linkml/issues/3548) (U5) | Open, 1 kommentar | Ingen |
+| [#417](https://github.com/linkml/linkml/issues/417) (U6) | Lukka `not_planned` 2023 | Ingen |
+
+### Status per rapport (kjeldelesing av `main`)
+
+| Rapport | Status på `main` | Grunnlag | Tilråding |
+|---|---|---|---|
+| U1 | **Framleis til stades (køyrt 2026-11-26)** | MRE gir same `TypeError: Catalog.__init__() got an unexpected keyword argument 'title_literal'` på `main @ eff06809` og 1.12.1. Årsak: `rdflib_loader.py:101` byggjer `uri_to_slot` frå `schemaview.all_slots()` (nøkkel URI, siste slot vinn) | Meld (ingen eksisterande issue funne) |
+| U2 | **Framleis til stades (køyrt 2026-11-26)** | MRE gir same `MappingError: No pred for https://example.org/items` på `main` og 1.12.1. Same linje; `induced_slot(uri_to_slot[p].name, …)` på linje 139 slår opp den globale sloten sitt navn | Meld saman med eller som oppfølgjar til U1 |
+| U3 | **Framleis til stades (køyrt 2026-11-26)** | MRE gir `timestamp: '2024-01-01 10:30:00'` på `main @ eff06809` (1.13.0.dev0), same som 1.12.1. TTL er riktig (`"2024-01-01T10:30:00"^^xsd:dateTime`); feilen er i lastaren (`rdflib_loader.py:270`, `o.value`) | Meld |
+| U4 | **Sletta frå lista (2026-11-26).** Reproduserer (`id: ex:thing1` også på `main`), men åtferda er tilsikta | [#4156](https://github.com/linkml/linkml/pull/4156) (fletta 2026-10-30, ikkje utgjeven): «the loader … keeps `uri` values complete, compacts `uriorcurie` values to CURIEs». Åtferda vi melde som avvik er no uttrykkeleg spesifisert | Ikkje meld |
+| U5 | **Framleis til stades (køyrt 2026-11-26)** | MRE gir framleis `ex:title "My catalog"^^rdf:langString` og `back.yaml` = `{id: ex:c1}` på `main @ eff06809`, same som 1.12.1. I tillegg skriv dumperen `RDFCanonicalizationWarning: Graph contains non-standard RDF … pyoxigraph cannot parse` (også i 1.12.1, ikkje nemnd i rapporten tidlegare). [#3449](https://github.com/linkml/linkml/pull/3449) (`--default-language`, fletta 2026-06, i 1.12.x) gjeld berre språktagg på annotasjonar i `gen-owl`/`gen-shacl`, ikkje data. #3548 er framleis open | Meld med referanse til #3548 og #3449; ta med åtvaringa som ekstra bevis på ugyldig RDF |
+| U6 | **Framleis til stades (køyrt 2026-11-26)** | Uendra på `main` og 1.12.1: `gen-python`/`gen-rdf`/`gen-jsonld-context` gir `ValueError: Conflicting URIs`; `gen-pydantic`/`gen-json-schema`/`gen-shacl`/`gen-owl` lukkast, `Standard` har berre `extra`. `mergeutils.py` er uendra sidan 2026-09-20; ingen issue funne (søk på «Conflicting URIs», «redeclare») | Meld |
+| U7 | **Framleis til stades (køyrt 2026-11-26)** | Same `click Uri href "../http://www.w3.org/2001/XMLSchema#anyURI/"` på `main` og 1.12.1. `docgen.py:471` returnerer framleis `f"../{link}/"` og fila er uendra sidan 2026-09-20. Relatert, open og uaktiv sidan 2026-04: [#2550](https://github.com/linkml/linkml/pull/2550) (PR, «class diagram links … should not go up the parent directory») | Meld; referer til #2550 |
+| U8 | **Framleis til stades (køyrt 2026-11-26)** | Same `HTTP Error 404` på `main` og 1.12.1; serverlogg viser `GET /schemas/leaf.context.jsonld 404`. `jsonldgen.py:226` legg framleis til `<import>.context.jsonld` for alle importar. Treff i søket ([#2602](https://github.com/linkml/linkml/pull/2602), [#3897](https://github.com/linkml/linkml/pull/3897), #1965) gjeld ikkje denne feilen | Meld |
+
+### Nye funn
+
+- **[#4164](https://github.com/linkml/linkml/issues/4164)** (open, 2026-10-22): relative importar vert løyste mot CWD når ein generator får eit `SchemaDefinition`-objekt. Nærskyld BUG-15/BUG-17 (relative importar), men eit anna kodested (`Generator`, ikkje `SchemaView`). Ingen eigen bug hos oss; følg med.
+- **Nye endringar i RDF-kodebanen på `main`** (ikkje i 1.12.1): #4156 (felles `rdf_terms.type_term` for `gen-owl`/`gen-shacl`/`gen-shex`/`gen-jsonld-context`/dumper/loader), `9a0c8371` (dumper avviser relative IRI-verdiar) og `df320116` (`rdf:List` for ordna fleirverdi-slots). Dei kan endre oppførselen i `batch-convert.py`/roundtrip-testane våre når 1.13.0 kjem, uavhengig av U1-U8.
+- **Image:** `localhost/linkml-main:eff06809` (`python:3.12-slim`, `pip install` av `packages/linkml_runtime` og `packages/linkml` frå tarball av `eff06809`, med `UV_DYNAMIC_VERSIONING_BYPASS=1.13.0.dev0` fordi tarballen manglar git-versjon). Køyrt saman med `linkml-vanilla:1.12.1` som kontroll.
+- **Ingen nye upstream-issues** for U1, U2, U3, U5, U6, U8 (søk 2026-11-26 på `slot_uri`, `No pred for`, `langString`, `Conflicting URIs`, `context.jsonld`, `link_mermaid`, `datetime`).
+
+### Konsekvens
+
+1. **Meld U1, U2, U6, U7, U8 no** — reproduserte på `main @ eff06809` og 1.12.1, rotårsaka stadfesta i kjelda, og ingen eksisterande issue dekkjer dei.
+2. **U3 og U5 er køyrde mot `main`** (`localhost/linkml-main:eff06809`, 2026-11-26) og reproduserer uendra; meld dei òg.
+3. **U4 er sletta** (tilsikta åtferd i #4156).
+4. **Oppdater miljølinja** i rapportane til `linkml 1.12.1 (PyPI); also reproduced on 1.11.1 and on main @ eff06809 (1.13.0.dev0)`. Alle U1-U3 og U5-U8 er køyrde mot `main @ eff06809` og reproduserer.
+5. **Plan for 1.13.0:** når han kjem, køyr full `make roundtrip`/`make test` før oppgradering; #4156 og `df320116` endrar RDF-serialiseringa.
+
 ## Tilrådingar
 
-1. **Meld U1, U2, U3, U7, U8, U6, U5** i [linkml/linkml](https://github.com/linkml/linkml/issues/new) (ikkje det arkiverte `linkml-runtime`). U4 er valfri (spørsmål/forbetring). Rapporttekstane over kan limast inn direkte.
+1. **(Gjort 2026-11-26, sjå § Meldte issues)** Meld U1, U2, U3, U7, U8, U6, U5 i [linkml/linkml](https://github.com/linkml/linkml/issues/new) (ikkje det arkiverte `linkml-runtime`). Rapporttekstane over kan limast inn direkte.
 2. **Ikkje meld** BUG-24 (dekt av #3896/#3933), BUG-7 og BUG-15 (fiksa på `main`), BUG-8 (bruksfeil; relaterte issues finst). Legg eventuelt ein kommentar på #2506 om `range: string`-designatoren (`KeyError` i `rdflib_loader.py:118`).
 3. **Oppdater bug-filene** (eiga oppgåve):
    - BUG-1: rett rotårsak til delt `slot_uri` (U1); skil ut LangString-delen (U5).
@@ -476,12 +537,14 @@ meldte, slik at ingen av dei alt er fiksa.
 - **Re-verifisering mot 1.12.1 (2026-11-18, brukarønske):** specen var skriven mot 1.11.1 medan repoet sidan 2026-11-06 brukar 1.12.1. Berre MRE-ane frå specen er køyrde på nytt, i eit patchfritt `linkml-vanilla:1.12.1`-image bygd i scratchpad (feilsøkingsunntaket i CLAUDE.md gjeld framleis: syntetiske MRE-ar har ingen Makefile-target). Resultat i § Re-verifisering mot 1.12.1.
 - **Berre BUG-7 er endra av oppgraderinga.** Rapporttekstane U1-U8 er behaldne, med oppdatert versjon i miljølinja og radnummer for U8. `bugs/*.md` og `BUGS.md` er ikkje endra: BUG-7 står framleis som `workaround`, og status vert først endra etter at `make roundtrip`/`make test` på dei råka skjemaa er køyrt utan workarounden.
 
+- **Innmelding (2026-11-26):** brukaren oppretta sjølv #4285-#4291 (U1, U2, U3, U5, U6, U7, U8) på GitHub; eg har ikkje publisert noko (ingen `gh`/token). Kopla titlar til rapportar via GitHub API (lesing). Specen vert verande i `specs/backlog/` til bug-filene er oppdaterte med lenkjene.
+- **Re-analyse mot issue-trackaren (2026-11-26, brukarønske):** berre søk (GitHub API utan innlogging, `raw.githubusercontent.com`) og lesing av `main`-kjelda; ingen MRE-køyringar, ingen nye issues eller kommentarar upstream, `bugs/`/`BUGS.md` urørte. Funn: U4 vert foreslått sletta fordi #4156 gjer åtferda tilsikta. **U3 og U5, og deretter resten (U1, U2, U4, U6, U7, U8), vart køyrde etterpå mot `main @ eff06809` (nytt image, sjå § Testoppsett); begge reproduserer uendra** (direkte `podman build`/`podman run` er feilsøkingsunntaket i CLAUDE.md; sandkassen måtte slåast av for å nå podman).
 - **Specen vert verande i `specs/backlog/`:** leveransen er kartlegginga og rapporttekstane; sjølve innmeldinga upstream og oppdatering av bug-filene er att som opne punkt.
 - **Bug-filene og `BUGS.md` er ikkje endra:** brukaren bad om verifisering og dokumentasjon i `specs/`. Korrigerte rotårsaker er lista under § Tilrådingar i staden for å endre fleire filer utan avklaring.
 - **Direkte `linkml-convert`/`gen-*`/`podman run` i staden for Makefile-targets for MRE-ar:** feilsøkingsunntaket i CLAUDE.md. Syntetiske MRE-ar har ingen Makefile-target, og `make roundtrip` respekterer skip-lista, så han kan ikkje avsløre om skippa bugs framleis finst. For repo-skjema vart `batch-convert.py` køyrd utan skip, med same argumentform som testane; `make gen-schema-docs` vart brukt for BUG-13/20.
 - **Tre image (`linkml-local`, vanilla 1.11.1, `main`):** upstream-rapportar må vere fri for lokale patchar (`docgen-max-chars.patch`) og må vise om feilen finst på `main`.
 - **Upstream-rapportane er på engelsk:** målgruppa er LinkML-utviklarane. Resten av specen er på nynorsk, jf. skriftspråkregelen.
-- **U4 (BUG-18) er merkt valfri:** begge representasjonane er gyldige `uriorcurie`; upstream kan rimeleg sjå det som tilsikta åtferd.
+- **U4 (BUG-18) er sletta frå lista (2026-11-26, brukarønske):** begge representasjonane er gyldige `uriorcurie`, og [#4156](https://github.com/linkml/linkml/pull/4156) (på `main`, ikkje utgjeven) gjer åtferda uttrykkeleg tilsikta («compacts `uriorcurie` values to CURIEs»). U4-rapporten er fjerna; nummera U5-U8 er behaldne for å ikkje bryte referansar. BUG-18 står framleis som `workaround` i `bugs/`.
 - **BUG-9 og BUG-14 er ikkje re-verifiserte:** dei gjeld avrotize og mermaid, ikkje LinkML, og fell utanfor målet om upstream-rapportar for LinkML.
 - **BUG-1 behalde som LangString-bug, krasjane flytta til BUG-2:** BUG-1 er referert som «LangString» i mkdocs, policy-README og fleire specs, og den skildringa er framleis sann (U5). BUG-2 fekk den korrigerte rotårsaka (delt `slot_uri`) og dekkjer no både NGR og dei sju katalogskjemaa. Dette oppfyller samanslåingskravet i `.claude/rules/bug-diagnostisering.md` utan å omnummerere.
 - **Filnavnet `bugs/inlined-as-list-rdflib-roundtrip.md` er behalde** sjølv om det no er misvisande, for å ikkje bryte lenkjer i `tests/README.md`, `.claude/rules/linkml-schema.md` og fleire specs. Fila har ein merknad om dette.

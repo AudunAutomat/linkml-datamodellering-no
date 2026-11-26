@@ -4,6 +4,7 @@
 **Status:** `workaround`
 **Komponent:** `linkml` (generator-inkonsistens mellom SchemaLoader og SchemaView)
 **Oppdaga:** 2026-06-20
+**Upstream:** [linkml/linkml#4289](https://github.com/linkml/linkml/issues/4289) (meldt 2026-11-26 — gjeld inkonsistensen mellom generatorane, ikkje union-semantikk)
 
 ## Symptom
 
@@ -101,5 +102,5 @@ som legg til slots.
 Union-semantikk vart avvist upstream i
 [linkml/linkml#417](https://github.com/linkml/linkml/issues/417). Den
 **inkonsistente** handteringa mellom generatorane (krasj vs. stille tap av
-identifikator-slot) er ikkje meldt og bør meldast — sjå `specs/backlog/upstream-linkml-bugrapportar.md` § U6.
+identifikator-slot) er meldt som [linkml/linkml#4289](https://github.com/linkml/linkml/issues/4289) (2026-11-26; reprodusert òg på 1.12.1 og `main @ eff06809`) — sjå `specs/backlog/upstream-linkml-bugrapportar.md` § U6.
 Workaround-regelen (ikkje redeklarer importerte klasser) står ved lag.

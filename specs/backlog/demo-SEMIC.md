@@ -444,7 +444,7 @@ Ny hovudoverskrift (pikselfont som dei andre aktane), rett etter «One slot, six
    (`rdflib_loader`). Dei fyrste linjene av `konferanseprogram.ttl` vert viste: `dct:title`, `foaf:name`,
    `dct:BibliographicResource`.
 
-Alle tre appane skriv ut same linje, `One source of truth (20 min) - Audun Vindenes Egge @ SEMIC 2026`.
+Alle tre appane skriv ut same linje, `The Right Tool Is More Than Half the Job (20 min) - Audun Vindenes Egge @ SEMIC 2026`.
 Poenget er at éi modell gjer same data lesbare frå tre formater. Appane køyrer i `linkml-local` og
 fungerer som portalens «Using Python»-snippet (`yaml_loader.load`, `target_class=`), men lastar
 containerklassen. Detaljar og avvik frå snippeten står i § Avgjerder («Python-app i akt 3»).
@@ -710,7 +710,7 @@ Funn under scriptarbeidet:
 - **`gen-owl` skriv ca. 20 linjer deprecation-åtvaringar** frå linkml til skjermen.
   Scriptet filtrerer dei (`make_quiet_deprecations`) og viser heile utskrifta dersom make
   feilar.
-- **Layer 3b gir med vilje exit 1.** `run_shacl_expect_violation` viser rapporten og ei
+- **Siste SHACL-steg («SHACL reports the violation …») gir med vilje exit 1.** `run_shacl_expect_violation` viser rapporten og ei
   grøn forklaring, ikkje «step failed».
 - **Diffheader:** `git diff --no-index` viser temp-stien til før-fila. Scriptet viser berre
   hunkane med ein rein overskrift.

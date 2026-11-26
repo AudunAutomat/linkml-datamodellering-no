@@ -4,6 +4,7 @@
 **Status:** `upstream`
 **Komponent:** `linkml-runtime` (`linkml_runtime/loaders/rdflib_loader.py`, `uri_to_slot`)
 **Oppdaga:** 2026-06-09 (rotårsak stadfesta 2026-09-26)
+**Upstream:** [linkml/linkml#4286](https://github.com/linkml/linkml/issues/4286) (meldt 2026-11-26)
 
 ## Symptom
 
@@ -45,8 +46,8 @@ sv.get_uri(sv.induced_slot('items', 'Container'), expand=True)  # https://exampl
 ```
 
 Minimal reproduksjon i `specs/backlog/upstream-linkml-bugrapportar.md` § U2.
-Reprodusert på `linkml` 1.11.1 og `main @ 5ef7622e`. Ingen eksisterande
-upstream-issue funnen (2026-09-26).
+Reprodusert på `linkml` 1.11.1, 1.12.1 og `main @ eff06809` (2026-11-26).
+Ingen eksisterande upstream-issue funnen; meldt som [#4286](https://github.com/linkml/linkml/issues/4286) 2026-11-26.
 
 Den tidlegare hypotesen (manglande `slot_uri` på vanlege slots) var feil.
 `fint-arkiv` og `fint-ressurs` passerer fordi containerattributta deira ikkje
@@ -65,8 +66,8 @@ Skip i `tests/test_make.sh` (sjå over). Ingen workaround i sjølve lastinga. Mo
 ## Løysing
 
 Upstream-fiks i `rdflib_loader`: slå opp predikat via `induced_slot` per
-subjektklasse, same som dumparen. Truleg same fiks som BUG-2 (U1). Må
-meldast i [linkml/linkml](https://github.com/linkml/linkml/issues) — sjå U2.
+subjektklasse, same som dumparen. Truleg same fiks som BUG-2 (U1). Meldt
+i [linkml/linkml#4286](https://github.com/linkml/linkml/issues/4286) — sjå U2.
 
 Når upstream-fix er på plass: fjern skip-vilkåret for skjemaa over i `tests/test_make.sh`, verifiser
 `make roundtrip` og oppdater denne fila til `Status: løyst`.

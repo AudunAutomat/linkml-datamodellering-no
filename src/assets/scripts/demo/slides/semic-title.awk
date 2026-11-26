@@ -1,6 +1,7 @@
 # Tittelslide (slide 2): se semic-title.sh. Brukar funksjonar frå semic-canvas.awk.
 # Krev -v TITLE=<tekst> (vert gjort om til store bokstavar). Valfri -v BYLINE=<tekst>
-# vert vist som vanleg tekst rett under tittelen.
+# vert vist som vanleg tekst rett under tittelen. Valfri -v SUBTITLE=<tekst> står
+# i same skriftstorleik mellom tittel og BYLINE.
 BEGIN {
     init_canvas()
     init_fonts()
@@ -49,9 +50,13 @@ BEGIN {
         w = px3_width(lines[i])
         px3_text(ty + (i - 1) * 4, int((W - w) / 2), lines[i], 231)
     }
+    by = ty + totalh + 2
+    if (SUBTITLE != "") {
+        text(by, int((W - length(SUBTITLE)) / 2), SUBTITLE, 250)
+        by += 2
+    }
     if (BYLINE != "") {
-        bx = int((W - length(BYLINE)) / 2)
-        text(ty + totalh + 2, bx, BYLINE, 250)
+        text(by, int((W - length(BYLINE)) / 2), BYLINE, 250)
     }
     flush()
 }

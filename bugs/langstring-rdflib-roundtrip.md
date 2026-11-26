@@ -4,6 +4,7 @@
 **Status:** `upstream`
 **Komponent:** `linkml-runtime` (`rdflib_dumper` / `rdflib_loader`)
 **Oppdaga:** 2026-06-09 (rotårsak retta 2026-09-26)
+**Upstream:** [linkml/linkml#4288](https://github.com/linkml/linkml/issues/4288) (meldt 2026-11-26; relatert: [#3548](https://github.com/linkml/linkml/issues/3548))
 
 ## Symptom
 
@@ -45,7 +46,7 @@ ingen mekanisme for dette ([linkml/linkml#3548](https://github.com/linkml/linkml
 
 Minimal reproduksjon (éin klasse, éin `LangString`-slot) i
 `specs/backlog/upstream-linkml-bugrapportar.md` § U5. Reprodusert på
-`linkml` 1.11.1 og `main @ 5ef7622e`.
+`linkml` 1.11.1, 1.12.1 og `main @ eff06809` (2026-11-26). Meldt som [#4288](https://github.com/linkml/linkml/issues/4288).
 
 ## Workaround
 
@@ -68,8 +69,8 @@ handheve kravet.
 ## Løysing
 
 Upstream: lastaren skal ikkje droppe verdiar stilt, og dumparen skal ikkje
-skrive `^^rdf:langString` utan språktagg. Må meldast i
-[linkml/linkml](https://github.com/linkml/linkml/issues) (U5), med
+skrive `^^rdf:langString` utan språktagg. Meldt i
+[linkml/linkml#4288](https://github.com/linkml/linkml/issues/4288) (U5), med
 referanse til #3548.
 
 Når upstream-fix er på plass:

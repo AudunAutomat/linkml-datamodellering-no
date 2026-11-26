@@ -71,4 +71,4 @@ Reprodusert med minimal reproduksjon på `linkml` 1.11.1 og `main @ 5ef7622e`
 (`id: https://example.org/b18/thing1` → `id: ex:thing1`). Begge formene er
 gyldige `uriorcurie`, så upstream kan rimeleg sjå dette som tilsikta.
 Eventuell innmelding bør vere eit forbetringsframlegg (t.d. ein loader-opsjon
-som ikkje kontraherer URI-ar), ikkje ein bug — sjå `specs/backlog/upstream-linkml-bugrapportar.md` § U4.
+som ikkje kontraherer URI-ar), ikkje ein bug. Rapporten (tidlegare U4) er sletta 2026-11-26: linkml-PR #4156 på `main` gjer CURIE-kontraksjonen tilsikta (sjå `specs/backlog/upstream-linkml-bugrapportar.md` § Avgjerder).

@@ -16,7 +16,7 @@ Denne oversikta er skrive for tekniske brukarar og bidragsytarar. Dersom du berr
 Dette repoet er ein **Proof of Concept** og har fleire kjente avgrensingar:
 
 ### Validering og testing
-- **BUG-1, BUG-2, BUG-3, BUG-19**: Roundtrip-testing (YAML → TTL → YAML) fungerer ikkje for alle skjema pga. bugs i `linkml-runtime`
+- **BUG-1, BUG-2, BUG-3, BUG-19**: Roundtrip-testing (YAML → TTL → YAML) fungerer ikkje for alle skjema pga. bugs i `linkml-runtime` (meldt upstream: [#4288](https://github.com/linkml/linkml/issues/4288), [#4285](https://github.com/linkml/linkml/issues/4285), [#4286](https://github.com/linkml/linkml/issues/4286), [#4287](https://github.com/linkml/linkml/issues/4287))
 - Ingen automatisk validering mot eksterne API-ar (t.d. at Los-tema faktisk eksisterer)
 - Ingen automatisk sjekk for duplikate begrep eller modellar på tvers av katalogar
 
@@ -24,12 +24,12 @@ Dette repoet er ein **Proof of Concept** og har fleire kjente avgrensingar:
 - PlantUML-diagram vert ikkje genererte for skjema med meir enn 50 klasser (ytelsesproblem)
 - JSON Schema-generatoren støttar ikkje `union_of` med meir enn to typar
 - AsyncAPI-generering er eksperimentell og ikkje aktivert by default
-- **BUG-6, BUG-7**: Class/slot-override av importerte element krasjar eller korrumperer genererte artefakter
+- **BUG-6, BUG-7**: Class/slot-override av importerte element krasjar eller korrumperer genererte artefakter (BUG-6 meldt upstream: [#4289](https://github.com/linkml/linkml/issues/4289))
 - **BUG-9**: `gen-xsd` skriv ei ufarleg falsk "circular dependency"-åtvaring for containerklasser (reint støy, påverkar ikkje utdata)
-- **BUG-13**: `gen-doc` sitt mermaid-klassediagram limer `../` framanfor eksterne XSD-lenkjer for importerte elementærtypar, og gjer dei broten
+- **BUG-13**: `gen-doc` sitt mermaid-klassediagram limer `../` framanfor eksterne XSD-lenkjer for importerte elementærtypar, og gjer dei broten ([#4290](https://github.com/linkml/linkml/issues/4290))
 - **BUG-14**: Mermaid sin `classDiagram` støttar berre eitt `click`-mål per klasseboks — attributt-rader i diagrammet peikar difor alltid til klassa sjølv, ikkje til sloten
-- **BUG-17**: `gen-rdf` fetchar `<import>.context.jsonld` over nettverk for versjonslåste URL-importar og feilar med 404 — slike skjema vert automatisk hoppa over for rdf-generering
-- **BUG-24**: `SchemaView.namespaces()` bufrar prefiks-kartet før importane er lasta — CURIE-ar med prefiks frå importerte skjema vert ikkje ekspanderte (workaround i import-patchen)
+- **BUG-17**: `gen-rdf` fetchar `<import>.context.jsonld` over nettverk for versjonslåste URL-importar og feilar med 404 — slike skjema vert automatisk hoppa over for rdf-generering ([#4291](https://github.com/linkml/linkml/issues/4291))
+- **BUG-24**: `SchemaView.namespaces()` bufrar prefiks-kartet før importane er lasta — CURIE-ar med prefiks frå importerte skjema vert ikkje ekspanderte (workaround i import-patchen; upstream: [#3896](https://github.com/linkml/linkml/issues/3896), [#3933](https://github.com/linkml/linkml/issues/3933))
 - **BUG-25**: `gen-java` (linkml 1.12+) kan ikkje mappe eigendefinerte typar utan `typeof` (`LangString`, `GYear`, `Duration`, `NonNegativeInteger`) — workaround: lokal `javagen-custom-typemap.patch`
 
 ### Publisering
