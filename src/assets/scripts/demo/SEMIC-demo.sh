@@ -5,14 +5,16 @@
 # tittel og kommando, ventar på Enter, køyrer så kommandoen.
 #
 # Køyr FRÅ REPO-ROTA:
-#   bash src/assets/scripts/demo/SEMIC-demo.sh [QUICK=<true|false>] [PREPARE=<true|false>]
+#   bash src/assets/scripts/demo/SEMIC-demo.sh [TITLE=<true|false>] [QUICK=<true|false>] [PREPARE=<true|false>]
 #
+#   TITLE   — default: false. Ved "true" startar scriptet med forside, tittelslide og
+#             akt 0 (hook). Utan startar det rett på akt 1 («One source of truth»).
 #   QUICK   — default: false. Ved "true" hoppar scriptet over forside, tittel og akt 0-1
-#             (hook og visning av kjelda) og startar på akt 2. Til øving av
+#             (hook og visning av kjelda; går føre TITLE) og startar på akt 2. Til øving av
 #             kommandoane. Spørsmåls- og takkeslida på slutten vert alltid vist.
 #
 # Slidane (slides/*.sh, terminalgrafikk i stil med SEMIC 2026-malen): forside og tittel
-# først, hook i akt 0, og «Questions?» og «Thank you» (med QR-kodar) til slutt.
+# først, hook i akt 0 (berre med TITLE=true), og «Questions?» og «Thank you» (med QR-kodar) til slutt.
 #   PREPARE — default: false. Ved "true" genererer scriptet FØR demoklokka
 #             startar alt portalen treng (artefakter, valideringslogg,
 #             modellanalyse) og byggjer portalen (make docs-build, ca. 1 min).
@@ -37,10 +39,17 @@ set -uo pipefail
 
 DOMAIN="oreg"
 NAME="konferanseprogram"
+TITLE_SLIDES="false"   # TITLE=<true|false>; eige namn så han ikkje kolliderer med TITLE i slides/*.sh
 QUICK="false"
 PREPARE="false"
 for arg in "$@"; do
     case "$arg" in
+        TITLE=*)
+            TITLE_SLIDES="${arg#TITLE=}"
+            case "$TITLE_SLIDES" in true|false) ;; *)
+                echo "Feil: TITLE må vere 'true' eller 'false' (fekk '$TITLE_SLIDES')." >&2; exit 1 ;;
+            esac
+            ;;
         QUICK=*)
             QUICK="${arg#QUICK=}"
             case "$QUICK" in true|false) ;; *)
@@ -55,7 +64,7 @@ for arg in "$@"; do
             ;;
         *)
             echo "Feil: ukjent argument '$arg'." >&2
-            echo "Bruk: bash $0 [QUICK=<true|false>] [PREPARE=<true|false>]" >&2
+            echo "Bruk: bash $0 [TITLE=<true|false>] [QUICK=<true|false>] [PREPARE=<true|false>]" >&2
             exit 1
             ;;
     esac
@@ -536,19 +545,21 @@ run_similar_all()    { make analyse-similar-classes-all NAME="$NAME" | pretty_md
 # Demoen
 # ===========================================================================
 
-echo "${CLR_DBG}SCHEMA=${SCHEMA}  QUICK=${QUICK}  PREPARE=${PREPARE}${CLR_RST}"
+echo "${CLR_DBG}SCHEMA=${SCHEMA}  TITLE=${TITLE_SLIDES}  QUICK=${QUICK}  PREPARE=${PREPARE}${CLR_RST}"
 
 if [ "$QUICK" != "true" ]; then
-    # ---- Forside og tittel (slide 1 og 2 i SEMIC-malen) ----
-    show_slide semic-cover
-    prompt_enter
-    show_slide semic-title
-    prompt_enter
+    if [ "$TITLE_SLIDES" = "true" ]; then
+        # ---- Forside og tittel (slide 1 og 2 i SEMIC-malen) ----
+        show_slide semic-cover
+        prompt_enter
+        show_slide semic-title
+        prompt_enter
 
-    # ---- Akt 0: hook (ingen kommando) ----
-    act "0. The problem"
-    show_slide hook
-    prompt_enter
+        # ---- Akt 0: hook (ingen kommando) ----
+        act "0. The problem"
+        show_slide hook
+        prompt_enter
+    fi
 
     # ---- Akt 1: kjelda ----
     act "1. One source of truth"
