@@ -389,25 +389,6 @@ show_excerpt() {
     less -R -X -N "+${start}g" "$SCHEMA"
 }
 
-# --- «éin slot, seks artefakter» ----------------------------------------------
-
-# show_hit ETIKETT FIL MØNSTER [LINJER-ETTER] — fyrste treff (fast streng).
-show_hit() {
-    local label="$1" file="$2" pattern="$3" after="${4:-0}"
-    echo "${CLR_OK}${label}${CLR_RST} ${CLR_DBG}${file}${CLR_RST}"
-    grep -n -F -m1 -A "$after" -- "$pattern" "$file" | sed 's/^/    /' \
-        || echo "${CLR_ERR}    (no match for: ${pattern})${CLR_RST}"
-}
-
-one_slot_six_artifacts() {
-    show_hit "YAML           " "$SCHEMA" "slot_uri: dct:title"
-    show_hit "OWL            " "$GEN_DIR/$NAME-ontology.ttl" "dct:title a owl:DatatypeProperty"
-    show_hit "SHACL          " "$GEN_DIR/$NAME-shapes.ttl" "sh:path dct:title"
-    show_hit "JSON-LD context" "$GEN_DIR/$NAME-context.jsonld" '"tittel": {' 1
-    show_hit "RDF (schema)   " "$GEN_DIR/$NAME-schema.ttl" 'linkml:slot_uri "http://purl.org/dc/terms/title"'
-    show_hit "JSON Schema    " "$GEN_DIR/$NAME-schema.json" '"tittel": {'
-}
-
 # --- akt 4: ny slot, generer på nytt, diff over artefakta ---------------------
 
 ARTIFACT_FILES="$NAME-shapes.ttl $NAME-context.jsonld $NAME-schema.json"
@@ -449,13 +430,13 @@ gen_named() {
     return 0
 }
 
-regenerate_four() {
+regenerate_three() {
     local t
     snapshot_artifacts
-    for t in gen-shacl gen-owl gen-jsonld-context gen-jsonschema; do
+    for t in gen-shacl gen-jsonld-context gen-jsonschema; do
         make_quiet_deprecations "$t" SCHEMA="$SCHEMA" || return 1
     done
-    for t in $ARTIFACT_FILES $NAME-ontology.ttl; do
+    for t in $ARTIFACT_FILES; do
         echo "${CLR_OK}Generated:${CLR_RST} $GEN_DIR/$t"
     done
 }
@@ -484,34 +465,22 @@ EOF
         "    slot_uri: ${NAME}:varighet"
 }
 
-# Siste SHACL-steget («SHACL reports the violation …») skal gi exit != 0 (det er poenget). Vis rapporten, og forklar at
-# brotet er forventa, i staden for den generelle "step failed"-meldinga.
-run_shacl_expect_violation() {
-    if make validate-shacl SCHEMA="$SCHEMA" DATA="$MODEL_DIR/examples/$NAME-ugyldig.ttl"; then
-        echo "${CLR_ERR}Uventa: SHACL godtok den ugyldige fila.${CLR_RST}" >&2
-        return 1
-    fi
-    echo "${CLR_OK}(violation reported, as expected — a non-zero exit code is what makes this usable in CI)${CLR_RST}"
-}
-
 run_validate() {
     make mcp-linkml-valider-modell SCHEMA="$SCHEMA" POLICY="$1" | to_less
 }
 run_validate_bronze()  { run_validate bronze; }
 run_validate_basis_no() { run_validate basis-no; }
 
-# --- Python-appar (portalens «Using Python»-snippet, køyrt for ekte) ----------
-# Tre appar mot same genererte klassar: YAML, JSON (konverterer og les JSON) og RDF
-# (konverterer og les Turtle). Alle skriv ut same linje.
+# --- Python-app (portalens «Using Python»-snippet, køyrt for ekte) -----------
+# Éi app mot dei genererte klassane: les same program frå YAML, JSON og RDF og skriv
+# ut same linje tre gonger (JSON- og Turtle-fila vert skrivne av appen sjølv, men ikkje viste).
 APP_DIR="$(cd "$(dirname "$0")" && pwd)/semweb-demo-app"
 
-# app_flow FORMAT — viser appkoden i less, køyrer appen og viser fila han skreiv (JSON/RDF).
-# FORMAT er yaml, json eller rdf (filnamn: konferanseprogram_app_<format>.py).
+# app_flow — viser appkoden i less og køyrer appen.
 app_flow() {
-    local fmt="$1" file args tmp rc written=""
-    file="$APP_DIR/konferanseprogram_app_${fmt}.py"
-    args="../$MODEL_DIR/examples/$NAME-eksempel.yaml"
-    [ "$fmt" = "rdf" ] && args="$args ../$SCHEMA"
+    local file args tmp rc
+    file="$APP_DIR/konferanseprogram_app.py"
+    args="../$MODEL_DIR/examples/$NAME-eksempel.yaml ../$SCHEMA"
     cat -n "$file" | to_less
     echo ""
     echo "\$ ${CLR_STEP}python${CLR_RST} ${CLR_WARN}$(basename "$file") $(printf '%s' "$args" | sed 's|\.\./||g')${CLR_RST}"
@@ -524,12 +493,6 @@ app_flow() {
             --user root --entrypoint python3 localhost/linkml-local:latest \
             "$(basename "$file")" $args < /dev/null
     rc=$?
-    case "$fmt" in json) written="$tmp/konferanseprogram.json" ;; rdf) written="$tmp/konferanseprogram.ttl" ;; esac
-    if [ -n "$written" ] && [ -f "$written" ]; then
-        echo ""
-        echo "${CLR_DBG}$(basename "$written") (first lines):${CLR_RST}"
-        sed -n '1,16p' "$written"
-    fi
     rm -rf "$tmp"
     return $rc
 }
@@ -575,32 +538,23 @@ step "RDF artifacts: OWL ontology" "$(disp "make gen-owl" "SCHEMA=$SCHEMA")" gen
 step "RDF artifacts: JSON-LD context" "$(disp "make gen-jsonld-context" "SCHEMA=$SCHEMA")" gen_named "$NAME-context.jsonld" make gen-jsonld-context SCHEMA="$SCHEMA"
 step "RDF artifacts: the schema itself as Turtle" "$(disp "make gen-rdf" "SCHEMA=$SCHEMA")" gen_named "$NAME-schema.ttl" make gen-rdf SCHEMA="$SCHEMA"
 step "For the developers: JSON Schema" "$(disp "make gen-jsonschema" "SCHEMA=$SCHEMA")" gen_named "$NAME-schema.json" make gen-jsonschema SCHEMA="$SCHEMA"
-step "One slot, six artifacts" \
-    "${CLR_STEP}grep${CLR_RST} dct:title ${CLR_WARN}<each generated file>${CLR_RST}" \
-    one_slot_six_artifacts
 
 # ---- Akt 3: lag ein app ----
 act "3. Create an app"
 step "Generate Python classes" "$(disp "make gen-python" "SCHEMA=$SCHEMA")" gen_named "$NAME-model.py" make gen-python SCHEMA="$SCHEMA"
 
-step "App 1: read the YAML data" \
-    "$(disp "python" "konferanseprogram_app_yaml.py $MODEL_DIR/examples/$NAME-eksempel.yaml")" \
-    app_flow yaml
-step "App 2: convert to JSON and read it" \
-    "$(disp "python" "konferanseprogram_app_json.py $MODEL_DIR/examples/$NAME-eksempel.yaml")" \
-    app_flow json
-step "App 3: convert to RDF and read it" \
-    "$(disp "python" "konferanseprogram_app_rdf.py $MODEL_DIR/examples/$NAME-eksempel.yaml $SCHEMA")" \
-    app_flow rdf
+step "One app, three data formats" \
+    "$(disp "python" "konferanseprogram_app.py $MODEL_DIR/examples/$NAME-eksempel.yaml $SCHEMA")" \
+    app_flow
 
 # ---- Akt 4: live-endring ----
 act "4. One edit"
 echo ""
 echo "${CLR_DBG}Add one slot (landingsside = dcat:landingPage) to the source file:${CLR_RST}"
 edit_and_diff insert_landingsside
-step "Regenerate four artifacts" \
-    "$(disp "make gen-shacl gen-owl gen-jsonld-context gen-jsonschema" "SCHEMA=$SCHEMA")" \
-    regenerate_four
+step "Regenerate three artifacts" \
+    "$(disp "make gen-shacl gen-jsonld-context gen-jsonschema" "SCHEMA=$SCHEMA")" \
+    regenerate_three
 step "Change propagates to the generated files" \
     "${CLR_STEP}git diff${CLR_RST} ${CLR_WARN}<before> <after>${CLR_RST}" \
     show_artifact_diffs
@@ -625,20 +579,11 @@ step "Policy basis-no (Norwegian public-sector requirements)" \
 echo ""
 echo "${CLR_DBG}Fix the two findings in the source file:${CLR_RST}"
 edit_and_diff fix_findings
-step "basis-no again: findings gone" \
+step "revalidate basis-no" \
     "$(disp "make mcp-linkml-valider-modell" "SCHEMA=$SCHEMA POLICY=basis-no")" run_validate_basis_no
 step "Instance data against the model" \
     "$(disp "make validate-instance" "SCHEMA=$SCHEMA INSTANCE=$MODEL_DIR/examples/$NAME-eksempel.yaml")" \
     make -s validate-instance SCHEMA="$SCHEMA" INSTANCE="$MODEL_DIR/examples/$NAME-eksempel.yaml"
-step "Example data as RDF (SHACL setup)" \
-    "$(disp "make convert-instance-rdf" "INSTANCE=$MODEL_DIR/examples/$NAME-eksempel.yaml")" \
-    make convert-instance-rdf INSTANCE="$MODEL_DIR/examples/$NAME-eksempel.yaml"
-step "SHACL accepts the good data" \
-    "$(disp "make validate-shacl" "SCHEMA=$SCHEMA")" \
-    make validate-shacl SCHEMA="$SCHEMA"
-step "SHACL reports the violation in the bad data" \
-    "$(disp "make validate-shacl" "SCHEMA=$SCHEMA DATA=$MODEL_DIR/examples/$NAME-ugyldig.ttl")" \
-    run_shacl_expect_violation
 
 # ---- Akt 7: analysejobbane ----
 act "7. Analysis"
@@ -652,7 +597,7 @@ step "Has somebody already defined this? (whole repository)" \
 act "8. Take-aways"
 echo ""
 echo "  1. One source, N artifacts that are generated, never hand-edited."
-echo "  2. Validators check the model, the data and the generated SHACL."
+echo "  2. Validators check the model and the data."
 echo "  3. Analysis and the portal give you overview of the current model-state."
 echo ""
 if have_fun; then

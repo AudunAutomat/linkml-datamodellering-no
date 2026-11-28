@@ -403,7 +403,7 @@ make gen-jsonschema SCHEMA=<S>       # ~2 s
 Etter kvar `gen-*` skriv scriptet ut stien til den genererte fila (`Generated: …`) og viser
 innhaldet i `less`.
 
-Etter generering: **«éin slot, seks artefakter»**. Scriptet køyrer `grep` for
+**(Fjerna frå scriptet 2026-11-28, sjå avgjerd nedst.)** Etter generering: **«éin slot, seks artefakter»**. Scriptet køyrer `grep` for
 `dct:title`/`tittel` mot kvar fil og viser éi linje frå kvar:
 
 | Artefakt | Verifisert treff (`grep -n`, 2026-11-20) |
@@ -435,14 +435,10 @@ tabellen, er tabellen feil, ikkje grepet.
 Ny hovudoverskrift (pikselfont som dei andre aktane), rett etter «One slot, six artifacts». Dekkjer fire steg:
 
 1. **«Generate Python classes»**: `make gen-python SCHEMA=<S>` (~2 s).
-2. **«App 1: read the YAML data»**: `less` på `konferanseprogram_app_yaml.py`, så køyring.
-3. **«App 2: convert to JSON and read it»**: `konferanseprogram_app_json.py` konverterer YAML-eksempelet til
-   JSON (`json_dumper`) og les JSON-fila att med same klassar (`json_loader`). Etter køyringa vert dei fyrste
-   linjene av `konferanseprogram.json` viste.
-4. **«App 3: convert to RDF and read it»**: `konferanseprogram_app_rdf.py` konverterer til Turtle
-   (`rdflib_dumper`, med `SchemaView` over skjemaet, så `slot_uri`/`class_uri` vert brukt) og les Turtle att
-   (`rdflib_loader`). Dei fyrste linjene av `konferanseprogram.ttl` vert viste: `dct:title`, `foaf:name`,
-   `dct:BibliographicResource`.
+2. **«One app, three data formats»**: `less` på `konferanseprogram_app.py`, så køyring. Appen les YAML-eksempelet,
+   skriv JSON (`json_dumper`) og Turtle (`rdflib_dumper`, med `SchemaView` over skjemaet, så `slot_uri`/`class_uri`
+   vert brukt), les begge att med same klassar og skriv ut same linje tre gonger (YAML, JSON, RDF). Innhaldet i
+   `konferanseprogram.json` og `konferanseprogram.ttl` vert ikkje vist.
 
 Alle tre appane skriv ut same linje, `The Right Tool Is More Than Half the Job (20 min) - Audun Vindenes Egge @ SEMIC 2026`.
 Poenget er at éi modell gjer same data lesbare frå tre formater. Appane køyrer i `linkml-local` og
@@ -461,7 +457,6 @@ Sentralt poeng: éi endring i kjelda, alt anna følgjer.
 #         (git diff --no-index, same mechanism as javazone-demo-auto-innsetjing)
 # Step B: regenerate
 make gen-shacl SCHEMA=<S>
-make gen-owl SCHEMA=<S>
 make gen-jsonld-context SCHEMA=<S>
 make gen-jsonschema SCHEMA=<S>
 # Step C: show what changed in the generated files
@@ -521,7 +516,7 @@ make mcp-linkml-valider-modell SCHEMA=<S> POLICY=basis-no # findings gone
 make validate-instance SCHEMA=<S> INSTANCE=src/linkml/oreg/konferanseprogram/examples/konferanseprogram-eksempel.yaml
 ```
 
-**Lag 3: generert SHACL mot RDF-data** (nytt, krev `validate-shacl`):
+**Lag 3: generert SHACL mot RDF-data** (*fjerna frå scriptet 2026-11-28, sjå avgjerd nedst*; nytt, krev `validate-shacl`):
 
 ```bash
 make validate-shacl SCHEMA=<S>                                       # conforms
@@ -710,7 +705,7 @@ Funn under scriptarbeidet:
 - **`gen-owl` skriv ca. 20 linjer deprecation-åtvaringar** frå linkml til skjermen.
   Scriptet filtrerer dei (`make_quiet_deprecations`) og viser heile utskrifta dersom make
   feilar.
-- **Siste SHACL-steg («SHACL reports the violation …») gir med vilje exit 1.** `run_shacl_expect_violation` viser rapporten og ei
+- **(Fjerna 2026-11-28.)** **Siste SHACL-steg («SHACL reports the violation …») gir med vilje exit 1.** `run_shacl_expect_violation` viser rapporten og ei
   grøn forklaring, ikkje «step failed».
 - **Diffheader:** `git diff --no-index` viser temp-stien til før-fila. Scriptet viser berre
   hunkane med ein rein overskrift.
@@ -823,3 +818,17 @@ git status --short   # skal vere tom bortsett frå dei varige endringane
 - **Akt 1 slått saman til eitt steg (2026-11-22, brukarval):** «LinkML model is source of truth» viser heile skjemafila i `less`, opna ved `classes:`. Erstattar to steg (klassar, slots) som ikkje gav meir.
 
 - **Tre Python-appar i akt 3 (2026-11-22, brukarval):** `semweb-demo-app/` har `konferanseprogram_app_yaml.py` (den opphavlege), `_json.py` (YAML -> JSON med `json_dumper`, les med `json_loader`) og `_rdf.py` (YAML -> Turtle med `rdflib_dumper`, les med `rdflib_loader`; krev `SchemaView(<skjema>)`). Verifisert 2026-11-22: alle tre skriv ut same linje, og rundturen YAML -> JSON -> objekt og YAML -> RDF -> objekt gir same data for denne modellen (BUG-2/BUG-3-fellene for `rdflib_loader` råkar ikkje fixturen). Funksjonen `app_flow` viser koden i less, køyrer appen i `linkml-local` og viser dei fyrste 16 linjene av fila appen skreiv. Tidsbudsjettet: Create an app 1:30 -> 2:00, Validation 3:30 -> 3:00.
+
+- **Éi app i staden for tre (2026-11-28, brukarønske):** `semweb-demo-app/konferanseprogram_app.py` erstattar `_yaml.py`, `_json.py` og `_rdf.py`. Appen tek `<eksempel.yaml> <skjema>`, les same data frå YAML, JSON og Turtle og skriv ut same linje tre gonger utan format-prefiks (brukaren ba om same utskrift). `app_flow` i `SEMIC-demo.sh` tek ikkje lenger format-argument og viser begge skrivne filene. Steget vart «One app, three data formats» (tre steg -> eitt; tidsbudsjettet i akt 3 er uendra, justér ved prøvekøyring). Verifisert i `linkml-local`: tre identiske linjer, JSON- og TTL-fil skrivne. Eldre avgjerder over om tre appar er historiske.
+
+- **Akt 4 utan JSON-LD context (2026-11-28, brukarønske):** steget heiter «Regenerate three artifacts» (`gen-shacl`, `gen-owl`, `gen-jsonschema`; funksjonen `regenerate_three`), og `context.jsonld` er ute av `ARTIFACT_FILES`, så diffen viser berre SHACL og JSON Schema. Akt 2 genererer framleis context. Verifisert med `bash -n`, ikkje køyrt ende til ende.
+
+- **Skrivne filer ikkje viste (2026-11-28, brukarønske):** `app_flow` viser ikkje lenger dei første linjene av `konferanseprogram.json`/`.ttl` etter køyring; filene vert framleis skrivne i den midlertidige mappa og rydda.
+
+- **«One slot, six artifacts» fjerna (2026-11-28, brukarønske):** steget, `show_hit` og `one_slot_six_artifacts` er ute av `SEMIC-demo.sh`; akt 2 endar med JSON Schema, og akt 3 følgjer rett etter. Tabellen og verifiseringa over er behaldne som dokumentasjon av korleis ein slot gir seks artefakter (kan brukast til ei slide). Tidsbudsjettet er uendra; akt 2 vert litt kortare.
+
+- **OWL med i diffen i akt 4 (2026-11-28, feil retta):** `gen-owl` vart køyrt på nytt, men `$NAME-ontology.ttl` låg ikkje i `ARTIFACT_FILES`, så ingen snapshot og ingen diff. Etter at JSON-LD context gjekk ut var det berre to diffar. Ontologien er no med (SHACL, OWL, JSON Schema), og `regenerate_three` listar berre `ARTIFACT_FILES`.
+
+- **Akt 4: JSON-LD context i staden for OWL (2026-11-28, brukarønske):** «Regenerate three artifacts» køyrer `gen-shacl`, `gen-jsonld-context` og `gen-jsonschema`; `ARTIFACT_FILES` er shapes, context og schema.json (OWL ute igjen, så avgjerda over om OWL i diffen er erstatta). Verifisert med `bash -n`, ikkje køyrt ende til ende.
+
+- **SHACL-validering fjerna frå demoen (2026-11-28, brukarønske):** dei tre stega «Example data as RDF (SHACL setup)», «SHACL accepts the good data» og «SHACL reports the violation in the bad data» og funksjonen `run_shacl_expect_violation` er ute av `SEMIC-demo.sh`; take-away 2 seier no «Validators check the model and the data.» `gen-shacl` i akt 2 og 4 er uendra. `make validate-shacl`, `convert-instance-rdf` og `examples/konferanseprogram-ugyldig.ttl` er behaldne (ubrukte av demoen). Tidsbudsjettet for akt 6 er uendra; kan kortast ved prøvekøyring. Verifisert med `bash -n`.

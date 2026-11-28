@@ -1,0 +1,247 @@
+##
+## Demomodell for konferanseprogram (semantisk web-demo).
+## Norsk modell med engelske termar via structured_aliases (in_language: en).
+##
+
+id: https://data.norge.no/oreg/konferanseprogram
+name: konferanseprogram
+title: Konferanseprogram
+description: >-
+  Eit lite konferanseprogram med konferanse, foredrag, foredragsholdere,
+  sesjonar og rom. Brukt som demomodell: éi kjelde til sanning som artefakter
+  vert genererte frå.
+version: 0.1.0
+license: https://data.norge.no/nlod/no/2.0
+annotations:
+  utgiver: AudunAutomat
+  status: http://purl.org/adms/status/UnderDevelopment
+  endringsdato: "2026-11-20"
+  utgivelsesdato: "2026-11-20"
+
+imports:
+  - linkml:types
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  konferanseprogram: https://data.norge.no/oreg/konferanseprogram/
+  dct: http://purl.org/dc/terms/
+  dcmitype: http://purl.org/dc/dcmitype/
+  foaf: http://xmlns.com/foaf/0.1/
+  dcat: http://www.w3.org/ns/dcat#
+
+default_prefix: https://data.norge.no/oreg/konferanseprogram/
+default_range: string
+
+subsets:
+  Obligatorisk:
+    description: Felt som er obligatoriske.
+  Anbefalt:
+    description: Felt som er anbefalte, men ikkje påkravde.
+  Valgfri:
+    description: Felt som er valfrie.
+
+classes:
+
+  KonferanseprogramContainer:
+    description: Toppnivåobjekt for serialisering av konferanseprogrammet.
+    tree_root: true
+    attributes:
+      konferansar:
+        description: Konferansane i datafila.
+        slot_uri: konferanseprogram:konferansar
+        range: Konferanse
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+      foredragsliste:
+        description: Foredraga i datafila.
+        slot_uri: konferanseprogram:foredragsliste
+        range: Foredrag
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+      foredragsholdere:
+        description: Foredragsholdarane i datafila.
+        slot_uri: konferanseprogram:foredragsholdere
+        range: Foredragsholder
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+
+  Konferanse:
+    description: Ein konferanse med eit program av foredrag.
+    class_uri: dcmitype:Event
+    structured_aliases:
+      - literal_form: Conference
+        in_language: en
+    annotations:
+      begrepsidentifikator: https://concept-catalog.fellesdatakatalog.digdir.no/collections/TODO/concepts/TODO
+    slots:
+      - id
+      - tittel
+      - landingsside
+    slot_usage:
+      tittel:
+        required: true
+        in_subset: [Obligatorisk]
+
+  Foredrag:
+    description: Eit foredrag på ein konferanse.
+    class_uri: dct:BibliographicResource
+    structured_aliases:
+      - literal_form: Talk
+        in_language: en
+    annotations:
+      begrepsidentifikator: https://concept-catalog.fellesdatakatalog.digdir.no/collections/TODO/concepts/TODO
+    slots:
+      - id
+      - tittel
+      - varighet
+      - har_foredragsholder
+      - del_av_konferanse
+    slot_usage:
+      tittel:
+        required: true
+        in_subset: [Obligatorisk]
+      har_foredragsholder:
+        required: true
+        in_subset: [Obligatorisk]
+      varighet:
+        in_subset: [Anbefalt]
+
+  Foredragsholder:
+    description: Ein person som held eit foredrag.
+    class_uri: foaf:Person
+    structured_aliases:
+      - literal_form: Speaker
+        in_language: en
+    annotations:
+      begrepsidentifikator: https://concept-catalog.fellesdatakatalog.digdir.no/collections/TODO/concepts/TODO
+    slots:
+      - id
+      - navn
+    slot_usage:
+      navn:
+        required: true
+        in_subset: [Obligatorisk]
+
+  Sesjon:
+    description: Ei tidsavgrensa økt der foredrag vert haldne.
+    class_uri: konferanseprogram:Sesjon
+    structured_aliases:
+      - literal_form: Session
+        in_language: en
+    annotations:
+      begrepsidentifikator: https://concept-catalog.fellesdatakatalog.digdir.no/collections/TODO/concepts/TODO
+    slots:
+      - id
+      - tittel
+      - starttidspunkt
+      - haldt_i_rom
+
+  Rom:
+    description: Eit rom eller ein sal der sesjonar vert haldne.
+    class_uri: konferanseprogram:Rom
+    structured_aliases:
+      - literal_form: Room
+        in_language: en
+    annotations:
+      begrepsidentifikator: https://concept-catalog.fellesdatakatalog.digdir.no/collections/TODO/concepts/TODO
+    slots:
+      - id
+      - navn
+
+  Sponsor:
+    description: Ein organisasjon som støttar konferansen økonomisk.
+    class_uri: konferanseprogram:Sponsor
+    structured_aliases:
+      - literal_form: Sponsor
+        in_language: en
+    annotations:
+      begrepsidentifikator: https://concept-catalog.fellesdatakatalog.digdir.no/collections/TODO/concepts/TODO
+    slots:
+      - id
+      - navn
+
+slots:
+
+  id:
+    description: Unik URI-identifikator for ressursen.
+    slot_uri: dct:identifier
+    identifier: true
+    range: uriorcurie
+    structured_aliases:
+      - literal_form: identifier
+        in_language: en
+
+  tittel:
+    description: Tittelen på ressursen.
+    slot_uri: dct:title
+    range: string
+    structured_aliases:
+      - literal_form: title
+        in_language: en
+
+  navn:
+    description: Navnet på ein person, eit rom eller ein organisasjon.
+    slot_uri: foaf:name
+    range: string
+    structured_aliases:
+      - literal_form: name
+        in_language: en
+
+  varighet:
+    description: Varigheita på foredraget, i minutt.
+    slot_uri: konferanseprogram:varighet
+    range: integer
+    structured_aliases:
+      - literal_form: duration
+        in_language: en
+
+  kommentar:
+    description: Fri kommentar til ressursen.
+    slot_uri: konferanseprogram:kommentar
+    range: string
+    structured_aliases:
+      - literal_form: comment
+        in_language: en
+
+  landingsside:
+    description: Konferansens landingsside på nettet.
+    slot_uri: dcat:landingPage
+    range: uriorcurie
+    structured_aliases:
+      - literal_form: landing page
+        in_language: en
+  har_foredragsholder:
+    description: Foredragsholdarane som held foredraget.
+    slot_uri: dct:creator
+    range: Foredragsholder
+    multivalued: true
+    structured_aliases:
+      - literal_form: has speaker
+        in_language: en
+
+  del_av_konferanse:
+    description: Konferansen foredraget er ein del av.
+    slot_uri: dct:isPartOf
+    range: Konferanse
+    structured_aliases:
+      - literal_form: part of conference
+        in_language: en
+
+  starttidspunkt:
+    description: Tidspunktet sesjonen startar.
+    slot_uri: konferanseprogram:starttidspunkt
+    range: datetime
+    structured_aliases:
+      - literal_form: start time
+        in_language: en
+
+  haldt_i_rom:
+    description: Rommet sesjonen vert halden i.
+    slot_uri: konferanseprogram:haldt_i_rom
+    range: Rom
+    structured_aliases:
+      - literal_form: held in room
+        in_language: en
